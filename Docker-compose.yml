@@ -1,0 +1,10 @@
+services:
+  loja-aluga-de-um-tudo:
+    build: .
+    container_name: loja-aluga-de-um-tudo
+    volumes:
+      - ./dados:/app/dados
+      - ./relatorios:/app/relatorios
+    restart: unless-stopped
+    stdin_open: true   
+    tty: true         
