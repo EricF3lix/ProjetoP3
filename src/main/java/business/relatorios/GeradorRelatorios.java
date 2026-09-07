@@ -1,6 +1,7 @@
 package business.relatorios;
 
 import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -129,7 +130,7 @@ public class GeradorRelatorios implements IRelatorios {
 
             System.out.printf("%-5s %-20s %-20s %-15s %-10s%n","ID","CLIENTE","ITEM","DEVOLUÇÃO","SITUAÇÃO");
 
-            LocalDate hoje = LocalDate.now();
+            LocalDate hoje = LocalDate.now(ZoneId.of("America/Recife"));
 
             for (ContratoAluguel contrato : contratosAtivos) {
 

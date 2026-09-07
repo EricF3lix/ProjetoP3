@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.List;
 
 import entidades.ContratoAluguel;
@@ -28,7 +29,7 @@ public class SalvaRelatorioItensAlugados {
 
             escritor.newLine();
 
-            LocalDate hoje = LocalDate.now();
+            LocalDate hoje = LocalDate.now(ZoneId.of("America/Recife"));
 
             for (ContratoAluguel contrato : contratos) {
 
