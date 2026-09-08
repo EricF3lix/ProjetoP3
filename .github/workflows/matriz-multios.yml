@@ -24,14 +24,15 @@ jobs:
         with:
           distribution: 'temurin'
           java-version: '21'
-          cache: 'maven'       
+          cache: 'maven'        
+
       - name: Rodar os testes do JUnit
         run: mvn test
 
   build-and-push:
-    needs: rodar_testes        
+    needs: rodar_testes       
     runs-on: ubuntu-latest
-    if: github.event_name != 'pull_request'   
+    if: github.event_name != 'pull_request'  
 
     steps:
       - name: Checkout do código
@@ -67,3 +68,10 @@ jobs:
             ${{ secrets.DOCKER_USERNAME }}/loja-aluga-de-um-tudo:${{ github.sha }}
           cache-from: type=gha   
           cache-to: type=gha,mode=max
+
+      - name: Publicar JAR como artefato
+        uses: actions/upload-artifact@v4
+        with:
+          name: loja-aluga-de-um-tudo-${{ github.sha }}
+          path: target/loja-aluga-de-um-tudo-1.0-SNAPSHOT.jar
+          retention-days: 30   
