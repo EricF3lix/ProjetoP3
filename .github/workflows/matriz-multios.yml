@@ -1,4 +1,4 @@
-name: Teste de integridade
+name: Testes
 
 on:
   push:
