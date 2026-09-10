@@ -30,80 +30,80 @@ jobs:
         run: mvn test
 
   build-and-push:
-  needs: rodar_testes
-  if: github.event_name != 'pull_request'
-  strategy:
-    fail-fast: false
-    matrix:
-      include:
-        - os: ubuntu-latest
-          dockerfile: ./Dockerfile-linux
-          tag_suffix: linux
-        - os: windows-latest
-          dockerfile: ./Dockerfile-windows
-          tag_suffix: windows
+    needs: rodar_testes
+    if: github.event_name != 'pull_request'
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-latest
+            dockerfile: ./Dockerfile-linux
+            tag_suffix: linux
+          - os: windows-latest
+            dockerfile: ./Dockerfile-windows
+            tag_suffix: windows
 
-  runs-on: ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
 
-  steps:
-    - name: Checkout do código
-      uses: actions/checkout@v4
+    steps:
+      - name: Checkout do código
+        uses: actions/checkout@v4
 
-    - name: Configurar JDK 21
-      uses: actions/setup-java@v4
-      with:
-        java-version: '21'
-        distribution: 'temurin'
-        cache: 'maven'
+      - name: Configurar JDK 21
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+          cache: 'maven'
 
-    - name: Compilar projeto com Maven
-      run: mvn clean package -DskipTests
+      - name: Compilar projeto com Maven
+        run: mvn clean package -DskipTests
 
-    - name: Configurar containerd (somente Windows)
-      if: matrix.os == 'windows-latest'
-      run: |
-        $version = "1.7.15"
-        curl.exe -L https://github.com/containerd/containerd/releases/download/v$version/containerd-$version-windows-amd64.tar.gz -o containerd.tar.gz
-        tar.exe xvf containerd.tar.gz
-        .\bin\containerd.exe --register-service
-        Start-Service containerd
+      - name: Configurar containerd (somente Windows)
+        if: matrix.os == 'windows-latest'
+        run: |
+          $version = "1.7.15"
+          curl.exe -L https://github.com/containerd/containerd/releases/download/v$version/containerd-$version-windows-amd64.tar.gz -o containerd.tar.gz
+          tar.exe xvf containerd.tar.gz
+          .\bin\containerd.exe --register-service
+          Start-Service containerd
 
-    - name: Configurar BuildKit (somente Windows)
-      if: matrix.os == 'windows-latest'
-      run: |
-        $version = "v0.13.1"
-        curl.exe -L https://github.com/moby/buildkit/releases/download/$version/buildkit-$version.windows-amd64.tar.gz -o buildkit.tar.gz
-        tar.exe xvf buildkit.tar.gz
-        .\bin\buildkitd.exe --register-service
-        Start-Service buildkitd
+      - name: Configurar BuildKit (somente Windows)
+        if: matrix.os == 'windows-latest'
+        run: |
+          $version = "v0.13.1"
+          curl.exe -L https://github.com/moby/buildkit/releases/download/$version/buildkit-$version.windows-amd64.tar.gz -o buildkit.tar.gz
+          tar.exe xvf buildkit.tar.gz
+          .\bin\buildkitd.exe --register-service
+          Start-Service buildkitd
 
-    - name: Configurar Docker Buildx
-      uses: docker/setup-buildx-action@v3
-      with:
-        driver: ${{ matrix.os == 'windows-latest' && 'remote' || 'docker-container' }}
-        endpoint: ${{ matrix.os == 'windows-latest' && 'npipe:////./pipe/buildkitd' || '' }}
+      - name: Configurar Docker Buildx
+        uses: docker/setup-buildx-action@v3
+        with:
+          driver: ${{ matrix.os == 'windows-latest' && 'remote' || 'docker-container' }}
+          endpoint: ${{ matrix.os == 'windows-latest' && 'npipe:////./pipe/buildkitd' || '' }}
 
-    - name: Login no Docker Hub
-      uses: docker/login-action@v3
-      with:
-        username: ${{ secrets.DOCKER_USERNAME }}
-        password: ${{ secrets.DOCKER_PASSWORD }}
+      - name: Login no Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
 
-    - name: Construir e Enviar Imagem Docker
-      uses: docker/build-push-action@v5
-      with:
-        context: .
-        file: ${{ matrix.dockerfile }}
-        push: true
-        tags: |
-          ${{ secrets.DOCKER_USERNAME }}/loja-aluga-de-um-tudo:${{ matrix.tag_suffix }}-latest
-          ${{ secrets.DOCKER_USERNAME }}/loja-aluga-de-um-tudo:${{ matrix.tag_suffix }}-${{ github.sha }}
-        cache-from: type=gha
-        cache-to: type=gha,mode=max
+      - name: Construir e Enviar Imagem Docker
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: ${{ matrix.dockerfile }}
+          push: true
+          tags: |
+            ${{ secrets.DOCKER_USERNAME }}/loja-aluga-de-um-tudo:${{ matrix.tag_suffix }}-latest
+            ${{ secrets.DOCKER_USERNAME }}/loja-aluga-de-um-tudo:${{ matrix.tag_suffix }}-${{ github.sha }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
 
-    - name: Publicar JAR como artefato
-      uses: actions/upload-artifact@v4
-      with:
-        name: loja-aluga-de-um-tudo-${{ matrix.tag_suffix }}-${{ github.sha }}
-        path: target/loja-aluga-de-um-tudo-1.0-SNAPSHOT.jar
-        retention-days: 30
+      - name: Publicar JAR como artefato
+        uses: actions/upload-artifact@v4
+        with:
+          name: loja-aluga-de-um-tudo-${{ matrix.tag_suffix }}-${{ github.sha }}
+          path: target/loja-aluga-de-um-tudo-1.0-SNAPSHOT.jar
+          retention-days: 30
