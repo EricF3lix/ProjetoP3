@@ -68,10 +68,10 @@ jobs:
           .\bin\containerd.exe --register-service
           Start-Service containerd
 
-      - name: Configurar BuildKit (somente Windows)
+      - name: Configurar BuildKit para o windows
         if: matrix.os == 'windows-latest'
         run: |
-          $version = "v0.13.1"
+          $version = "v0.13.2"
           curl.exe -L https://github.com/moby/buildkit/releases/download/$version/buildkit-$version.windows-amd64.tar.gz -o buildkit.tar.gz
           tar.exe xvf buildkit.tar.gz
           .\bin\buildkitd.exe --register-service
