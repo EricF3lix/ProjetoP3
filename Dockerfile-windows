@@ -1,12 +1,14 @@
-FROM eclipse-temurin:21-jdk-windowsservercore-ltsc2022 AS build
+# escape=`
+
+FROM eclipse-temurin:21-jdk-windowsservercore-ltsc2025 AS build
 
 SHELL ["powershell", "-Command", "$ErrorActionPreference = 'Stop'; $ProgressPreference = 'SilentlyContinue';"]
 
 ENV MAVEN_VERSION=3.9.9
 
-RUN Invoke-WebRequest -Uri "https://archive.apache.org/dist/maven/maven-3/$env:MAVEN_VERSION/binaries/apache-maven-$env:MAVEN_VERSION-bin.zip" -OutFile 'C:\maven.zip'; \
-    Expand-Archive -Path C:\maven.zip -DestinationPath C:\; \
-    Rename-Item -Path "C:\apache-maven-$env:MAVEN_VERSION" -NewName 'maven'; \
+RUN Invoke-WebRequest -Uri "https://archive.apache.org/dist/maven/maven-3/$env:MAVEN_VERSION/binaries/apache-maven-$env:MAVEN_VERSION-bin.zip" -OutFile 'C:\maven.zip'; `
+    Expand-Archive -Path C:\maven.zip -DestinationPath C:\; `
+    Rename-Item -Path "C:\apache-maven-$env:MAVEN_VERSION" -NewName 'maven'; `
     Remove-Item C:\maven.zip
 
 ENV PATH="C:\maven\bin;${PATH}"
@@ -19,7 +21,8 @@ RUN mvn dependency:go-offline -B
 COPY src ./src
 RUN mvn package -DskipTests -B
 
-FROM eclipse-temurin:21-jre-windowsservercore-ltsc2022
+
+FROM eclipse-temurin:21-jre-windowsservercore-ltsc2025
 
 WORKDIR C:/app
 
