@@ -1,0 +1,13 @@
+# escape=`
+
+FROM eclipse-temurin:21-jre-windowsservercore-ltsc2025
+
+SHELL ["powershell", "-Command", "$ErrorActionPreference = 'Stop'; $ProgressPreference = 'SilentlyContinue';"]
+
+WORKDIR C:/app
+
+RUN New-Item -ItemType Directory -Path C:\app\dados, C:\app\relatorios
+
+COPY target/loja-aluga-de-um-tudo-1.0-SNAPSHOT.jar app.jar
+
+ENTRYPOINT ["java", "-jar", "app.jar"]
