@@ -1,32 +1,13 @@
 # escape=`
 
-FROM eclipse-temurin:21-jdk-windowsservercore-ltsc2025 AS build
+FROM eclipse-temurin:21-jre-windowsservercore-ltsc2025
 
 SHELL ["powershell", "-Command", "$ErrorActionPreference = 'Stop'; $ProgressPreference = 'SilentlyContinue';"]
-
-ENV MAVEN_VERSION=3.9.9
-
-RUN Invoke-WebRequest -Uri "https://archive.apache.org/dist/maven/maven-3/$env:MAVEN_VERSION/binaries/apache-maven-$env:MAVEN_VERSION-bin.zip" -OutFile 'C:\maven.zip'; `
-    Expand-Archive -Path C:\maven.zip -DestinationPath C:\; `
-    Rename-Item -Path "C:\apache-maven-$env:MAVEN_VERSION" -NewName 'maven'; `
-    Remove-Item C:\maven.zip
-
-ENV PATH="C:\maven\bin;${PATH}"
-
-WORKDIR C:/app
-
-COPY pom.xml .
-RUN mvn dependency:go-offline -B
-
-COPY src ./src
-RUN mvn package -DskipTests -B
-
-
-FROM eclipse-temurin:21-jre-windowsservercore-ltsc2025
 
 WORKDIR C:/app
 
 RUN mkdir C:\app\dados C:\app\relatorios
 
-COPY --from=build C:/app/target/loja-aluga-de-um-tudo-1.0-SNAPSHOT.jar app.jar
+COPY target/loja-aluga-de-um-tudo-1.0-SNAPSHOT.jar app.jar
+
 ENTRYPOINT ["java", "-jar", "app.jar"]
