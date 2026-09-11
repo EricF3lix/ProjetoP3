@@ -6,7 +6,7 @@ SHELL ["powershell", "-Command", "$ErrorActionPreference = 'Stop'; $ProgressPref
 
 WORKDIR C:/app
 
-RUN mkdir C:\app\dados C:\app\relatorios
+RUN New-Item -ItemType Directory -Path C:\app\dados, C:\app\relatorios
 
 COPY target/loja-aluga-de-um-tudo-1.0-SNAPSHOT.jar app.jar
 
