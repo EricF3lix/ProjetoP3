@@ -33,7 +33,6 @@ public class Main {
         // CODE SMELL INTENCIONAL PARA TESTAR INTEGRAÇÃO SONAR -> KANBAN
         // Regra Sonar: java:S1481 (Unused local variables should be removed)
         // =========================================================================
-        String codeSmellTesteKanban = "Variavel criada para disparar card no Kanban";
 
         //REPOSITÓRIOS 
 
