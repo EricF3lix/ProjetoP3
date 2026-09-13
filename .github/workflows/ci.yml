@@ -84,10 +84,13 @@ jobs:
 
       - name: Construir e Enviar Imagem Docker (Windows, docker build clássico)
         if: matrix.os == 'windows-latest'
+        shell: bash
+        env:
+          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
         run: |
-          docker build -f ${{ matrix.dockerfile }} -t ${{ secrets.DOCKER_USERNAME }}/loja-aluga-de-um-tudo:${{ matrix.tag_suffix }}-latest -t ${{ secrets.DOCKER_USERNAME }}/loja-aluga-de-um-tudo:${{ matrix.tag_suffix }}-${{ github.sha }} .
-          docker push ${{ secrets.DOCKER_USERNAME }}/loja-aluga-de-um-tudo:${{ matrix.tag_suffix }}-latest
-          docker push ${{ secrets.DOCKER_USERNAME }}/loja-aluga-de-um-tudo:${{ matrix.tag_suffix }}-${{ github.sha }}
+          docker build -f ${{ matrix.dockerfile }} -t "$DOCKER_USERNAME/loja-aluga-de-um-tudo:${{ matrix.tag_suffix }}-latest" -t "$DOCKER_USERNAME/loja-aluga-de-um-tudo:${{ matrix.tag_suffix }}-${{ github.sha }}" .
+          docker push "$DOCKER_USERNAME/loja-aluga-de-um-tudo:${{ matrix.tag_suffix }}-latest"
+          docker push "$DOCKER_USERNAME/loja-aluga-de-um-tudo:${{ matrix.tag_suffix }}-${{ github.sha }}"
 
       - name: Publicar JAR como artefato
         uses: actions/upload-artifact@v4
