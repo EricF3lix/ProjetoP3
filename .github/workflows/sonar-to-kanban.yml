@@ -35,7 +35,7 @@ jobs:
         run: |
           mvn clean verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar \
             -Dsonar.token="${{ secrets.SONAR_TOKEN }}" \
-            -Dsonar.projectKey="${{ secrets.SONAR_PROJECT_KEY || 'EricF3lix_ProjetoP3' }}" \
+            -Dsonar.projectKey="EricF3lix_ProjetoP3" \
             -Dsonar.organization="${{ secrets.SONAR_ORG || 'ericf3lix' }}" \
             -Dsonar.host.url=https://sonarcloud.io
 
@@ -45,7 +45,7 @@ jobs:
           github-token: ${{ secrets.KANBAN_TOKEN }}
           script: |
             const sonarToken = process.env.SONAR_TOKEN;
-            const projectKey = process.env.SONAR_PROJECT_KEY || 'EricF3lix_ProjetoP3';
+            const projectKey = 'EricF3lix_ProjetoP3';
 
             if (!sonarToken) {
               console.log('Secret SONAR_TOKEN não configurado. Pulando sincronização.');
@@ -143,4 +143,3 @@ jobs:
             }
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-          SONAR_PROJECT_KEY: ${{ secrets.SONAR_PROJECT_KEY }}
