@@ -35,7 +35,7 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: |
           mvn clean verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar \
-            -Dsonar.token="${{ secrets.SONAR_TOKEN }}" \
+            -Dsonar.token="$SONAR_TOKEN" \
             -Dsonar.projectKey="EricF3lix_ProjetoP3" \
             -Dsonar.organization="ericf3lix-1" \
             -Dsonar.host.url=https://sonarcloud.io
@@ -53,14 +53,12 @@ jobs:
             const projectKey = 'EricF3lix_ProjetoP3';
             const branch = context.ref ? context.ref.replace('refs/heads/', '') : 'develop';
 
-            // Como o projeto é público, consultamos sem o header Authorization para evitar o bloqueio 403 de tokens de análise
             let apiUrl = `https://sonarcloud.io/api/issues/search?componentKeys=${projectKey}&branch=${branch}&resolved=false&types=BUG,VULNERABILITY,CODE_SMELL`;
             console.log(`Consultando SonarCloud: ${apiUrl}`);
 
             let res = await fetch(apiUrl);
             let sonarData = res.ok ? await res.json() : null;
 
-            // Fallback: se não encontrar na branch ou der erro, consulta a raiz do projeto
             if (!sonarData || !sonarData.issues || sonarData.issues.length === 0) {
               const fallbackUrl = `https://sonarcloud.io/api/issues/search?componentKeys=${projectKey}&resolved=false&types=BUG,VULNERABILITY,CODE_SMELL`;
               console.log(`Tentando fallback geral: ${fallbackUrl}`);
@@ -82,7 +80,6 @@ jobs:
               return;
             }
 
-            // Busca o quadro Kanban vinculado ao repositório ou ao usuário
             let projects = [];
             try {
               const repoProjects = await github.graphql(`
@@ -117,11 +114,6 @@ jobs:
             }
 
             const kanban = projects.length > 0 ? projects[0] : null;
-            if (kanban) {
-              console.log(`Kanban alvo: "${kanban.title}"`);
-            } else {
-              console.log('Nenhum ProjectV2 encontrado. As issues serão criadas apenas na aba Issues.');
-            }
 
             for (const issue of issues) {
               const sonarKey = issue.key;
@@ -134,7 +126,6 @@ jobs:
               });
 
               if (searchRes.data.total_count > 0) {
-                console.log(`Issue ${sonarKey} já existe (#${searchRes.data.items[0].number}). Pulando.`);
                 continue;
               }
 
@@ -154,8 +145,6 @@ jobs:
                 labels: ['sonar', issue.type.toLowerCase().replace('_', '-')]
               });
 
-              console.log(`Issue criada: #${novaIssue.data.number} - ${title}`);
-
               if (kanban) {
                 await github.graphql(`
                   mutation($projectId: ID!, $contentId: ID!) {
@@ -167,6 +156,5 @@ jobs:
                   projectId: kanban.id,
                   contentId: novaIssue.data.node_id
                 });
-                console.log(`Card #${novaIssue.data.number} inserido no Kanban.`);
               }
             }
