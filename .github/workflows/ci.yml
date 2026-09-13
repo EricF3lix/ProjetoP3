@@ -17,10 +17,10 @@ jobs:
 
     steps:
       - name: Revisar codigo
-        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        uses: actions/checkout@v4
 
       - name: Configurar o Java
-        uses: actions/setup-java@b205f154a3184c415b0da84d8498475a74de0323 # v4.2.2
+        uses: actions/setup-java@v4
         with:
           distribution: 'temurin'
           java-version: '21'
@@ -47,10 +47,10 @@ jobs:
 
     steps:
       - name: Checkout do código
-        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        uses: actions/checkout@v4
 
       - name: Configurar JDK 21
-        uses: actions/setup-java@b205f154a3184c415b0da84d8498475a74de0323 # v4.2.2
+        uses: actions/setup-java@v4
         with:
           java-version: '21'
           distribution: 'temurin'
@@ -93,7 +93,7 @@ jobs:
           docker push "$DOCKER_USERNAME/loja-aluga-de-um-tudo:${{ matrix.tag_suffix }}-${{ github.sha }}"
 
       - name: Publicar JAR como artefato
-        uses: actions/upload-artifact@4cec3d8aa04e39d1a68397de0c4cd6fb9dce8ec1 # v4.0.0
+        uses: actions/upload-artifact@v4
         with:
           name: loja-aluga-de-um-tudo-${{ matrix.tag_suffix }}-${{ github.sha }}
           path: target/loja-aluga-de-um-tudo-1.0-SNAPSHOT.jar
