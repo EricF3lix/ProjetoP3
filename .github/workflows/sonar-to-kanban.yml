@@ -1,0 +1,151 @@
+name: Sincronizar Issues do Sonar com Kanban
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  analisar-sonar-e-atualizar-kanban:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout do repositório
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Configurar JDK 21
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '21'
+          cache: 'maven'
+
+      - name: Executar testes e análise Sonar
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        run: |
+          mvn clean verify sonar:sonar \
+            -Dsonar.projectKey=${{ secrets.SONAR_PROJECT_KEY || 'EricF3lix_ProjetoP3' }} \
+            -Dsonar.organization=${{ secrets.SONAR_ORG || 'ericf3lix' }} \
+            -Dsonar.host.url=https://sonarcloud.io
+
+      - name: Buscar Issues do Sonar e Cadastrar no Kanban
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.KANBAN_TOKEN }}
+          script: |
+            const sonarToken = process.env.SONAR_TOKEN;
+            const projectKey = process.env.SONAR_PROJECT_KEY || 'EricF3lix_ProjetoP3';
+
+            if (!sonarToken) {
+              console.log('Secret SONAR_TOKEN não configurado. Pulando sincronização.');
+              return;
+            }
+
+            // 1. Consulta as issues abertas na API do SonarCloud
+            const authHeader = 'Basic ' + Buffer.from(sonarToken + ':').toString('base64');
+            const res = await fetch(`https://sonarcloud.io/api/issues/search?componentKeys=${projectKey}&resolved=false&types=BUG,VULNERABILITY,CODE_SMELL`, {
+              headers: { 'Authorization': authHeader }
+            });
+
+            if (!res.ok) {
+              throw new Error(`Falha ao consultar SonarCloud: ${res.status} ${res.statusText}`);
+            }
+
+            const sonarData = await res.json();
+            const issues = sonarData.issues || [];
+            console.log(`Total de issues encontradas no Sonar: ${issues.length}`);
+
+            if (issues.length === 0) {
+              console.log('Nenhuma issue pendente no Sonar.');
+              return;
+            }
+
+            // 2. Busca o Kanban (ProjectsV2) do repositório
+            const projectQuery = `
+              query($owner: String!, $repo: String!) {
+                repository(owner: $owner, name: $repo) {
+                  projectsV2(first: 5) {
+                    nodes {
+                      id
+                      title
+                    }
+                  }
+                }
+              }
+            `;
+            const projectResult = await github.graphql(projectQuery, {
+              owner: context.repo.owner,
+              repo: context.repo.repo
+            });
+
+            const projects = projectResult.repository?.projectsV2?.nodes;
+            if (!projects || projects.length === 0) {
+              console.log('Nenhum ProjectV2 encontrado no repositório.');
+              return;
+            }
+            const kanban = projects[0];
+            console.log(`Vinculando ao Kanban: "${kanban.title}"`);
+
+            // 3. Cadastra as issues que ainda não existem
+            for (const issue of issues) {
+              const sonarKey = issue.key;
+              const title = `[Sonar] ${issue.message}`;
+              const file = issue.component ? issue.component.split(':').pop() : 'N/A';
+              const line = issue.line || 'N/A';
+
+              // Evita duplicatas: verifica se já tem issue com a hash/key do Sonar
+              const searchRes = await github.rest.search.issuesAndPullRequests({
+                q: `repo:${context.repo.owner}/${context.repo.repo} is:issue in:body "${sonarKey}"`
+              });
+
+              if (searchRes.data.total_count > 0) {
+                console.log(`Issue ${sonarKey} já existe no repositório (#${searchRes.data.items[0].number}). Pulando.`);
+                continue;
+              }
+
+              const body = `### Detalhes da Issue (SonarCloud)\n\n` +
+                           `- **Chave Sonar:** \`${sonarKey}\`\n` +
+                           `- **Severidade:** ${issue.severity}\n` +
+                           `- **Tipo:** ${issue.type}\n` +
+                           `- **Arquivo:** \`${file}\`\n` +
+                           `- **Linha:** ${line}\n\n` +
+                           `*Issue gerada automaticamente pela integração Sonar-Kanban.*`;
+
+              // Cria a issue no GitHub
+              const novaIssue = await github.rest.issues.create({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                title: title,
+                body: body,
+                labels: ['sonar', issue.type.toLowerCase().replace('_', '-')]
+              });
+
+              console.log(`Issue criada: #${novaIssue.data.number} - ${title}`);
+
+              // Adiciona o card criado no Kanban (ProjectsV2)
+              await github.graphql(`
+                mutation($projectId: ID!, $contentId: ID!) {
+                  addProjectV2ItemById(input: { projectId: $projectId, contentId: $contentId }) {
+                    item { id }
+                  }
+                }
+              `, {
+                projectId: kanban.id,
+                contentId: novaIssue.data.node_id
+              });
+
+              console.log(`Card da Issue #${novaIssue.data.number} adicionado ao Kanban.`);
+            }
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_PROJECT_KEY: ${{ secrets.SONAR_PROJECT_KEY }}
