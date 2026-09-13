@@ -36,7 +36,7 @@ jobs:
           mvn clean verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar \
             -Dsonar.token="${{ secrets.SONAR_TOKEN }}" \
             -Dsonar.projectKey="EricF3lix_ProjetoP3" \
-            -Dsonar.organization="${{ secrets.SONAR_ORG || 'ericf3lix' }}" \
+            -Dsonar.organization="ericf3lix-1" \
             -Dsonar.host.url=https://sonarcloud.io
 
       - name: Buscar Issues do Sonar e Cadastrar no Kanban
