@@ -23,7 +23,7 @@ jobs:
           fetch-depth: 0
 
       - name: Configurar JDK 21
-        uses: actions/setup-java@v4
+        uses: actions/setup-java@v5
         with:
           distribution: 'temurin'
           java-version: '21'
@@ -52,6 +52,34 @@ jobs:
           script: |
             const projectKey = 'EricF3lix_ProjetoP3';
             const branch = context.ref ? context.ref.replace('refs/heads/', '') : 'develop';
+            const LIMITE_POR_EXECUCAO = 50;
+
+            // 1. Buscar TODAS as issues do SonarCloud com paginação
+            async function fetchAllSonarIssues(projectKey, branch) {
+              let allIssues = [];
+              let page = 1;
+              const pageSize = 100;
+
+              while (true) {
+                let url = `https://sonarcloud.io/api/issues/search?componentKeys=${projectKey}&branch=${branch}&resolved=false&types=BUG,VULNERABILITY,CODE_SMELL&ps=${pageSize}&p=${page}`;
+                console.log(`Buscando página ${page} do SonarCloud...`);
+
+                let res = await fetch(url);
+
+                // Fallback sem branch se não encontrar nada
+                if (res.ok) {
+                  const data = await res.json();
+                  if (page === 1 && data.issues.length === 0 && branch !== 'main') {
+                    console.log('Nenhuma issue na branch, tentando sem filtro de branch...');
+                    url = `https://sonarcloud.io/api/issues/search?componentKeys=${projectKey}&resolved=false&types=BUG,VULNERABILITY,CODE_SMELL&ps=${pageSize}&p=${page}`;
+                    res = await fetch(url);
+                    if (!res.ok) break;
+                    const fallbackData = await res.json();
+                    allIssues = allIssues.concat(fallbackData.issues);
+                    if (allIssues.length >= fallbackData.paging.total) break;
+                    page++;
+                    continue;
+                  }
 
             let apiUrl = `https://sonarcloud.io/api/issues/search?componentKeys=${projectKey}&branch=${branch}&resolved=false&types=BUG,VULNERABILITY,CODE_SMELL`;
             console.log(`Consultando SonarCloud: ${apiUrl}`);
@@ -66,16 +94,14 @@ jobs:
               if (fallbackRes.ok) {
                 sonarData = await fallbackRes.json();
               }
+
+              return allIssues;
             }
 
-            if (!sonarData || !sonarData.issues) {
-              throw new Error(`Falha ao obter issues do SonarCloud: ${res ? res.status : 'desconhecido'}`);
-            }
+            const sonarIssues = await fetchAllSonarIssues(projectKey, branch);
+            console.log(`Total de issues no Sonar: ${sonarIssues.length}`);
 
-            const issues = sonarData.issues;
-            console.log(`Total de issues encontradas no Sonar: ${issues.length}`);
-
-            if (issues.length === 0) {
+            if (sonarIssues.length === 0) {
               console.log('Nenhuma issue pendente no Sonar.');
               return;
             }
@@ -93,7 +119,7 @@ jobs:
               `, { owner: context.repo.owner, repo: context.repo.repo });
               projects = repoProjects.repository?.projectsV2?.nodes || [];
             } catch (e) {
-              console.log('Busca de ProjectsV2 no repositório:', e.message);
+              console.log('Erro ao buscar ProjectsV2 no repositório:', e.message);
             }
 
             if (projects.length === 0) {
@@ -109,17 +135,13 @@ jobs:
                 `, { owner: context.repo.owner });
                 projects = userProjects.user?.projectsV2?.nodes || [];
               } catch (e) {
-                console.log('Busca de ProjectsV2 no perfil:', e.message);
+                console.log('Erro ao buscar ProjectsV2 no perfil:', e.message);
               }
             }
 
             const kanban = projects.length > 0 ? projects[0] : null;
 
-            for (const issue of issues) {
               const sonarKey = issue.key;
-              const title = `[Sonar] ${issue.message}`;
-              const file = issue.component ? issue.component.split(':').pop() : 'N/A';
-              const line = issue.line || 'N/A';
 
               const searchRes = await github.rest.search.issuesAndPullRequests({
                 q: `repo:${context.repo.owner}/${context.repo.repo} is:issue in:body "${sonarKey}"`
@@ -128,6 +150,10 @@ jobs:
               if (searchRes.data.total_count > 0) {
                 continue;
               }
+
+              const title = `[Sonar] ${issue.message}`;
+              const file = issue.component ? issue.component.split(':').pop() : 'N/A';
+              const line = issue.line || 'N/A';
 
               const body = `### Detalhes da Issue (SonarCloud)\n\n` +
                            `- **Chave Sonar:** \`${sonarKey}\`\n` +
@@ -157,4 +183,14 @@ jobs:
                   contentId: novaIssue.data.node_id
                 });
               }
+
+              // Pausa de 1 segundo entre cada criação para não estourar rate limit
+              await new Promise(r => setTimeout(r, 1000));
+            }
+
+            console.log(`\n Concluído! Issues criadas nesta execução: ${criadas}`);
+            console.log(`Issues já existentes (ignoradas): ${existingKeys.size}`);
+            const restantes = sonarIssues.filter(i => !existingKeys.has(i.key)).length - criadas;
+            if (restantes > 0) {
+              console.log(` Issues ainda pendentes: ${restantes} — execute o workflow novamente.`);
             }
