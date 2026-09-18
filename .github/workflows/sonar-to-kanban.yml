@@ -81,16 +81,18 @@ jobs:
                     continue;
                   }
 
-                  allIssues = allIssues.concat(data.issues);
-                  const total = data.paging.total;
-                  console.log(`Página ${page}: ${data.issues.length} issues (total Sonar: ${total})`);
+            let apiUrl = `https://sonarcloud.io/api/issues/search?componentKeys=${projectKey}&branch=${branch}&resolved=false&types=BUG,VULNERABILITY,CODE_SMELL`;
+            console.log(`Consultando SonarCloud: ${apiUrl}`);
 
-                  if (allIssues.length >= total) break;
-                  page++;
-                } else {
-                  console.log(`Erro ao buscar página ${page}: ${res.status}`);
-                  break;
-                }
+            let res = await fetch(apiUrl);
+            let sonarData = res.ok ? await res.json() : null;
+
+            if (!sonarData || !sonarData.issues || sonarData.issues.length === 0) {
+              const fallbackUrl = `https://sonarcloud.io/api/issues/search?componentKeys=${projectKey}&resolved=false&types=BUG,VULNERABILITY,CODE_SMELL`;
+              console.log(`Tentando fallback geral: ${fallbackUrl}`);
+              const fallbackRes = await fetch(fallbackUrl);
+              if (fallbackRes.ok) {
+                sonarData = await fallbackRes.json();
               }
 
               return allIssues;
@@ -104,25 +106,6 @@ jobs:
               return;
             }
 
-            // 2. Buscar todas as issues GitHub com label 'sonar' de uma vez só
-            console.log('Buscando issues existentes no GitHub...');
-            const existingIssues = await github.paginate(github.rest.issues.listForRepo, {
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              state: 'all',
-              labels: 'sonar',
-              per_page: 100
-            });
-
-            // Montar Set com chaves Sonar já cadastradas
-            const existingKeys = new Set();
-            for (const issue of existingIssues) {
-              const match = issue.body?.match(/\*\*Chave Sonar:\*\*\s*`([^`]+)`/);
-              if (match) existingKeys.add(match[1]);
-            }
-            console.log(`Issues Sonar já cadastradas no GitHub: ${existingKeys.size}`);
-
-            // 3. Buscar projeto Kanban
             let projects = [];
             try {
               const repoProjects = await github.graphql(`
@@ -157,21 +140,14 @@ jobs:
             }
 
             const kanban = projects.length > 0 ? projects[0] : null;
-            console.log(kanban ? `Kanban encontrado: ${kanban.title}` : 'Nenhum projeto Kanban encontrado.');
-
-            // 4. Criar issues novas (máximo 50 por execução)
-            let criadas = 0;
-            for (const issue of sonarIssues) {
-              if (criadas >= LIMITE_POR_EXECUCAO) {
-                console.log(`Limite de ${LIMITE_POR_EXECUCAO} issues por execução atingido.`);
-                console.log('Execute o workflow novamente para continuar cadastrando.');
-                break;
-              }
 
               const sonarKey = issue.key;
 
-              if (existingKeys.has(sonarKey)) {
-                console.log(`Já existe: ${sonarKey}`);
+              const searchRes = await github.rest.search.issuesAndPullRequests({
+                q: `repo:${context.repo.owner}/${context.repo.repo} is:issue in:body "${sonarKey}"`
+              });
+
+              if (searchRes.data.total_count > 0) {
                 continue;
               }
 
@@ -187,34 +163,25 @@ jobs:
                            `- **Linha:** ${line}\n\n` +
                            `*Issue gerada automaticamente pela integração Sonar-Kanban.*`;
 
-              try {
-                const novaIssue = await github.rest.issues.create({
-                  owner: context.repo.owner,
-                  repo: context.repo.repo,
-                  title: title,
-                  body: body,
-                  labels: ['sonar', issue.type.toLowerCase().replace('_', '-')]
-                });
+              const novaIssue = await github.rest.issues.create({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                title: title,
+                body: body,
+                labels: ['sonar', issue.type.toLowerCase().replace('_', '-')]
+              });
 
-                console.log(` Issue criada: #${novaIssue.data.number} — ${sonarKey}`);
-                criadas++;
-
-                if (kanban) {
-                  await github.graphql(`
-                    mutation($projectId: ID!, $contentId: ID!) {
-                      addProjectV2ItemById(input: { projectId: $projectId, contentId: $contentId }) {
-                        item { id }
-                      }
+              if (kanban) {
+                await github.graphql(`
+                  mutation($projectId: ID!, $contentId: ID!) {
+                    addProjectV2ItemById(input: { projectId: $projectId, contentId: $contentId }) {
+                      item { id }
                     }
-                  `, {
-                    projectId: kanban.id,
-                    contentId: novaIssue.data.node_id
-                  });
-                  console.log(` Adicionada ao Kanban: ${sonarKey}`);
-                }
-
-              } catch (e) {
-                console.log(` Erro ao criar issue ${sonarKey}: ${e.message}`);
+                  }
+                `, {
+                  projectId: kanban.id,
+                  contentId: novaIssue.data.node_id
+                });
               }
 
               // Pausa de 1 segundo entre cada criação para não estourar rate limit
