@@ -12,6 +12,8 @@ public class MenuCategorias {
     private SistemaFacade sistema;
     private Scanner scanner;
 
+    private static final String PRINT_ID_CATEGORIA = "ID da categoria: ";
+    
     public MenuCategorias(SistemaFacade sistema, Scanner scanner) {
         this.sistema = sistema;
         this.scanner = scanner;
@@ -90,7 +92,7 @@ public class MenuCategorias {
 
     public void buscarCategoria() {
 
-        System.out.print("ID da categoria: ");
+        System.out.print(PRINT_ID_CATEGORIA);
         int id = ValidaEntrada.lerInteiro(scanner);
 
         Categoria categoria = sistema.buscarCategoria(id);
@@ -125,7 +127,7 @@ public class MenuCategorias {
 
     public void atualizarCategoria() {
 
-        System.out.print("ID da categoria: ");
+        System.out.print(PRINT_ID_CATEGORIA);
         int id = ValidaEntrada.lerInteiro(scanner);
 
         Categoria categoria = sistema.buscarCategoria(id);
@@ -159,7 +161,7 @@ public class MenuCategorias {
 
     public void desativarCategoria() {
 
-        System.out.print("ID da categoria: ");
+        System.out.print(PRINT_ID_CATEGORIA);
         int id = ValidaEntrada.lerInteiro(scanner);
 
         Categoria categoria = sistema.buscarCategoria(id);

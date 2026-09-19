@@ -20,6 +20,8 @@ public class MenuUsuarios {
     private static final String PRINT_CPF = "CPF: ";
     private static final String PRINT_NOME = "Nome: ";
     private static final String PRINT_ID_USUARIO = "ID do usuário: ";
+    
+    private static final String PRINT_USUARIO_INVALIDO = "Erro: CPF ou e-mail já cadastrado";
 
     public MenuUsuarios(SistemaFacade sistema, Scanner scanner, boolean acessoTotal) {
         this.sistema = sistema;
@@ -122,7 +124,7 @@ public class MenuUsuarios {
         if (sistema.cadastrarUsuario(cliente)) {
             System.out.println("Cliente cadastrado com sucesso. ID: " + id);
         } else {
-            System.out.println("Erro: CPF ou e-mail já cadastrado");
+            System.out.println(PRINT_USUARIO_INVALIDO);
         }
     }
 
@@ -149,7 +151,7 @@ public class MenuUsuarios {
         if (sistema.cadastrarUsuario(funcionario)) {
             System.out.println("Funcionário cadastrado com sucesso. ID: " + id);
         } else {
-            System.out.println("Erro: CPF ou e-mail já cadastrado");
+            System.out.println(PRINT_USUARIO_INVALIDO);
         }
     }
 
@@ -176,7 +178,7 @@ public class MenuUsuarios {
         if (sistema.cadastrarUsuario(administrador)) {
             System.out.println("Administrador cadastrado com sucesso. ID: " + id);
         } else {
-            System.out.println("Erro: CPF ou e-mail já cadastrado");
+            System.out.println(PRINT_USUARIO_INVALIDO);
         }
     }
 
