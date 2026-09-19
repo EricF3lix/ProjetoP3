@@ -11,12 +11,15 @@ import entidades.Item;
 import entidades.Usuario;
 import facade.SistemaFacade;
 
-
+@SuppressWarnings("java:S106")
 public class MenuContratos {
 
     private SistemaFacade sistema;
     private Scanner scanner;
 
+    private static final String PRINT_ID_CONTRATO = "ID do contrato: ";
+    private static final String PRINT_CONTRATO_INVALIDO = "Contrato não encontrado";
+    
     public MenuContratos(SistemaFacade sistema, Scanner scanner) {
         this.sistema = sistema;
         this.scanner = scanner;
@@ -150,13 +153,13 @@ public class MenuContratos {
 
     public void buscarContrato() {
 
-        System.out.print("ID do contrato: ");
+        System.out.print(PRINT_ID_CONTRATO);
         int id = ValidaEntrada.lerInteiro(scanner);
 
         ContratoAluguel contrato = sistema.buscarContrato(id);
 
         if (contrato == null) {
-            System.out.println("Contrato não encontrado");
+            System.out.println(PRINT_CONTRATO_INVALIDO);
         }else {
 
             exibirDetalhesContrato(contrato);
@@ -184,13 +187,13 @@ public class MenuContratos {
 
     public void finalizarContrato() {
 
-        System.out.print("ID do contrato: ");
+        System.out.print(PRINT_ID_CONTRATO);
         int id = ValidaEntrada.lerInteiro(scanner);
 
         ContratoAluguel contrato = sistema.buscarContrato(id);
 
         if (contrato == null) {
-            System.out.println("Contrato não encontrado");
+            System.out.println(PRINT_CONTRATO_INVALIDO);
             
         } else{
 
@@ -240,13 +243,13 @@ public class MenuContratos {
 
     public void cancelarContrato() {
 
-        System.out.print("ID do contrato: ");
+        System.out.print(PRINT_ID_CONTRATO);
         int id = ValidaEntrada.lerInteiro(scanner);
 
         ContratoAluguel contrato = sistema.buscarContrato(id);
 
         if (contrato == null) {
-            System.out.println("Contrato não encontrado");
+            System.out.println(PRINT_CONTRATO_INVALIDO);
         } else{
 
             if (!(contrato.getStatus().equals("FINALIZADO"))) {

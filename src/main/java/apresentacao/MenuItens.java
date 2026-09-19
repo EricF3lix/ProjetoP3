@@ -8,12 +8,14 @@ import entidades.Fornecedor;
 import entidades.Item;
 import facade.SistemaFacade;
 
-
+@SuppressWarnings("java:S106")
 public class MenuItens {
 
     private SistemaFacade sistema;
     private Scanner scanner;
 
+    private static final String PRINT_ID_ITEM = "ID do item: ";
+    
     public MenuItens(SistemaFacade sistema, Scanner scanner) {
         this.sistema = sistema;
         this.scanner = scanner;
@@ -169,7 +171,7 @@ public class MenuItens {
 
     public void buscarItem() {
 
-        System.out.print("ID do item: ");
+        System.out.print(PRINT_ID_ITEM);
         int id = ValidaEntrada.lerInteiro(scanner);
 
         Item item = sistema.buscarItem(id);
@@ -215,7 +217,7 @@ public class MenuItens {
 
     public void atualizarItem() {
 
-        System.out.print("ID do item: ");
+        System.out.print(PRINT_ID_ITEM);
         int id = ValidaEntrada.lerInteiro(scanner);
 
         Item item = sistema.buscarItem(id);
@@ -264,7 +266,7 @@ public class MenuItens {
 
     private void desativarItem() {
 
-        System.out.print("ID do item: ");
+        System.out.print(PRINT_ID_ITEM);
         int id = ValidaEntrada.lerInteiro(scanner);
 
         if (sistema.excluirItem(id)) {
