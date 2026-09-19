@@ -5,6 +5,7 @@ import java.util.Scanner;
 import entidades.Funcionario;
 import facade.SistemaFacade;
 
+@SuppressWarnings("java:S106")
 public class MenuPrincipalFuncionario {
 
     private SistemaFacade sistema;
@@ -23,7 +24,7 @@ public class MenuPrincipalFuncionario {
 
         do {
 
-            System.out.println("\n==================================");
+            System.out.println("==================================");
             System.out.println("        MENU FUNCIONÁRIO          ");
             System.out.println("==================================");
             System.out.println("Bem-vindo, " + funcionario.getNome());
@@ -35,7 +36,7 @@ public class MenuPrincipalFuncionario {
             System.out.println("6 - Multas");
             System.out.println("7 - Relatórios");
             System.out.println("0 - Sair");
-            System.out.print("Opção: ");
+            System.out.println("Opção: ");
 
             opcao = ValidaEntrada.lerInteiro(scanner);
 
