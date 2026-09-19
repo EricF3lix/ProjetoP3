@@ -9,11 +9,20 @@ import entidades.Funcionario;
 import entidades.Usuario;
 import facade.SistemaFacade;
 
+@SuppressWarnings("java:S106")
 public class MenuUsuarios {
 
     private SistemaFacade sistema;
     private Scanner scanner;
     private boolean acessoTotal;
+
+    private static final String PRINT_SENHA = "Senha: ";
+    private static final String PRINT_EMAIL = "Email: ";
+    private static final String PRINT_CPF = "CPF: ";
+    private static final String PRINT_NOME = "Nome: ";
+    private static final String PRINT_ID_USUARIO = "ID do usuário: ";
+
+    private static final String PRINT_USUARIO_INVALIDO = "Erro: CPF ou e-mail já cadastrado";
 
     public MenuUsuarios(SistemaFacade sistema, Scanner scanner, boolean acessoTotal) {
         this.sistema = sistema;
@@ -22,161 +31,110 @@ public class MenuUsuarios {
     }
 
     public void exibir() {
-
         int opcao;
-
         do {
-
             System.out.println("\n===== GERENCIAR USUÁRIOS =====");
             System.out.println("1 - Cadastrar Cliente");
-
             if (acessoTotal) {
                 System.out.println("2 - Cadastrar Funcionário");
                 System.out.println("3 - Cadastrar Administrador");
             }
-
             System.out.println("4 - Buscar Usuário por ID");
             System.out.println("5 - Listar todos os Usuários");
-
             if (acessoTotal) {
                 System.out.println("6 - Atualizar Usuário");
                 System.out.println("7 - Desativar Usuário");
             }
-
             System.out.println("0 - Voltar");
             System.out.print("Opção: ");
 
             opcao = ValidaEntrada.lerInteiro(scanner);
 
             switch (opcao) {
-
                 case 1:
                     cadastrarCliente();
                     break;
-
                 case 2:
                     if (acessoTotal) cadastrarFuncionario();
                     else System.out.println("Acesso negado.");
                     break;
-
                 case 3:
                     if (acessoTotal) cadastrarAdministrador();
                     else System.out.println("Acesso negado.");
                     break;
-
                 case 4:
                     buscarUsuario();
                     break;
-
                 case 5:
                     listarUsuarios();
                     break;
-
                 case 6:
                     if (acessoTotal) atualizarUsuario();
                     else System.out.println("Acesso negado");
                     break;
-
                 case 7:
                     if (acessoTotal) desativarUsuario();
                     else System.out.println("Acesso negado");
                     break;
-
                 case 0:
                     System.out.println("Retornando...");
                     break;
-
                 default:
                     System.out.println("Opção inválida");
             }
-
         } while (opcao != 0);
     }
 
-    public void cadastrarCliente() {
-
-        System.out.println("\n=== CADASTRAR CLIENTE ===");
-
-        int id = sistema.gerarProximoIdUsuario();
-
-        System.out.print("Nome: ");
+    private String[] lerDados() {
+        System.out.print(PRINT_NOME);
         String nome = scanner.nextLine().trim();
 
-        System.out.print("Email: ");
+        System.out.print(PRINT_EMAIL);
         String email = ValidaEntrada.lerEmail(scanner);
 
-        System.out.print("CPF: ");
+        System.out.print(PRINT_CPF);
         String cpf = ValidaEntrada.lerCpf(scanner);
 
-        System.out.print("Senha: ");
+        System.out.print(PRINT_SENHA);
         String senha = scanner.nextLine().trim();
 
-        Cliente cliente = new Cliente(id, nome, email, cpf, senha);
+        return new String[]{nome, email, cpf, senha};
+    }
 
-        if (sistema.cadastrarUsuario(cliente)) {
-            System.out.println("Cliente cadastrado com sucesso. ID: " + id);
+    private void verificaCadastro(Usuario usuario, String tipo) {
+        if (sistema.cadastrarUsuario(usuario)) {
+            System.out.println(tipo + " cadastrado com sucesso. ID: " + usuario.getId());
         } else {
-            System.out.println("Erro: CPF ou e-mail já cadastrado");
+            System.out.println(PRINT_USUARIO_INVALIDO);
         }
+    }
+
+    public void cadastrarCliente() {
+        System.out.println("\n=== CADASTRAR CLIENTE ===");
+        String[] dados = lerDados();
+        int id = sistema.gerarProximoIdUsuario();
+        Cliente cliente = new Cliente(id, dados[0], dados[1], dados[2], dados[3]);
+        verificaCadastro(cliente, "Cliente");
     }
 
     public void cadastrarFuncionario() {
-
         System.out.println("\n=== CADASTRAR FUNCIONÁRIO ===");
-
+        String[] dados = lerDados();
         int id = sistema.gerarProximoIdUsuario();
-
-        System.out.print("Nome: ");
-        String nome = scanner.nextLine().trim();
-
-        System.out.print("Email: ");
-        String email = ValidaEntrada.lerEmail(scanner);
-
-        System.out.print("CPF: ");
-        String cpf = ValidaEntrada.lerCpf(scanner);
-
-        System.out.print("Senha: ");
-        String senha = scanner.nextLine().trim();
-
-        Funcionario funcionario = new Funcionario(id, nome, email, cpf, senha);
-
-        if (sistema.cadastrarUsuario(funcionario)) {
-            System.out.println("Funcionário cadastrado com sucesso. ID: " + id);
-        } else {
-            System.out.println("Erro: CPF ou e-mail já cadastrado");
-        }
+        Funcionario funcionario = new Funcionario(id, dados[0], dados[1], dados[2], dados[3]);
+        verificaCadastro(funcionario, "Funcionário");
     }
 
     public void cadastrarAdministrador() {
-
         System.out.println("\n=== CADASTRAR ADMINISTRADOR ===");
-
+        String[] dados = lerDados();
         int id = sistema.gerarProximoIdUsuario();
-
-        System.out.print("Nome: ");
-        String nome = scanner.nextLine().trim();
-
-        System.out.print("Email: ");
-        String email = ValidaEntrada.lerEmail(scanner);
-
-        System.out.print("CPF: ");
-        String cpf = ValidaEntrada.lerCpf(scanner);
-
-        System.out.print("Senha: ");
-        String senha = scanner.nextLine().trim();
-
-        Administrador administrador = new Administrador(id, nome, email, cpf, senha);
-
-        if (sistema.cadastrarUsuario(administrador)) {
-            System.out.println("Administrador cadastrado com sucesso. ID: " + id);
-        } else {
-            System.out.println("Erro: CPF ou e-mail já cadastrado");
-        }
+        Administrador administrador = new Administrador(id, dados[0], dados[1], dados[2], dados[3]);
+        verificaCadastro(administrador, "Administrador");
     }
 
     public void buscarUsuario() {
-
-        System.out.print("ID do usuário: ");
+        System.out.print(PRINT_ID_USUARIO);
         int id = ValidaEntrada.lerInteiro(scanner);
 
         Usuario usuario = sistema.buscarUsuario(id);
@@ -184,7 +142,6 @@ public class MenuUsuarios {
         if (usuario == null) {
             System.out.println("Usuário não encontrado");
         } else {
-
             System.out.println("\n===== DADOS DO USUÁRIO =====");
             System.out.println("ID:     " + usuario.getId());
             System.out.println("Nome:   " + usuario.getNome());
@@ -196,16 +153,13 @@ public class MenuUsuarios {
     }
 
     public void listarUsuarios() {
-
         List<Usuario> usuarios = sistema.listarUsuarios();
 
         System.out.println("\n===== USUÁRIOS CADASTRADOS =====");
 
         if (usuarios.isEmpty()) {
             System.out.println("Nenhum usuário cadastrado");
-            
         } else {
-
             System.out.printf("%-5s %-25s %-30s %-15s %-6s%n","ID", "NOME", "EMAIL", "PERFIL", "ATIVO");
             System.out.println("-".repeat(85));
 
@@ -216,17 +170,14 @@ public class MenuUsuarios {
     }
 
     public void atualizarUsuario() {
-
-        System.out.print("ID do usuário: ");
+        System.out.print(PRINT_ID_USUARIO);
         int id = ValidaEntrada.lerInteiro(scanner);
 
         Usuario usuario = sistema.buscarUsuario(id);
 
         if (usuario == null) {
             System.out.println("Usuário não encontrado");
-            
         } else{
-
             System.out.println("Deixe em branco para manter o valor atual");
 
             System.out.print("Novo nome [" + usuario.getNome() + "]: ");
@@ -250,8 +201,7 @@ public class MenuUsuarios {
     }
 
     public void desativarUsuario() {
-
-        System.out.print("ID do usuário: ");
+        System.out.print(PRINT_ID_USUARIO);
         int id = ValidaEntrada.lerInteiro(scanner);
 
         if (sistema.desativaUsuario(id)) {

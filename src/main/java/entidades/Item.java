@@ -12,6 +12,7 @@ public class Item {
     private Fornecedor fornecedor;
     private String status;
     private boolean ativo;
+    private static final String DISPONIVEL = "DISPONIVEL";
 
     public Item(int id, String nome, String descricao, double taxaDiaria,
                 String estadoConservacao, double valorReposicao,
@@ -25,7 +26,7 @@ public class Item {
         this.valorReposicao = valorReposicao;
         this.categoria = categoria;
         this.fornecedor = fornecedor;
-        this.status = "DISPONIVEL";
+        this.status = DISPONIVEL;
         this.ativo = true;
     }
 
@@ -110,10 +111,7 @@ public class Item {
     }
 
     public boolean estaDisponivel() {
-        if (ativo && status.equals("DISPONIVEL")){
-            return true;
-        }
-        return false;
+        return ativo && status.equals(DISPONIVEL);
     }
 
     public boolean estaAlugado() {
@@ -129,7 +127,7 @@ public class Item {
     }
 
     public void devolver() {
-        this.status = "DISPONIVEL";
+        this.status = DISPONIVEL;
     }
 
     public void enviarParaManutencao() {

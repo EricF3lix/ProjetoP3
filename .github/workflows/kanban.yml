@@ -54,12 +54,6 @@ jobs:
                           }
                         }
                       }
-                      items(first: 100) {
-                        nodes {
-                          id
-                          content { ... on Issue { number } }
-                        }
-                      }
                     }
                   }
                 }
@@ -72,12 +66,6 @@ jobs:
                           ... on ProjectV2SingleSelectField {
                             id name options { id name }
                           }
-                        }
-                      }
-                      items(first: 100) {
-                        nodes {
-                          id
-                          content { ... on Issue { number } }
                         }
                       }
                     }
@@ -99,7 +87,50 @@ jobs:
 
             const repoProjects = result.repository?.projectsV2?.nodes || [];
             const userProjects = result.user?.projectsV2?.nodes || [];
-            const allProjects = [...repoProjects, ...userProjects];
+            const combinedProjects = [...repoProjects, ...userProjects];
+
+            const allProjects = [];
+            const idsVistos = new Set();
+            for (const project of combinedProjects) {
+              if (idsVistos.has(project.id)) continue;
+              idsVistos.add(project.id);
+              allProjects.push(project);
+            }
+
+            async function fetchAllProjectItems(projectId) {
+              let allItems = [];
+              let cursor = null;
+              let pagina = 0;
+              const MAX_PAGINAS = 50;
+
+              while (pagina < MAX_PAGINAS) {
+                const itemsQuery = `
+                  query($projectId: ID!, $cursor: String) {
+                    node(id: $projectId) {
+                      ... on ProjectV2 {
+                        items(first: 100, after: $cursor) {
+                          nodes {
+                            id
+                            content { ... on Issue { number } }
+                          }
+                          pageInfo { hasNextPage endCursor }
+                        }
+                      }
+                    }
+                  }
+                `;
+
+                const itemsResult = await github.graphql(itemsQuery, { projectId, cursor });
+                const itemsData = itemsResult.node.items;
+                allItems = allItems.concat(itemsData.nodes);
+                pagina++;
+
+                if (!itemsData.pageInfo.hasNextPage) break;
+                cursor = itemsData.pageInfo.endCursor;
+              }
+
+              return allItems;
+            }
 
             for (const project of allProjects) {
               const statusField = project.fields.nodes.find(f => f.name === 'Status');
@@ -110,31 +141,45 @@ jobs:
               );
               if (!emAndamento) continue;
 
+              let items;
+              try {
+                items = await fetchAllProjectItems(project.id);
+              } catch (err) {
+                console.log(`Erro ao carregar itens do projeto "${project.title}": ${err.message}`);
+                continue;
+              }
+              console.log(`Projeto "${project.title}": ${items.length} itens carregados.`);
+
               for (const issueNumber of issueNumbers) {
-                const item = project.items.nodes.find(i => i.content?.number === issueNumber);
+                const item = items.find(i => i.content?.number === issueNumber);
                 if (!item) {
                   console.log(`Issue #${issueNumber} não encontrada no projeto "${project.title}".`);
                   continue;
                 }
 
-                await github.graphql(`
-                  mutation($projectId: ID!, $itemId: ID!, $fieldId: ID!, $optionId: String!) {
-                    updateProjectV2ItemFieldValue(input: {
-                      projectId: $projectId
-                      itemId: $itemId
-                      fieldId: $fieldId
-                      value: { singleSelectOptionId: $optionId }
-                    }) {
-                      projectV2Item { id }
+                try {
+                  await github.graphql(`
+                    mutation($projectId: ID!, $itemId: ID!, $fieldId: ID!, $optionId: String!) {
+                      updateProjectV2ItemFieldValue(input: {
+                        projectId: $projectId
+                        itemId: $itemId
+                        fieldId: $fieldId
+                        value: { singleSelectOptionId: $optionId }
+                      }) {
+                        projectV2Item { id }
+                      }
                     }
-                  }
-                `, {
-                  projectId: project.id,
-                  itemId: item.id,
-                  fieldId: statusField.id,
-                  optionId: emAndamento.id,
-                });
+                  `, {
+                    projectId: project.id,
+                    itemId: item.id,
+                    fieldId: statusField.id,
+                    optionId: emAndamento.id,
+                  });
 
-                console.log(`Sucesso: Issue #${issueNumber} movida para "Em andamento" no quadro "${project.title}".`);
+                  console.log(`Sucesso: Issue #${issueNumber} movida para "Em andamento" no quadro "${project.title}".`);
+                } catch (err) {
+                  console.log(`Erro ao mover issue #${issueNumber} no projeto "${project.title}": ${err.message}`);
+                  continue;
+                }
               }
             }

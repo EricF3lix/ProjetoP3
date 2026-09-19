@@ -6,11 +6,15 @@ import java.util.Scanner;
 import entidades.Fornecedor;
 import facade.SistemaFacade;
 
+@SuppressWarnings("java:S106")
 public class MenuFornecedores {
 
     private SistemaFacade sistema;
     private Scanner scanner;
 
+    private static final String PRINT_FORNECEDOR_INVALIDO = "Fornecedor não encontrado";
+    private static final String PRINT_ID_FORNECEDOR = "ID do fornecedor: ";
+    
     public MenuFornecedores(SistemaFacade sistema, Scanner scanner) {
         this.sistema = sistema;
         this.scanner = scanner;
@@ -95,13 +99,13 @@ public class MenuFornecedores {
 
     public void buscarFornecedor() {
 
-        System.out.print("ID do fornecedor: ");
+        System.out.print(PRINT_ID_FORNECEDOR);
         int id = ValidaEntrada.lerInteiro(scanner);
 
         Fornecedor fornecedor = sistema.buscarFornecedor(id);
 
         if (fornecedor == null) {
-            System.out.println("Fornecedor não encontrado");
+            System.out.println(PRINT_FORNECEDOR_INVALIDO);
         } else{
 
             exibirFornecedor(fornecedor);
@@ -129,13 +133,13 @@ public class MenuFornecedores {
 
     public void atualizarFornecedor() {
 
-        System.out.print("ID do fornecedor: ");
+        System.out.print(PRINT_ID_FORNECEDOR);
         int id = ValidaEntrada.lerInteiro(scanner);
 
         Fornecedor fornecedor = sistema.buscarFornecedor(id);
 
         if (fornecedor == null) {
-            System.out.println("Fornecedor não encontrado");
+            System.out.println(PRINT_FORNECEDOR_INVALIDO);
         } else{
 
             System.out.println("Deixe em branco para manter o valor atual");
@@ -163,13 +167,13 @@ public class MenuFornecedores {
 
     private void desativarFornecedor() {
 
-        System.out.print("ID do fornecedor: ");
+        System.out.print(PRINT_ID_FORNECEDOR);
         int id = ValidaEntrada.lerInteiro(scanner);
 
         Fornecedor fornecedor = sistema.buscarFornecedor(id);
 
         if (fornecedor == null) {
-            System.out.println("Fornecedor não encontrado");
+            System.out.println(PRINT_FORNECEDOR_INVALIDO);
         } else {
 
             System.out.println("Tem certeza que deseja desativar \"" + fornecedor.getRazaoSocial() + "\"?");
