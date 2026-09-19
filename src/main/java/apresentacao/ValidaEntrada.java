@@ -111,9 +111,7 @@ public class ValidaEntrada {
     	Pattern padraoTelefoneCelular = Pattern.compile("\\(\\d{2}\\) 9 \\d{4}\\-\\d{4}");
     	Pattern padraoTelefoneFixo = Pattern.compile("\\(\\d{2}\\) \\d{4}\\-\\d{4}");
     	
-    	boolean continuar = true;
-    	
-    	while (continuar) {
+    	while (true) {
     		String entrada = scanner.nextLine().trim();
     		
     		if (entrada.isEmpty()) {
@@ -128,6 +126,5 @@ public class ValidaEntrada {
     		}
     		System.out.print("Formato inválido. Use (DDD) 9 0000-0000 ou (DDD) 0000-0000: ");
     	}
-    	return "";
     }
 }
