@@ -14,6 +14,14 @@ public class MenuUsuarios {
     private SistemaFacade sistema;
     private Scanner scanner;
     private boolean acessoTotal;
+    
+    private static final String PRINT_SENHA = "Senha: ";
+    private static final String PRINT_EMAIL = "Email: ";
+    private static final String PRINT_CPF = "CPF: ";
+    private static final String PRINT_NOME = "Nome: ";
+    private static final String PRINT_ID_USUARIO = "ID do usuário: ";
+    
+    private static final String PRINT_USUARIO_INVALIDO = "Erro: CPF ou e-mail já cadastrado";
 
     public MenuUsuarios(SistemaFacade sistema, Scanner scanner, boolean acessoTotal) {
         this.sistema = sistema;
@@ -99,16 +107,16 @@ public class MenuUsuarios {
 
         int id = sistema.gerarProximoIdUsuario();
 
-        System.out.print("Nome: ");
+        System.out.print(PRINT_NOME);
         String nome = scanner.nextLine().trim();
 
-        System.out.print("Email: ");
+        System.out.print(PRINT_EMAIL);
         String email = ValidaEntrada.lerEmail(scanner);
 
-        System.out.print("CPF: ");
+        System.out.print(PRINT_CPF);
         String cpf = ValidaEntrada.lerCpf(scanner);
 
-        System.out.print("Senha: ");
+        System.out.print(PRINT_SENHA);
         String senha = scanner.nextLine().trim();
 
         Cliente cliente = new Cliente(id, nome, email, cpf, senha);
@@ -116,7 +124,7 @@ public class MenuUsuarios {
         if (sistema.cadastrarUsuario(cliente)) {
             System.out.println("Cliente cadastrado com sucesso. ID: " + id);
         } else {
-            System.out.println("Erro: CPF ou e-mail já cadastrado");
+            System.out.println(PRINT_USUARIO_INVALIDO);
         }
     }
 
@@ -126,16 +134,16 @@ public class MenuUsuarios {
 
         int id = sistema.gerarProximoIdUsuario();
 
-        System.out.print("Nome: ");
+        System.out.print(PRINT_NOME);
         String nome = scanner.nextLine().trim();
 
-        System.out.print("Email: ");
+        System.out.print(PRINT_EMAIL);
         String email = ValidaEntrada.lerEmail(scanner);
 
-        System.out.print("CPF: ");
+        System.out.print(PRINT_CPF);
         String cpf = ValidaEntrada.lerCpf(scanner);
 
-        System.out.print("Senha: ");
+        System.out.print(PRINT_SENHA);
         String senha = scanner.nextLine().trim();
 
         Funcionario funcionario = new Funcionario(id, nome, email, cpf, senha);
@@ -143,7 +151,7 @@ public class MenuUsuarios {
         if (sistema.cadastrarUsuario(funcionario)) {
             System.out.println("Funcionário cadastrado com sucesso. ID: " + id);
         } else {
-            System.out.println("Erro: CPF ou e-mail já cadastrado");
+            System.out.println(PRINT_USUARIO_INVALIDO);
         }
     }
 
@@ -153,16 +161,16 @@ public class MenuUsuarios {
 
         int id = sistema.gerarProximoIdUsuario();
 
-        System.out.print("Nome: ");
+        System.out.print(PRINT_NOME);
         String nome = scanner.nextLine().trim();
 
-        System.out.print("Email: ");
+        System.out.print(PRINT_EMAIL);
         String email = ValidaEntrada.lerEmail(scanner);
 
-        System.out.print("CPF: ");
+        System.out.print(PRINT_CPF);
         String cpf = ValidaEntrada.lerCpf(scanner);
 
-        System.out.print("Senha: ");
+        System.out.print(PRINT_SENHA);
         String senha = scanner.nextLine().trim();
 
         Administrador administrador = new Administrador(id, nome, email, cpf, senha);
@@ -170,13 +178,13 @@ public class MenuUsuarios {
         if (sistema.cadastrarUsuario(administrador)) {
             System.out.println("Administrador cadastrado com sucesso. ID: " + id);
         } else {
-            System.out.println("Erro: CPF ou e-mail já cadastrado");
+            System.out.println(PRINT_USUARIO_INVALIDO);
         }
     }
 
     public void buscarUsuario() {
 
-        System.out.print("ID do usuário: ");
+        System.out.print(PRINT_ID_USUARIO);
         int id = ValidaEntrada.lerInteiro(scanner);
 
         Usuario usuario = sistema.buscarUsuario(id);
@@ -217,7 +225,7 @@ public class MenuUsuarios {
 
     public void atualizarUsuario() {
 
-        System.out.print("ID do usuário: ");
+        System.out.print(PRINT_ID_USUARIO);
         int id = ValidaEntrada.lerInteiro(scanner);
 
         Usuario usuario = sistema.buscarUsuario(id);
@@ -251,7 +259,7 @@ public class MenuUsuarios {
 
     public void desativarUsuario() {
 
-        System.out.print("ID do usuário: ");
+        System.out.print(PRINT_ID_USUARIO);
         int id = ValidaEntrada.lerInteiro(scanner);
 
         if (sistema.desativaUsuario(id)) {
