@@ -7,6 +7,8 @@ import java.util.regex.Matcher;
 @SuppressWarnings("java:S106")
 public class ValidaEntrada {
 
+	private ValidaEntrada(){}
+
     public static int lerInteiro(Scanner scanner) {
 		boolean continuar = true;
         while (continuar) {
