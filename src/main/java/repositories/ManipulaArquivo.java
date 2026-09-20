@@ -62,7 +62,7 @@ public class ManipulaArquivo {
 
         try (BufferedReader reader = new BufferedReader(new FileReader(arquivo))) {
 
-            String cabeçalho = reader.readLine();
+            reader.readLine();
 
             String linha;
 

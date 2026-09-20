@@ -7,6 +7,7 @@ import business.interfaces.IGerenciamentoUsuarios;
 import entidades.Usuario;
 import repositories.IUsuarioRepositorio;
 
+@SuppressWarnings("java:S106")
 public class GerenciamentoUsuarios implements IGerenciamentoUsuarios {
 
     private IUsuarioRepositorio repositorio;

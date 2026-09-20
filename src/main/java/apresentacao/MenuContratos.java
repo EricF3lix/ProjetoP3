@@ -44,32 +44,19 @@ public class MenuContratos {
 
             switch (opcao) {
 
-                case 1:
-                    registrarAluguel();
-                    break;
+                case 1 -> registrarAluguel();
 
-                case 2:
-                    buscarContrato();
-                    break;
+                case 2 -> buscarContrato();
 
-                case 3:
-                    listarContratos();
-                    break;
+                case 3 -> listarContratos();
 
-                case 4:
-                    finalizarContrato();
-                    break;
+                case 4 -> finalizarContrato();
 
-                case 5:
-                    cancelarContrato();
-                    break;
+                case 5 -> cancelarContrato();
 
-                case 0:
-                    System.out.println("Retornando...");
-                    break;
+                case 0 -> System.out.println("Retornando...");
 
-                default:
-                    System.out.println("Opção inválida");
+                default -> System.out.println("Opção inválida");
             }
 
         } while (opcao != 0);
