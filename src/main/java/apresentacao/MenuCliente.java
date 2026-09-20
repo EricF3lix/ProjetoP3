@@ -9,6 +9,7 @@ import entidades.ContratoAluguel;
 import facade.SistemaFacade;
 
 @SuppressWarnings("java:S106")
+@SuppressWarnings("java:S106")
 public class MenuCliente {
 
     private SistemaFacade sistema;
