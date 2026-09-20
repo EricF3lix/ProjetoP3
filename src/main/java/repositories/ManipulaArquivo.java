@@ -62,21 +62,19 @@ public class ManipulaArquivo {
 
         try (BufferedReader reader = new BufferedReader(new FileReader(arquivo))) {
 
-            String cabeçalho = reader.readLine();
-
-            String linha;
-
-            while ((linha = reader.readLine()) != null) {
-
-                linhas.add(linha.split(";", -1));
-
-            }
-
-        } catch (IOException e) {
-
-            System.out.println("Erro ao carregar arquivo " + caminhoArquivo + ": " + e.getMessage());
-
+            String cabecalho = reader.readLine();
+            if (cabecalho != null) {
+                String linha;
+                while ((linha = reader.readLine()) != null) {
+                    linhas.add(linha.split(";", -1));
         }
+    }
+
+} catch (IOException e) {
+
+    System.out.println("Erro ao carregar arquivo " + caminhoArquivo + ": " + e.getMessage());
+
+}
 
         return linhas;
 
