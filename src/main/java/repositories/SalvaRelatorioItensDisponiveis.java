@@ -8,6 +8,7 @@ import java.util.List;
 
 import entidades.Item;
 
+@SuppressWarnings("java:S106")
 public class SalvaRelatorioItensDisponiveis {
 
     public void salvar(List<Item> itens) {
