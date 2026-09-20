@@ -8,11 +8,26 @@ import entidades.Item;
 import entidades.ContratoAluguel;
 import facade.SistemaFacade;
 
+@SuppressWarnings("java:S106")
 public class MenuCliente {
 
     private SistemaFacade sistema;
     private Cliente cliente;
     private Scanner scanner;
+
+    private static final String PRINT_SESSAO_ENCERRADA = "Sessão encerrada";
+    private static final String PRINT_OPCAO_INVALIDA = "Opção inválida";
+    private static final String PRINT_NENHUM_ITEM = "Nenhum item disponível no momento";
+    private static final String PRINT_NENHUM_ALUGUEL = "Nenhum aluguel ativo";
+    private static final String PRINT_NENHUM_CONTRATO = "Nenhum contrato encontrado";
+    private static final String PRINT_NENHUMA_MULTA = "Nenhuma multa pendente";
+    private static final String PRINT_SEM_MULTAS_PENDENTES = "Você não possui multas pendentes";
+    private static final String PRINT_OPERACAO_CANCELADA = "Operação cancelada";
+    private static final String PRINT_CONTRATO_NAO_ENCONTRADO = "Contrato não encontrado";
+    private static final String PRINT_CONTRATO_SEM_MULTA = "Este contrato não possui multa pendente";
+    private static final String PRINT_MULTA_PAGA = "Multa paga com sucesso!";
+    private static final String PRINT_ERRO_PAGAMENTO = "Erro ao processar pagamento";
+    private static final String PRINT_ID_CONTRATO = "Digite o ID do contrato para quitar a multa (0 para cancelar): ";
 
     public MenuCliente(SistemaFacade sistema, Cliente cliente, Scanner scanner) {
         this.sistema = sistema;
@@ -63,11 +78,11 @@ public class MenuCliente {
                     break;
 
                 case 0:
-                    System.out.println("Sessão encerrada");
+                    System.out.println(PRINT_SESSAO_ENCERRADA);
                     break;
 
                 default:
-                    System.out.println("Opção inválida");
+                    System.out.println(PRINT_OPCAO_INVALIDA);
             }
 
         } while (opcao != 0);
@@ -88,14 +103,18 @@ public class MenuCliente {
 
             if (item.estaDisponivel()) {
 
-                System.out.printf("%-5d %-25s %-20s R$%.2f%n",item.getId(),item.getNome(), item.getCategoria() != null ? item.getCategoria().getNome() : "-",item.getTaxaDiaria());
+                System.out.printf("%-5d %-25s %-20s R$%.2f%n",
+                        item.getId(),
+                        item.getNome(),
+                        item.getCategoria() != null ? item.getCategoria().getNome() : "-",
+                        item.getTaxaDiaria());
 
                 encontrou = true;
             }
         }
 
         if (!encontrou) {
-            System.out.println("Nenhum item disponível no momento");
+            System.out.println(PRINT_NENHUM_ITEM);
         }
     }
 
@@ -123,7 +142,7 @@ public class MenuCliente {
         }
 
         if (!encontrou) {
-            System.out.println("Nenhum aluguel ativo");
+            System.out.println(PRINT_NENHUM_ALUGUEL);
         }
     }
 
@@ -135,21 +154,26 @@ public class MenuCliente {
 
         boolean encontrou = false;
 
-        System.out.printf("%-5s %-22s %-12s %-10s %-10s%n","ID", "ITEM", "STATUS", "VALOR", "MULTA");
+        System.out.printf("%-5s %-22s %-12s %-10s %-10s%n", "ID", "ITEM", "STATUS", "VALOR", "MULTA");
         System.out.println("-------------------------------------------------------------------------------------");
 
         for (ContratoAluguel contrato : contratos) {
 
             if (contrato.getCliente().getId() == cliente.getId()) {
 
-                System.out.printf("%-5d %-22s %-12s R$%-8.2f R$%.2f%n",contrato.getId(),contrato.getItem().getNome(),contrato.getStatus(),contrato.getValorTotal(),contrato.getValorMulta());
+                System.out.printf("%-5d %-22s %-12s R$%-8.2f R$%.2f%n",
+                        contrato.getId(),
+                        contrato.getItem().getNome(),
+                        contrato.getStatus(),
+                        contrato.getValorTotal(),
+                        contrato.getValorMulta());
 
                 encontrou = true;
             }
         }
 
         if (!encontrou) {
-            System.out.println("Nenhum contrato encontrado");
+            System.out.println(PRINT_NENHUM_CONTRATO);
         }
     }
 
@@ -174,13 +198,12 @@ public class MenuCliente {
         }
 
         if (!encontrou) {
-            System.out.println("Nenhuma multa pendente");
+            System.out.println(PRINT_NENHUMA_MULTA);
         }
     }
 
     public void pagarMulta() {
 
-        
         List<ContratoAluguel> contratos = sistema.listarContratos();
 
         System.out.println("\n===== PAGAR MULTA =====");
@@ -189,7 +212,7 @@ public class MenuCliente {
 
         for (ContratoAluguel contrato : contratos) {
 
-            if (contrato.getCliente().getId() == cliente.getId()&& contrato.getValorMulta() > 0 && !contrato.isMultaPaga()) {
+            if (contrato.getCliente().getId() == cliente.getId() && contrato.getValorMulta() > 0 && !contrato.isMultaPaga()) {
 
                 System.out.println("Contrato ID: " + contrato.getId());
                 System.out.println("Item:        " + contrato.getItem().getNome());
@@ -201,40 +224,37 @@ public class MenuCliente {
         }
 
         if (!temPendente) {
-            System.out.println("Você não possui multas pendentes");
+            System.out.println(PRINT_SEM_MULTAS_PENDENTES);
         } else {
 
-            System.out.print("Digite o ID do contrato para quitar a multa (0 para cancelar): ");
+            System.out.print(PRINT_ID_CONTRATO);
             int idContrato = ValidaEntrada.lerInteiro(scanner);
 
             if (idContrato == 0) {
-                System.out.println("Operação cancelada");
+                System.out.println(PRINT_OPERACAO_CANCELADA);
             } else {
 
                 ContratoAluguel contrato = sistema.buscarContrato(idContrato);
 
-            
                 if (contrato == null || contrato.getCliente().getId() != cliente.getId()) {
-                    System.out.println("Contrato não encontrado");
+                    System.out.println(PRINT_CONTRATO_NAO_ENCONTRADO);
                 } else {
 
                     if (contrato.getValorMulta() <= 0 || contrato.isMultaPaga()) {
-                        System.out.println("Este contrato não possui multa pendente");
-        
-                    }else{
+                        System.out.println(PRINT_CONTRATO_SEM_MULTA);
+                    } else {
 
                         System.out.printf("Confirma o pagamento de R$ %.2f? (1 - Sim / 0 - Não): ", contrato.getValorMulta());
                         int confirmacao = ValidaEntrada.lerInteiro(scanner);
 
                         if (confirmacao != 1) {
-                            System.out.println("Operação cancelada");
-                           
+                            System.out.println(PRINT_OPERACAO_CANCELADA);
                         } else {
 
                             if (sistema.quitarMultaContrato(idContrato)) {
-                                System.out.println("Multa paga com sucesso!");
+                                System.out.println(PRINT_MULTA_PAGA);
                             } else {
-                                System.out.println("Erro ao processar pagamento");
+                                System.out.println(PRINT_ERRO_PAGAMENTO);
                             }
                         }
                     }
