@@ -8,6 +8,7 @@ import java.util.List;
 
 import entidades.ContratoAluguel;
 
+@SuppressWarnings("java:S106")
 public class SalvaRelatorioHistoricoCliente {
 
     public void salvar(List<ContratoAluguel> contratos) {

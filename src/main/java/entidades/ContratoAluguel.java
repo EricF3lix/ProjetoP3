@@ -101,10 +101,7 @@ public class ContratoAluguel {
     }
 
     public boolean possuiMulta() {
-        if (valorMulta > 0){
-            return true;
-        }
-        return false;
+        return (valorMulta>0);
     }
 
 
