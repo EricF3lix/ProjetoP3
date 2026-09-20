@@ -15,6 +15,7 @@ public class MenuCliente {
     private Cliente cliente;
     private Scanner scanner;
 
+
     private static final String PRINT_SESSAO_ENCERRADA = "Sessão encerrada";
     private static final String PRINT_OPCAO_INVALIDA = "Opção inválida";
     private static final String PRINT_NENHUM_ITEM = "Nenhum item disponível no momento";
