@@ -1,0 +1,262 @@
+name: Limpar Issues Duplicadas do Sonar
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+  repository-projects: write
+
+jobs:
+  limpar-duplicadas:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Encontrar e fechar duplicatas
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const issuesSonar = await github.paginate(github.rest.issues.listForRepo, {
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: 'open',
+              labels: 'sonar',
+              per_page: 100
+            });
+
+            console.log(`Total de issues abertas com label 'sonar': ${issuesSonar.length}`);
+
+            const grupos = new Map();
+
+            function extrairCampo(body, campo) {
+              if (!body) return null;
+              const regex = new RegExp(`${campo}:\\*\\*\\s*\`([^\`]+)\``);
+              const match = body.match(regex);
+              return match ? match[1] : null;
+            }
+
+            for (const issue of issuesSonar) {
+              const arquivo = extrairCampo(issue.body, 'Arquivo') || 'sem-arquivo';
+              const linha = extrairCampo(issue.body, 'Linha') || 'sem-linha';
+              const chave = `${issue.title.trim()}|${arquivo}|${linha}`;
+
+              if (!grupos.has(chave)) {
+                grupos.set(chave, []);
+              }
+              grupos.get(chave).push(issue);
+            }
+
+            const query = `
+              query($owner: String!, $repo: String!) {
+                repository(owner: $owner, name: $repo) {
+                  projectsV2(first: 5) {
+                    nodes {
+                      id title
+                      fields(first: 20) {
+                        nodes {
+                          ... on ProjectV2SingleSelectField {
+                            id name options { id name }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+                user(login: $owner) {
+                  projectsV2(first: 5) {
+                    nodes {
+                      id title
+                      fields(first: 20) {
+                        nodes {
+                          ... on ProjectV2SingleSelectField {
+                            id name options { id name }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            `;
+
+            let projectsResult;
+            try {
+              projectsResult = await github.graphql(query, {
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+              });
+            } catch (err) {
+              console.log('Erro ao consultar projetos:', err.message);
+              projectsResult = {};
+            }
+
+            const repoProjects = projectsResult.repository?.projectsV2?.nodes || [];
+            const userProjects = projectsResult.user?.projectsV2?.nodes || [];
+            const combinedProjects = [...repoProjects, ...userProjects];
+
+            const allProjects = [];
+            const idsVistos = new Set();
+            for (const project of combinedProjects) {
+              if (idsVistos.has(project.id)) continue;
+              idsVistos.add(project.id);
+              allProjects.push(project);
+            }
+
+            async function fetchAllProjectItemsComStatus(projectId) {
+              let allItems = [];
+              let cursor = null;
+              let pagina = 0;
+              const MAX_PAGINAS = 50;
+
+              while (pagina < MAX_PAGINAS) {
+                const itemsQuery = `
+                  query($projectId: ID!, $cursor: String) {
+                    node(id: $projectId) {
+                      ... on ProjectV2 {
+                        items(first: 100, after: $cursor) {
+                          nodes {
+                            id
+                            content { ... on Issue { number } }
+                            fieldValueByName(name: "Status") {
+                              ... on ProjectV2ItemFieldSingleSelectValue { name }
+                            }
+                          }
+                          pageInfo { hasNextPage endCursor }
+                        }
+                      }
+                    }
+                  }
+                `;
+
+                const itemsResult = await github.graphql(itemsQuery, { projectId, cursor });
+                const itemsData = itemsResult.node.items;
+                allItems = allItems.concat(itemsData.nodes);
+                pagina++;
+
+                if (!itemsData.pageInfo.hasNextPage) break;
+                cursor = itemsData.pageInfo.endCursor;
+              }
+
+              return allItems;
+            }
+
+            const projetosComStatus = [];
+            for (const project of allProjects) {
+              const statusField = project.fields.nodes.find(f => f.name === 'Status');
+              if (!statusField) continue;
+
+              const emAndamento = statusField.options.find(o =>
+                o.name.toLowerCase().includes('andamento')
+              );
+              if (!emAndamento) continue;
+
+              let items;
+              try {
+                items = await fetchAllProjectItemsComStatus(project.id);
+              } catch (err) {
+                console.log(`Erro ao carregar itens do projeto "${project.title}": ${err.message}`);
+                continue;
+              }
+
+              projetosComStatus.push({ project, statusField, emAndamento, items });
+              console.log(`Projeto "${project.title}": ${items.length} itens carregados para checagem de status.`);
+            }
+
+            async function issueEstaEmAndamento(issueNumber) {
+              for (const { items } of projetosComStatus) {
+                const item = items.find(i => i.content?.number === issueNumber);
+                if (item?.fieldValueByName?.name?.toLowerCase().includes('andamento')) {
+                  return true;
+                }
+              }
+              return false;
+            }
+
+            async function moverParaAndamento(issueNumber) {
+              for (const { project, statusField, emAndamento, items } of projetosComStatus) {
+                const item = items.find(i => i.content?.number === issueNumber);
+                if (!item) continue;
+
+                const statusAtual = item.fieldValueByName?.name?.toLowerCase() || '';
+                if (statusAtual.includes('andamento')) continue;
+
+                await github.graphql(`
+                  mutation($projectId: ID!, $itemId: ID!, $fieldId: ID!, $optionId: String!) {
+                    updateProjectV2ItemFieldValue(input: {
+                      projectId: $projectId
+                      itemId: $itemId
+                      fieldId: $fieldId
+                      value: { singleSelectOptionId: $optionId }
+                    }) {
+                      projectV2Item { id }
+                    }
+                  }
+                `, {
+                  projectId: project.id,
+                  itemId: item.id,
+                  fieldId: statusField.id,
+                  optionId: emAndamento.id,
+                });
+
+                console.log(`Issue #${issueNumber} movida para "Em andamento" no quadro "${project.title}" (herdado da duplicata).`);
+              }
+            }
+
+            for (const [chaveGrupo, issuesDoGrupo] of grupos) {
+              if (issuesDoGrupo.length <= 1) continue;
+
+              issuesDoGrupo.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+
+              const original = issuesDoGrupo[0];
+              const duplicatas = issuesDoGrupo.slice(1);
+
+              console.log(`"${chaveGrupo}": ${issuesDoGrupo.length} ocorrências. Mantendo a mais recente #${original.number}, fechando ${duplicatas.length} mais antiga(s).`);
+
+              for (const duplicata of duplicatas) {
+                try {
+                  const assigneesDuplicata = duplicata.assignees.map(a => a.login);
+                  const assigneesOriginal = original.assignees.map(a => a.login);
+                  const assigneesFaltando = assigneesDuplicata.filter(login => !assigneesOriginal.includes(login));
+
+                  if (assigneesFaltando.length > 0) {
+                    await github.rest.issues.addAssignees({
+                      owner: context.repo.owner,
+                      repo: context.repo.repo,
+                      issue_number: original.number,
+                      assignees: assigneesFaltando
+                    });
+                    original.assignees.push(...assigneesFaltando.map(login => ({ login })));
+                    console.log(`Assignee(s) ${assigneesFaltando.join(', ')} copiado(s) de #${duplicata.number} para #${original.number}.`);
+                  }
+
+                  if (await issueEstaEmAndamento(duplicata.number)) {
+                    await moverParaAndamento(original.number);
+                  }
+
+                  await github.rest.issues.createComment({
+                    owner: context.repo.owner,
+                    repo: context.repo.repo,
+                    issue_number: duplicata.number,
+                    body: `Fechada automaticamente por ser duplicata de #${original.number} (mesmo problema do Sonar, chave diferente por causa da alternância de projetos).`
+                  });
+
+                  await github.rest.issues.update({
+                    owner: context.repo.owner,
+                    repo: context.repo.repo,
+                    issue_number: duplicata.number,
+                    state: 'closed',
+                    labels: [...duplicata.labels.map(l => l.name), 'duplicate']
+                  });
+
+                  totalFechadas++;
+                  console.log(`Fechada: #${duplicata.number}`);
+                } catch (err) {
+                  console.log(`Erro ao fechar #${duplicata.number}: ${err.message}`);
+                }
+
+                await new Promise(r => setTimeout(r, 1000));
+              }
+            }
+
+            console.log(`Concluído. Total de duplicatas fechadas: ${totalFechadas}`);
