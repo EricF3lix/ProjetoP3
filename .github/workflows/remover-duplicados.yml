@@ -29,16 +29,23 @@ jobs:
 
             const grupos = new Map();
 
-            function extrairCampo(body, campo) {
+            function extrairCampoComCrase(body, campo) {
               if (!body) return null;
               const regex = new RegExp(`${campo}:\\*\\*\\s*\`([^\`]+)\``);
               const match = body.match(regex);
               return match ? match[1] : null;
             }
 
+            function extrairCampoSemCrase(body, campo) {
+              if (!body) return null;
+              const regex = new RegExp(`${campo}:\\*\\*\\s*(.+)`);
+              const match = body.match(regex);
+              return match ? match[1].trim() : null;
+            }
+
             for (const issue of issuesSonar) {
-              const arquivo = extrairCampo(issue.body, 'Arquivo') || 'sem-arquivo';
-              const linha = extrairCampo(issue.body, 'Linha') || 'sem-linha';
+              const arquivo = extrairCampoComCrase(issue.body, 'Arquivo') || 'sem-arquivo';
+              const linha = extrairCampoSemCrase(issue.body, 'Linha') || 'sem-linha';
               const chave = `${issue.title.trim()}|${arquivo}|${linha}`;
 
               if (!grupos.has(chave)) {
@@ -202,6 +209,8 @@ jobs:
                 console.log(`Issue #${issueNumber} movida para "Em andamento" no quadro "${project.title}" (herdado da duplicata).`);
               }
             }
+
+            let totalFechadas = 0;
 
             for (const [chaveGrupo, issuesDoGrupo] of grupos) {
               if (issuesDoGrupo.length <= 1) continue;
