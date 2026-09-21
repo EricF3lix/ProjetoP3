@@ -1,5 +1,6 @@
 package entidades;
 
+@SuppressWarnings("java:S107")
 public class Item {
 
     private int id;
