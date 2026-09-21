@@ -33,42 +33,56 @@ public class MenuUsuarios {
     public void exibir() {
         int opcao;
         do {
-            System.out.println("\n===== GERENCIAR USUÁRIOS =====");
-            System.out.println("1 - Cadastrar Cliente");
-            System.out.println("2 - Buscar Usuário por ID");
-            System.out.println("3 - Listar todos os Usuários");
-            if (acessoTotal) {
-                System.out.println("4 - Cadastrar Funcionário");
-                System.out.println("5 - Cadastrar Administrador");
-                System.out.println("6 - Atualizar Usuário");
-                System.out.println("7 - Desativar Usuário");
-            }
-            System.out.println("0 - Voltar");
-            System.out.print("Opção: ");
-
+            exibirMenu();
             opcao = ValidaEntrada.lerInteiro(scanner);
-
-            switch (opcao) {
-
-                case 1 -> cadastrarCliente();
-
-                case 2 -> buscarUsuario();
-
-                case 3 -> listarUsuarios();
-
-                case 4 -> {if (acessoTotal) cadastrarFuncionario();}
-
-                case 5 -> {if (acessoTotal) cadastrarAdministrador();}
-
-                case 6 -> {if (acessoTotal) atualizarUsuario();}
-
-                case 7 -> {if (acessoTotal) desativarUsuario();}
-
-                case 0 -> System.out.println("Retornando...");
-
-                default -> System.out.println("Opção inválida");
-            }
+            executarOpcao(opcao);
         } while (opcao != 0);
+    }
+
+    private void exibirMenu() {
+        System.out.println("\n===== GERENCIAR USUÁRIOS =====");
+        System.out.println("1 - Cadastrar Cliente");
+        System.out.println("2 - Buscar Usuário por ID");
+        System.out.println("3 - Listar todos os Usuários");
+
+        if (acessoTotal) {
+            System.out.println("4 - Cadastrar Funcionário");
+            System.out.println("5 - Cadastrar Administrador");
+            System.out.println("6 - Atualizar Usuário");
+            System.out.println("7 - Desativar Usuário");
+        }
+
+        System.out.println("0 - Voltar");
+        System.out.print("Opção: ");
+    }
+
+    private void executarOpcao(int opcao) {
+        switch (opcao) {
+
+            case 1 -> cadastrarCliente();
+
+            case 2 -> buscarUsuario();
+
+            case 3 -> listarUsuarios();
+
+            case 4 -> executarComAcessoTotal(this::cadastrarFuncionario);
+
+            case 5 -> executarComAcessoTotal(this::cadastrarAdministrador);
+
+            case 6 -> executarComAcessoTotal(this::atualizarUsuario);
+
+            case 7 -> executarComAcessoTotal(this::desativarUsuario);
+
+            case 0 -> System.out.println("Retornando...");
+
+            default -> System.out.println("Opção inválida");
+        }
+    }
+
+    private void executarComAcessoTotal(Runnable acao) {
+        if (acessoTotal) {
+            acao.run();
+        }
     }
 
     private String[] lerDados() {
