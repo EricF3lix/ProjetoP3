@@ -55,43 +55,43 @@ public class ValidaEntrada {
     }
     
     public static String lerCpf(Scanner scanner) {
-    	Pattern padraoCpf = Pattern.compile("[0-9]{3}\\.[0-9]{3}\\.[0-9]{3}\\-[0-9]{2}");
+        Pattern padraoCpf = Pattern.compile("\\d{3}\\.\\d{3}\\.\\d{3}\\-\\d{2}");
 
-		while (true) {
-    		String entrada = scanner.nextLine().trim();
-    		
-    		if (entrada.isEmpty()) {
+        while (true) {
+            String entrada = scanner.nextLine().trim();
+
+            if (entrada.isEmpty()) {
                 return "";
             }
-    		
-    		Matcher matcher = padraoCpf.matcher(entrada);
-    		
-    		if (matcher.matches()) {
-    			return entrada;
-    		}
-    		System.out.print("Formato inválido. Use 000.000.000-00: ");
-    	}
+
+            Matcher matcher = padraoCpf.matcher(entrada);
+
+            if (matcher.matches()) {
+                return entrada;
+            }
+            System.out.print("Formato inválido. Use 000.000.000-00: ");
+        }
     }
     
     public static String lerCnpj(Scanner scanner) {
-    	Pattern padraoCnpjAntigo = Pattern.compile("[0-9]{2}\\.[0-9]{3}\\.[0-9]{3}/[0-9]{4}\\-[0-9]{2}");
-    	Pattern padraoCnpjNovo = Pattern.compile("[A-Z 0-9]{2}\\.[A-Z 0-9]{3}\\.[A-Z 0-9]{3}/[A-Z 0-9]{4}\\-[A-Z 0-9]{2}");
+        Pattern padraoCnpjAntigo = Pattern.compile("\\d{2}\\.\\d{3}\\.\\d{3}/\\d{4}\\-\\d{2}");
+        Pattern padraoCnpjNovo = Pattern.compile("[A-Z 0-9]{2}\\.[A-Z 0-9]{3}\\.[A-Z 0-9]{3}/[A-Z 0-9]{4}\\-[A-Z 0-9]{2}");
 
-		while (true) {
-    		String entrada = scanner.nextLine().trim();
-    		
-    		if (entrada.isEmpty()) {
+        while (true) {
+            String entrada = scanner.nextLine().trim();
+
+            if (entrada.isEmpty()) {
                 return "";
             }
-    		
-    		Matcher matcherAntigo = padraoCnpjAntigo.matcher(entrada);
-    		Matcher matcherNovo = padraoCnpjNovo.matcher(entrada);
-    		
-    		if (matcherAntigo.matches() || matcherNovo.matches()) {
-    			return entrada;
-    		}
-    		System.out.print("Formato inválido. Use 00.000.000/0000-00 ou XX.XXX.XXX/XXXX-XX: ");
-    	}
+
+            Matcher matcherAntigo = padraoCnpjAntigo.matcher(entrada);
+            Matcher matcherNovo = padraoCnpjNovo.matcher(entrada);
+
+            if (matcherAntigo.matches() || matcherNovo.matches()) {
+                return entrada;
+            }
+            System.out.print("Formato inválido. Use 00.000.000/0000-00 ou XX.XXX.XXX/XXXX-XX: ");
+        }
     }
     
     public static String lerTelefone(Scanner scanner) {
