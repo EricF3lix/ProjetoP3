@@ -1,0 +1,132 @@
+name: Reverter Fechamentos Errados de Duplicatas
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  auditar-e-reabrir:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Auditar e reabrir issues fechadas por engano
+        uses: actions/github-script@v7
+        with:
+          script: |
+            function extrairCampoComCrase(body, campo) {
+              if (!body) return null;
+              const regex = new RegExp(`${campo}:\\*\\*\\s*\`([^\`]+)\``);
+              const match = body.match(regex);
+              return match ? match[1] : null;
+            }
+
+            function extrairCampoSemCrase(body, campo) {
+              if (!body) return null;
+              const regex = new RegExp(`${campo}:\\*\\*\\s*(.+)`);
+              const match = body.match(regex);
+              return match ? match[1].trim() : null;
+            }
+
+            const issuesFechadasDuplicate = await github.paginate(github.rest.issues.listForRepo, {
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: 'closed',
+              labels: 'duplicate',
+              per_page: 100
+            });
+
+            console.log(`Total de issues fechadas com label 'duplicate': ${issuesFechadasDuplicate.length}`);
+
+            let totalReabertas = 0;
+            let totalMantidasFechadas = 0;
+            let totalSemReferencia = 0;
+
+            for (const duplicata of issuesFechadasDuplicate) {
+              let comentarios;
+              try {
+                comentarios = await github.paginate(github.rest.issues.listComments, {
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  issue_number: duplicata.number,
+                  per_page: 100
+                });
+              } catch (err) {
+                console.log(`Erro ao buscar comentários de #${duplicata.number}: ${err.message}`);
+                continue;
+              }
+
+              const comentarioAuto = comentarios.find(c =>
+                c.body && c.body.includes('Fechada automaticamente por ser duplicata de #')
+              );
+
+              if (!comentarioAuto) {
+                totalSemReferencia++;
+                continue;
+              }
+
+              const match = comentarioAuto.body.match(/duplicata de #(\d+)/);
+              if (!match) {
+                totalSemReferencia++;
+                continue;
+              }
+
+              const numeroOriginal = parseInt(match[1]);
+
+              let original;
+              try {
+                const resp = await github.rest.issues.get({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  issue_number: numeroOriginal
+                });
+                original = resp.data;
+              } catch (err) {
+                console.log(`Erro ao buscar issue original #${numeroOriginal} referenciada por #${duplicata.number}: ${err.message}`);
+                continue;
+              }
+
+              const arquivoDuplicata = extrairCampoComCrase(duplicata.body, 'Arquivo') || 'sem-arquivo';
+              const linhaDuplicata = extrairCampoSemCrase(duplicata.body, 'Linha') || 'sem-linha';
+              const arquivoOriginal = extrairCampoComCrase(original.body, 'Arquivo') || 'sem-arquivo';
+              const linhaOriginal = extrairCampoSemCrase(original.body, 'Linha') || 'sem-linha';
+
+              const mesmoArquivo = arquivoDuplicata === arquivoOriginal;
+              const mesmaLinha = linhaDuplicata === linhaOriginal;
+
+              if (mesmoArquivo && mesmaLinha) {
+                totalMantidasFechadas++;
+                continue;
+              }
+
+              try {
+                await github.rest.issues.update({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  issue_number: duplicata.number,
+                  state: 'open',
+                  labels: duplicata.labels.map(l => l.name).filter(n => n !== 'duplicate')
+                });
+
+                await github.rest.issues.createComment({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  issue_number: duplicata.number,
+                  body: `Reaberta automaticamente: o fechamento anterior foi um falso positivo (arquivo/linha diferente de #${numeroOriginal}, causado por bug na extração da Linha no script de limpeza de duplicatas).`
+                });
+
+                totalReabertas++;
+                console.log(`Reaberta: #${duplicata.number} (arquivo: "${arquivoDuplicata}" linha: "${linhaDuplicata}" vs original #${numeroOriginal} arquivo: "${arquivoOriginal}" linha: "${linhaOriginal}")`);
+              } catch (err) {
+                console.log(`Erro ao reabrir #${duplicata.number}: ${err.message}`);
+              }
+
+              await new Promise(r => setTimeout(r, 1000));
+            }
+
+            console.log(`\nConcluído.`);
+            console.log(`Reabertas (falso positivo): ${totalReabertas}`);
+            console.log(`Mantidas fechadas (duplicata real, mesmo arquivo e linha): ${totalMantidasFechadas}`);
+            console.log(`Sem comentário/referência reconhecível (não mexidas): ${totalSemReferencia}`);

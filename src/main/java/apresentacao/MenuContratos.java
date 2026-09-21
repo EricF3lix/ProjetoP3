@@ -73,69 +73,64 @@ public class MenuContratos {
 
         if (!(usuario instanceof Cliente cliente)) {
             System.out.println("Cliente não encontrado");
-            
-        } else{
-
-            if (sistema.clientePossuiMultaPendente(cliente.getId())) {
-                System.out.println("Cliente possui multa pendente e não pode realizar novos aluguéis");
-                
-            } else{
-
-                System.out.print("ID do item: ");
-                int idItem = ValidaEntrada.lerInteiro(scanner);
-
-                Item item = sistema.buscarItem(idItem);
-
-                if (item == null) {
-                    System.out.println("Item não encontrado");
-                   
-                } else{
-
-                    if (!item.estaDisponivel()) {
-                        System.out.println("Item indisponível para aluguel. Status atual: " + item.getStatus());
-                    } else{
-
-                        System.out.print("Data de retirada (AAAA-MM-DD): ");
-                        String dataRetirada = ValidaEntrada.lerData(scanner);
-
-                        System.out.print("Data de devolução prevista (AAAA-MM-DD): ");
-                        String dataDevolucao = ValidaEntrada.lerData(scanner);
-
-                        LocalDate retirada = LocalDate.parse(dataRetirada);
-                        LocalDate devolucao = LocalDate.parse(dataDevolucao);
-
-                        long quantidadeDias = ChronoUnit.DAYS.between(retirada, devolucao);
-
-                        if (quantidadeDias <= 0) {
-                            System.out.println("A data de devolução deve ser posterior à data de retirada");
-                        
-                        } else {
-
-                            double valorTotal = quantidadeDias * item.getTaxaDiaria();
-                            int idContrato = sistema.gerarProximoIdContrato();
-
-                            ContratoAluguel contrato = new ContratoAluguel(idContrato, cliente, item, dataRetirada, dataDevolucao, valorTotal);
-
-                            if (sistema.cadastrarContrato(contrato)) {
-
-                                item.alugar();
-
-                                System.out.println("\n=== ALUGUEL REGISTRADO COM SUCESSO ===");
-                                System.out.println("Contrato ID:   " + idContrato);
-                                System.out.println("Cliente:       " + cliente.getNome());
-                                System.out.println("Item:          " + item.getNome());
-                                System.out.printf("Período:       %d dia(s)%n", quantidadeDias);
-                                System.out.printf("Taxa diária:   R$ %.2f%n", item.getTaxaDiaria());
-                                System.out.printf("Valor total:   R$ %.2f%n", valorTotal);
-
-                            } else {
-                                System.out.println("Erro ao registrar aluguel");
-                            }
-                        }
-                    }
-                }
-            }
+            return;
         }
+
+        if (sistema.clientePossuiMultaPendente(cliente.getId())) {
+            System.out.println("Cliente possui multa pendente e não pode realizar novos aluguéis");
+            return;
+        }
+
+        System.out.print("ID do item: ");
+        int idItem = ValidaEntrada.lerInteiro(scanner);
+
+        Item item = sistema.buscarItem(idItem);
+
+        if (item == null) {
+            System.out.println("Item não encontrado");
+            return;
+        }
+
+        if (!item.estaDisponivel()) {
+            System.out.println("Item indisponível para aluguel. Status atual: " + item.getStatus());
+            return;
+        }
+
+        System.out.print("Data de retirada (AAAA-MM-DD): ");
+        String dataRetirada = ValidaEntrada.lerData(scanner);
+
+        System.out.print("Data de devolução prevista (AAAA-MM-DD): ");
+        String dataDevolucao = ValidaEntrada.lerData(scanner);
+
+        LocalDate retirada = LocalDate.parse(dataRetirada);
+        LocalDate devolucao = LocalDate.parse(dataDevolucao);
+
+        long quantidadeDias = ChronoUnit.DAYS.between(retirada, devolucao);
+
+        if (quantidadeDias <= 0) {
+            System.out.println("A data de devolução deve ser posterior à data de retirada");
+            return;
+        }
+
+        double valorTotal = quantidadeDias * item.getTaxaDiaria();
+        int idContrato = sistema.gerarProximoIdContrato();
+
+        ContratoAluguel contrato = new ContratoAluguel(idContrato, cliente, item, dataRetirada, dataDevolucao, valorTotal);
+
+        if (!sistema.cadastrarContrato(contrato)) {
+            System.out.println("Erro ao registrar aluguel");
+            return;
+        }
+
+        item.alugar();
+
+        System.out.println("\n=== ALUGUEL REGISTRADO COM SUCESSO ===");
+        System.out.println("Contrato ID:   " + idContrato);
+        System.out.println("Cliente:       " + cliente.getNome());
+        System.out.println("Item:          " + item.getNome());
+        System.out.printf("Período:       %d dia(s)%n", quantidadeDias);
+        System.out.printf("Taxa diária:   R$ %.2f%n", item.getTaxaDiaria());
+        System.out.printf("Valor total:   R$ %.2f%n", valorTotal);
     }
 
     public void buscarContrato() {
@@ -147,8 +142,7 @@ public class MenuContratos {
 
         if (contrato == null) {
             System.out.println(PRINT_CONTRATO_INVALIDO);
-        }else {
-
+        } else {
             exibirDetalhesContrato(contrato);
         }
     }
@@ -167,7 +161,7 @@ public class MenuContratos {
             System.out.println("----------------------------------------------------------------------------------------");
 
             for (ContratoAluguel contrato : contratos) {
-                System.out.printf("%-5d %-22s %-22s %-12s R$%.2f%n",contrato.getId(), contrato.getCliente().getNome(), contrato.getItem().getNome(), contrato.getStatus(),contrato.getValorTotal());
+                System.out.printf("%-5d %-22s %-22s %-12s R$%.2f%n", contrato.getId(), contrato.getCliente().getNome(), contrato.getItem().getNome(), contrato.getStatus(), contrato.getValorTotal());
             }
         }
     }
@@ -181,50 +175,48 @@ public class MenuContratos {
 
         if (contrato == null) {
             System.out.println(PRINT_CONTRATO_INVALIDO);
-            
-        } else{
+            return;
+        }
 
-            if (!contrato.estaAtivo() || contrato.estaFinalizado()) {
-                System.out.println("Este contrato não está ativo. Status: " + contrato.getStatus());
-                
-            } else{
+        if (!contrato.estaAtivo() || contrato.estaFinalizado()) {
+            System.out.println("Este contrato não está ativo. Status: " + contrato.getStatus());
+            return;
+        }
 
-                System.out.print("Data real da devolução (AAAA-MM-DD): ");
-                String dataDevolucaoReal = ValidaEntrada.lerData(scanner);
+        System.out.print("Data real da devolução (AAAA-MM-DD): ");
+        String dataDevolucaoReal = ValidaEntrada.lerData(scanner);
 
-                LocalDate dataPrevista = LocalDate.parse(contrato.getDataDevolucaoPrevista());
-                LocalDate dataReal = LocalDate.parse(dataDevolucaoReal);
+        LocalDate dataPrevista = LocalDate.parse(contrato.getDataDevolucaoPrevista());
+        LocalDate dataReal = LocalDate.parse(dataDevolucaoReal);
 
-                contrato.setDataDevolucaoReal(dataDevolucaoReal);
+        contrato.setDataDevolucaoReal(dataDevolucaoReal);
 
-                long diasAtraso = ChronoUnit.DAYS.between(dataPrevista, dataReal);
+        long diasAtraso = ChronoUnit.DAYS.between(dataPrevista, dataReal);
 
-                if (diasAtraso > 0) {
+        if (diasAtraso > 0) {
 
-                    double multaPercentual = sistema.calcularMulta(diasAtraso, (contrato.getItem().getTaxaDiaria()));
-                    double multa = multaPercentual;
+            double multaPercentual = sistema.calcularMulta(diasAtraso, (contrato.getItem().getTaxaDiaria()));
+            double multa = multaPercentual;
 
-                    contrato.setValorMulta(multa);
-                    contrato.setMultaPaga(false);
+            contrato.setValorMulta(multa);
+            contrato.setMultaPaga(false);
 
-                    System.out.println("\n=== MULTA POR ATRASO ===");
-                    System.out.println("Dias de atraso:     " + diasAtraso);
-                    System.out.printf("Multa fixa:         R$ %.2f%n", 10.0);
-                    System.out.printf("Multa percentual:   R$ %.2f%n", multaPercentual);
-                    System.out.printf("Multa total:        R$ %.2f%n", multa);
+            System.out.println("\n=== MULTA POR ATRASO ===");
+            System.out.println("Dias de atraso:     " + diasAtraso);
+            System.out.printf("Multa fixa:         R$ %.2f%n", 10.0);
+            System.out.printf("Multa percentual:   R$ %.2f%n", multaPercentual);
+            System.out.printf("Multa total:        R$ %.2f%n", multa);
 
-                } else {
-                    System.out.println("Devolução dentro do prazo");
-                }
+        } else {
+            System.out.println("Devolução dentro do prazo");
+        }
 
-                contrato.getItem().devolver();
+        contrato.getItem().devolver();
 
-                if (sistema.finalizarContrato(id)) {
-                    System.out.println("Contrato finalizado. Item devolvido ao estoque");
-                } else {
-                    System.out.println("Erro ao finalizar contrato");
-                }
-            }
+        if (sistema.finalizarContrato(id)) {
+            System.out.println("Contrato finalizado. Item devolvido ao estoque");
+        } else {
+            System.out.println("Erro ao finalizar contrato");
         }
     }
 
@@ -237,15 +229,15 @@ public class MenuContratos {
 
         if (contrato == null) {
             System.out.println(PRINT_CONTRATO_INVALIDO);
-        } else{
+            return;
+        }
 
-            if (!(contrato.getStatus().equals("FINALIZADO"))) {
-                sistema.cancelarContrato(id);
-                contrato.getItem().devolver();
-                System.out.println("Contrato cancelado. Item devolvido ao estoque");
-            } else {
-                System.out.println("Erro ao cancelar contrato");
-            }
+        if (!(contrato.getStatus().equals("FINALIZADO"))) {
+            sistema.cancelarContrato(id);
+            contrato.getItem().devolver();
+            System.out.println("Contrato cancelado. Item devolvido ao estoque");
+        } else {
+            System.out.println("Erro ao cancelar contrato");
         }
     }
 

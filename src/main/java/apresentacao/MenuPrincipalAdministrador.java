@@ -1,5 +1,8 @@
 package apresentacao;
 
+import java.io.FileDescriptor;
+import java.io.FileOutputStream;
+import java.io.PrintStream;
 import java.util.Scanner;
 
 import entidades.Administrador;
@@ -10,11 +13,17 @@ public class MenuPrincipalAdministrador {
     private SistemaFacade sistema;
     private Administrador administrador;
     private Scanner scanner;
+    private PrintStream out;
 
-    public MenuPrincipalAdministrador(SistemaFacade sistema, Administrador administrador, Scanner scanner) {
+    public MenuPrincipalAdministrador(SistemaFacade sistema, Administrador administrador, Scanner scanner, PrintStream out) {
         this.sistema = sistema;
         this.administrador = administrador;
         this.scanner = scanner;
+        this.out = out;
+    }
+
+    public MenuPrincipalAdministrador(SistemaFacade sistema, Administrador administrador, Scanner scanner) {
+        this(sistema, administrador, scanner, new PrintStream(new FileOutputStream(FileDescriptor.out)));
     }
 
     public void exibir() {
@@ -23,19 +32,19 @@ public class MenuPrincipalAdministrador {
 
         do {
 
-            System.out.println("\n===================================");
-            System.out.println("       MENU ADMINISTRADOR         ");
-            System.out.println("===================================");
-            System.out.println("Bem vindo, " + administrador.getNome());
-            System.out.println("1 - Usuários");
-            System.out.println("2 - Itens");
-            System.out.println("3 - Categorias");
-            System.out.println("4 - Fornecedores");
-            System.out.println("5 - Contratos / Aluguéis");
-            System.out.println("6 - Multas");
-            System.out.println("7 - Relatórios");
-            System.out.println("0 - Sair");
-            System.out.print("Opção: ");
+            out.println("\n===================================");
+            out.println("       MENU ADMINISTRADOR         ");
+            out.println("===================================");
+            out.println("Bem vindo, " + administrador.getNome());
+            out.println("1 - Usuários");
+            out.println("2 - Itens");
+            out.println("3 - Categorias");
+            out.println("4 - Fornecedores");
+            out.println("5 - Contratos / Aluguéis");
+            out.println("6 - Multas");
+            out.println("7 - Relatórios");
+            out.println("0 - Sair");
+            out.print("Opção: ");
 
             opcao = ValidaEntrada.lerInteiro(scanner);
 
@@ -70,11 +79,11 @@ public class MenuPrincipalAdministrador {
                     break;
 
                 case 0:
-                    System.out.println("Sessão encerrada.");
+                    out.println("Sessão encerrada.");
                     break;
 
                 default:
-                    System.out.println("Opção inválida.");
+                    out.println("Opção inválida.");
             }
 
         } while (opcao != 0);
