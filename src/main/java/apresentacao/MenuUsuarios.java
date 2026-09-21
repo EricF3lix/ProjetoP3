@@ -35,13 +35,11 @@ public class MenuUsuarios {
         do {
             System.out.println("\n===== GERENCIAR USUÁRIOS =====");
             System.out.println("1 - Cadastrar Cliente");
+            System.out.println("2 - Buscar Usuário por ID");
+            System.out.println("3 - Listar todos os Usuários");
             if (acessoTotal) {
-                System.out.println("2 - Cadastrar Funcionário");
-                System.out.println("3 - Cadastrar Administrador");
-            }
-            System.out.println("4 - Buscar Usuário por ID");
-            System.out.println("5 - Listar todos os Usuários");
-            if (acessoTotal) {
+                System.out.println("4 - Cadastrar Funcionário");
+                System.out.println("5 - Cadastrar Administrador");
                 System.out.println("6 - Atualizar Usuário");
                 System.out.println("7 - Desativar Usuário");
             }
@@ -51,36 +49,24 @@ public class MenuUsuarios {
             opcao = ValidaEntrada.lerInteiro(scanner);
 
             switch (opcao) {
-                case 1:
-                    cadastrarCliente();
-                    break;
-                case 2:
-                    if (acessoTotal) cadastrarFuncionario();
-                    else System.out.println("Acesso negado.");
-                    break;
-                case 3:
-                    if (acessoTotal) cadastrarAdministrador();
-                    else System.out.println("Acesso negado.");
-                    break;
-                case 4:
-                    buscarUsuario();
-                    break;
-                case 5:
-                    listarUsuarios();
-                    break;
-                case 6:
-                    if (acessoTotal) atualizarUsuario();
-                    else System.out.println("Acesso negado");
-                    break;
-                case 7:
-                    if (acessoTotal) desativarUsuario();
-                    else System.out.println("Acesso negado");
-                    break;
-                case 0:
-                    System.out.println("Retornando...");
-                    break;
-                default:
-                    System.out.println("Opção inválida");
+
+                case 1 -> cadastrarCliente();
+
+                case 2 -> buscarUsuario();
+
+                case 3 -> listarUsuarios();
+
+                case 4 -> {if (acessoTotal) cadastrarFuncionario();}
+
+                case 5 -> {if (acessoTotal) cadastrarAdministrador();}
+
+                case 6 -> {if (acessoTotal) atualizarUsuario();}
+
+                case 7 -> {if (acessoTotal) desativarUsuario();}
+
+                case 0 -> System.out.println("Retornando...");
+
+                default -> System.out.println("Opção inválida");
             }
         } while (opcao != 0);
     }
