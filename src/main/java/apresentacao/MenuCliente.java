@@ -209,6 +209,36 @@ public class MenuCliente {
 
         System.out.println("\n===== PAGAR MULTA =====");
 
+        if (!listarMultasPendentes(contratos)) {
+            System.out.println(PRINT_SEM_MULTAS_PENDENTES);
+            return;
+        }
+
+        System.out.print(PRINT_ID_CONTRATO);
+        int idContrato = ValidaEntrada.lerInteiro(scanner);
+
+        if (idContrato == 0) {
+            System.out.println(PRINT_OPERACAO_CANCELADA);
+            return;
+        }
+
+        ContratoAluguel contrato = sistema.buscarContrato(idContrato);
+
+        if (contrato == null || contrato.getCliente().getId() != cliente.getId()) {
+            System.out.println(PRINT_CONTRATO_NAO_ENCONTRADO);
+            return;
+        }
+
+        if (contrato.getValorMulta() <= 0 || contrato.isMultaPaga()) {
+            System.out.println(PRINT_CONTRATO_SEM_MULTA);
+            return;
+        }
+
+        confirmarEQuitarMulta(idContrato, contrato);
+    }
+
+    private boolean listarMultasPendentes(List<ContratoAluguel> contratos) {
+
         boolean temPendente = false;
 
         for (ContratoAluguel contrato : contratos) {
@@ -224,43 +254,23 @@ public class MenuCliente {
             }
         }
 
-        if (!temPendente) {
-            System.out.println(PRINT_SEM_MULTAS_PENDENTES);
+        return temPendente;
+    }
+
+    private void confirmarEQuitarMulta(int idContrato, ContratoAluguel contrato) {
+
+        System.out.printf("Confirma o pagamento de R$ %.2f? (1 - Sim / 0 - Não): ", contrato.getValorMulta());
+        int confirmacao = ValidaEntrada.lerInteiro(scanner);
+
+        if (confirmacao != 1) {
+            System.out.println(PRINT_OPERACAO_CANCELADA);
+            return;
+        }
+
+        if (sistema.quitarMultaContrato(idContrato)) {
+            System.out.println(PRINT_MULTA_PAGA);
         } else {
-
-            System.out.print(PRINT_ID_CONTRATO);
-            int idContrato = ValidaEntrada.lerInteiro(scanner);
-
-            if (idContrato == 0) {
-                System.out.println(PRINT_OPERACAO_CANCELADA);
-            } else {
-
-                ContratoAluguel contrato = sistema.buscarContrato(idContrato);
-
-                if (contrato == null || contrato.getCliente().getId() != cliente.getId()) {
-                    System.out.println(PRINT_CONTRATO_NAO_ENCONTRADO);
-                } else {
-
-                    if (contrato.getValorMulta() <= 0 || contrato.isMultaPaga()) {
-                        System.out.println(PRINT_CONTRATO_SEM_MULTA);
-                    } else {
-
-                        System.out.printf("Confirma o pagamento de R$ %.2f? (1 - Sim / 0 - Não): ", contrato.getValorMulta());
-                        int confirmacao = ValidaEntrada.lerInteiro(scanner);
-
-                        if (confirmacao != 1) {
-                            System.out.println(PRINT_OPERACAO_CANCELADA);
-                        } else {
-
-                            if (sistema.quitarMultaContrato(idContrato)) {
-                                System.out.println(PRINT_MULTA_PAGA);
-                            } else {
-                                System.out.println(PRINT_ERRO_PAGAMENTO);
-                            }
-                        }
-                    }
-                }
-            }
+            System.out.println(PRINT_ERRO_PAGAMENTO);
         }
     }
 }
