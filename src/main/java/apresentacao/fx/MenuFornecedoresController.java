@@ -3,7 +3,6 @@ package apresentacao.fx;
 import java.util.List;
 import java.util.Optional;
 
-import entidades.Categoria;
 import entidades.Fornecedor;
 import javafx.fxml.FXML;
 
@@ -131,7 +130,7 @@ public class MenuFornecedoresController extends MenuController{
 	        return;
 	    }
 
-	    if (confirmar("Tem certeza que deseja desativar \"" + fornecedor.getRazaoSocial() + "\"?") == false) {
+	    if (!confirmar("Tem certeza que deseja desativar \"" + fornecedor.getRazaoSocial() + "\"?")) {
 	        return;
 	    }
 
