@@ -1,2 +1,4 @@
 id;nome;descricao;ativa
 1;Utilitários;aquilo que serve para algo;true
+2;Eletrônico;Notebook;false
+3;vestidos;rosa;true
