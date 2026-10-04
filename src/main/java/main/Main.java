@@ -2,6 +2,7 @@ package main;
 import java.util.Scanner;
 
 import apresentacao.MenuLogin;
+import apresentacao.fx.App;
 import business.cruds.GerenciamentoCategoria;
 import business.cruds.GerenciamentoContratos;
 import business.cruds.GerenciamentoItens;
@@ -29,54 +30,7 @@ import repositories.UsuarioRepositorio;
 public class Main {
 
     public static void main(String[] args) {
-
-        // =========================================================================
-        // CODE SMELL INTENCIONAL PARA TESTAR INTEGRAÇÃO SONAR -> KANBAN
-        // Regra Sonar: java:S1481 (Unused local variables should be removed)
-        // =========================================================================
-
-        //REPOSITÓRIOS 
-
-        UsuarioRepositorio    usuarioRepositorio    = new UsuarioRepositorio();
-        CategoriaRepositorio  categoriaRepositorio  = new CategoriaRepositorio();
-        FornecedorRepositorio fornecedorRepositorio = new FornecedorRepositorio();
-        ItemRepositorio       itemRepositorio       = new ItemRepositorio(categoriaRepositorio, fornecedorRepositorio);
-        ContratoRepositorio   contratoRepositorio   = new ContratoRepositorio(usuarioRepositorio, itemRepositorio);
-        MultaRepositorio      multaRepositorio      = new MultaRepositorio();
-
-        //CAMADA DE NEGÓCIO
-
-        IGerenciamentoContratos  gerenciamentoContratos  = new GerenciamentoContratos(contratoRepositorio);
-        IGerenciamentoUsuarios   gerenciamentoUsuarios   = new GerenciamentoUsuarios(usuarioRepositorio, gerenciamentoContratos);
-        IGerenciamentoCategoria  gerenciamentoCategoria  = new GerenciamentoCategoria(categoriaRepositorio);
-        IGerenciamentoFornecedor gerenciamentoFornecedor = new GerenciamentoFornecedor(fornecedorRepositorio);
-        IGerenciamentoItens      gerenciamentoItens      = new GerenciamentoItens(itemRepositorio);
-        IGerenciamentoMultas     gerenciamentoMultas     = new GerenciamentoMultas(multaRepositorio);
-
-        IRelatorios geradorRelatorios = new GeradorRelatorios(gerenciamentoItens, gerenciamentoContratos, gerenciamentoUsuarios);
-
-        //FACADE
-
-        SistemaFacade sistema = new SistemaFacade(gerenciamentoUsuarios,gerenciamentoContratos,gerenciamentoItens,gerenciamentoCategoria,gerenciamentoFornecedor,gerenciamentoMultas,geradorRelatorios
-        );
-
-        if (sistema.buscarUsuarioPorEmail("jacksonmepassaporfavor@loja.com") == null) {
-
-            Administrador adminPadrao = new Administrador(sistema.gerarProximoIdUsuario(),"Jackson-Raniel","jacksonmepassaporfavor@loja.com","000.000.000-00","obrigadojackson");
-
-            sistema.cadastrarUsuario(adminPadrao);
-
-            
-            System.out.println("Usuário padrão criado para testes");
-            System.out.println("Email : jacksonmepassaporfavor@loja.com");
-            System.out.println("Senha : obrigadojackson");
-        }
-
-
-        Scanner scanner = new Scanner(System.in);
-
-        new MenuLogin(sistema, scanner).exibir();
-
-        scanner.close();
+    	App.main(args);
+        
     }
 }
