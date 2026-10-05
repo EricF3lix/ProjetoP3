@@ -3,68 +3,105 @@ name: Integração com Kanban
 on:
   create:
   pull_request:
-    types: [opened, reopened]
+    types: [opened, reopened, ready_for_review, edited, closed]
+    branches: [develop]
+
+permissions:
+  contents: read
+  issues: write
+  pull-requests: read
 
 jobs:
-  mover-para-em-andamento:
+  atualizar-kanban:
     runs-on: ubuntu-latest
-    if: (github.event_name == 'create' && github.ref_type == 'branch') || github.event_name == 'pull_request'
+    if: >
+      (github.event_name == 'create' && github.event.ref_type == 'branch') ||
+      github.event_name == 'pull_request'
 
     steps:
-      - name: Mover issues para Em andamento
+      - name: Atualizar issues no Project
         uses: actions/github-script@v7
         with:
           github-token: ${{ secrets.KANBAN_TOKEN || secrets.GITHUB_TOKEN }}
           script: |
-            let issueNumbers = [];
+            const { owner, repo } = context.repo;
+            const norm = s => (s || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
 
-            if (context.eventName === 'pull_request') {
+            const extrair = (texto, re) =>
+              new Set([...(texto || '').matchAll(re)].map(m => parseInt(m[1])));
+
+            const destinos = new Map();
+            let fechar = false;
+
+            if (context.eventName === 'create') {
+              const branch = context.payload.ref;
+              console.log(`Branch criada: ${branch}`);
+              for (const n of extrair(branch, refRe)) destinos.set(n, 'andamento');
+            } else {
               const pr = context.payload.pull_request;
-              const textToSearch = `${pr.title} ${pr.body || ''} ${pr.head.ref}`;
-              console.log(`Analisando PR #${pr.number}: ${textToSearch}`);
+              const acao = context.payload.action;
+              console.log(`PR #${pr.number} (${acao}) ${pr.head.ref} -> ${pr.base.ref}`);
 
-              const matches = [...textToSearch.matchAll(/(?:fixes|closes|resolves)\s+#(\d+)|#(\d+)/gi)];
-              issueNumbers = matches.map(m => parseInt(m[1] || m[2]));
-            } else if (context.eventName === 'create' && context.payload.ref_type === 'branch') {
-              const branchName = context.payload.ref;
-              console.log(`Analisando branch criada: ${branchName}`);
+              const texto = `${pr.title}\n${pr.body || ''}`;
 
-              const matches = [...branchName.matchAll(/#(\d+)/g)];
-              issueNumbers = matches.map(m => parseInt(m[1]));
-            }
-
-            issueNumbers = [...new Set(issueNumbers)];
-            console.log(`Números de issue detectados: ${issueNumbers.join(', ') || 'nenhum'}`);
-
-            if (issueNumbers.length === 0) {
-              console.log('Nenhum número de issue detectado no evento. Encerrando.');
-              return;
-            }
-
-            const query = `
-              query($owner: String!, $repo: String!) {
-                repository(owner: $owner, name: $repo) {
-                  projectsV2(first: 5) {
-                    nodes {
-                      id title
-                      fields(first: 20) {
-                        nodes {
-                          ... on ProjectV2SingleSelectField {
-                            id name options { id name }
-                          }
-                        }
-                      }
-                    }
-                  }
+              if (acao === 'closed') {
+                if (!pr.merged) {
+                  console.log('PR fechado sem merge. Nada a fazer.');
+                  return;
                 }
-                user(login: $owner) {
-                  projectsV2(first: 5) {
-                    nodes {
-                      id title
-                      fields(first: 20) {
-                        nodes {
-                          ... on ProjectV2SingleSelectField {
-                            id name options { id name }
+                fechar = true;
+                
+                for (const n of extrair(texto, closingRe)) destinos.set(n, 'conclu');
+              } else {
+                if (pr.state !== 'open') {
+                  console.log('PR não está aberto (edição em PR já encerrado). Nada a fazer.');
+                  return;
+                }
+                if (pr.draft) {
+                  console.log('PR em rascunho. Nada a fazer.');
+                  return;
+                }
+
+                const atuais = extrair(texto, refRe);
+
+                if (acao === 'edited') {
+                  
+                  const mudancas = context.payload.changes || {};
+                  const tituloAntes = mudancas.title ? mudancas.title.from : pr.title;
+                  const corpoAntes = mudancas.body ? (mudancas.body.from || '') : (pr.body || '');
+                  const antes = extrair(`${tituloAntes}\n${corpoAntes}`, refRe);
+
+                  for (const n of atuais) if (!antes.has(n)) destinos.set(n, 'revis');
+                  for (const n of antes) if (!atuais.has(n)) destinos.set(n, 'andamento');
+                } else {
+                  
+                  for (const n of atuais) destinos.set(n, 'revis');
+                }
+              }
+            }
+
+            console.log(
+              'Issues e destinos: ' +
+              ([...destinos].map(([n, a]) => `#${n}->${a}`).join(', ') || 'nenhuma')
+            );
+            if (destinos.size === 0) return;
+
+            const consulta = `
+              query($owner: String!, $repo: String!, $number: Int!) {
+                repository(owner: $owner, name: $repo) {
+                  issue(number: $number) {
+                    state
+                    projectItems(first: 20) {
+                      nodes {
+                        id
+                        project {
+                          id
+                          title
+                          field(name: "Status") {
+                            ... on ProjectV2SingleSelectField {
+                              id
+                              options { id name }
+                            }
                           }
                         }
                       }
@@ -74,112 +111,79 @@ jobs:
               }
             `;
 
-            let result;
-            try {
-              result = await github.graphql(query, {
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-              });
-            } catch (err) {
-              console.log('Erro ao consultar GraphQL:', err.message);
-              return;
-            }
-
-            const repoProjects = result.repository?.projectsV2?.nodes || [];
-            const userProjects = result.user?.projectsV2?.nodes || [];
-            const combinedProjects = [...repoProjects, ...userProjects];
-
-            const allProjects = [];
-            const idsVistos = new Set();
-            for (const project of combinedProjects) {
-              if (idsVistos.has(project.id)) continue;
-              idsVistos.add(project.id);
-              allProjects.push(project);
-            }
-
-            async function fetchAllProjectItems(projectId) {
-              let allItems = [];
-              let cursor = null;
-              let pagina = 0;
-              const MAX_PAGINAS = 50;
-
-              while (pagina < MAX_PAGINAS) {
-                const itemsQuery = `
-                  query($projectId: ID!, $cursor: String) {
-                    node(id: $projectId) {
-                      ... on ProjectV2 {
-                        items(first: 100, after: $cursor) {
-                          nodes {
-                            id
-                            content { ... on Issue { number } }
-                          }
-                          pageInfo { hasNextPage endCursor }
-                        }
-                      }
-                    }
-                  }
-                `;
-
-                const itemsResult = await github.graphql(itemsQuery, { projectId, cursor });
-                const itemsData = itemsResult.node.items;
-                allItems = allItems.concat(itemsData.nodes);
-                pagina++;
-
-                if (!itemsData.pageInfo.hasNextPage) break;
-                cursor = itemsData.pageInfo.endCursor;
+            const mutacao = `
+              mutation($projectId: ID!, $itemId: ID!, $fieldId: ID!, $optionId: String!) {
+                updateProjectV2ItemFieldValue(input: {
+                  projectId: $projectId
+                  itemId: $itemId
+                  fieldId: $fieldId
+                  value: { singleSelectOptionId: $optionId }
+                }) {
+                  projectV2Item { id }
+                }
               }
+            `;
 
-              return allItems;
-            }
-
-            for (const project of allProjects) {
-              const statusField = project.fields.nodes.find(f => f.name === 'Status');
-              if (!statusField) continue;
-
-              const emAndamento = statusField.options.find(o =>
-                o.name.toLowerCase().includes('andamento')
-              );
-              if (!emAndamento) continue;
-
-              let items;
+            for (const [numero, alvo] of destinos) {
+              let issue;
               try {
-                items = await fetchAllProjectItems(project.id);
+                const r = await github.graphql(consulta, { owner, repo, number: numero });
+                issue = r.repository.issue;
               } catch (err) {
-                console.log(`Erro ao carregar itens do projeto "${project.title}": ${err.message}`);
+                console.log(`Erro ao consultar #${numero}: ${err.message}`);
                 continue;
               }
-              console.log(`Projeto "${project.title}": ${items.length} itens carregados.`);
 
-              for (const issueNumber of issueNumbers) {
-                const item = items.find(i => i.content?.number === issueNumber);
-                if (!item) {
-                  console.log(`Issue #${issueNumber} não encontrada no projeto "${project.title}".`);
+              if (!issue) {
+                console.log(`#${numero} não é uma issue deste repositório (pode ser um PR). Ignorando.`);
+                continue;
+              }
+
+              
+              if (fechar && issue.state === 'OPEN') {
+                try {
+                  await github.rest.issues.update({
+                    owner, repo,
+                    issue_number: numero,
+                    state: 'closed',
+                    state_reason: 'completed',
+                  });
+                  console.log(`Issue #${numero} fechada.`);
+                } catch (err) {
+                  console.log(`Erro ao fechar #${numero}: ${err.message}`);
+                  continue;
+                }
+              }
+
+              if (!fechar && issue.state === 'CLOSED') {
+                console.log(`Issue #${numero} já está fechada. Não vou movê-la.`);
+                continue;
+              }
+
+              const itens = issue.projectItems.nodes;
+              if (itens.length === 0) {
+                console.log(`Issue #${numero} não está em nenhum Project.`);
+                continue;
+              }
+
+              for (const item of itens) {
+                const campo = item.project.field;
+                const opcao = campo?.options?.find(o => norm(o.name).includes(alvo));
+                if (!campo || !opcao) {
+                  console.log(`Projeto "${item.project.title}": coluna "${alvo}" não encontrada.`);
                   continue;
                 }
 
                 try {
-                  await github.graphql(`
-                    mutation($projectId: ID!, $itemId: ID!, $fieldId: ID!, $optionId: String!) {
-                      updateProjectV2ItemFieldValue(input: {
-                        projectId: $projectId
-                        itemId: $itemId
-                        fieldId: $fieldId
-                        value: { singleSelectOptionId: $optionId }
-                      }) {
-                        projectV2Item { id }
-                      }
-                    }
-                  `, {
-                    projectId: project.id,
+                  await github.graphql(mutacao, {
+                    projectId: item.project.id,
                     itemId: item.id,
-                    fieldId: statusField.id,
-                    optionId: emAndamento.id,
+                    fieldId: campo.id,
+                    optionId: opcao.id,
                   });
-
-                  console.log(`Sucesso: Issue #${issueNumber} movida para "Em andamento" no quadro "${project.title}".`);
+                  console.log(`Issue #${numero} -> "${opcao.name}" no projeto "${item.project.title}".`);
                 } catch (err) {
-                  console.log(`Erro ao mover issue #${issueNumber} no projeto "${project.title}": ${err.message}`);
-                  continue;
+                  console.log(`Erro ao mover #${numero}: ${err.message}`);
                 }
               }
             }
