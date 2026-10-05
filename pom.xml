@@ -83,8 +83,8 @@
 
     <build>
 
-        <!-- Plugins ativos no build (rodar com: mvn javafx:run) -->
         <plugins>
+
             <plugin>
                 <groupId>org.openjfx</groupId>
                 <artifactId>javafx-maven-plugin</artifactId>
@@ -93,6 +93,30 @@
                     <mainClass>apresentacao.fx.App</mainClass>
                 </configuration>
             </plugin>
+
+            <!-- Fat Jar -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>3.5.1</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                        <configuration>
+                            <createDependencyReducedPom>false</createDependencyReducedPom>
+                            <transformers>
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                                    <mainClass>main.Main</mainClass>
+                                </transformer>
+                            </transformers>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
         </plugins>
 
         <pluginManagement>
@@ -124,13 +148,6 @@
                 <plugin>
                     <artifactId>maven-jar-plugin</artifactId>
                     <version>3.4.2</version>
-                    <configuration>
-                        <archive>
-                            <manifest>
-                                <mainClass>main.Main</mainClass>
-                            </manifest>
-                        </archive>
-                    </configuration>
                 </plugin>
 
                 <plugin>
