@@ -1,7 +1,6 @@
 package business.relatorios;
 
 import java.time.LocalDate;
-import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,7 +13,6 @@ import entidades.Usuario;
 import repositories.SalvaRelatorioFaturamento;
 import repositories.SalvaRelatorioHistoricoCliente;
 import repositories.SalvaRelatorioItensAlugados;
-import repositories.SalvaRelatorioItensDisponiveis;
 
 @SuppressWarnings("java:S106")
 public class GeradorRelatorios implements IRelatorios {
@@ -31,111 +29,46 @@ public class GeradorRelatorios implements IRelatorios {
     }
 
     @Override
-    public void gerarRelatorioItensDisponiveis() {
+    public List<Item> gerarRelatorioItensDisponiveis() {
 
         List<Item> itensDisponiveis = gerenciamentoItens.listarItens().stream()
                 .filter(Item::estaDisponivel)
                 .toList();
 
-        System.out.println("\n===== RELATÓRIO DE ITENS DISPONÍVEIS =====");
-
-        System.out.printf("%-20s %-5s %-25s %-10s%n","CATEGORIA", "ID", "NOME", "TAXA");
-
-        for (Item item : itensDisponiveis) {
-            System.out.printf("%-20s %-5d %-25s R$ %.2f%n",item.getCategoria().getNome(),item.getId(), item.getNome(), item.getTaxaDiaria());
-
-        }
-
-        System.out.println("\nArquivo CSV gerado na pasta relatorios");
-
-        SalvaRelatorioItensDisponiveis salva = new SalvaRelatorioItensDisponiveis();
-
-        salva.salvar(itensDisponiveis);
-
+        return itensDisponiveis;
     }
 
     @Override
-    public void gerarHistoricoCliente(int idCliente) {
-
+    public List<ContratoAluguel> gerarHistoricoCliente(int idCliente) {
+        List<ContratoAluguel> resposta = new ArrayList<>();
         Usuario usuario = gerenciamentoUsuarios.buscarUsuario(idCliente);
 
-        if (usuario == null) {
-
-            System.out.println("Cliente não encontrado");
-        } else {
+        if (usuario != null) {
 
             List<ContratoAluguel> historico = gerenciamentoContratos.listarContratos().stream()
                     .filter(contrato -> contrato.getCliente().getId() == idCliente)
                     .toList();
+            resposta = historico;
 
-            if (historico.isEmpty()) {
-
-                System.out.println("O cliente não possui contratos");
-
-            } else {
-                System.out.println("\n===== HISTÓRICO DE ALUGUÉIS =====");
-
-                System.out.println("Cliente: " + usuario.getNome());
-
-                System.out.printf("%-5s %-20s %-12s %-12s %-12s %-10s %-10s%n","ID","ITEM","RETIRADA","PREVISTA","STATUS","VALOR","MULTA");
-
-                for (ContratoAluguel contrato : historico) {
-
-                    System.out.printf("%-5d %-20s %-12s %-12s %-12s %-10.2f %-10.2f%n", contrato.getId(), contrato.getItem().getNome(), contrato.getDataRetirada(),
-                            contrato.getDataDevolucaoPrevista(), contrato.getStatus(), contrato.getValorTotal(), contrato.getValorMulta());
-                }
-
-                System.out.println("\nArquivo CSV gerado na pasta relatorios");
-                SalvaRelatorioHistoricoCliente salva = new SalvaRelatorioHistoricoCliente();
-
-                salva.salvar(historico);
-
-            }
+            SalvaRelatorioHistoricoCliente salva = new SalvaRelatorioHistoricoCliente();
+            salva.salvar(historico);
 
         }
+        return resposta;
     }
 
     @Override
-    public void gerarRelatorioItensAlugados() {
+    public List<ContratoAluguel> gerarRelatorioItensAlugados() {
 
         List<ContratoAluguel> contratosAtivos = gerenciamentoContratos.listarContratos().stream()
                 .filter(ContratoAluguel::estaAtivo)
                 .toList();
 
-        if (contratosAtivos.isEmpty()) {
-
-            System.out.println("Não existem contratos ativos.");
-        } else {
-
-            System.out.println("\n===== ITENS ALUGADOS ATUALMENTE =====");
-
-            System.out.printf("%-5s %-20s %-20s %-15s %-10s%n","ID","CLIENTE","ITEM","DEVOLUÇÃO","SITUAÇÃO");
-
-            LocalDate hoje = LocalDate.now(ZoneId.of("America/Recife"));
-
-            for (ContratoAluguel contrato : contratosAtivos) {
-
-                LocalDate dataPrevista = LocalDate.parse(contrato.getDataDevolucaoPrevista());
-
-                String situacao;
-
-                if (hoje.isAfter(dataPrevista)) {
-
-                    situacao = "ATRASADO";
-
-                } else {
-
-                    situacao = "EM DIA";
-
-                }
-
-                System.out.printf("%-5d %-20s %-20s %-15s %-10s%n",contrato.getId(),contrato.getCliente().getNome(),contrato.getItem().getNome(),contrato.getDataDevolucaoPrevista(),situacao);
-            }
-
             SalvaRelatorioItensAlugados salva = new SalvaRelatorioItensAlugados();
 
             salva.salvar(contratosAtivos);
-        }
+
+        return contratosAtivos;
 
     }
 
