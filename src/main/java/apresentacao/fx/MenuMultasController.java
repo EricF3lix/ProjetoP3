@@ -1,5 +1,6 @@
 package apresentacao.fx;
 
+import apresentacao.ValidaEntrada;
 import entidades.Categoria;
 import entidades.Multa;
 import javafx.fxml.FXML;
@@ -73,7 +74,7 @@ public class MenuMultasController extends MenuController {
         escrever("Descrição:        " + multa.getDescricao());
         escrever("ID do Contrato:        " + multa.getIdContrato());
         escrever("Valor:        " + multa.getValor());
-        escrever("Estado:        " + multa.isPaga());
+        escrever("Paga:        " + multa.isPaga());
 
     }
 
@@ -88,7 +89,7 @@ public class MenuMultasController extends MenuController {
             return;
         }
 
-        escreverf("%-3s %-15s %-20s %-15s %-12s %-10s", "ID", "DATA-CRIAÇÃO","DESCRIÇÃO" , "TIPO", "VALOR", "ATIVA");
+        escreverf("%-3s %-15s %-20s %-15s %-12s %-10s", "ID", "DATA-CRIAÇÃO","DESCRIÇÃO" , "TIPO", "VALOR", "PAGA");
         escrever("-".repeat(200));
         for (Multa m : multas) {
             escreverf("%-3d %-22s %-30s %-15s %-12.2f %-10b", m.getId(), m.getDataCriacao(), m.getDescricao(), m.getTipo(), m.getValor(), m.isPaga());
@@ -110,7 +111,7 @@ public class MenuMultasController extends MenuController {
             return;
         }
 
-        escreverf("%-3s %-15s %-20s %-15s %-12s %-10s", "ID", "DATA-CRIAÇÃO","DESCRIÇÃO" , "TIPO", "VALOR", "ATIVA");
+        escreverf("%-3s %-15s %-20s %-15s %-12s %-10s", "ID", "DATA-CRIAÇÃO","DESCRIÇÃO" , "TIPO", "VALOR", "PAGA");
         for (Multa m : multas){
             escreverf("%-3d %-22s %-30s %-15s %-12.2f %-10b", m.getId(), m.getDataCriacao(), m.getDescricao(), m.getTipo(), m.getValor(), m.isPaga());
 
@@ -127,10 +128,22 @@ public class MenuMultasController extends MenuController {
             erro("nenhuma multa pedente");
         }
 
-        escreverf("%-3s %-15s %-20s %-15s %-12s %-10s", "ID", "DATA-CRIAÇÃO", "DESCRIÇÃO", "TIPO", "VALOR", "ATIVA");
+        escreverf("%-3s %-15s %-20s %-15s %-12s %-10s", "ID", "DATA-CRIAÇÃO", "DESCRIÇÃO", "TIPO", "VALOR", "PAGA");
         for (Multa m : multas) {
             escreverf("%-3d %-22s %-30s %-15s %-12.2f %-10b", m.getId(), m.getDataCriacao(), m.getDescricao(), m.getTipo(), m.getValor(), m.isPaga());
 
         }
+    }
+
+    @FXML
+    private void quitarMulta(){
+        Optional<Integer> id = pedirInteiro("ID da Multa");
+
+        if (sistema.quitarMulta(id.get())) {
+            escrever("Multa quitada com sucesso.");
+        } else {
+            escrever("Multa não encontrada ou já estava paga.");
+        }
+
     }
 }
