@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.VBox?>
+
+<BorderPane prefHeight="600.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="apresentacao.fx.MenuClienteController">
+   <padding>
+      <Insets bottom="16.0" left="16.0" right="16.0" top="16.0" />
+   </padding>
+   <top>
+      <Label alignment="TOP_CENTER" prefHeight="32.0" prefWidth="249.0" style="-fx-font-size: 22px; -fx-font-weight: bold;" text="Menu Cliente" BorderPane.alignment="CENTER_LEFT">
+         <BorderPane.margin>
+            <Insets bottom="12.0" />
+         </BorderPane.margin>
+      </Label>
+   </top>
+   <left>
+      <VBox prefWidth="260.0" spacing="8.0" BorderPane.alignment="CENTER">
+         <padding>
+            <Insets right="12.0" />
+         </padding>
+         <children>
+            <Label fx:id="bemVindo" alignment="TOP_CENTER" contentDisplay="CENTER" prefHeight="17.0" prefWidth="254.0" text="bemVindo" textAlignment="CENTER" />
+            <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#listarItensDisponiveis" text="Ver itens disponíveis" />
+            <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#listarAlugueisAtivos" text="Meus aluguéis ativos" />
+            <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#historicoAlugueis" text="Histórico completo de aluguéis" />
+            <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#multasPendentes" text="Minhas multas pendentes" />
+            <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#pagarMulta" text="Pagar multa" />
+            <Separator />
+            <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#voltar" text="Voltar" />
+         </children>
+      </VBox>
+   </left>
+   <center>
+      <TextArea fx:id="saida" editable="false" style="-fx-font-family: monospace;" BorderPane.alignment="CENTER" />
+   </center>
+</BorderPane>
