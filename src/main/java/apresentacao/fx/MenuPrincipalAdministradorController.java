@@ -43,6 +43,5 @@ public class MenuPrincipalAdministradorController extends MenuController {
     @FXML private void abrirContratos() { 
         navegador.abrir("MenuContratos.fxml"); 
     }
-    @FXML private void abrirMultas()       { info("MenuMultas.fxml ainda não criado"); }
     @FXML private void abrirRelatorios()   { info("MenuRelatorios.fxml ainda não criado"); }
 }
