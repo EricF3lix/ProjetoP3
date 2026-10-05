@@ -30,7 +30,7 @@
                   <Insets bottom="3.0" left="5.0" right="5.0" top="5.0" />
                </VBox.margin>
             </Button>
-            <Button mnemonicParsing="false" prefHeight="26.0" prefWidth="280.0" text="Buscar multa por id" textAlignment="CENTER" wrapText="true">
+            <Button mnemonicParsing="false" onAction="#buscarMultas" prefHeight="26.0" prefWidth="280.0" text="Buscar multa por id" textAlignment="CENTER" wrapText="true">
                <VBox.margin>
                   <Insets bottom="3.0" left="5.0" right="5.0" top="3.0" />
                </VBox.margin>
@@ -40,7 +40,7 @@
                   <Insets bottom="3.0" left="5.0" right="5.0" top="3.0" />
                </VBox.margin>
             </Button>
-            <Button mnemonicParsing="false" prefHeight="26.0" prefWidth="201.0" text="Listar Multas de um Contrato" textAlignment="CENTER" wrapText="true">
+            <Button mnemonicParsing="false" onAction="#buscarContrato" prefHeight="26.0" prefWidth="201.0" text="Listar Multas de um Contrato" textAlignment="CENTER" wrapText="true">
                <VBox.margin>
                   <Insets bottom="3.0" left="5.0" right="5.0" top="3.0" />
                </VBox.margin>

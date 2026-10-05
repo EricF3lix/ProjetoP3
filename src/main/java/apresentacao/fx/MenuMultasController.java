@@ -16,16 +16,28 @@ public class MenuMultasController extends MenuController {
     @FXML
     private void cadastrarMulta() {
         Optional<Integer> idcontrato = pedirInteiro("ID do contrato:");
-        if (idcontrato.isEmpty()) return;
+        if (idcontrato.isEmpty()) {
+            erro("O ID nao pode ser vazio");
+            return;
+        }
 
         Optional<String> descricao = pedirTexto("Descrição:");
-        if (descricao.isEmpty()) return;
+        if (descricao.isEmpty()) {
+            erro("A Descrição nao pode ser vazia");
+            return;
+        }
 
         Optional<String> tipo = pedirTexto("Tipo:");
-        if (tipo.isEmpty()) return;
+        if (tipo.isEmpty()) {
+            erro("O Tipo nao pode ser vazio");
+            return;
+        }
 
         Optional<Double> valor = pedirDouble("valor: ");
-        if (valor.isEmpty()) return;
+        if (valor.isEmpty()) {
+            erro("O Valor nao pode ser vazio");
+            return;
+        }
 
         String data = java.time.LocalDate.now(ZoneId.of("America/Recife")).toString();
 
@@ -40,20 +52,70 @@ public class MenuMultasController extends MenuController {
     }
 
     @FXML
+    private void buscarMultas(){
+        Optional<Integer> id = pedirInteiro("ID da Multa:");
+        if (id.isEmpty()) {
+            erro("O ID nao pode ser vazio");
+            return;
+        }
+
+        Multa multa = sistema.buscarMulta(id.get());
+        if (multa == null) {
+            erro("Multa não encontrada");
+            return;
+        }
+
+        limpar();
+        escrever("===== DADOS DA CATEGORIA =====");
+        escrever("ID:        " + multa.getId());
+        escrever("Data de Criação::        " + multa.getDataCriacao());
+        escrever("Tipo:        " + multa.getTipo());
+        escrever("Descrição:        " + multa.getDescricao());
+        escrever("ID do Contrato:        " + multa.getIdContrato());
+        escrever("Valor:        " + multa.getValor());
+        escrever("Estado:        " + multa.isPaga());
+
+    }
+
+    @FXML
     private void listarMultas(){
         List<Multa> multas = sistema.listarMultas();
         limpar();
         escrever("============================================= MULTAS =============================================");
 
         if (multas.isEmpty()) {
-            escrever("Nenhuma Multa Registrada");
+            erro("Nenhuma Multa Registrada");
             return;
         }
 
-        escreverf("%-3s %-30s %-30s %-15s %-12s %-10s", "ID", "DATA-CRIAÇÃO","DESCRIÇÃO" , "TIPO", "VALOR", "ATIVA");
+        escreverf("%-3s %-15s %-20s %-15s %-12s %-10s", "ID", "DATA-CRIAÇÃO","DESCRIÇÃO" , "TIPO", "VALOR", "ATIVA");
         escrever("-".repeat(200));
         for (Multa m : multas) {
-            escreverf("%-3d %-30s %-30s %-15s %-12.2f %-10b", m.getId(), m.getDataCriacao(), m.getDescricao(), m.getTipo(), m.getValor(), m.isPaga());
+            escreverf("%-3d %-22s %-30s %-15s %-12.2f %-10b", m.getId(), m.getDataCriacao(), m.getDescricao(), m.getTipo(), m.getValor(), m.isPaga());
         }
+    }
+
+    @FXML
+    private void buscarContrato(){
+        Optional<Integer> id = pedirInteiro("ID do contrato");
+
+        if (id.isEmpty()){
+            erro("O ID nao pode ser vazio");
+            return;
+        }
+        List<Multa> multas = sistema.listarMultasPorContrato(id.get());
+
+        if (multas.isEmpty()){
+            escrever("Nenhuma multa encontrada para esse contrato");
+            return;
+        }
+
+        escreverf("%-3s %-15s %-20s %-15s %-12s %-10s", "ID", "DATA-CRIAÇÃO","DESCRIÇÃO" , "TIPO", "VALOR", "ATIVA");
+        for (Multa m : multas){
+            escreverf("%-3d %-22s %-30s %-15s %-12.2f %-10b", m.getId(), m.getDataCriacao(), m.getDescricao(), m.getTipo(), m.getValor(), m.isPaga());
+
+
+        }
+
     }
 }
