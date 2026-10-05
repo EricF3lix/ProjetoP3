@@ -33,24 +33,18 @@ public class GeradorRelatorios implements IRelatorios {
     @Override
     public void gerarRelatorioItensDisponiveis() {
 
-        List<Item> itensDisponiveis = new ArrayList<>();
+        List<Item> itensDisponiveis = gerenciamentoItens.listarItens().stream()
+                .filter(Item::estaDisponivel)
+                .toList();
 
-        for (Item item : gerenciamentoItens.listarItens()) {
-
-            if (item.estaDisponivel()) {
-                itensDisponiveis.add(item);
-
-            }
-
-        }
         System.out.println("\n===== RELATÓRIO DE ITENS DISPONÍVEIS =====");
 
-            System.out.printf("%-20s %-5s %-25s %-10s%n","CATEGORIA", "ID", "NOME", "TAXA");
+        System.out.printf("%-20s %-5s %-25s %-10s%n","CATEGORIA", "ID", "NOME", "TAXA");
 
-            for (Item item : itensDisponiveis) {
-                System.out.printf("%-20s %-5d %-25s R$ %.2f%n",item.getCategoria().getNome(),item.getId(), item.getNome(), item.getTaxaDiaria());
+        for (Item item : itensDisponiveis) {
+            System.out.printf("%-20s %-5d %-25s R$ %.2f%n",item.getCategoria().getNome(),item.getId(), item.getNome(), item.getTaxaDiaria());
 
-            }
+        }
 
         System.out.println("\nArquivo CSV gerado na pasta relatorios");
 
@@ -69,17 +63,10 @@ public class GeradorRelatorios implements IRelatorios {
 
             System.out.println("Cliente não encontrado");
         } else {
-            
-            List<ContratoAluguel> historico = new ArrayList<>();
 
-            for (ContratoAluguel contrato : gerenciamentoContratos.listarContratos()) {
-
-                if (contrato.getCliente().getId() == idCliente) {
-                    
-                    historico.add(contrato);
-                }
-
-            }
+            List<ContratoAluguel> historico = gerenciamentoContratos.listarContratos().stream()
+                    .filter(contrato -> contrato.getCliente().getId() == idCliente)
+                    .toList();
 
             if (historico.isEmpty()) {
 
@@ -91,16 +78,16 @@ public class GeradorRelatorios implements IRelatorios {
                 System.out.println("Cliente: " + usuario.getNome());
 
                 System.out.printf("%-5s %-20s %-12s %-12s %-12s %-10s %-10s%n","ID","ITEM","RETIRADA","PREVISTA","STATUS","VALOR","MULTA");
-                
+
                 for (ContratoAluguel contrato : historico) {
 
                     System.out.printf("%-5d %-20s %-12s %-12s %-12s %-10.2f %-10.2f%n", contrato.getId(), contrato.getItem().getNome(), contrato.getDataRetirada(),
-                        contrato.getDataDevolucaoPrevista(), contrato.getStatus(), contrato.getValorTotal(), contrato.getValorMulta());
-                    }
+                            contrato.getDataDevolucaoPrevista(), contrato.getStatus(), contrato.getValorTotal(), contrato.getValorMulta());
+                }
 
                 System.out.println("\nArquivo CSV gerado na pasta relatorios");
                 SalvaRelatorioHistoricoCliente salva = new SalvaRelatorioHistoricoCliente();
-                
+
                 salva.salvar(historico);
 
             }
@@ -111,16 +98,9 @@ public class GeradorRelatorios implements IRelatorios {
     @Override
     public void gerarRelatorioItensAlugados() {
 
-        List<ContratoAluguel> contratosAtivos = new ArrayList<>();
-
-        for (ContratoAluguel contrato : gerenciamentoContratos.listarContratos()) {
-
-            if (contrato.estaAtivo()) {
-                contratosAtivos.add(contrato);
-
-            }
-
-        }
+        List<ContratoAluguel> contratosAtivos = gerenciamentoContratos.listarContratos().stream()
+                .filter(ContratoAluguel::estaAtivo)
+                .toList();
 
         if (contratosAtivos.isEmpty()) {
 
