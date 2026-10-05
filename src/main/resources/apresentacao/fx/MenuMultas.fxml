@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<BorderPane prefHeight="600.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="apresentacao.fx.MenuMultasController">
+   <center>
+      <TextArea fx:id="saida" prefHeight="359.0" prefWidth="352.0" BorderPane.alignment="CENTER">
+         <BorderPane.margin>
+            <Insets bottom="8.0" right="8.0" />
+         </BorderPane.margin>
+      </TextArea>
+   </center>
+   <left>
+      <VBox prefHeight="359.0" prefWidth="199.0" BorderPane.alignment="CENTER">
+         <children>
+            <Label alignment="CENTER" prefHeight="41.0" prefWidth="251.0" text="Gerenciar Multas" textAlignment="CENTER" wrapText="true">
+               <font>
+                  <Font name="System Bold" size="20.0" />
+               </font>
+            </Label>
+            <Button alignment="CENTER" contentDisplay="TOP" layoutX="10.0" mnemonicParsing="false" onAction="#cadastrarMulta" prefHeight="26.0" prefWidth="241.0" text="Registar multa" textAlignment="CENTER" wrapText="true">
+               <VBox.margin>
+                  <Insets bottom="3.0" left="5.0" right="5.0" top="5.0" />
+               </VBox.margin>
+            </Button>
+            <Button mnemonicParsing="false" prefHeight="26.0" prefWidth="280.0" text="Buscar multa por id" textAlignment="CENTER" wrapText="true">
+               <VBox.margin>
+                  <Insets bottom="3.0" left="5.0" right="5.0" top="3.0" />
+               </VBox.margin>
+            </Button>
+            <Button mnemonicParsing="false" onAction="#listarMultas" prefHeight="26.0" prefWidth="319.0" text="Listar todas as multas" textAlignment="CENTER" wrapText="true">
+               <VBox.margin>
+                  <Insets bottom="3.0" left="5.0" right="5.0" top="3.0" />
+               </VBox.margin>
+            </Button>
+            <Button mnemonicParsing="false" prefHeight="26.0" prefWidth="201.0" text="Listar Multas de um Contrato" textAlignment="CENTER" wrapText="true">
+               <VBox.margin>
+                  <Insets bottom="3.0" left="5.0" right="5.0" top="3.0" />
+               </VBox.margin>
+               <font>
+                  <Font size="12.0" />
+               </font>
+            </Button>
+            <Button mnemonicParsing="false" prefHeight="26.0" prefWidth="290.0" text="Listar Multas pendentes" textAlignment="CENTER" wrapText="true">
+               <VBox.margin>
+                  <Insets bottom="3.0" left="5.0" right="5.0" top="3.0" />
+               </VBox.margin>
+            </Button>
+            <Button mnemonicParsing="false" prefHeight="26.0" prefWidth="285.0" text="Quitar Multa" textAlignment="CENTER" wrapText="true">
+               <VBox.margin>
+                  <Insets bottom="3.0" left="5.0" right="5.0" top="3.0" />
+               </VBox.margin>
+            </Button>
+            <Separator prefHeight="15.0" prefWidth="199.0" />
+            <Button mnemonicParsing="false" onAction="#voltar" prefHeight="26.0" prefWidth="300.0" text="Voltar" textAlignment="CENTER" wrapText="true">
+               <VBox.margin>
+                  <Insets bottom="3.0" left="5.0" right="5.0" top="3.0" />
+               </VBox.margin>
+            </Button>
+         </children>
+      </VBox>
+   </left>
+   <padding>
+      <Insets bottom="16.0" left="16.0" right="16.0" top="16.0" />
+   </padding>
+</BorderPane>
