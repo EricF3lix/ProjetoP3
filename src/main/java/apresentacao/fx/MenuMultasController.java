@@ -9,12 +9,12 @@ import java.util.Optional;
 
 public class MenuMultasController extends MenuController {
 
-    private static final String formatacao = "%-3s %-15s %-20s %-15s %-12s %-10s";
-    private static final String formatacao2 = "%-3d %-22s %-30s %-15s %-12.2f %-10b";
-    private static final String descricao = "DESCRIÇÃO";
-    private static final String idvazio = "O ID não pode ser vazio";
-    private static final String datacriacao = "DATA-CRIAÇÃO";
-    private static final String valor = "VALOR";
+    private static final String FORMATACAO = "%-3s %-15s %-20s %-15s %-12s %-10s";
+    private static final String FORMATACAO_2 = "%-3d %-22s %-30s %-15s %-12.2f %-10b";
+    private static final String TEXTO_DESCRICAO = "DESCRIÇÃO";
+    private static final String ID_VAZIO = "O ID não pode ser vazio";
+    private static final String TEXTO_DATA_CRIACAO = "DATA-CRIAÇÃO";
+    private static final String TEXTO_VALOR = "VALOR";
 
     @Override
     protected String getTitulo() {return "Gerenciar Multas: ";}
@@ -23,7 +23,7 @@ public class MenuMultasController extends MenuController {
     private void cadastrarMulta() {
         Optional<Integer> idcontrato = pedirInteiro("ID do contrato:");
         if (idcontrato.isEmpty()) {
-            erro(idvazio);
+            erro(ID_VAZIO);
             return;
         }
 
@@ -61,7 +61,7 @@ public class MenuMultasController extends MenuController {
     private void buscarMultas(){
         Optional<Integer> id = pedirInteiro("ID da Multa:");
         if (id.isEmpty()) {
-            erro(idvazio);
+            erro(ID_VAZIO);
             return;
         }
 
@@ -94,10 +94,10 @@ public class MenuMultasController extends MenuController {
             return;
         }
 
-        escreverf(formatacao, "ID", datacriacao,descricao , "TIPO", valor, "PAGA");
+        escreverf(FORMATACAO, "ID", TEXTO_DATA_CRIACAO ,TEXTO_DESCRICAO , "TIPO", TEXTO_VALOR, "PAGA");
         escrever("-".repeat(200));
         for (Multa m : multas) {
-            escreverf(formatacao2, m.getId(), m.getDataCriacao(), m.getDescricao(), m.getTipo(), m.getValor(), m.isPaga());
+            escreverf(FORMATACAO_2, m.getId(), m.getDataCriacao(), m.getDescricao(), m.getTipo(), m.getValor(), m.isPaga());
         }
     }
 
@@ -106,7 +106,7 @@ public class MenuMultasController extends MenuController {
         Optional<Integer> id = pedirInteiro("ID do contrato");
 
         if (id.isEmpty()){
-            erro(idvazio);
+            erro(ID_VAZIO);
             return;
         }
         List<Multa> multas = sistema.listarMultasPorContrato(id.get());
@@ -116,9 +116,9 @@ public class MenuMultasController extends MenuController {
             return;
         }
 
-        escreverf(formatacao, "ID", datacriacao,descricao , "TIPO", valor, "PAGA");
+        escreverf(FORMATACAO, "ID", TEXTO_DATA_CRIACAO ,TEXTO_DESCRICAO , "TIPO", TEXTO_VALOR, "PAGA");
         for (Multa m : multas){
-            escreverf(formatacao2, m.getId(), m.getDataCriacao(), m.getDescricao(), m.getTipo(), m.getValor(), m.isPaga());
+            escreverf(FORMATACAO_2, m.getId(), m.getDataCriacao(), m.getDescricao(), m.getTipo(), m.getValor(), m.isPaga());
 
 
         }
@@ -134,7 +134,7 @@ public class MenuMultasController extends MenuController {
             return;
         }
 
-        escreverf(formatacao, "ID", datacriacao, descricao, "TIPO", valor, "PAGA");
+        escreverf(FORMATACAO, "ID", TEXTO_DATA_CRIACAO , TEXTO_DESCRICAO, "TIPO", TEXTO_VALOR, "PAGA");
         for (Multa m : multas) {
             escreverf("%-3d %-15s %-20s %-15s %-12.2f %-10b", m.getId(), m.getDataCriacao(), m.getDescricao(), m.getTipo(), m.getValor(), m.isPaga());
 
@@ -146,7 +146,7 @@ public class MenuMultasController extends MenuController {
         Optional<Integer> id = pedirInteiro("ID da Multa");
 
         if (id.isEmpty()){
-            erro(idvazio);
+            erro(ID_VAZIO);
             return;
         }
 

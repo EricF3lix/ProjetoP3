@@ -147,21 +147,9 @@ public class ContratoRepositorio implements IContratoRepositorio {
 
     @Override
     public List<ContratoAluguel> buscarPorCliente(int idCliente) {
-
-        List<ContratoAluguel> resultado = new ArrayList<>();
-
-        for (ContratoAluguel contrato : contratos) {
-
-            if (contrato.getCliente().getId() == idCliente) {
-
-                resultado.add(contrato);
-
-            }
-
-        }
-
-        return resultado;
-
+        return contratos.stream()
+                .filter(contrato -> contrato.getCliente().getId() == idCliente)
+                .toList();
     }
 
     @Override

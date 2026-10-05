@@ -2,6 +2,7 @@ package repositories;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import entidades.Multa;
 
@@ -101,41 +102,18 @@ public class MultaRepositorio implements IMultaRepositorio {
 
     @Override
     public List<Multa> buscarPorContrato(int idContrato) {
-
-        List<Multa> resultado = new ArrayList<>();
-
-        for (Multa multa : multas) {
-
-            if (multa.getIdContrato() == idContrato) {
-
-                resultado.add(multa);
-
-            }
-
-        }
-
-        return resultado;
-
+        return multas.stream()
+                .filter(multa -> multa.getIdContrato() == idContrato)
+                .toList();
     }
 
     @Override
     public List<Multa> buscarPendentes() {
-
-        List<Multa> resultado = new ArrayList<>();
-
-        for (Multa multa : multas) {
-
-            if (!multa.isPaga()) {
-
-                resultado.add(multa);
-
-            }
-
-        }
-
-        return resultado;
-
+        return multas.stream()
+                .filter(multa -> !multa.isPaga())
+                .toList();
     }
+
 
     @Override
     public int gerarProximoId() {
