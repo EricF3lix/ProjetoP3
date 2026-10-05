@@ -1,6 +1,5 @@
 package apresentacao.fx;
 
-import java.util.List;
 import java.util.Optional;
 
 import entidades.Cliente;
