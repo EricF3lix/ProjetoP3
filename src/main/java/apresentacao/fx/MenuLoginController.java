@@ -55,8 +55,8 @@ public class MenuLoginController extends MenuController {
         } else if (usuario instanceof Funcionario) {
             info("Tela do funcionário ainda não criada"); 
 
-        } else if (usuario instanceof Cliente) {
-            info("Tela do cliente ainda não criada"); 
+        } else if (usuario instanceof Cliente cliente) {
+            navegador.abrir("MenuCliente.fxml", (MenuClienteController c) -> c.setCliente(cliente)); 
         }
     }
 
