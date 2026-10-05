@@ -130,7 +130,7 @@ public class MenuMultasController extends MenuController {
 
         escreverf("%-3s %-15s %-20s %-15s %-12s %-10s", "ID", "DATA-CRIAÇÃO", "DESCRIÇÃO", "TIPO", "VALOR", "PAGA");
         for (Multa m : multas) {
-            escreverf("%-3d %-22s %-30s %-15s %-12.2f %-10b", m.getId(), m.getDataCriacao(), m.getDescricao(), m.getTipo(), m.getValor(), m.isPaga());
+            escreverf("%-3d %-15s %-20s %-15s %-12.2f %-10b", m.getId(), m.getDataCriacao(), m.getDescricao(), m.getTipo(), m.getValor(), m.isPaga());
 
         }
     }
