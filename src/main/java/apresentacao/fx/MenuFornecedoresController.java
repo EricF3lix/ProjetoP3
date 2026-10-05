@@ -75,6 +75,7 @@ public class MenuFornecedoresController extends MenuController{
 			return;
 		}
 		
+		escrever("===== FORNECEDORES CADASTRADOS =====");
 		escreverf("%-5s %-25s %-18s %-30s %-15s %-6s", "ID", "NOME", "CNPJ", "EMAIL", "TELEFONE", "ATIVO");
 		escrever("-".repeat(104));
 		
