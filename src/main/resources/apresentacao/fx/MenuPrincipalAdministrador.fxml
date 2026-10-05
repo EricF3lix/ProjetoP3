@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox alignment="TOP_CENTER" prefHeight="600.0" prefWidth="900.0" spacing="10.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="apresentacao.fx.MenuPrincipalAdministradorController">
+   <padding>
+      <Insets bottom="24.0" left="24.0" right="24.0" top="24.0" />
+   </padding>
+   <children>
+      <Label style="-fx-font-size: 24px; -fx-font-weight: bold;" text="Menu Administrador" />
+      <Label fx:id="lblBemVindo" text="Bem-vindo(a)" />
+      <Separator />
+      <Button maxWidth="320.0" mnemonicParsing="false" onAction="#abrirUsuarios" text="Usuários" />
+      <Button maxWidth="320.0" mnemonicParsing="false" onAction="#abrirItens" text="Itens" />
+      <Button maxWidth="320.0" mnemonicParsing="false" onAction="#abrirCategorias" text="Categorias" />
+      <Button maxWidth="320.0" mnemonicParsing="false" onAction="#abrirFornecedores" text="Fornecedores" />
+      <Button maxWidth="320.0" mnemonicParsing="false" onAction="#abrirContratos" text="Contratos / Aluguéis" />
+      <Button maxWidth="320.0" mnemonicParsing="false" onAction="#abrirMultas" text="Multas" />
+      <Button maxWidth="320.0" mnemonicParsing="false" onAction="#abrirRelatorios" text="Relatórios" />
+      <Separator />
+      <Button maxWidth="320.0" mnemonicParsing="false" onAction="#voltar" text="Sair" />
+   </children>
+</VBox>
