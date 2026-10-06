@@ -120,6 +120,7 @@ public class MenuRelatoriosController extends MenuController {
 
                 }
                 else {
+                    limpar();
 
                     escrever("\n===== RELATÓRIO DE FATURAMENTO =====");
 
@@ -127,13 +128,14 @@ public class MenuRelatoriosController extends MenuController {
 
                     escrever("");
 
-                    escreverf("%-5s %-20s %-12s %-12s%n", "ID", "CLIENTE", "ALUGUEL", "MULTA");
+                    escreverf("%-5s %-20s %-12s %-12s %-10s", "ID", "CLIENTE", "ALUGUEL", "MULTA", "ATIVO");
 
                     for (ContratoAluguel contrato : contratosPeriodo) {
 
-                        escreverf("%-5d %-20s %-12.2f %-12.2f%n", contrato.getId(), contrato.getCliente().getNome(), contrato.getValorTotal(), contrato.getValorMulta());
-                        escrever(SALVO);
+                        escreverf("%-5d %-20s %-12.2f %-12.2f %10b", contrato.getId(), contrato.getCliente().getNome(), contrato.getValorTotal(), contrato.getValorMulta(), contrato.isAtivo());
+
                     }
+                    escrever(SALVO);
                 }
 
             }
