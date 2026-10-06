@@ -246,19 +246,20 @@ public class SistemaFacade {
     // RELATÓRIOS
     // =========================================================================
 
-    public void gerarRelatorioItensDisponiveis() {
-        geradorRelatorios.gerarRelatorioItensDisponiveis();
+    public List<Item> gerarRelatorioItensDisponiveis() {
+        return geradorRelatorios.gerarRelatorioItensDisponiveis();
     }
 
-    public void gerarHistoricoCliente(int idCliente) {
-        geradorRelatorios.gerarHistoricoCliente(idCliente);
+    public List<ContratoAluguel> gerarHistoricoCliente(int idCliente) {
+        return geradorRelatorios.gerarHistoricoCliente(idCliente);
     }
 
-    public void gerarRelatorioItensAlugados() {
-        geradorRelatorios.gerarRelatorioItensAlugados();
+    public List<ContratoAluguel> gerarRelatorioItensAlugados() {
+        return geradorRelatorios.gerarRelatorioItensAlugados();
+
     }
 
-    public void gerarRelatorioFaturamento(String dataInicial, String dataFinal) {
-        geradorRelatorios.gerarRelatorioFaturamento(dataInicial, dataFinal);
+    public List<ContratoAluguel> gerarRelatorioFaturamento(String dataInicial, String dataFinal) {
+        return geradorRelatorios.gerarRelatorioFaturamento(dataInicial, dataFinal);
     }
 }
