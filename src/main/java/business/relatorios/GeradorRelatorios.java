@@ -31,11 +31,9 @@ public class GeradorRelatorios implements IRelatorios {
     @Override
     public List<Item> gerarRelatorioItensDisponiveis() {
 
-        List<Item> itensDisponiveis = gerenciamentoItens.listarItens().stream()
+        return gerenciamentoItens.listarItens().stream()
                 .filter(Item::estaDisponivel)
                 .toList();
-
-        return itensDisponiveis;
     }
 
     @Override
@@ -81,8 +79,6 @@ public class GeradorRelatorios implements IRelatorios {
 
         inicio = LocalDate.parse(dataInicial);
         fim = LocalDate.parse(dataFinal);
-        double totalAlugueis = 0;
-        double totalMultas = 0;
 
         for (ContratoAluguel contrato : gerenciamentoContratos.listarContratos()) {
 
