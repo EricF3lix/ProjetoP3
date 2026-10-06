@@ -1,6 +1,5 @@
 package apresentacao.fx;
 
-import apresentacao.ValidaEntrada;
 import entidades.ContratoAluguel;
 import entidades.Item;
 import entidades.Usuario;
@@ -13,7 +12,7 @@ import java.util.Optional;
 
 public class MenuRelatoriosController extends MenuController {
 
-    final static String SALVO = "\nArquivo CSV gerado na pasta relatorios";
+    private final static String SALVO = "\nArquivo CSV gerado na pasta relatorios";
 
     @Override
     protected String getTitulo() {
