@@ -71,4 +71,15 @@ public class MenuItensController extends MenuController {
                     item.isAtivo());
         }
     }
+    @FXML
+    private void desativarItem() {
+        Optional<Integer> id = pedirInteiro(ID_ITEM);
+        if (id.isEmpty()) return;
+ 
+        if (sistema.excluirItem(id.get())) {
+            info("Item desativado com sucesso");
+        } else {
+            erro("Item não encontrado ou alugado");
+        }
+    }
 }
