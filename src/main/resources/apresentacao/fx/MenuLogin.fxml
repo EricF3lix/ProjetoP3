@@ -13,7 +13,7 @@
    </padding>
    <children>
       <Label style="-fx-font-size: 26px; -fx-font-weight: bold;" text="LOJA QUE ALUGA DE UM TUDO" />
-      <Label prefWidth="93.0" text="Entrar no sistema">
+      <Label alignment="CENTER" contentDisplay="CENTER" prefHeight="24.0" prefWidth="125.0" text="Entrar no sistema">
          <VBox.margin>
             <Insets bottom="12.0" />
          </VBox.margin>
