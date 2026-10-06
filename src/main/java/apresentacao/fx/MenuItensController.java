@@ -46,4 +46,29 @@ public class MenuItensController extends MenuController {
         escrever("Status:       " + item.getStatus());
         escrever("Ativo:        " + item.isAtivo());
     }
+     @FXML
+    private void listarItens() {
+        List<Item> itens = sistema.listarItens();
+ 
+        limpar();
+        escrever("===== ITENS CADASTRADOS =====");
+ 
+        if (itens.isEmpty()) {
+            escrever("Nenhum item cadastrado");
+            return;
+        }
+ 
+        escreverf("%-5s %-25s %-20s %-10s %-12s %-6s", "ID", "NOME", "CATEGORIA", "TAXA/DIA", "STATUS", "ATIVO");
+        escrever("-".repeat(85));
+ 
+        for (Item item : itens) {
+            escreverf("%-5d %-25s %-20s R$%-8.2f %-12s %-6s",
+                    item.getId(),
+                    item.getNome(),
+                    item.getCategoria() != null ? item.getCategoria().getNome() : "-",
+                    item.getTaxaDiaria(),
+                    item.getStatus(),
+                    item.isAtivo());
+        }
+    }
 }
