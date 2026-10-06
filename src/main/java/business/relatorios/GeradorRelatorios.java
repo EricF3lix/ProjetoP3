@@ -64,35 +64,23 @@ public class GeradorRelatorios implements IRelatorios {
                 .filter(ContratoAluguel::estaAtivo)
                 .toList();
 
-            SalvaRelatorioItensAlugados salva = new SalvaRelatorioItensAlugados();
+        SalvaRelatorioItensAlugados salva = new SalvaRelatorioItensAlugados();
 
-            salva.salvar(contratosAtivos);
+        salva.salvar(contratosAtivos);
 
         return contratosAtivos;
 
     }
 
     @Override
-    public void gerarRelatorioFaturamento(String dataInicial, String dataFinal) {
+    public List<ContratoAluguel> gerarRelatorioFaturamento(String dataInicial, String dataFinal) {
+
         LocalDate inicio;
         LocalDate fim;
-
-        try {
-
-            inicio = LocalDate.parse(dataInicial);
-            fim = LocalDate.parse(dataFinal);
-
-        } catch (Exception e) {
-
-            System.out.println(
-                    "Formato de data inválido.");
-
-            return; //perguntar a jackson se pode usar isso
-
-        }
-
         List<ContratoAluguel> contratosPeriodo = new ArrayList<>();
 
+        inicio = LocalDate.parse(dataInicial);
+        fim = LocalDate.parse(dataFinal);
         double totalAlugueis = 0;
         double totalMultas = 0;
 
@@ -104,48 +92,11 @@ public class GeradorRelatorios implements IRelatorios {
 
                 contratosPeriodo.add(contrato);
 
-                totalAlugueis += contrato.getValorTotal();
+                SalvaRelatorioFaturamento salva = new SalvaRelatorioFaturamento();
 
-                totalMultas += contrato.getValorMulta();
-
+                salva.salvar(contratosPeriodo, dataInicial, dataFinal);
             }
-
         }
-
-        if (contratosPeriodo.isEmpty()) {
-            System.out.println( "Nenhum contrato encontrado no período.");
-
-        } else{
-
-            System.out.println("\n===== RELATÓRIO DE FATURAMENTO =====");
-
-            System.out.println("Período: " + dataInicial + " até "  + dataFinal);
-
-            System.out.println();
-
-            System.out.printf( "%-5s %-20s %-12s %-12s%n","ID", "CLIENTE", "ALUGUEL",  "MULTA");
-
-            for (ContratoAluguel contrato : contratosPeriodo) {
-
-                System.out.printf("%-5d %-20s %-12.2f %-12.2f%n", contrato.getId(), contrato.getCliente().getNome(), contrato.getValorTotal(), contrato.getValorMulta());
-
-            }
-
-            System.out.println();
-
-            System.out.println("Quantidade de contratos: " + contratosPeriodo.size());
-
-            System.out.printf("Total de aluguéis: R$ %.2f%n", totalAlugueis);
-
-            System.out.printf("Total de multas: R$ %.2f%n",totalMultas);
-
-            System.out.printf("Total geral: R$ %.2f%n", totalAlugueis + totalMultas);
-
-            SalvaRelatorioFaturamento salva = new SalvaRelatorioFaturamento();
-
-            salva.salvar(contratosPeriodo, dataInicial, dataFinal);
-        }
-
+        return contratosPeriodo;
     }
-
 }

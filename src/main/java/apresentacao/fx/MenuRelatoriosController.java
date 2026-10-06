@@ -1,5 +1,6 @@
 package apresentacao.fx;
 
+import apresentacao.ValidaEntrada;
 import entidades.ContratoAluguel;
 import entidades.Item;
 import entidades.Usuario;
@@ -100,7 +101,46 @@ public class MenuRelatoriosController extends MenuController {
                 }
 
                 escreverf("%-5d %-20s %-20s %-15s %-10s%n", contrato.getId(), contrato.getCliente().getNome(), contrato.getItem().getNome(), contrato.getDataDevolucaoPrevista(), situacao);
+                escrever("\nArquivo CSV gerado na pasta relatorios");
             }
         }
     }
+
+    @FXML
+    private void relatorioPeriodo(){
+        Optional<String> dataInicial= pedirData("Data inicial");
+        if (!dataInicial.isEmpty()) {
+            Optional<String> dataFinal = pedirData("Data final");
+            if (!dataFinal.isEmpty()) {
+
+                List<ContratoAluguel> contratosPeriodo = sistema.gerarRelatorioFaturamento(dataInicial.get(), dataFinal.get());
+                if (contratosPeriodo.isEmpty()) {
+                    escrever( "Nenhum contrato encontrado no período.");
+
+                }
+                else {
+
+                    escrever("\n===== RELATÓRIO DE FATURAMENTO =====");
+
+                    escrever("Período: " + dataInicial.get()+ " até " + dataFinal.get());
+
+                    escrever("");
+
+                    escreverf("%-5s %-20s %-12s %-12s%n", "ID", "CLIENTE", "ALUGUEL", "MULTA");
+
+                    for (ContratoAluguel contrato : contratosPeriodo) {
+
+                        escreverf("%-5d %-20s %-12.2f %-12.2f%n", contrato.getId(), contrato.getCliente().getNome(), contrato.getValorTotal(), contrato.getValorMulta());
+
+                    }
+                }
+
+            }
+            else {erro("A data nao pode ser vazia");}
+
+
+        }
+        else {erro("A data nao pode ser vazia");}
+    }
 }
+

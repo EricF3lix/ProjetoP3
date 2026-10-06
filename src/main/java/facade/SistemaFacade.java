@@ -259,7 +259,7 @@ public class SistemaFacade {
 
     }
 
-    public void gerarRelatorioFaturamento(String dataInicial, String dataFinal) {
-        geradorRelatorios.gerarRelatorioFaturamento(dataInicial, dataFinal);
+    public List<ContratoAluguel> gerarRelatorioFaturamento(String dataInicial, String dataFinal) {
+        return geradorRelatorios.gerarRelatorioFaturamento(dataInicial, dataFinal);
     }
 }

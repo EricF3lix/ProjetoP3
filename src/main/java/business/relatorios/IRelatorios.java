@@ -12,6 +12,6 @@ public interface IRelatorios {
 
     public abstract List<ContratoAluguel> gerarRelatorioItensAlugados();
 
-    public abstract void gerarRelatorioFaturamento(String dataInicial, String dataFinal);
+    public abstract List<ContratoAluguel> gerarRelatorioFaturamento(String dataInicial, String dataFinal);
 
 }
