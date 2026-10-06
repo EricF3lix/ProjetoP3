@@ -27,6 +27,9 @@ jobs:
             const { owner, repo } = context.repo;
             const norm = s => (s || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
 
+            const refRe = /(?:^|[\/_-])#?(\d+)(?=[\/_-]|$/g;
+            const closingRe = /\b(?:close[sd]?|fix(?:e[sd])?|resolve[sd]?)\s*:?\s+#(\d+)\b/gi;
+
             const extrair = (texto, re) =>
               new Set([...(texto || '').matchAll(re)].map(m => parseInt(m[1])));
 
