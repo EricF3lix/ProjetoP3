@@ -12,7 +12,7 @@ import java.util.Optional;
 
 public class MenuRelatoriosController extends MenuController {
 
-    private final static String SALVO = "\nArquivo CSV gerado na pasta relatorios";
+    private static final String SALVO = "\nArquivo CSV gerado na pasta relatorios";
 
     @Override
     protected String getTitulo() {
