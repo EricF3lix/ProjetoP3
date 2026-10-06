@@ -112,16 +112,59 @@ public class MenuItensController extends MenuController {
         }
     }
     @FXML
+    private void atualizarItem() {
+        Optional<Integer> id = pedirInteiro(ID_ITEM);
+        if (id.isEmpty()) return;
+
+        Item item = sistema.buscarItem(id.get());
+        if (item == null) {
+            erro(NAO_ENCONTRADO);
+            return;
+        }
+
+    
+        Optional<String> nome = pedirTexto("Nome:", item.getNome());
+        if (nome.isEmpty()) return;
+
+        Optional<String> descricao = pedirTexto("Descrição:", item.getDescricao());
+        if (descricao.isEmpty()) return;
+
+        Optional<Double> taxaDiaria = pedirDouble("Taxa diária (R$):", item.getTaxaDiaria());
+        if (taxaDiaria.isEmpty()) return;
+
+        Optional<Integer> estado = escolherPosicao("Estado de conservação:", ESTADOS,
+                "(manter atual: " + item.getEstadoConservacao() + ")");
+        if (estado.isEmpty()) return;
+
+        Optional<Double> valorReposicao = pedirDouble("Valor de reposição (R$):", item.getValorReposicao());
+        if (valorReposicao.isEmpty()) return;
+
+        String novoNome = nome.get().isEmpty() ? item.getNome() : nome.get();
+        String novaDescricao = descricao.get().isEmpty() ? item.getDescricao() : descricao.get();
+        String novoEstado = estado.get() < 0 ? item.getEstadoConservacao() : ESTADOS.get(estado.get());
+
+        Item itemNovo = new Item(id.get(), novoNome, novaDescricao, taxaDiaria.get(), novoEstado,
+                valorReposicao.get(), item.getCategoria(), item.getFornecedor());
+
+        if (sistema.atualizarItem(itemNovo)) {
+            info("Item atualizado com sucesso");
+        } else {
+            erro("Erro ao atualizar item");
+        }
+    }
+
+    @FXML
     private void desativarItem() {
         Optional<Integer> id = pedirInteiro(ID_ITEM);
         if (id.isEmpty()) return;
- 
+
         if (sistema.excluirItem(id.get())) {
             info("Item desativado com sucesso");
         } else {
             erro("Item não encontrado ou alugado");
         }
     }
+    
     private Optional<Escolha<Categoria>> selecionarCategoria() {
         List<Categoria> categorias = sistema.listarCategorias();
 
