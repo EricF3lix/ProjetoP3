@@ -131,7 +131,7 @@ public class MenuRelatoriosController extends MenuController {
                     for (ContratoAluguel contrato : contratosPeriodo) {
 
                         escreverf("%-5d %-20s %-12.2f %-12.2f%n", contrato.getId(), contrato.getCliente().getNome(), contrato.getValorTotal(), contrato.getValorMulta());
-
+                        escrever("\nArquivo CSV gerado na pasta relatorios");
                     }
                 }
 
