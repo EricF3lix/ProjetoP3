@@ -2,6 +2,8 @@ package apresentacao.fx;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
 
@@ -9,9 +11,9 @@ import facade.SistemaFacade;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.ChoiceDialog;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextInputDialog;
-
 public abstract class MenuController {
 
     protected SistemaFacade sistema;
@@ -23,7 +25,7 @@ public abstract class MenuController {
     protected abstract String getTitulo();
 
     protected void aoExibir() {
-        // opcional
+
     }
 
     final void inicializar(SistemaFacade sistema, Navegador navegador) {
@@ -82,7 +84,16 @@ public abstract class MenuController {
     }
 
     protected Optional<Double> pedirDouble(String mensagem) {
-        return pedir(mensagem, Double::parseDouble, "Digite um valor numérico válido");
+        return pedir(mensagem, "", MenuController::converterDouble, "Digite um valor numérico válido");
+    }
+
+    protected Optional<Double> pedirDouble(String mensagem, double valorPadrao) {
+        return pedir(mensagem, String.valueOf(valorPadrao), MenuController::converterDouble,
+            "Digite um valor numérico válido");
+    }
+
+    private static double converterDouble(String texto) {
+        return Double.parseDouble(texto.replace(',', '.'));
     }
 
     protected Optional<String> pedirData(String mensagem) {
@@ -95,9 +106,12 @@ public abstract class MenuController {
             }
         }, "Formato inválido. Use AAAA-MM-DD");
     }
-
     protected <T> Optional<T> pedir(String mensagem, Function<String, T> conversor, String msgErro) {
-        String texto = "";
+        return pedir(mensagem, "", conversor, msgErro);
+    }
+    
+    protected <T> Optional<T> pedir(String mensagem, String textoInicial, Function<String, T> conversor, String msgErro) {
+        String texto = textoInicial;
         while (true) {
             Optional<String> resposta = pedirTexto(mensagem, texto);
             if (resposta.isEmpty()) {
@@ -110,5 +124,20 @@ public abstract class MenuController {
                 erro(msgErro);
             }
         }
+    }
+    protected Optional<Integer> escolherPosicao(String mensagem, List<String> rotulos, String rotuloNenhum) {
+        List<String> opcoes = new ArrayList<>();
+        if (rotuloNenhum != null) {
+            opcoes.add(rotuloNenhum);
+        }
+        opcoes.addAll(rotulos);
+
+        ChoiceDialog<String> dialogo = new ChoiceDialog<>(opcoes.get(0), opcoes);
+        dialogo.setHeaderText(mensagem);
+
+        return dialogo.showAndWait().map(escolhido -> {
+            int posicao = opcoes.indexOf(escolhido);
+            return rotuloNenhum != null ? posicao - 1 : posicao;
+        });
     }
 }
