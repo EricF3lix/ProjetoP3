@@ -1,8 +1,11 @@
 package apresentacao.fx;
  
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import entidades.Categoria;
+import entidades.Fornecedor;
 import entidades.Item;
 import javafx.fxml.FXML;
  
@@ -22,6 +25,43 @@ public class MenuItensController extends MenuController {
         return "Gerenciar Itens";
     }
  
+
+    @FXML
+    private void cadastrarItem() {
+        Optional<String> nome = pedirTexto("Nome:");
+        if (nome.isEmpty()) return;
+ 
+        Optional<String> descricao = pedirTexto("Descrição:");
+        if (descricao.isEmpty()) return;
+ 
+        Optional<Double> taxaDiaria = pedirDouble("Taxa diária (R$):");
+        if (taxaDiaria.isEmpty()) return;
+ 
+        Optional<Integer> estado = escolherPosicao("Estado de conservação:", ESTADOS, null);
+        if (estado.isEmpty()) return;
+ 
+        Optional<Double> valorReposicao = pedirDouble("Valor de reposição (R$):");
+        if (valorReposicao.isEmpty()) return;
+ 
+        Optional<Escolha<Categoria>> categoria = selecionarCategoria();
+        if (categoria.isEmpty()) return;
+ 
+        Optional<Escolha<Fornecedor>> fornecedor = selecionarFornecedor();
+        if (fornecedor.isEmpty()) return;
+ 
+        int id = sistema.gerarProximoIdItem();
+ 
+        Item item = new Item(id, nome.get(), descricao.get(), taxaDiaria.get(),
+                ESTADOS.get(estado.get()), valorReposicao.get(),
+                categoria.get().valor(), fornecedor.get().valor());
+ 
+        if (sistema.cadastrarItem(item)) {
+            info("Item cadastrado com sucesso. ID: " + id);
+        } else {
+            erro("Erro ao cadastrar item");
+        }
+    }
+
     @FXML
     private void buscarItem() {
         Optional<Integer> id = pedirInteiro(ID_ITEM);
@@ -81,5 +121,54 @@ public class MenuItensController extends MenuController {
         } else {
             erro("Item não encontrado ou alugado");
         }
+    }
+    private Optional<Escolha<Categoria>> selecionarCategoria() {
+        List<Categoria> categorias = sistema.listarCategorias();
+
+        if (categorias.isEmpty()) {
+            info("Nenhuma categoria cadastrada. O item será cadastrado sem categoria");
+            return Optional.of(new Escolha<Categoria>(null));
+        }
+
+        List<String> rotulos = new ArrayList<>();
+        for (Categoria c : categorias) {
+            rotulos.add("[" + c.getId() + "] " + c.getNome());
+        }
+
+        Optional<Integer> posicao = escolherPosicao("Categoria do item:", rotulos, "(Sem categoria)");
+        if (posicao.isEmpty()) {
+            return Optional.empty(); 
+        }
+
+        if (posicao.get() < 0) {
+            return Optional.of(new Escolha<Categoria>(null)); 
+        }
+
+        return Optional.of(new Escolha<Categoria>(categorias.get(posicao.get())));
+    }
+
+    private Optional<Escolha<Fornecedor>> selecionarFornecedor() {
+        List<Fornecedor> fornecedores = sistema.listarFornecedores();
+
+        if (fornecedores.isEmpty()) {
+            info("Nenhum fornecedor cadastrado. O item será cadastrado sem fornecedor");
+            return Optional.of(new Escolha<Fornecedor>(null));
+        }
+
+        List<String> rotulos = new ArrayList<>();
+        for (Fornecedor f : fornecedores) {
+            rotulos.add("[" + f.getId() + "] " + f.getRazaoSocial());
+        }
+
+        Optional<Integer> posicao = escolherPosicao("Fornecedor do item:", rotulos, "(Sem fornecedor)");
+        if (posicao.isEmpty()) {
+            return Optional.empty(); 
+        }
+
+        if (posicao.get() < 0) {
+            return Optional.of(new Escolha<Fornecedor>(null));
+        }
+
+        return Optional.of(new Escolha<Fornecedor>(fornecedores.get(posicao.get())));
     }
 }

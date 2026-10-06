@@ -135,9 +135,15 @@ public abstract class MenuController {
         ChoiceDialog<String> dialogo = new ChoiceDialog<>(opcoes.get(0), opcoes);
         dialogo.setHeaderText(mensagem);
 
-        return dialogo.showAndWait().map(escolhido -> {
-            int posicao = opcoes.indexOf(escolhido);
-            return rotuloNenhum != null ? posicao - 1 : posicao;
-        });
+        Optional<String> escolhido = dialogo.showAndWait();
+        if (escolhido.isEmpty()) {
+            return Optional.empty();
+        }
+
+        int posicao = opcoes.indexOf(escolhido.get());
+        if (rotuloNenhum != null) {
+            posicao = posicao - 1;
+        }
+        return Optional.of(posicao);
     }
 }
