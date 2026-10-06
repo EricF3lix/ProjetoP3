@@ -13,6 +13,8 @@ import java.util.Optional;
 
 public class MenuRelatoriosController extends MenuController {
 
+    final static String SALVO = "\nArquivo CSV gerado na pasta relatorios";
+
     @Override
     protected String getTitulo() {
         return "Menu Relatorios";
@@ -56,7 +58,7 @@ public class MenuRelatoriosController extends MenuController {
                                 contrato.getDataDevolucaoPrevista(), contrato.getStatus(), contrato.getValorTotal(), contrato.getValorMulta());
                     }
 
-                    escrever("\nArquivo CSV gerado na pasta relatorios");
+                    escrever(SALVO);
                 }
 
             } else {
@@ -101,7 +103,7 @@ public class MenuRelatoriosController extends MenuController {
                 }
 
                 escreverf("%-5d %-20s %-20s %-15s %-10s%n", contrato.getId(), contrato.getCliente().getNome(), contrato.getItem().getNome(), contrato.getDataDevolucaoPrevista(), situacao);
-                escrever("\nArquivo CSV gerado na pasta relatorios");
+                escrever(SALVO);
             }
         }
     }
@@ -131,7 +133,7 @@ public class MenuRelatoriosController extends MenuController {
                     for (ContratoAluguel contrato : contratosPeriodo) {
 
                         escreverf("%-5d %-20s %-12.2f %-12.2f%n", contrato.getId(), contrato.getCliente().getNome(), contrato.getValorTotal(), contrato.getValorMulta());
-                        escrever("\nArquivo CSV gerado na pasta relatorios");
+                        escrever(SALVO);
                     }
                 }
 
