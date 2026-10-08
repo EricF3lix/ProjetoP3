@@ -4,16 +4,25 @@ import java.util.List;
 import java.util.Optional;
 
 import entidades.Fornecedor;
+import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
+import javafx.scene.control.Label;
+import javafx.scene.control.TableView;
 
 public class MenuFornecedoresController extends MenuController{
 
 	private static final String ID = "Digite o ID do fornecedor: ";
 	private static final String NAO_ENCONTRADO = "Fornecedor não encontrado.";
+	@FXML private TableView<Fornecedor> tabela;
 	
 	@Override
 	protected String getTitulo() {
 		return("Gerenciar Fornecedores");
+	}
+	
+	@Override
+	protected void aoExibir() {
+		tabela.setPlaceholder(new Label(""));
 	}
 	
 	@FXML
@@ -35,6 +44,7 @@ public class MenuFornecedoresController extends MenuController{
 		
 		if(sistema.cadastrarFornecedor(fornecedor)) {
 			info("Fornecedor cadastrado com sucesso! ID: " + id);
+			mostraFornecedor(id);
 		}
 		else {
 			info("Fornecedor já cadastrado!");
@@ -48,21 +58,7 @@ public class MenuFornecedoresController extends MenuController{
 		if(idFornecedor.isEmpty()) { return;
 		}
 		
-		Fornecedor fornecedor = sistema.buscarFornecedor(idFornecedor.get());
-		if (fornecedor == null) {
-			info("Fornecedor não cadastrado.");
-			return;
-		}
-		
-		limpar();
-		escrever("===== DADOS DO FORNECEDOR =====");
-        escrever("ID:        " + fornecedor.getId());
-        escrever("Nome:      " + fornecedor.getRazaoSocial());
-        escrever("CNPJ:      " + fornecedor.getCnpj());
-        escrever("Email:     " + fornecedor.getEmail());
-        escrever("Telefone:  " + fornecedor.getTelefone());
-        escrever("Ativo:     " + fornecedor.isAtivo());
-		
+		mostraFornecedor(idFornecedor.get());
 		
 	}
 	
@@ -75,13 +71,7 @@ public class MenuFornecedoresController extends MenuController{
 			return;
 		}
 		
-		escrever("===== FORNECEDORES CADASTRADOS =====");
-		escreverf("%-5s %-25s %-18s %-30s %-15s %-6s", "ID", "NOME", "CNPJ", "EMAIL", "TELEFONE", "ATIVO");
-		escrever("-".repeat(104));
-		
-		for (Fornecedor c : listaFornecedores) {
-			escreverf("%-5s %-25s %-18s %-30s %-15s %-6s", c.getId(), c.getRazaoSocial(), c.getCnpj(), c.getEmail(), c.getTelefone(), c.isAtivo());
-        }
+		tabela.setItems(FXCollections.observableArrayList(listaFornecedores));
 		
 	}
 	
@@ -115,6 +105,7 @@ public class MenuFornecedoresController extends MenuController{
 
 	    if (sistema.atualizarFornecedor(new Fornecedor(id.get(), novoNome, novoCnpj, novoEmail, novoTelefone))) {
 	        info("Fornecedor atualizado com sucesso.");
+	        mostraFornecedor(id.get());
 	    } else {
 	        erro("Erro ao atualizar fornecedor.");
 	    }
@@ -137,8 +128,22 @@ public class MenuFornecedoresController extends MenuController{
 
 	    if (sistema.desativarFornecedor(id.get())) {
 	        info("Fornecedor desativado com sucesso");
+	        mostraFornecedor(id.get());
 	    } else {
 	        erro("Erro ao desativar fornecedor");
 	    }
 	}
+
+
+private void mostraFornecedor(int id) {
+	
+	Fornecedor fornecedor = sistema.buscarFornecedor(id);
+	if (fornecedor == null) {
+		info("Fornecedor não cadastrado.");
+		return;
+	}
+	
+	tabela.getItems().setAll(fornecedor);
+	
+}
 }
