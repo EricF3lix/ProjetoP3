@@ -17,7 +17,7 @@ public class MenuMultasController extends MenuController {
     private static final String TEXTO_VALOR = "VALOR";
 
     @Override
-    protected String getTitulo() {return "Gerenciar Multas: ";}
+    protected String getTitulo() {return "Menu Multas ";}
 
     @FXML
     private void cadastrarMulta() {

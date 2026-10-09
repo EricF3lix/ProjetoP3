@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1">
+   <top>
+      <HBox BorderPane.alignment="CENTER">
+         <children>
+            <MenuBar nodeOrientation="LEFT_TO_RIGHT" prefHeight="27.0" prefWidth="487.0">
+              <menus>
+                  <Menu mnemonicParsing="false" text="Bem vindo(a) ">
+                    <items>
+                      <MenuItem mnemonicParsing="false" style="-fx-background-color: red;" text="Action 1" />
+                    </items>
+                  </Menu>
+              </menus>
+            </MenuBar>
+            <Button mnemonicParsing="false" prefHeight="26.0" prefWidth="117.0" style="-fx-background-color: red; -fx-text-fill: white;" text="Encerrar sessão" wrapText="true" />
+         </children>
+      </HBox>
+   </top>
+   <center>
+      <AnchorPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+         <children>
+            <VBox alignment="TOP_CENTER" layoutX="202.0" layoutY="5.0" prefHeight="367.0" prefWidth="188.0" style="-fx-background-color: light gray;">
+               <children>
+                  <Button mnemonicParsing="false" prefWidth="102.0" text="Usuarios">
+                     <VBox.margin>
+                        <Insets top="30.0" />
+                     </VBox.margin>
+                  </Button>
+                  <Button mnemonicParsing="false" prefWidth="102.0" text="Itens">
+                     <VBox.margin>
+                        <Insets top="15.0" />
+                     </VBox.margin>
+                  </Button>
+                  <Button mnemonicParsing="false" prefWidth="102.0" text="Categorias">
+                     <VBox.margin>
+                        <Insets top="15.0" />
+                     </VBox.margin>
+                  </Button>
+                  <Button mnemonicParsing="false" prefHeight="26.0" prefWidth="102.0" text="Fornecedores">
+                     <VBox.margin>
+                        <Insets top="15.0" />
+                     </VBox.margin>
+                  </Button>
+                  <Button mnemonicParsing="false" prefWidth="102.0" text="Contratos">
+                     <VBox.margin>
+                        <Insets top="15.0" />
+                     </VBox.margin>
+                  </Button>
+                  <Button mnemonicParsing="false" prefWidth="102.0" text="Multas">
+                     <VBox.margin>
+                        <Insets top="15.0" />
+                     </VBox.margin>
+                  </Button>
+                  <Button mnemonicParsing="false" prefWidth="102.0" text="Relatorios">
+                     <VBox.margin>
+                        <Insets top="15.0" />
+                     </VBox.margin>
+                  </Button>
+               </children>
+            </VBox>
+         </children></AnchorPane>
+   </center>
+</BorderPane>
