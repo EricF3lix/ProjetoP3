@@ -1,6 +1,6 @@
 package apresentacao.fx;
 
-import java.util.ArrayList;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -69,7 +69,7 @@ public class MenuClienteController extends MenuController {
 		mostrarTabelas(false);
 
 		List<Item> disponiveis = sistema.listarItens().stream()
-				.filter(item -> item.estaDisponivel())
+				.filter(Item::estaDisponivel)
 				.toList();
 
 		if (disponiveis.isEmpty()) {

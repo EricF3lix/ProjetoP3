@@ -75,7 +75,7 @@
                <TableColumn prefWidth="100.0" text="Retirada">
                   <cellValueFactory><PropertyValueFactory property="dataRetirada" /></cellValueFactory>
                </TableColumn>
-               <TableColumn prefWidth="110.0" text="Devolução prevista">
+               <TableColumn prefWidth="110.0" text="Devolução">
                   <cellValueFactory><PropertyValueFactory property="dataDevolucaoPrevista" /></cellValueFactory>
                </TableColumn>
                <TableColumn prefWidth="90.0" text="Status">
