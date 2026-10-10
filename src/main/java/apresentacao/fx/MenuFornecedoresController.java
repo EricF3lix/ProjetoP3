@@ -25,7 +25,7 @@ public class MenuFornecedoresController extends MenuController{
 	protected void aoExibir() {
 		tabela.setPlaceholder(new Label(""));
 		if (!listener) {
-			pesquisa.textProperty().addListener((obj, antigo, novo) -> {fazPesquisa(novo);});
+			pesquisa.textProperty().addListener((obj, antigo, novo) -> fazPesquisa(novo));
 			this.listener = true;
 		}
 	}

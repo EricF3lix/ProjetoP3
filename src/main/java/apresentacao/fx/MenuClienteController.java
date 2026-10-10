@@ -67,14 +67,11 @@ public class MenuClienteController extends MenuController {
 	private void listarItensDisponiveis() {
 
 		mostrarTabelas(false);
-		
-		List<Item> disponiveis = new ArrayList<>();
-		
-		for (Item item : sistema.listarItens()) {
-			if (item.estaDisponivel()) {
-				disponiveis.add(item);
-			}
-		}
+
+		List<Item> disponiveis = sistema.listarItens().stream()
+				.filter(item -> item.estaDisponivel())
+				.toList();
+
 		if (disponiveis.isEmpty()) {
 			info(NENHUM_ITEM);
 		}
@@ -85,28 +82,18 @@ public class MenuClienteController extends MenuController {
 	
 	@FXML
 	private void listarAlugueisAtivos() {
-
-		List<ContratoAluguel> contratosAtivos = new ArrayList<>();
-		
-		for (ContratoAluguel contrato : sistema.listarContratos()) {
-			if (contrato.getCliente().getId() == cliente.getId() && contrato.estaAtivo()) {
-				contratosAtivos.add(contrato);
-			}
-		}
+		List<ContratoAluguel> contratosAtivos = sistema.listarContratos().stream()
+				.filter(contrato -> contrato.getCliente().getId() == cliente.getId() && contrato.estaAtivo())
+				.toList();
 
 		exibirContratos(contratosAtivos, NENHUM_ALUGUEL);
 	}
 
 	@FXML
 	private void historicoAlugueis() {
-
-		List<ContratoAluguel> historico = new ArrayList<>();
-
-		for (ContratoAluguel contrato : sistema.listarContratos()) {
-			if (contrato.getCliente().getId() == cliente.getId()) {
-				historico.add(contrato);
-			}
-		}
+		List<ContratoAluguel> historico = sistema.listarContratos().stream()
+				.filter(contrato -> contrato.getCliente().getId() == cliente.getId())
+				.toList();
 
 		exibirContratos(historico, NENHUM_CONTRATO);
 	}
@@ -158,16 +145,10 @@ public class MenuClienteController extends MenuController {
 	}
 
 	private List<ContratoAluguel> buscarMultasPendentes() {
-		List<ContratoAluguel> pendentes = new ArrayList<>();
-
-		for (ContratoAluguel contrato : sistema.listarContratos()) {
-			if (contrato.getCliente().getId() == cliente.getId()
-					&& contrato.getValorMulta() > 0
-					&& !contrato.isMultaPaga()) {
-				pendentes.add(contrato);
-			}
-		}
-
-		return pendentes;
+		return sistema.listarContratos().stream()
+				.filter(contrato -> contrato.getCliente().getId() == cliente.getId()
+						&& contrato.getValorMulta() > 0
+						&& !contrato.isMultaPaga())
+				.toList();
 	}
 }

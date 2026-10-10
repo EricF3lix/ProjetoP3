@@ -116,13 +116,11 @@ public class FornecedorRepositorio implements IFornecedorRepositorio {
     @Override
     public List<Fornecedor> buscaNomeECNPJ(String filtro) {
     	
-    	List<Fornecedor> fornecedoresFiltrados = new ArrayList<>();
+    	List<Fornecedor> fornecedoresFiltrados = fornecedores.stream().filter(fornecedor -> 
+    	fornecedor.getRazaoSocial().trim().toLowerCase().startsWith(filtro.trim().toLowerCase()) || 
+    	fornecedor.getCnpj().trim().toLowerCase().startsWith(filtro.trim()) || 
+    	String.valueOf(fornecedor.getId()).trim().equals(filtro.trim())).toList();
     	
-    	for (Fornecedor fornecedor : fornecedores) {
-    		if (fornecedor.getRazaoSocial().trim().toLowerCase().startsWith(filtro.trim().toLowerCase()) || fornecedor.getCnpj().trim().toLowerCase().startsWith(filtro.trim()) || String.valueOf(fornecedor.getId()).trim().equals(filtro.trim())) {
-    			fornecedoresFiltrados.add(fornecedor);
-    		}
-    	}
     	return fornecedoresFiltrados;
     }
 
