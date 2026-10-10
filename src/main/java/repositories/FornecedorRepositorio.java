@@ -119,7 +119,7 @@ public class FornecedorRepositorio implements IFornecedorRepositorio {
     	List<Fornecedor> fornecedoresFiltrados = new ArrayList<>();
     	
     	for (Fornecedor fornecedor : fornecedores) {
-    		if (fornecedor.getCnpj().trim().toLowerCase().startsWith(filtro.trim().toLowerCase()) || fornecedor.getRazaoSocial().trim().toLowerCase().startsWith(filtro.trim().toLowerCase())) {
+    		if (fornecedor.getRazaoSocial().trim().toLowerCase().startsWith(filtro.trim().toLowerCase()) || fornecedor.getCnpj().trim().toLowerCase().startsWith(filtro.trim()) || String.valueOf(fornecedor.getId()).trim().equals(filtro.trim())) {
     			fornecedoresFiltrados.add(fornecedor);
     		}
     	}

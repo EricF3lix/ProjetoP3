@@ -28,7 +28,7 @@
             <Insets right="12.0" />
          </padding>
          <children>
-            <TextField fx:id="pesquisa" promptText = "Busque pelo nome ou CNPJ"/>
+            <TextField fx:id="pesquisa" promptText = "Busque por Nome/CNPJ/ID"/>
             <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#buscarFornecedor" text="Buscar Fornecedor por ID" />
             <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#cadastrarFornecedor" text="Cadastrar Fornecedor" />
             <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#listarFornecedores" text="Listar todas os Fornecedores" />
