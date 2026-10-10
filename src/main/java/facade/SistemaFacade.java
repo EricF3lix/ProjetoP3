@@ -193,6 +193,10 @@ public class SistemaFacade {
     public Fornecedor buscarFornecedor(int id) {
         return gerenciamentoFornecedor.buscarFornecedor(id);
     }
+    
+    public List<Fornecedor> filtrarFornecedor(String filtro){
+    	return gerenciamentoFornecedor.filtraFornecedor(filtro);
+    }
 
     public List<Fornecedor> listarFornecedores() {
         return gerenciamentoFornecedor.listarFornecedores();
