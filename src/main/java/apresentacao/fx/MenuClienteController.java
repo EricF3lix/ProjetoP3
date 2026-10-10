@@ -1,12 +1,16 @@
 package apresentacao.fx;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import entidades.Cliente;
 import entidades.ContratoAluguel;
 import entidades.Item;
+import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
+import javafx.scene.control.TableView;
 
 public class MenuClienteController extends MenuController {
 
@@ -21,6 +25,9 @@ public class MenuClienteController extends MenuController {
 	private static final String ERRO_PAGAMENTO = "Erro ao processar pagamento";
 	private static final String ID_CONTRATO = "Digite o ID do contrato para quitar a multa: ";
 
+	@FXML private TableView<Item> tabelaItens;
+	@FXML private TableView<ContratoAluguel> tabelaContratos;
+	
 	@FXML private Label bemVindo;
 	private Cliente cliente;
 
@@ -38,100 +45,110 @@ public class MenuClienteController extends MenuController {
 		this.cliente = cliente;
 	}
 
+	private void mostrarTabelas(boolean tipo) {
+		tabelaItens.setVisible(!tipo);
+		tabelaItens.setManaged(!tipo);
+		
+		tabelaContratos.setVisible(tipo);
+		tabelaContratos.setManaged(tipo);
+	}
+	
 	@FXML
 	private void listarItensDisponiveis() {
-		limpar();
-		escrever("===== ITENS DISPONÍVEIS =====");
-		escreverf("%-5s %-25s %-20s %-10s", "ID", "NOME", "CATEGORIA", "TAXA/DIA");
-		escrever("-".repeat(65));
 
+		mostrarTabelas(false);
+		
 		boolean encontrou = false;
-
+		
+		List<Item> disponiveis = new ArrayList<>();
+		
 		for (Item item : sistema.listarItens()) {
 			if (item.estaDisponivel()) {
-				escreverf("%-5d %-25s %-20s R$%.2f",
-						item.getId(),
-						item.getNome(),
-						item.getCategoria() != null ? item.getCategoria().getNome() : "-",
-						item.getTaxaDiaria());
+				disponiveis.add(item);
 				encontrou = true;
 			}
 		}
-
-		if (!encontrou) {
-			escrever(NENHUM_ITEM);
+		if (encontrou) {
+			tabelaItens.setItems(FXCollections.observableArrayList(disponiveis));
+		}
+		else {
+			info(NENHUM_ITEM);
 		}
 	}
-
+	
 	@FXML
 	private void listarAlugueisAtivos() {
-		limpar();
-		escrever("===== MEUS ALUGUÉIS ATIVOS =====");
 
+		mostrarTabelas(true);
+		
 		boolean encontrou = false;
 
+		List<ContratoAluguel> contratosAtivos = new ArrayList<>();
+		
 		for (ContratoAluguel contrato : sistema.listarContratos()) {
 			if (contrato.getCliente().getId() == cliente.getId() && contrato.estaAtivo()) {
-				escrever("Contrato ID:        " + contrato.getId());
-				escrever("Item:               " + contrato.getItem().getNome());
-				escrever("Retirada:           " + contrato.getDataRetirada());
-				escrever("Devolução prevista: " + contrato.getDataDevolucaoPrevista());
-				escreverf("Valor total:        R$ %.2f", contrato.getValorTotal());
-				escrever("-".repeat(40));
+				contratosAtivos.add(contrato);
 				encontrou = true;
 			}
 		}
 
-		if (!encontrou) {
+		if (encontrou) {
+			tabelaContratos.setItems(FXCollections.observableArrayList(contratosAtivos));
+		}
+		else {
 			escrever(NENHUM_ALUGUEL);
 		}
 	}
 
 	@FXML
 	private void historicoAlugueis() {
-		limpar();
-		escrever("===== HISTÓRICO DE ALUGUÉIS =====");
-		escreverf("%-5s %-22s %-12s %-10s %-10s", "ID", "ITEM", "STATUS", "VALOR", "MULTA");
-		escrever("-".repeat(65));
 
-		boolean encontrou = false;
+		mostrarTabelas(true);
+
+		List<ContratoAluguel> historico = new ArrayList<>();
 
 		for (ContratoAluguel contrato : sistema.listarContratos()) {
 			if (contrato.getCliente().getId() == cliente.getId()) {
-				escreverf("%-5d %-22s %-12s R$%-8.2f R$%.2f",
-						contrato.getId(),
-						contrato.getItem().getNome(),
-						contrato.getStatus(),
-						contrato.getValorTotal(),
-						contrato.getValorMulta());
-				encontrou = true;
+				historico.add(contrato);
 			}
 		}
 
-		if (!encontrou) {
-			escrever(NENHUM_CONTRATO);
+		if (historico.isEmpty()) {
+			info(NENHUM_CONTRATO);
+		}
+		else {
+			tabelaContratos.setItems(FXCollections.observableArrayList(historico));
 		}
 	}
 
 	@FXML
 	private void multasPendentes() {
-		limpar();
-		escrever("===== MULTAS PENDENTES =====");
 
-		if (!listarMultasPendentes()) {
-			escrever(NENHUMA_MULTA);
+		mostrarTabelas(true);
+
+		List<ContratoAluguel> pendentes = buscarMultasPendentes();
+
+		if (pendentes.isEmpty()) {
+			info(NENHUMA_MULTA);
+		}
+		else {
+			tabelaContratos.setItems(FXCollections.observableArrayList(pendentes));
 		}
 	}
 
 	@FXML
 	private void pagarMulta() {
-		limpar();
-		escrever("===== PAGAR MULTA =====");
 
-		if (!listarMultasPendentes()) {
+		mostrarTabelas(true);
+
+		List<ContratoAluguel> pendentes = buscarMultasPendentes();
+
+		if (pendentes.isEmpty()) {
 			info(SEM_MULTAS_PENDENTES);
 			return;
 		}
+
+		tabelaContratos.setItems(FXCollections.observableArrayList(pendentes));
 
 		Optional<Integer> id = pedirInteiro(ID_CONTRATO);
 		if (id.isEmpty()) return;
@@ -160,21 +177,17 @@ public class MenuClienteController extends MenuController {
 		}
 	}
 
-	private boolean listarMultasPendentes() {
-		boolean temPendente = false;
+	private List<ContratoAluguel> buscarMultasPendentes() {
+		List<ContratoAluguel> pendentes = new ArrayList<>();
 
 		for (ContratoAluguel contrato : sistema.listarContratos()) {
 			if (contrato.getCliente().getId() == cliente.getId()
 					&& contrato.getValorMulta() > 0
 					&& !contrato.isMultaPaga()) {
-				escrever("Contrato ID: " + contrato.getId());
-				escrever("Item:        " + contrato.getItem().getNome());
-				escreverf("Multa:       R$ %.2f", contrato.getValorMulta());
-				escrever("-".repeat(35));
-				temPendente = true;
+				pendentes.add(contrato);
 			}
 		}
 
-		return temPendente;
+		return pendentes;
 	}
 }
