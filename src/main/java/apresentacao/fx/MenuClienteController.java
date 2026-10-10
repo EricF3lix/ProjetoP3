@@ -53,57 +53,52 @@ public class MenuClienteController extends MenuController {
 		tabelaContratos.setManaged(tipo);
 	}
 	
+	private void exibirContratos(List<ContratoAluguel> lista, String msgVazio) {
+		mostrarTabelas(true);
+		if (lista.isEmpty()) {
+			info(msgVazio);
+		}
+		else {
+			tabelaContratos.setItems(FXCollections.observableArrayList(lista));
+		}
+	}
+	
 	@FXML
 	private void listarItensDisponiveis() {
 
 		mostrarTabelas(false);
-		
-		boolean encontrou = false;
 		
 		List<Item> disponiveis = new ArrayList<>();
 		
 		for (Item item : sistema.listarItens()) {
 			if (item.estaDisponivel()) {
 				disponiveis.add(item);
-				encontrou = true;
 			}
 		}
-		if (encontrou) {
-			tabelaItens.setItems(FXCollections.observableArrayList(disponiveis));
+		if (disponiveis.isEmpty()) {
+			info(NENHUM_ITEM);
 		}
 		else {
-			info(NENHUM_ITEM);
+			tabelaItens.setItems(FXCollections.observableArrayList(disponiveis));
 		}
 	}
 	
 	@FXML
 	private void listarAlugueisAtivos() {
 
-		mostrarTabelas(true);
-		
-		boolean encontrou = false;
-
 		List<ContratoAluguel> contratosAtivos = new ArrayList<>();
 		
 		for (ContratoAluguel contrato : sistema.listarContratos()) {
 			if (contrato.getCliente().getId() == cliente.getId() && contrato.estaAtivo()) {
 				contratosAtivos.add(contrato);
-				encontrou = true;
 			}
 		}
 
-		if (encontrou) {
-			tabelaContratos.setItems(FXCollections.observableArrayList(contratosAtivos));
-		}
-		else {
-			escrever(NENHUM_ALUGUEL);
-		}
+		exibirContratos(contratosAtivos, NENHUM_ALUGUEL);
 	}
 
 	@FXML
 	private void historicoAlugueis() {
-
-		mostrarTabelas(true);
 
 		List<ContratoAluguel> historico = new ArrayList<>();
 
@@ -113,27 +108,12 @@ public class MenuClienteController extends MenuController {
 			}
 		}
 
-		if (historico.isEmpty()) {
-			info(NENHUM_CONTRATO);
-		}
-		else {
-			tabelaContratos.setItems(FXCollections.observableArrayList(historico));
-		}
+		exibirContratos(historico, NENHUM_CONTRATO);
 	}
 
 	@FXML
 	private void multasPendentes() {
-
-		mostrarTabelas(true);
-
-		List<ContratoAluguel> pendentes = buscarMultasPendentes();
-
-		if (pendentes.isEmpty()) {
-			info(NENHUMA_MULTA);
-		}
-		else {
-			tabelaContratos.setItems(FXCollections.observableArrayList(pendentes));
-		}
+		exibirContratos(buscarMultasPendentes(), NENHUMA_MULTA);
 	}
 
 	@FXML

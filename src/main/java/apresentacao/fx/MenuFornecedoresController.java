@@ -52,7 +52,7 @@ public class MenuFornecedoresController extends MenuController{
 			mostraFornecedor(id);
 		}
 		else {
-			info("Fornecedor já cadastrado!");
+			erro("Fornecedor já cadastrado!");
 		}
 		
 	}
@@ -70,6 +70,7 @@ public class MenuFornecedoresController extends MenuController{
 	private void fazPesquisa(String pesquisado) {
 		List<Fornecedor> fornecedoresFiltrado = sistema.filtrarFornecedor(pesquisado);
 		if (fornecedoresFiltrado.isEmpty()) {
+			tabela.getItems().clear();
 			return;
 		}
 		tabela.setItems(FXCollections.observableArrayList(fornecedoresFiltrado));
@@ -79,7 +80,7 @@ public class MenuFornecedoresController extends MenuController{
 	private void listarFornecedores() {
 		List<Fornecedor> listaFornecedores = sistema.listarFornecedores();
 		
-		limpar();
+	
 		if (listaFornecedores.isEmpty()) {
 			return;
 		}
@@ -90,21 +91,10 @@ public class MenuFornecedoresController extends MenuController{
 	
 	@FXML
 	private void atualizarFornecedor() {
-		Fornecedor atual = tabela.getSelectionModel().getSelectedItem();
-		tabela.getSelectionModel().clearSelection();
-		Optional<Integer> id;
+		Fornecedor atual = obterFornecedorAlvo();
+		if (atual == null) return;
 		
-		if (atual == null) {
-			id = pedirInteiro(ID);
-		    if (id.isEmpty()) return;
-		    atual = sistema.buscarFornecedor(id.get());
-		    if (atual == null) {
-		        erro(NAO_ENCONTRADO);
-		        return;
-		    }
-		}
-		
-		id = Optional.of(atual.getId());
+		Optional<Integer> id = Optional.of(atual.getId());
 
 	    Optional<String> nome = pedirTexto("Razão Social (Nome):", atual.getRazaoSocial());
 	    if (nome.isEmpty()) return;
@@ -118,10 +108,10 @@ public class MenuFornecedoresController extends MenuController{
 	    Optional<String> telefone = pedirTexto("Telefone:", atual.getTelefone());
 	    if (telefone.isEmpty()) return;
 
-	    String novoNome = nome.get().isEmpty() ? atual.getRazaoSocial() : nome.get();
-	    String novoCnpj = cnpj.get().isEmpty() ? atual.getCnpj() : cnpj.get();
-	    String novoEmail = email.get().isEmpty() ? atual.getEmail() : email.get();
-	    String novoTelefone = telefone.get().isEmpty() ? atual.getTelefone() : telefone.get();
+	    String novoNome = pegaNovo(nome.get(), atual.getRazaoSocial());
+	    String novoCnpj = pegaNovo(cnpj.get(), atual.getCnpj());
+	    String novoEmail = pegaNovo(email.get(), atual.getEmail());
+	    String novoTelefone = pegaNovo(telefone.get(), atual.getTelefone());
 
 	    if (sistema.atualizarFornecedor(new Fornecedor(id.get(), novoNome, novoCnpj, novoEmail, novoTelefone))) {
 	        info("Fornecedor atualizado com sucesso.");
@@ -133,24 +123,10 @@ public class MenuFornecedoresController extends MenuController{
 
 	@FXML
 	private void desativarFornecedor() {
-		Fornecedor fornecedor = tabela.getSelectionModel().getSelectedItem();
-		tabela.getSelectionModel().clearSelection();
-		Optional<Integer> id;
+		Fornecedor fornecedor = obterFornecedorAlvo();
+		if (fornecedor == null) return;
 		
-		if (fornecedor != null) {
-			id = Optional.of(fornecedor.getId());
-		}
-		
-		else {
-			id = pedirInteiro(ID);
-			if (id.isEmpty()) return;
-		    fornecedor = sistema.buscarFornecedor(id.get());
-		    if (fornecedor == null) {
-		        erro(NAO_ENCONTRADO);
-		        return;
-		    }
-		}
-	    
+		Optional<Integer> id = Optional.of(fornecedor.getId());
 
 	    if (!confirmar("Tem certeza que deseja desativar \"" + fornecedor.getRazaoSocial() + "\"?")) {
 	        return;
@@ -164,6 +140,24 @@ public class MenuFornecedoresController extends MenuController{
 	    }
 	}
 
+	private Fornecedor obterFornecedorAlvo() {
+		Fornecedor atual = tabela.getSelectionModel().getSelectedItem();
+		tabela.getSelectionModel().clearSelection();
+		
+		if (atual == null) {
+			Optional<Integer> id = pedirInteiro(ID);
+			if (id.isEmpty()) return null;
+			atual = sistema.buscarFornecedor(id.get());
+			if (atual == null) {
+				erro(NAO_ENCONTRADO);
+			}
+		}
+		return atual;
+	}
+	
+	private String pegaNovo(String novo, String antigo) {
+		return novo.isEmpty() ? antigo : novo;
+	}
 
 private void mostraFornecedor(int id) {
 	
