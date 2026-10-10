@@ -112,6 +112,19 @@ public class FornecedorRepositorio implements IFornecedorRepositorio {
         return null;
 
     }
+    
+    @Override
+    public List<Fornecedor> buscaNomeECNPJ(String filtro) {
+    	
+    	List<Fornecedor> fornecedoresFiltrados = new ArrayList<>();
+    	
+    	for (Fornecedor fornecedor : fornecedores) {
+    		if (fornecedor.getCnpj().trim().toLowerCase().startsWith(filtro.trim().toLowerCase()) || fornecedor.getRazaoSocial().trim().toLowerCase().startsWith(filtro.trim().toLowerCase())) {
+    			fornecedoresFiltrados.add(fornecedor);
+    		}
+    	}
+    	return fornecedoresFiltrados;
+    }
 
     @Override
     public Fornecedor buscarPorId(int id) {

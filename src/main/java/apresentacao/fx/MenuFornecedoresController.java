@@ -14,6 +14,7 @@ public class MenuFornecedoresController extends MenuController{
 	private static final String ID = "Digite o ID do fornecedor: ";
 	private static final String NAO_ENCONTRADO = "Fornecedor não encontrado.";
 	@FXML private TableView<Fornecedor> tabela;
+	private boolean listener = false;
 	
 	@Override
 	protected String getTitulo() {
@@ -23,6 +24,10 @@ public class MenuFornecedoresController extends MenuController{
 	@Override
 	protected void aoExibir() {
 		tabela.setPlaceholder(new Label(""));
+		if (!listener) {
+			pesquisa.textProperty().addListener((obj, antigo, novo) -> {fazPesquisa(novo);});
+			this.listener = true;
+		}
 	}
 	
 	@FXML
@@ -62,6 +67,14 @@ public class MenuFornecedoresController extends MenuController{
 		
 	}
 	
+	private void fazPesquisa(String pesquisado) {
+		List<Fornecedor> fornecedoresFiltrado = sistema.filtrarFornecedor(pesquisado);
+		if (fornecedoresFiltrado.isEmpty()) {
+			return;
+		}
+		tabela.setItems(FXCollections.observableArrayList(fornecedoresFiltrado));
+	}
+	
 	@FXML
 	private void listarFornecedores() {
 		List<Fornecedor> listaFornecedores = sistema.listarFornecedores();
@@ -77,14 +90,21 @@ public class MenuFornecedoresController extends MenuController{
 	
 	@FXML
 	private void atualizarFornecedor() {
-	    Optional<Integer> id = pedirInteiro(ID);
-	    if (id.isEmpty()) return;
-
-	    Fornecedor atual = sistema.buscarFornecedor(id.get());
-	    if (atual == null) {
-	        erro(NAO_ENCONTRADO);
-	        return;
-	    }
+		Fornecedor atual = tabela.getSelectionModel().getSelectedItem();
+		tabela.getSelectionModel().clearSelection();
+		Optional<Integer> id;
+		
+		if (atual == null) {
+			id = pedirInteiro(ID);
+		    if (id.isEmpty()) return;
+		    atual = sistema.buscarFornecedor(id.get());
+		    if (atual == null) {
+		        erro(NAO_ENCONTRADO);
+		        return;
+		    }
+		}
+		
+		id = Optional.of(atual.getId());
 
 	    Optional<String> nome = pedirTexto("Razão Social (Nome):", atual.getRazaoSocial());
 	    if (nome.isEmpty()) return;
@@ -113,14 +133,24 @@ public class MenuFornecedoresController extends MenuController{
 
 	@FXML
 	private void desativarFornecedor() {
-	    Optional<Integer> id = pedirInteiro(ID);
-	    if (id.isEmpty()) return;
-
-	    Fornecedor fornecedor = sistema.buscarFornecedor(id.get());
-	    if (fornecedor == null) {
-	        erro(NAO_ENCONTRADO);
-	        return;
-	    }
+		Fornecedor fornecedor = tabela.getSelectionModel().getSelectedItem();
+		tabela.getSelectionModel().clearSelection();
+		Optional<Integer> id;
+		
+		if (fornecedor != null) {
+			id = Optional.of(fornecedor.getId());
+		}
+		
+		else {
+			id = pedirInteiro(ID);
+			if (id.isEmpty()) return;
+		    fornecedor = sistema.buscarFornecedor(id.get());
+		    if (fornecedor == null) {
+		        erro(NAO_ENCONTRADO);
+		        return;
+		    }
+		}
+	    
 
 	    if (!confirmar("Tem certeza que deseja desativar \"" + fornecedor.getRazaoSocial() + "\"?")) {
 	        return;

@@ -36,6 +36,11 @@ public class GerenciamentoFornecedor implements IGerenciamentoFornecedor {
     }
 
     @Override
+    public List<Fornecedor> filtraFornecedor(String filtro) {
+    	return repositorio.buscaNomeECNPJ(filtro);
+    }
+    
+    @Override
     public List<Fornecedor> listarFornecedores() {
         return repositorio.listarTodos();
     }

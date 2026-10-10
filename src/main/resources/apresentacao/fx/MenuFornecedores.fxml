@@ -6,6 +6,7 @@
 <?import javafx.scene.control.Separator?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
 <?import javafx.scene.control.cell.PropertyValueFactory?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.VBox?>
@@ -27,8 +28,9 @@
             <Insets right="12.0" />
          </padding>
          <children>
-            <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#cadastrarFornecedor" text="Cadastrar Fornecedor" />
+            <TextField fx:id="pesquisa" promptText = "Busque pelo nome ou CNPJ"/>
             <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#buscarFornecedor" text="Buscar Fornecedor por ID" />
+            <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#cadastrarFornecedor" text="Cadastrar Fornecedor" />
             <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#listarFornecedores" text="Listar todas os Fornecedores" />
             <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#atualizarFornecedor" text="Atualizar Fornecedor" />
             <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#desativarFornecedor" text="Desativar Fornecedor" />
