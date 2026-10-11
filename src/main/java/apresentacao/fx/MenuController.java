@@ -28,9 +28,7 @@ public abstract class MenuController {
 
     protected abstract String getTitulo();
 
-    protected void aoExibir() {
-
-    }
+    protected void aoExibir() {}
 
     final void inicializar(SistemaFacade sistema, Navegador navegador) {
         this.sistema = sistema;
