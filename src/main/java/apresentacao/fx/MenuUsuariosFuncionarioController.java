@@ -2,7 +2,9 @@ package apresentacao.fx;
 
 import java.util.List;
 
+import entidades.Administrador;
 import entidades.Cliente;
+import entidades.Funcionario;
 import entidades.Usuario;
 import facade.SistemaFacade;
 import javafx.beans.property.SimpleStringProperty;
@@ -24,100 +26,34 @@ import javafx.stage.Stage;
 
 public class MenuUsuariosFuncionarioController {
 
-    private SistemaFacade sistema;
+    protected SistemaFacade sistema;
 
     @FXML
-    private AnchorPane painelConteudo;
+    protected AnchorPane painelConteudo;
 
     @FXML
-    private Button btnCadastrarCliente;
+    protected Button btnCadastrarCliente;
 
     @FXML
-    private Button btnBuscarUsuario;
+    protected Button btnBuscarUsuario;
 
     @FXML
-    private Button btnListarUsuarios;
+    protected Button btnListarUsuarios;
 
     @FXML
-    private Button btnVoltar;
+    protected Button btnVoltar;
 
     public void setSistema(SistemaFacade sistema) {
         this.sistema = sistema;
     }
 
     @FXML
-    void aoCadastrarCliente(ActionEvent event) {
-        painelConteudo.getChildren().clear();
-
-        VBox container = new VBox(10);
-        container.setPadding(new Insets(20));
-
-        Label titulo = new Label("Cadastrar Novo Cliente");
-        titulo.setStyle("-fx-font-weight: bold; -fx-font-size: 16px;");
-
-        TextField txtNome = new TextField();
-        txtNome.setPromptText("Nome completo");
-
-        TextField txtEmail = new TextField();
-        txtEmail.setPromptText("E-mail");
-
-        TextField txtCpf = new TextField();
-        txtCpf.setPromptText("CPF");
-
-        PasswordField txtSenha = new PasswordField();
-        txtSenha.setPromptText("Senha");
-
-        Button btnSalvar = new Button("Salvar Cliente");
-        Label lblMensagem = new Label();
-
-        btnSalvar.setOnAction(e -> {
-            if (sistema == null) {
-                lblMensagem.setText("Erro: Instância do sistema não carregada.");
-                return;
-            }
-
-            String nome = txtNome.getText().trim();
-            String email = txtEmail.getText().trim();
-            String cpf = txtCpf.getText().trim();
-            String senha = txtSenha.getText().trim();
-
-            if (nome.isEmpty() || email.isEmpty() || cpf.isEmpty() || senha.isEmpty()) {
-                lblMensagem.setText("Por favor, preencha todos os campos.");
-                lblMensagem.setStyle("-fx-text-fill: red;");
-                return;
-            }
-
-            int id = sistema.gerarProximoIdUsuario();
-            Cliente cliente = new Cliente(id, nome, email, cpf, senha);
-
-            if (sistema.cadastrarUsuario(cliente)) {
-                lblMensagem.setText("Cliente cadastrado com sucesso! ID: " + id);
-                lblMensagem.setStyle("-fx-text-fill: green;");
-                txtNome.clear();
-                txtEmail.clear();
-                txtCpf.clear();
-                txtSenha.clear();
-            } else {
-                lblMensagem.setText("Erro: CPF ou e-mail já cadastrado");
-                lblMensagem.setStyle("-fx-text-fill: red;");
-            }
-        });
-
-        container.getChildren().addAll(
-            titulo,
-            new Label("Nome:"), txtNome,
-            new Label("E-mail:"), txtEmail,
-            new Label("CPF:"), txtCpf,
-            new Label("Senha:"), txtSenha,
-            btnSalvar,
-            lblMensagem
-        );
-
-        ancorarNoPainel(container);
+    public void aoCadastrarCliente(ActionEvent event) {
+        exibirFormularioCadastro("Cliente");
     }
 
     @FXML
-    void aoBuscarUsuario(ActionEvent event) {
+    public void aoBuscarUsuario(ActionEvent event) {
         painelConteudo.getChildren().clear();
 
         VBox container = new VBox(12);
@@ -157,7 +93,7 @@ public class MenuUsuariosFuncionarioController {
                     lblResultado.setStyle("-fx-text-fill: red;");
                 }
             } catch (NumberFormatException ex) {
-                lblResultado.setText("Digite um número inteiro válido para o ID.");
+                lblResultado.setText("Digite um ID numérico válido.");
                 lblResultado.setStyle("-fx-text-fill: red;");
             }
         });
@@ -167,7 +103,7 @@ public class MenuUsuariosFuncionarioController {
     }
 
     @FXML
-    void aoListarUsuarios(ActionEvent event) {
+    public void aoListarUsuarios(ActionEvent event) {
         painelConteudo.getChildren().clear();
 
         VBox container = new VBox(10);
@@ -177,7 +113,7 @@ public class MenuUsuariosFuncionarioController {
         titulo.setStyle("-fx-font-weight: bold; -fx-font-size: 16px;");
 
         TableView<Usuario> tabela = new TableView<>();
-        tabela.setPrefHeight(400.0);
+        tabela.setPrefHeight(420.0);
 
         TableColumn<Usuario, Integer> colId = new TableColumn<>("ID");
         colId.setCellValueFactory(new PropertyValueFactory<>("id"));
@@ -213,12 +149,83 @@ public class MenuUsuariosFuncionarioController {
     }
 
     @FXML
-    void aoVoltar(ActionEvent event) {
+    public void aoVoltar(ActionEvent event) {
         Stage stage = (Stage) btnVoltar.getScene().getWindow();
         stage.close();
     }
 
-    private void ancorarNoPainel(javafx.scene.Node node) {
+    protected void exibirFormularioCadastro(String tipo) {
+        painelConteudo.getChildren().clear();
+
+        VBox container = new VBox(8);
+        container.setPadding(new Insets(20));
+
+        Label titulo = new Label("Cadastrar " + tipo);
+        titulo.setStyle("-fx-font-weight: bold; -fx-font-size: 16px;");
+
+        TextField txtNome = new TextField();
+        txtNome.setPromptText("Nome completo");
+
+        TextField txtEmail = new TextField();
+        txtEmail.setPromptText("E-mail");
+
+        TextField txtCpf = new TextField();
+        txtCpf.setPromptText("CPF");
+
+        PasswordField txtSenha = new PasswordField();
+        txtSenha.setPromptText("Senha");
+
+        Button btnSalvar = new Button("Salvar " + tipo);
+        Label lblMensagem = new Label();
+
+        btnSalvar.setOnAction(e -> {
+            if (sistema == null) return;
+
+            String nome = txtNome.getText().trim();
+            String email = txtEmail.getText().trim();
+            String cpf = txtCpf.getText().trim();
+            String senha = txtSenha.getText().trim();
+
+            if (nome.isEmpty() || email.isEmpty() || cpf.isEmpty() || senha.isEmpty()) {
+                lblMensagem.setText("Por favor, preencha todos os campos.");
+                lblMensagem.setStyle("-fx-text-fill: red;");
+                return;
+            }
+
+            int id = sistema.gerarProximoIdUsuario();
+            Usuario novoUsuario = switch (tipo) {
+                case "Funcionário" -> new Funcionario(id, nome, email, cpf, senha);
+                case "Administrador" -> new Administrador(id, nome, email, cpf, senha);
+                default -> new Cliente(id, nome, email, cpf, senha);
+            };
+
+            if (sistema.cadastrarUsuario(novoUsuario)) {
+                lblMensagem.setText(tipo + " cadastrado com sucesso! ID: " + id);
+                lblMensagem.setStyle("-fx-text-fill: green;");
+                txtNome.clear();
+                txtEmail.clear();
+                txtCpf.clear();
+                txtSenha.clear();
+            } else {
+                lblMensagem.setText("Erro: CPF ou e-mail já cadastrado");
+                lblMensagem.setStyle("-fx-text-fill: red;");
+            }
+        });
+
+        container.getChildren().addAll(
+            titulo,
+            new Label("Nome:"), txtNome,
+            new Label("E-mail:"), txtEmail,
+            new Label("CPF:"), txtCpf,
+            new Label("Senha:"), txtSenha,
+            btnSalvar,
+            lblMensagem
+        );
+
+        ancorarNoPainel(container);
+    }
+
+    protected void ancorarNoPainel(javafx.scene.Node node) {
         AnchorPane.setTopAnchor(node, 0.0);
         AnchorPane.setBottomAnchor(node, 0.0);
         AnchorPane.setLeftAnchor(node, 0.0);
