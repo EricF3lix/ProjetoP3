@@ -30,7 +30,8 @@ public class MenuPrincipalFuncionarioController extends MenuController{
         navegador.abrir("MenuCategorias.fxml");
     }
 
-
+    @FXML
+    private void abrirMultas() {navegador.abrir("MenuMultas.fxml");}
 
 
 }
