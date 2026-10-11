@@ -4,8 +4,6 @@ import entidades.Funcionario;
 import javafx.fxml.FXML;
 import javafx.scene.control.Menu;
 
-import java.util.function.Function;
-
 public class MenuPrincipalFuncionarioController extends MenuController{
 
     @FXML
@@ -26,9 +24,7 @@ public class MenuPrincipalFuncionarioController extends MenuController{
     }
 
     @FXML
-    private void abrirCategorias() {
-        navegador.abrir("MenuCategorias.fxml");
-    }
+    private void abrirCategorias() {navegador.abrir("MenuCategorias.fxml");}
 
     @FXML
     private void abrirMultas() {navegador.abrir("MenuMultas.fxml");}
