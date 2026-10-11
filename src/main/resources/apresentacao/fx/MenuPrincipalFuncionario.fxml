@@ -5,70 +5,62 @@
 <?import javafx.scene.control.Menu?>
 <?import javafx.scene.control.MenuBar?>
 <?import javafx.scene.control.MenuItem?>
-<?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1">
-   <top>
-      <HBox BorderPane.alignment="CENTER">
+<VBox alignment="CENTER" prefHeight="332.0" prefWidth="602.0" style="-fx-background-color: light gray;" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="apresentacao.fx.MenuPrincipalFuncionarioController">
+   <children>
+      <HBox>
          <children>
-            <MenuBar nodeOrientation="LEFT_TO_RIGHT" prefHeight="27.0" prefWidth="487.0">
-              <menus>
-                  <Menu mnemonicParsing="false" text="Bem vindo(a) ">
-                    <items>
-                      <MenuItem mnemonicParsing="false" style="-fx-background-color: red;" text="Action 1" />
-                    </items>
+            <MenuBar nodeOrientation="LEFT_TO_RIGHT" prefWidth="487.0">
+               <menus>
+                  <Menu fx:id="lblBemVindo" mnemonicParsing="false" text="Bem Vindo(a)">
+                     <items>
+                        <MenuItem mnemonicParsing="false" style="-fx-background-color: red;" text="Action 1" />
+                     </items>
                   </Menu>
-              </menus>
+               </menus>
             </MenuBar>
-            <Button mnemonicParsing="false" prefHeight="26.0" prefWidth="117.0" style="-fx-background-color: red; -fx-text-fill: white;" text="Encerrar sessão" wrapText="true" />
+            <Button mnemonicParsing="false" onAction="#voltar" prefHeight="26.0" prefWidth="136.0" style="-fx-background-color: red; -fx-text-fill: white;" text="Encerrar sessão" wrapText="true" />
          </children>
       </HBox>
-   </top>
-   <center>
-      <AnchorPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
-         <children>
-            <VBox alignment="TOP_CENTER" layoutX="202.0" layoutY="5.0" prefHeight="367.0" prefWidth="188.0" style="-fx-background-color: light gray;">
-               <children>
-                  <Button mnemonicParsing="false" prefWidth="102.0" text="Usuarios">
-                     <VBox.margin>
-                        <Insets top="30.0" />
-                     </VBox.margin>
-                  </Button>
-                  <Button mnemonicParsing="false" prefWidth="102.0" text="Itens">
-                     <VBox.margin>
-                        <Insets top="15.0" />
-                     </VBox.margin>
-                  </Button>
-                  <Button mnemonicParsing="false" prefWidth="102.0" text="Categorias">
-                     <VBox.margin>
-                        <Insets top="15.0" />
-                     </VBox.margin>
-                  </Button>
-                  <Button mnemonicParsing="false" prefHeight="26.0" prefWidth="102.0" text="Fornecedores">
-                     <VBox.margin>
-                        <Insets top="15.0" />
-                     </VBox.margin>
-                  </Button>
-                  <Button mnemonicParsing="false" prefWidth="102.0" text="Contratos">
-                     <VBox.margin>
-                        <Insets top="15.0" />
-                     </VBox.margin>
-                  </Button>
-                  <Button mnemonicParsing="false" prefWidth="102.0" text="Multas">
-                     <VBox.margin>
-                        <Insets top="15.0" />
-                     </VBox.margin>
-                  </Button>
-                  <Button mnemonicParsing="false" prefWidth="102.0" text="Relatorios">
-                     <VBox.margin>
-                        <Insets top="15.0" />
-                     </VBox.margin>
-                  </Button>
-               </children>
-            </VBox>
-         </children></AnchorPane>
-   </center>
-</BorderPane>
+      <Button alignment="CENTER" mnemonicParsing="false" onAction="#abrirUsuarios" prefWidth="180.0" text="Usuarios">
+         <VBox.margin>
+            <Insets top="30.0" />
+         </VBox.margin>
+      </Button>
+      <Button mnemonicParsing="false" onAction="#abrirItens" prefWidth="180.0" text="Itens">
+         <VBox.margin>
+            <Insets top="15.0" />
+         </VBox.margin>
+      </Button>
+      <Button mnemonicParsing="false" onAction="#abrirCategorias" prefWidth="180.0" text="Categorias">
+         <VBox.margin>
+            <Insets top="15.0" />
+         </VBox.margin>
+      </Button>
+      <Button mnemonicParsing="false" onAction="#abrirFornecedores" prefHeight="26.0" prefWidth="180.0" text="Fornecedores">
+         <VBox.margin>
+            <Insets top="15.0" />
+         </VBox.margin>
+      </Button>
+      <Button mnemonicParsing="false" onAction="#abrirContratos" prefWidth="180.0" text="Contratos">
+         <VBox.margin>
+            <Insets top="15.0" />
+         </VBox.margin>
+      </Button>
+      <Button mnemonicParsing="false" onAction="#abrirMultas" prefWidth="180.0" text="Multas">
+         <VBox.margin>
+            <Insets top="15.0" />
+         </VBox.margin>
+      </Button>
+      <Button mnemonicParsing="false" onAction="#abrirRelatorios" prefWidth="180.0" text="Relatorios">
+         <VBox.margin>
+            <Insets top="15.0" />
+         </VBox.margin>
+      </Button>
+   </children>
+   <padding>
+      <Insets bottom="30.0" />
+   </padding>
+</VBox>

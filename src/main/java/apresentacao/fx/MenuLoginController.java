@@ -52,8 +52,9 @@ public class MenuLoginController extends MenuController {
             navegador.abrir("MenuPrincipalAdministrador.fxml",
                     (MenuPrincipalAdministradorController c) -> c.setAdministrador(administrador));
 
-        } else if (usuario instanceof Funcionario) {
-            info("Tela do funcionário ainda não criada"); 
+        } else if (usuario instanceof Funcionario funcionario) {
+            navegador.abrir("MenuPrincipalFuncionario.fxml",
+                    (MenuPrincipalFuncionarioController c) -> c.setFuncionario(funcionario));
 
         } else if (usuario instanceof Cliente cliente) {
             navegador.abrir("MenuCliente.fxml", (MenuClienteController c) -> c.setCliente(cliente)); 
