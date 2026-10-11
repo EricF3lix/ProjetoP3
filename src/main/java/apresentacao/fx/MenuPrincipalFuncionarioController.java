@@ -45,9 +45,7 @@ public class MenuPrincipalFuncionarioController extends MenuController{
     @FXML
     private void abrirFornecedores(){navegador.abrir("MenuFornecedores.fxml");}
 
-
     @FXML
     private void abrirContratos(){navegador.abrir("MenuContratos.fxml");}
-
 
 }

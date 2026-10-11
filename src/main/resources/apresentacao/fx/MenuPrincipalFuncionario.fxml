@@ -5,14 +5,15 @@
 <?import javafx.scene.control.Menu?>
 <?import javafx.scene.control.MenuBar?>
 <?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox alignment="CENTER" prefHeight="332.0" prefWidth="602.0" style="-fx-background-color: light gray;" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="apresentacao.fx.MenuPrincipalFuncionarioController">
-   <children>
-      <HBox>
+<BorderPane prefHeight="332.0" prefWidth="602.0" style="-fx-background-color: light gray;" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="apresentacao.fx.MenuPrincipalFuncionarioController">
+   <top>
+      <HBox BorderPane.alignment="CENTER">
          <children>
-            <MenuBar nodeOrientation="LEFT_TO_RIGHT" prefWidth="487.0">
+            <MenuBar nodeOrientation="LEFT_TO_RIGHT" HBox.hgrow="ALWAYS">
                <menus>
                   <Menu fx:id="lblBemVindo" mnemonicParsing="false" text="Bem Vindo(a)">
                      <items>
@@ -21,46 +22,24 @@
                   </Menu>
                </menus>
             </MenuBar>
-            <Button mnemonicParsing="false" onAction="#voltar" prefHeight="26.0" prefWidth="136.0" style="-fx-background-color: red; -fx-text-fill: white;" text="Encerrar sessão" wrapText="true" />
+            <Button mnemonicParsing="false" onAction="#voltar" prefHeight="26.0" prefWidth="136.0" style="-fx-background-color: red; -fx-text-fill: white; -fx-background-radius: 0;" text="Encerrar sessão" wrapText="true" />
          </children>
       </HBox>
-      <Button alignment="CENTER" mnemonicParsing="false" onAction="#abrirUsuarios" prefWidth="180.0" text="Usuarios">
-         <VBox.margin>
-            <Insets top="30.0" />
-         </VBox.margin>
-      </Button>
-      <Button mnemonicParsing="false" onAction="#abrirItens" prefWidth="180.0" text="Itens">
-         <VBox.margin>
-            <Insets top="15.0" />
-         </VBox.margin>
-      </Button>
-      <Button mnemonicParsing="false" onAction="#abrirCategorias" prefWidth="180.0" text="Categorias">
-         <VBox.margin>
-            <Insets top="15.0" />
-         </VBox.margin>
-      </Button>
-      <Button mnemonicParsing="false" onAction="#abrirFornecedores" prefHeight="26.0" prefWidth="180.0" text="Fornecedores">
-         <VBox.margin>
-            <Insets top="15.0" />
-         </VBox.margin>
-      </Button>
-      <Button mnemonicParsing="false" onAction="#abrirContratos" prefWidth="180.0" text="Contratos">
-         <VBox.margin>
-            <Insets top="15.0" />
-         </VBox.margin>
-      </Button>
-      <Button mnemonicParsing="false" onAction="#abrirMultas" prefWidth="180.0" text="Multas">
-         <VBox.margin>
-            <Insets top="15.0" />
-         </VBox.margin>
-      </Button>
-      <Button mnemonicParsing="false" onAction="#abrirRelatorios" prefWidth="180.0" text="Relatorios">
-         <VBox.margin>
-            <Insets top="15.0" />
-         </VBox.margin>
-      </Button>
-   </children>
-   <padding>
-      <Insets bottom="30.0" />
-   </padding>
-</VBox>
+   </top>
+   <center>
+      <VBox alignment="CENTER" spacing="15.0" BorderPane.alignment="CENTER">
+         <children>
+            <Button alignment="CENTER" mnemonicParsing="false" onAction="#abrirUsuarios" prefWidth="180.0" text="Usuarios" />
+            <Button mnemonicParsing="false" onAction="#abrirItens" prefWidth="180.0" text="Itens" />
+            <Button mnemonicParsing="false" onAction="#abrirCategorias" prefWidth="180.0" text="Categorias" />
+            <Button mnemonicParsing="false" onAction="#abrirFornecedores" prefHeight="26.0" prefWidth="180.0" text="Fornecedores" />
+            <Button mnemonicParsing="false" onAction="#abrirContratos" prefWidth="180.0" text="Contratos" />
+            <Button mnemonicParsing="false" onAction="#abrirMultas" prefWidth="180.0" text="Multas" />
+            <Button mnemonicParsing="false" onAction="#abrirRelatorios" prefWidth="180.0" text="Relatorios" />
+         </children>
+         <padding>
+            <Insets bottom="30.0" />
+         </padding>
+      </VBox>
+   </center>
+</BorderPane>
