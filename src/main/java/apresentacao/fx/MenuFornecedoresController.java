@@ -4,16 +4,30 @@ import java.util.List;
 import java.util.Optional;
 
 import entidades.Fornecedor;
+import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
+import javafx.scene.control.Label;
+import javafx.scene.control.TableView;
 
 public class MenuFornecedoresController extends MenuController{
 
 	private static final String ID = "Digite o ID do fornecedor: ";
 	private static final String NAO_ENCONTRADO = "Fornecedor não encontrado.";
+	@FXML private TableView<Fornecedor> tabela;
+	private boolean listener = false;
 	
 	@Override
 	protected String getTitulo() {
 		return("Gerenciar Fornecedores");
+	}
+	
+	@Override
+	protected void aoExibir() {
+		tabela.setPlaceholder(new Label(""));
+		if (!listener) {
+			pesquisa.textProperty().addListener((obj, antigo, novo) -> fazPesquisa(novo));
+			this.listener = true;
+		}
 	}
 	
 	@FXML
@@ -35,9 +49,10 @@ public class MenuFornecedoresController extends MenuController{
 		
 		if(sistema.cadastrarFornecedor(fornecedor)) {
 			info("Fornecedor cadastrado com sucesso! ID: " + id);
+			mostraFornecedor(id);
 		}
 		else {
-			info("Fornecedor já cadastrado!");
+			erro("Fornecedor já cadastrado!");
 		}
 		
 	}
@@ -48,53 +63,38 @@ public class MenuFornecedoresController extends MenuController{
 		if(idFornecedor.isEmpty()) { return;
 		}
 		
-		Fornecedor fornecedor = sistema.buscarFornecedor(idFornecedor.get());
-		if (fornecedor == null) {
-			info("Fornecedor não cadastrado.");
+		mostraFornecedor(idFornecedor.get());
+		
+	}
+	
+	private void fazPesquisa(String pesquisado) {
+		List<Fornecedor> fornecedoresFiltrado = sistema.filtrarFornecedor(pesquisado);
+		if (fornecedoresFiltrado.isEmpty()) {
+			tabela.getItems().clear();
 			return;
 		}
-		
-		limpar();
-		escrever("===== DADOS DO FORNECEDOR =====");
-        escrever("ID:        " + fornecedor.getId());
-        escrever("Nome:      " + fornecedor.getRazaoSocial());
-        escrever("CNPJ:      " + fornecedor.getCnpj());
-        escrever("Email:     " + fornecedor.getEmail());
-        escrever("Telefone:  " + fornecedor.getTelefone());
-        escrever("Ativo:     " + fornecedor.isAtivo());
-		
-		
+		tabela.setItems(FXCollections.observableArrayList(fornecedoresFiltrado));
 	}
 	
 	@FXML
 	private void listarFornecedores() {
 		List<Fornecedor> listaFornecedores = sistema.listarFornecedores();
 		
-		limpar();
+	
 		if (listaFornecedores.isEmpty()) {
 			return;
 		}
 		
-		escrever("===== FORNECEDORES CADASTRADOS =====");
-		escreverf("%-5s %-25s %-18s %-30s %-15s %-6s", "ID", "NOME", "CNPJ", "EMAIL", "TELEFONE", "ATIVO");
-		escrever("-".repeat(104));
-		
-		for (Fornecedor c : listaFornecedores) {
-			escreverf("%-5s %-25s %-18s %-30s %-15s %-6s", c.getId(), c.getRazaoSocial(), c.getCnpj(), c.getEmail(), c.getTelefone(), c.isAtivo());
-        }
+		tabela.setItems(FXCollections.observableArrayList(listaFornecedores));
 		
 	}
 	
 	@FXML
 	private void atualizarFornecedor() {
-	    Optional<Integer> id = pedirInteiro(ID);
-	    if (id.isEmpty()) return;
-
-	    Fornecedor atual = sistema.buscarFornecedor(id.get());
-	    if (atual == null) {
-	        erro(NAO_ENCONTRADO);
-	        return;
-	    }
+		Fornecedor atual = obterFornecedorAlvo();
+		if (atual == null) return;
+		
+		Optional<Integer> id = Optional.of(atual.getId());
 
 	    Optional<String> nome = pedirTexto("Razão Social (Nome):", atual.getRazaoSocial());
 	    if (nome.isEmpty()) return;
@@ -108,13 +108,14 @@ public class MenuFornecedoresController extends MenuController{
 	    Optional<String> telefone = pedirTexto("Telefone:", atual.getTelefone());
 	    if (telefone.isEmpty()) return;
 
-	    String novoNome = nome.get().isEmpty() ? atual.getRazaoSocial() : nome.get();
-	    String novoCnpj = cnpj.get().isEmpty() ? atual.getCnpj() : cnpj.get();
-	    String novoEmail = email.get().isEmpty() ? atual.getEmail() : email.get();
-	    String novoTelefone = telefone.get().isEmpty() ? atual.getTelefone() : telefone.get();
+	    String novoNome = pegaNovo(nome.get(), atual.getRazaoSocial());
+	    String novoCnpj = pegaNovo(cnpj.get(), atual.getCnpj());
+	    String novoEmail = pegaNovo(email.get(), atual.getEmail());
+	    String novoTelefone = pegaNovo(telefone.get(), atual.getTelefone());
 
 	    if (sistema.atualizarFornecedor(new Fornecedor(id.get(), novoNome, novoCnpj, novoEmail, novoTelefone))) {
 	        info("Fornecedor atualizado com sucesso.");
+	        mostraFornecedor(id.get());
 	    } else {
 	        erro("Erro ao atualizar fornecedor.");
 	    }
@@ -122,14 +123,10 @@ public class MenuFornecedoresController extends MenuController{
 
 	@FXML
 	private void desativarFornecedor() {
-	    Optional<Integer> id = pedirInteiro(ID);
-	    if (id.isEmpty()) return;
-
-	    Fornecedor fornecedor = sistema.buscarFornecedor(id.get());
-	    if (fornecedor == null) {
-	        erro(NAO_ENCONTRADO);
-	        return;
-	    }
+		Fornecedor fornecedor = obterFornecedorAlvo();
+		if (fornecedor == null) return;
+		
+		Optional<Integer> id = Optional.of(fornecedor.getId());
 
 	    if (!confirmar("Tem certeza que deseja desativar \"" + fornecedor.getRazaoSocial() + "\"?")) {
 	        return;
@@ -137,8 +134,40 @@ public class MenuFornecedoresController extends MenuController{
 
 	    if (sistema.desativarFornecedor(id.get())) {
 	        info("Fornecedor desativado com sucesso");
+	        mostraFornecedor(id.get());
 	    } else {
 	        erro("Erro ao desativar fornecedor");
 	    }
 	}
+
+	private Fornecedor obterFornecedorAlvo() {
+		Fornecedor atual = tabela.getSelectionModel().getSelectedItem();
+		tabela.getSelectionModel().clearSelection();
+		
+		if (atual == null) {
+			Optional<Integer> id = pedirInteiro(ID);
+			if (id.isEmpty()) return null;
+			atual = sistema.buscarFornecedor(id.get());
+			if (atual == null) {
+				erro(NAO_ENCONTRADO);
+			}
+		}
+		return atual;
+	}
+	
+	private String pegaNovo(String novo, String antigo) {
+		return novo.isEmpty() ? antigo : novo;
+	}
+
+private void mostraFornecedor(int id) {
+	
+	Fornecedor fornecedor = sistema.buscarFornecedor(id);
+	if (fornecedor == null) {
+		info("Fornecedor não cadastrado.");
+		return;
+	}
+	
+	tabela.getItems().setAll(fornecedor);
+	
+}
 }

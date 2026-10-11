@@ -38,6 +38,10 @@ public class ContratoAluguel {
     public Item getItem() {
         return item;
     }
+    
+    public String getItemNome() {
+        return item.getNome();
+    }
 
     public String getDataRetirada() {
         return dataRetirada;

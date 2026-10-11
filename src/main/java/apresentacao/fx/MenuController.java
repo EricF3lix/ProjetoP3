@@ -13,6 +13,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.ChoiceDialog;
 import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
 import javafx.scene.control.TextInputDialog;
 public abstract class MenuController {
 
@@ -21,6 +22,9 @@ public abstract class MenuController {
 
     @FXML
     protected TextArea saida;
+    
+    @FXML
+    protected TextField pesquisa;
 
     protected abstract String getTitulo();
 

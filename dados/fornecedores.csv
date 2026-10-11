@@ -1,3 +1,4 @@
 id;razaoSocial;cnpj;email;telefone;ativo
-1;Apple;00000000000;stevejobs@apple.com;9999-9999;true
+1;Apple;000000000;stevejobs@apple.com;9999-9999;true
 2;Samsung;111111111;samsung@sim.com;8888-8888;true
+3;Motorola;222222222;motorola@moto.com;7777-7777;false

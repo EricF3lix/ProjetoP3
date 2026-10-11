@@ -78,6 +78,10 @@ public class Item {
     public Categoria getCategoria() {
         return categoria;
     }
+    
+    public String getCategoriaNome() {
+        return categoria != null ? categoria.getNome() : "-";
+    }
 
     public void setCategoria(Categoria categoria) {
         this.categoria = categoria;
