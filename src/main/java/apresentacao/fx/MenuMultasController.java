@@ -6,7 +6,6 @@ import java.time.ZoneId;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import entidades.Multa;
 import javafx.fxml.FXML;
@@ -50,6 +49,7 @@ public class MenuMultasController extends MenuController {
         }
     }
 
+    /** O FXML só define título e largura das colunas; aqui dizemos de onde vem cada valor. */
     private void configurarColunas() {
         colID.setCellValueFactory(new PropertyValueFactory<>("id"));            // getId()
         colContrato.setCellValueFactory(new PropertyValueFactory<>("idContrato")); // getIdContrato()
@@ -73,7 +73,13 @@ public class MenuMultasController extends MenuController {
             @Override
             protected void updateItem(Boolean paga, boolean empty) {
                 super.updateItem(paga, empty);
-                setText(empty || paga == null ? null : (paga ? "Paga" : "Pendente"));
+                if (empty || paga == null) {
+                    setText(null);
+                } else if (paga) {
+                    setText("Paga");
+                } else {
+                    setText("Pendente");
+                }
             }
         });
     }
@@ -176,6 +182,7 @@ public class MenuMultasController extends MenuController {
         }
     }
 
+    /** Filtra pelo que foi digitado em "Busque por ID Multa/Contrato". */
     private void fazPesquisa(String pesquisado) {
         String termo = pesquisado == null ? "" : pesquisado.trim();
 
@@ -183,11 +190,12 @@ public class MenuMultasController extends MenuController {
                 .filter(m -> termo.isEmpty()
                         || String.valueOf(m.getId()).contains(termo)
                         || String.valueOf(m.getIdContrato()).contains(termo))
-                .collect(Collectors.toList());
+                .toList();
 
         tabela.getItems().setAll(filtradas);
     }
 
+    /** Usa a linha selecionada na tabela; se não houver, pede o ID. */
     private Multa obterMultaAlvo() {
         Multa atual = tabela.getSelectionModel().getSelectedItem();
         tabela.getSelectionModel().clearSelection();
