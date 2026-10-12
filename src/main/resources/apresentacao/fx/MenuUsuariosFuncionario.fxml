@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane prefHeight="600.0" prefWidth="850.0" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml" fx:controller="apresentacao.fx.MenuUsuariosFuncionarioController">
+   <children>
+      <Label layoutX="35.0" layoutY="25.0" text="Gerenciar Usuários">
+         <font>
+            <Font name="System Bold" size="22.0" />
+         </font>
+      </Label>
+
+      <!-- Menu Lateral -->
+      <VBox layoutX="35.0" layoutY="70.0" prefWidth="240.0" spacing="12.0">
+         <children>
+            <Button fx:id="btnCadastrarCliente" mnemonicParsing="false" onAction="#aoCadastrarCliente" prefHeight="35.0" prefWidth="240.0" text="Cadastrar Cliente" />
+            <Button fx:id="btnBuscarUsuario" mnemonicParsing="false" onAction="#aoBuscarUsuario" prefHeight="35.0" prefWidth="240.0" text="Buscar Usuário por ID" />
+            <Button fx:id="btnListarUsuarios" mnemonicParsing="false" onAction="#aoListarUsuarios" prefHeight="35.0" prefWidth="240.0" text="Listar todos os Usuários" />
+            <Pane prefHeight="15.0" />
+            <Button fx:id="btnVoltar" mnemonicParsing="false" onAction="#voltar" prefHeight="35.0" prefWidth="240.0" text="Voltar" />
+         </children>
+      </VBox>
+
+      <!-- Painel Dinamico (StackPane contendo todos os paineis desenhados) -->
+      <AnchorPane layoutX="300.0" layoutY="70.0" prefHeight="480.0" prefWidth="510.0" style="-fx-border-color: #cccccc; -fx-background-color: #ffffff;">
+         <children>
+            <StackPane fx:id="painelConteudo" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+               <children>
+                  <!-- Painel da Tabela -->
+                  <VBox fx:id="painelTabela" spacing="10.0">
+                     <padding>
+                        <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
+                     </padding>
+                     <children>
+                        <Label text="Todos os Usuários Cadastrados">
+                           <font>
+                              <Font name="System Bold" size="16.0" />
+                           </font>
+                        </Label>
+                        <TableView fx:id="tabelaUsuarios" prefHeight="420.0" prefWidth="480.0">
+                           <columns>
+                              <TableColumn fx:id="colId" prefWidth="50.0" text="ID" />
+                              <TableColumn fx:id="colNome" prefWidth="120.0" text="Nome" />
+                              <TableColumn fx:id="colEmail" prefWidth="140.0" text="E-mail" />
+                              <TableColumn fx:id="colPerfil" prefWidth="90.0" text="Perfil" />
+                              <TableColumn fx:id="colAtivo" prefWidth="60.0" text="Ativo" />
+                           </columns>
+                        </TableView>
+                     </children>
+                  </VBox>
+
+                  <!-- Painel de Cadastro -->
+                  <VBox fx:id="painelCadastro" spacing="8.0" visible="false">
+                     <padding>
+                        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+                     </padding>
+                     <children>
+                        <Label fx:id="lblCadTitulo" text="Cadastrar Cliente">
+                           <font>
+                              <Font name="System Bold" size="16.0" />
+                           </font>
+                        </Label>
+                        <Label text="Nome:" />
+                        <TextField fx:id="txtCadNome" promptText="Nome completo" />
+                        <Label text="E-mail:" />
+                        <TextField fx:id="txtCadEmail" promptText="E-mail" />
+                        <Label text="CPF:" />
+                        <TextField fx:id="txtCadCpf" promptText="CPF" />
+                        <Label text="Senha:" />
+                        <PasswordField fx:id="txtCadSenha" promptText="Senha" />
+                        <Pane prefHeight="5.0" />
+                        <Button fx:id="btnCadSalvar" mnemonicParsing="false" onAction="#aoSalvarCadastro" text="Salvar" />
+                        <Label fx:id="lblCadMensagem" />
+                     </children>
+                  </VBox>
+
+                  <!-- Painel de Busca -->
+                  <VBox fx:id="painelBusca" spacing="12.0" visible="false">
+                     <padding>
+                        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+                     </padding>
+                     <children>
+                        <Label text="Buscar Usuário por ID">
+                           <font>
+                              <Font name="System Bold" size="16.0" />
+                           </font>
+                        </Label>
+                        <HBox spacing="8.0">
+                           <children>
+                              <TextField fx:id="txtBuscaId" promptText="ID do usuário" />
+                              <Button mnemonicParsing="false" onAction="#aoConfirmarBusca" text="Buscar" />
+                           </children>
+                        </HBox>
+                        <Label fx:id="lblBuscaResultado" wrapText="true">
+                           <font>
+                              <Font size="13.0" />
+                           </font>
+                        </Label>
+                     </children>
+                  </VBox>
+               </children>
+            </StackPane>
+         </children>
+      </AnchorPane>
+   </children>
+</AnchorPane>
