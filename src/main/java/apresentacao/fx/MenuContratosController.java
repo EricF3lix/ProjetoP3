@@ -189,7 +189,7 @@ public class MenuContratosController extends MenuController {
     private void mostraContrato(int id) {
         ContratoAluguel contrato = sistema.buscarContrato(id);
         if (contrato == null) {
-            info("Contrato não encontrado.");
+            info(CONTRATO_NAO_ENCONTRADO);
             return;
         }
         tabela.getItems().setAll(contrato);
