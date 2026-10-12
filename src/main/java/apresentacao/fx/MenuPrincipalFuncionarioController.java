@@ -33,7 +33,9 @@ public class MenuPrincipalFuncionarioController extends MenuController{
     private void abrirRelatorios() {navegador.abrir("MenuRelatorios.fxml");}
 
     @FXML
-    private void abrirUsuarios(){ info("MenuUsuarios.fxml ainda não criado"); }
+    private void abrirUsuarios(){ 
+    	navegador.abrir("MenuUsuariosFuncionario.fxml");
+    }
 
     @FXML
     private void abrirItens(){navegador.abrir("MenuItens.fxml");}
