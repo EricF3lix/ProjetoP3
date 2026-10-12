@@ -22,6 +22,8 @@ public abstract class MenuController {
 
     @FXML
     protected TextArea saida;
+
+    protected boolean listenerConfigurado = false;
     
     @FXML
     protected TextField pesquisa;
@@ -150,5 +152,15 @@ public abstract class MenuController {
     }
     protected String pegaNovo(String novo, String antigo) {
         return (novo != null && !novo.isBlank()) ? novo : antigo;
+    }
+    protected <T> void configurarTabelaEPesquisa(
+        javafx.scene.control.TableView<T> tabela, 
+        java.util.function.Consumer<String> metodoPesquisa) {
+
+        tabela.setPlaceholder(new javafx.scene.control.Label(""));
+        if (!listenerConfigurado) {
+            pesquisa.textProperty().addListener((obs, antigo, novo) -> metodoPesquisa.accept(novo));
+            this.listenerConfigurado = true;
+        }
     }
 }

@@ -1,11 +1,12 @@
 package business.cruds;
 
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -13,6 +14,7 @@ import org.junit.jupiter.api.Test;
 import business.interfaces.IGerenciamentoContratos;
 import entidades.Administrador;
 import entidades.Cliente;
+import entidades.ContratoAluguel;
 import entidades.Usuario;
 import support.FakeContratoRepositorio;
 import support.FakeUsuarioRepositorio;
@@ -182,6 +184,11 @@ class GerenciamentoUsuariosTest {
 
    
     private static class GerenciamentoContratosComMultaPendenteFalsa implements IGerenciamentoContratos {
+
+        @Override
+        public List<ContratoAluguel> filtrarContratos(String filtro) {
+            return List.of();
+        }
 
         @Override
         public boolean cadastrarContrato(entidades.ContratoAluguel contrato) { return false; }
