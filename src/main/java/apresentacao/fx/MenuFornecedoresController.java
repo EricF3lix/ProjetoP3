@@ -155,19 +155,15 @@ public class MenuFornecedoresController extends MenuController{
 		return atual;
 	}
 	
-	private String pegaNovo(String novo, String antigo) {
-		return novo.isEmpty() ? antigo : novo;
+	private void mostraFornecedor(int id) {
+	
+		Fornecedor fornecedor = sistema.buscarFornecedor(id);
+		if (fornecedor == null) {
+			info("Fornecedor não cadastrado.");
+			return;
+		}
+		
+		tabela.getItems().setAll(fornecedor);
+		
 	}
-
-private void mostraFornecedor(int id) {
-	
-	Fornecedor fornecedor = sistema.buscarFornecedor(id);
-	if (fornecedor == null) {
-		info("Fornecedor não cadastrado.");
-		return;
-	}
-	
-	tabela.getItems().setAll(fornecedor);
-	
-}
 }
