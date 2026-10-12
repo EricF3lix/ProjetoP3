@@ -195,14 +195,11 @@ public class MenuItensController extends MenuController {
             return Optional.of(new Escolha<Fornecedor>(null));
         }
 
-        List<String> rotulos = new ArrayList<>();
-        for (Fornecedor f : fornecedores) {
-            rotulos.add("[" + f.getId() + "] " + f.getRazaoSocial());
-        }
+        List<String> rotulos = fornecedores.stream().map(this::rotuloFornecedor).toList();
 
         Optional<Integer> posicao = escolherPosicao("Fornecedor do item:", rotulos, "(Sem fornecedor)");
         if (posicao.isEmpty()) {
-            return Optional.empty(); 
+            return Optional.empty();
         }
 
         if (posicao.get() < 0) {
@@ -211,7 +208,11 @@ public class MenuItensController extends MenuController {
 
         return Optional.of(new Escolha<Fornecedor>(fornecedores.get(posicao.get())));
     }
+    
     private String rotuloCategoria(Categoria categoria) {
         return "[" + categoria.getId() + "] " + categoria.getNome();
+    }
+    private String rotuloFornecedor(Fornecedor fornecedor) {
+        return "[" + fornecedor.getId() + "] " + fornecedor.getRazaoSocial();
     }
 }
