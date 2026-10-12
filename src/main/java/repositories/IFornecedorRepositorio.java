@@ -9,6 +9,8 @@ public interface IFornecedorRepositorio {
 
     public abstract List<Fornecedor> listarTodos();
 
+    public abstract List<Fornecedor> buscaNomeECNPJ(String filtro);
+    
     public abstract void desativar(int id);
 
     public abstract Fornecedor buscarPorCnpj(String cnpj);

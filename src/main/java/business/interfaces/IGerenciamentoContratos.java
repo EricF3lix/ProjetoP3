@@ -11,6 +11,8 @@ public interface IGerenciamentoContratos {
 
     public abstract List<ContratoAluguel> listarContratos();
 
+    public abstract List<ContratoAluguel> filtrarContratos(String filtro);
+
     public abstract boolean finalizarContrato(int id);
 
     public abstract boolean cancelarContrato(int id);

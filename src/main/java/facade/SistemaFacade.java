@@ -99,6 +99,10 @@ public class SistemaFacade {
         return gerenciamentoContratos.listarContratos();
     }
 
+    public List<ContratoAluguel> filtrarContratos(String filtro) {
+        return gerenciamentoContratos.filtrarContratos(filtro);
+    }
+
     public boolean finalizarContrato(int id) {
         return gerenciamentoContratos.finalizarContrato(id);
     }
@@ -142,6 +146,9 @@ public class SistemaFacade {
         return gerenciamentoItens.listarItens();
     }
 
+    public List<Item> filtrarItem(String filtro) {
+        return gerenciamentoItens.filtrarItem(filtro);
+    }
     public boolean atualizarItem(Item itemNovo) {
         return gerenciamentoItens.atualizarItem(itemNovo);
     }
@@ -192,6 +199,10 @@ public class SistemaFacade {
 
     public Fornecedor buscarFornecedor(int id) {
         return gerenciamentoFornecedor.buscarFornecedor(id);
+    }
+    
+    public List<Fornecedor> filtrarFornecedor(String filtro){
+    	return gerenciamentoFornecedor.filtraFornecedor(filtro);
     }
 
     public List<Fornecedor> listarFornecedores() {
@@ -246,19 +257,20 @@ public class SistemaFacade {
     // RELATÓRIOS
     // =========================================================================
 
-    public void gerarRelatorioItensDisponiveis() {
-        geradorRelatorios.gerarRelatorioItensDisponiveis();
+    public List<Item> gerarRelatorioItensDisponiveis() {
+        return geradorRelatorios.gerarRelatorioItensDisponiveis();
     }
 
-    public void gerarHistoricoCliente(int idCliente) {
-        geradorRelatorios.gerarHistoricoCliente(idCliente);
+    public List<ContratoAluguel> gerarHistoricoCliente(int idCliente) {
+        return geradorRelatorios.gerarHistoricoCliente(idCliente);
     }
 
-    public void gerarRelatorioItensAlugados() {
-        geradorRelatorios.gerarRelatorioItensAlugados();
+    public List<ContratoAluguel> gerarRelatorioItensAlugados() {
+        return geradorRelatorios.gerarRelatorioItensAlugados();
+
     }
 
-    public void gerarRelatorioFaturamento(String dataInicial, String dataFinal) {
-        geradorRelatorios.gerarRelatorioFaturamento(dataInicial, dataFinal);
+    public List<ContratoAluguel> gerarRelatorioFaturamento(String dataInicial, String dataFinal) {
+        return geradorRelatorios.gerarRelatorioFaturamento(dataInicial, dataFinal);
     }
 }

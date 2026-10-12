@@ -57,6 +57,24 @@ public class GerenciamentoContratos implements IGerenciamentoContratos {
     }
 
     @Override
+    public List<ContratoAluguel> filtrarContratos(String filtro) {
+        if (filtro == null || filtro.isBlank()) {
+            return listarContratos();
+        }
+
+        String termo = filtro.toLowerCase().trim();
+
+        return listarContratos().stream()
+                .filter(c -> String.valueOf(c.getId()).contains(termo)
+                        || (c.getCliente() != null && c.getCliente().getNome() != null 
+                            && c.getCliente().getNome().toLowerCase().contains(termo))
+                        || (c.getItem() != null && c.getItem().getNome() != null 
+                            && c.getItem().getNome().toLowerCase().contains(termo))
+                        || (c.getStatus() != null && c.getStatus().toLowerCase().contains(termo)))
+                .toList();
+    }
+
+    @Override
     public boolean cancelarContrato(int id) {
 
         ContratoAluguel contrato = repositorio.buscarPorId(id);

@@ -36,6 +36,22 @@ public class GerenciamentoItens implements IGerenciamentoItens {
         return repositorio.listarTodos();
     }
 
+    @Override 
+    public List<Item> filtrarItem(String filtro) {
+        if (filtro == null || filtro.isBlank()) {
+            return listarItens();
+        }
+
+        String termo = filtro.toLowerCase().trim();
+
+        return listarItens().stream()
+                .filter(item -> String.valueOf(item.getId()).contains(termo)
+                        || (item.getNome() != null && item.getNome().toLowerCase().contains(termo))
+                        || (item.getCategoria() != null && item.getCategoria().getNome() != null 
+                            && item.getCategoria().getNome().toLowerCase().contains(termo)))
+                .toList();
+    }
+
     @Override
     public boolean atualizarItem(Item itemNovo) {
 
