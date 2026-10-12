@@ -1,6 +1,5 @@
 package apresentacao.fx;
  
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -173,10 +172,7 @@ public class MenuItensController extends MenuController {
             return Optional.of(new Escolha<Categoria>(null));
         }
 
-        List<String> rotulos = new ArrayList<>();
-        for (Categoria c : categorias) {
-            rotulos.add("[" + c.getId() + "] " + c.getNome());
-        }
+        List<String> rotulos = categorias.stream().map(this::rotuloCategoria).toList();
 
         Optional<Integer> posicao = escolherPosicao("Categoria do item:", rotulos, "(Sem categoria)");
         if (posicao.isEmpty()) {
@@ -198,14 +194,11 @@ public class MenuItensController extends MenuController {
             return Optional.of(new Escolha<Fornecedor>(null));
         }
 
-        List<String> rotulos = new ArrayList<>();
-        for (Fornecedor f : fornecedores) {
-            rotulos.add("[" + f.getId() + "] " + f.getRazaoSocial());
-        }
+        List<String> rotulos = fornecedores.stream().map(this::rotuloFornecedor).toList();
 
         Optional<Integer> posicao = escolherPosicao("Fornecedor do item:", rotulos, "(Sem fornecedor)");
         if (posicao.isEmpty()) {
-            return Optional.empty(); 
+            return Optional.empty();
         }
 
         if (posicao.get() < 0) {
@@ -213,5 +206,12 @@ public class MenuItensController extends MenuController {
         }
 
         return Optional.of(new Escolha<Fornecedor>(fornecedores.get(posicao.get())));
+    }
+    
+    private String rotuloCategoria(Categoria categoria) {
+        return "[" + categoria.getId() + "] " + categoria.getNome();
+    }
+    private String rotuloFornecedor(Fornecedor fornecedor) {
+        return "[" + fornecedor.getId() + "] " + fornecedor.getRazaoSocial();
     }
 }
