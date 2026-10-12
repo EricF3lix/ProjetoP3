@@ -142,6 +142,9 @@ public class SistemaFacade {
         return gerenciamentoItens.listarItens();
     }
 
+    public List<Item> filtrarItem(String filtro) {
+        return gerenciamentoItens.filtrarItem(filtro);
+    }
     public boolean atualizarItem(Item itemNovo) {
         return gerenciamentoItens.atualizarItem(itemNovo);
     }

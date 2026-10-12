@@ -1,169 +1,195 @@
 package apresentacao.fx;
- 
+
 import java.util.List;
 import java.util.Optional;
 
 import entidades.Categoria;
 import entidades.Fornecedor;
 import entidades.Item;
+import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
- 
+import javafx.scene.control.Label;
+import javafx.scene.control.TableView;
 
 public class MenuItensController extends MenuController {
- 
-    private static final String ID_ITEM = "ID do item:";
-    private static final String NAO_ENCONTRADO = "Item não encontrado";
+
+    private static final String ID_ITEM = "Digite o ID do item: ";
+    private static final String NAO_ENCONTRADO = "Item não encontrado.";
     private static final List<String> ESTADOS = List.of("NOVO", "BOM", "REGULAR", "RUIM");
- 
-   
+
+    @FXML private TableView<Item> tabela;
+    private boolean listener = false;
+
     private record Escolha<T>(T valor) {
     }
- 
+
     @Override
     protected String getTitulo() {
-        return "Gerenciar Itens";
+        return ("Gerenciar Itens");
     }
- 
+
+    @Override
+    protected void aoExibir() {
+        tabela.setPlaceholder(new Label(""));
+        if (!listener) {
+            pesquisa.textProperty().addListener((obj, antigo, novo) -> fazPesquisa(novo));
+            this.listener = true;
+        }
+    }
 
     @FXML
     private void cadastrarItem() {
         Optional<String> nome = pedirTexto("Nome:");
         if (nome.isEmpty()) return;
- 
+
         Optional<String> descricao = pedirTexto("Descrição:");
         if (descricao.isEmpty()) return;
- 
+
         Optional<Double> taxaDiaria = pedirDouble("Taxa diária (R$):");
         if (taxaDiaria.isEmpty()) return;
- 
+
         Optional<Integer> estado = escolherPosicao("Estado de conservação:", ESTADOS, null);
         if (estado.isEmpty()) return;
- 
+
         Optional<Double> valorReposicao = pedirDouble("Valor de reposição (R$):");
         if (valorReposicao.isEmpty()) return;
- 
+
         Optional<Escolha<Categoria>> categoria = selecionarCategoria();
         if (categoria.isEmpty()) return;
- 
+
         Optional<Escolha<Fornecedor>> fornecedor = selecionarFornecedor();
         if (fornecedor.isEmpty()) return;
- 
+
         int id = sistema.gerarProximoIdItem();
- 
+
         Item item = new Item(id, nome.get(), descricao.get(), taxaDiaria.get(),
                 ESTADOS.get(estado.get()), valorReposicao.get(),
                 categoria.get().valor(), fornecedor.get().valor());
- 
+
         if (sistema.cadastrarItem(item)) {
-            info("Item cadastrado com sucesso. ID: " + id);
+            info("Item cadastrado com sucesso! ID: " + id);
+            mostraItem(id);
         } else {
-            erro("Erro ao cadastrar item");
+            erro("Erro ao cadastrar item!");
         }
     }
 
     @FXML
     private void buscarItem() {
-        Optional<Integer> id = pedirInteiro(ID_ITEM);
-        if (id.isEmpty()) return;
- 
-        Item item = sistema.buscarItem(id.get());
-        if (item == null) {
-            erro(NAO_ENCONTRADO);
+        Optional<Integer> idItem = pedirInteiro(ID_ITEM);
+        if (idItem.isEmpty()) {
             return;
         }
- 
-        limpar();
-        escrever("===== DADOS DO ITEM =====");
-        escrever("ID:           " + item.getId());
-        escrever("Nome:         " + item.getNome());
-        escrever("Descrição:    " + item.getDescricao());
-        escreverf("Taxa diária:  R$ %.2f", item.getTaxaDiaria());
-        escrever("Estado:       " + item.getEstadoConservacao());
-        escreverf("Reposição:    R$ %.2f", item.getValorReposicao());
-        escrever("Categoria:    " + (item.getCategoria() != null ? item.getCategoria().getNome() : "Sem categoria"));
-        escrever("Fornecedor:   " + (item.getFornecedor() != null ? item.getFornecedor().getRazaoSocial() : "Sem fornecedor"));
-        escrever("Status:       " + item.getStatus());
-        escrever("Ativo:        " + item.isAtivo());
+
+        mostraItem(idItem.get());
     }
-     @FXML
+
+    private void fazPesquisa(String pesquisado) {
+        List<Item> itensFiltrados = sistema.filtrarItem(pesquisado);
+        if (itensFiltrados.isEmpty()) {
+            tabela.getItems().clear();
+            return;
+        }
+        tabela.setItems(FXCollections.observableArrayList(itensFiltrados));
+    }
+
+    @FXML
     private void listarItens() {
-        List<Item> itens = sistema.listarItens();
- 
-        limpar();
-        escrever("===== ITENS CADASTRADOS =====");
- 
-        if (itens.isEmpty()) {
-            escrever("Nenhum item cadastrado");
+        List<Item> listaItens = sistema.listarItens();
+
+        if (listaItens.isEmpty()) {
             return;
         }
- 
-        escreverf("%-5s %-25s %-20s %-10s %-12s %-6s", "ID", "NOME", "CATEGORIA", "TAXA/DIA", "STATUS", "ATIVO");
-        escrever("-".repeat(85));
- 
-        for (Item item : itens) {
-            escreverf("%-5d %-25s %-20s R$%-8.2f %-12s %-6s",
-                    item.getId(),
-                    item.getNome(),
-                    item.getCategoria() != null ? item.getCategoria().getNome() : "-",
-                    item.getTaxaDiaria(),
-                    item.getStatus(),
-                    item.isAtivo());
-        }
+
+        tabela.setItems(FXCollections.observableArrayList(listaItens));
     }
+
     @FXML
     private void atualizarItem() {
-        Optional<Integer> id = pedirInteiro(ID_ITEM);
-        if (id.isEmpty()) return;
+        Item atual = obterItemAlvo();
+        if (atual == null) return;
 
-        Item item = sistema.buscarItem(id.get());
-        if (item == null) {
-            erro(NAO_ENCONTRADO);
-            return;
-        }
+        Optional<Integer> id = Optional.of(atual.getId());
 
-    
-        Optional<String> nome = pedirTexto("Nome:", item.getNome());
+        Optional<String> nome = pedirTexto("Nome:", atual.getNome());
         if (nome.isEmpty()) return;
 
-        Optional<String> descricao = pedirTexto("Descrição:", item.getDescricao());
+        Optional<String> descricao = pedirTexto("Descrição:", atual.getDescricao());
         if (descricao.isEmpty()) return;
 
-        Optional<Double> taxaDiaria = pedirDouble("Taxa diária (R$):", item.getTaxaDiaria());
+        Optional<Double> taxaDiaria = pedirDouble("Taxa diária (R$):", atual.getTaxaDiaria());
         if (taxaDiaria.isEmpty()) return;
 
         Optional<Integer> estado = escolherPosicao("Estado de conservação:", ESTADOS,
-                "(manter atual: " + item.getEstadoConservacao() + ")");
+                "(manter atual: " + atual.getEstadoConservacao() + ")");
         if (estado.isEmpty()) return;
 
-        Optional<Double> valorReposicao = pedirDouble("Valor de reposição (R$):", item.getValorReposicao());
+        Optional<Double> valorReposicao = pedirDouble("Valor de reposição (R$):", atual.getValorReposicao());
         if (valorReposicao.isEmpty()) return;
 
-        String novoNome = nome.get().isEmpty() ? item.getNome() : nome.get();
-        String novaDescricao = descricao.get().isEmpty() ? item.getDescricao() : descricao.get();
-        String novoEstado = estado.get() < 0 ? item.getEstadoConservacao() : ESTADOS.get(estado.get());
+        String novoNome = pegaNovo(nome.get(), atual.getNome());
+        String novaDescricao = pegaNovo(descricao.get(), atual.getDescricao());
+        String novoEstado = estado.get() < 0 ? atual.getEstadoConservacao() : ESTADOS.get(estado.get());
 
         Item itemNovo = new Item(id.get(), novoNome, novaDescricao, taxaDiaria.get(), novoEstado,
-                valorReposicao.get(), item.getCategoria(), item.getFornecedor());
+                valorReposicao.get(), atual.getCategoria(), atual.getFornecedor());
 
         if (sistema.atualizarItem(itemNovo)) {
-            info("Item atualizado com sucesso");
+            info("Item atualizado com sucesso.");
+            mostraItem(id.get());
         } else {
-            erro("Erro ao atualizar item");
+            erro("Erro ao atualizar item.");
         }
     }
 
     @FXML
     private void desativarItem() {
-        Optional<Integer> id = pedirInteiro(ID_ITEM);
-        if (id.isEmpty()) return;
+        Item item = obterItemAlvo();
+        if (item == null) return;
+
+        Optional<Integer> id = Optional.of(item.getId());
+
+        if (!confirmar("Tem certeza que deseja desativar \"" + item.getNome() + "\"?")) {
+            return;
+        }
 
         if (sistema.excluirItem(id.get())) {
             info("Item desativado com sucesso");
+            mostraItem(id.get());
         } else {
-            erro("Item não encontrado ou alugado");
+            erro("Erro ao desativar item (não encontrado ou alugado)");
         }
     }
-    
+
+    private Item obterItemAlvo() {
+        Item atual = tabela.getSelectionModel().getSelectedItem();
+        tabela.getSelectionModel().clearSelection();
+
+        if (atual == null) {
+            Optional<Integer> id = pedirInteiro(ID_ITEM);
+            if (id.isEmpty()) return null;
+            atual = sistema.buscarItem(id.get());
+            if (atual == null) {
+                erro(NAO_ENCONTRADO);
+            }
+        }
+        return atual;
+    }
+
+    private String pegaNovo(String novo, String antigo) {
+        return novo.isEmpty() ? antigo : novo;
+    }
+
+    private void mostraItem(int id) {
+        Item item = sistema.buscarItem(id);
+        if (item == null) {
+            info("Item não cadastrado.");
+            return;
+        }
+
+        tabela.getItems().setAll(item);
+    }
+
     private Optional<Escolha<Categoria>> selecionarCategoria() {
         List<Categoria> categorias = sistema.listarCategorias();
 
@@ -176,11 +202,11 @@ public class MenuItensController extends MenuController {
 
         Optional<Integer> posicao = escolherPosicao("Categoria do item:", rotulos, "(Sem categoria)");
         if (posicao.isEmpty()) {
-            return Optional.empty(); 
+            return Optional.empty();
         }
 
         if (posicao.get() < 0) {
-            return Optional.of(new Escolha<Categoria>(null)); 
+            return Optional.of(new Escolha<Categoria>(null));
         }
 
         return Optional.of(new Escolha<Categoria>(categorias.get(posicao.get())));
@@ -207,10 +233,11 @@ public class MenuItensController extends MenuController {
 
         return Optional.of(new Escolha<Fornecedor>(fornecedores.get(posicao.get())));
     }
-    
+
     private String rotuloCategoria(Categoria categoria) {
         return "[" + categoria.getId() + "] " + categoria.getNome();
     }
+
     private String rotuloFornecedor(Fornecedor fornecedor) {
         return "[" + fornecedor.getId() + "] " + fornecedor.getRazaoSocial();
     }
