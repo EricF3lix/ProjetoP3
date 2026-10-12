@@ -173,10 +173,7 @@ public class MenuItensController extends MenuController {
             return Optional.of(new Escolha<Categoria>(null));
         }
 
-        List<String> rotulos = new ArrayList<>();
-        for (Categoria c : categorias) {
-            rotulos.add("[" + c.getId() + "] " + c.getNome());
-        }
+        List<String> rotulos = categorias.stream().map(this::rotuloCategoria).toList();
 
         Optional<Integer> posicao = escolherPosicao("Categoria do item:", rotulos, "(Sem categoria)");
         if (posicao.isEmpty()) {
@@ -213,5 +210,8 @@ public class MenuItensController extends MenuController {
         }
 
         return Optional.of(new Escolha<Fornecedor>(fornecedores.get(posicao.get())));
+    }
+    private String rotuloCategoria(Categoria categoria) {
+        return "[" + categoria.getId() + "] " + categoria.getNome();
     }
 }
