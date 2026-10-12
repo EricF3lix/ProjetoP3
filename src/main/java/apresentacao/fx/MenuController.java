@@ -148,4 +148,7 @@ public abstract class MenuController {
         }
         return Optional.of(posicao);
     }
+    protected String pegaNovo(String novo, String antigo) {
+        return (novo != null && !novo.isBlank()) ? novo : antigo;
+    }
 }

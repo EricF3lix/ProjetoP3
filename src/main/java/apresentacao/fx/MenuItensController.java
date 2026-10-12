@@ -2,6 +2,7 @@ package apresentacao.fx;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Function;
 
 import entidades.Categoria;
 import entidades.Fornecedor;
@@ -18,22 +19,21 @@ public class MenuItensController extends MenuController {
     private static final List<String> ESTADOS = List.of("NOVO", "BOM", "REGULAR", "RUIM");
 
     @FXML private TableView<Item> tabela;
-    private boolean listener = false;
+    private boolean listenerConfigurado = false;
 
-    private record Escolha<T>(T valor) {
-    }
+    private record Escolha<T>(T valor) {}
 
     @Override
     protected String getTitulo() {
-        return ("Gerenciar Itens");
+        return "Gerenciar Itens";
     }
 
     @Override
     protected void aoExibir() {
         tabela.setPlaceholder(new Label(""));
-        if (!listener) {
+        if (!listenerConfigurado) {
             pesquisa.textProperty().addListener((obj, antigo, novo) -> fazPesquisa(novo));
-            this.listener = true;
+            this.listenerConfigurado = true;
         }
     }
 
@@ -76,40 +76,26 @@ public class MenuItensController extends MenuController {
 
     @FXML
     private void buscarItem() {
-        Optional<Integer> idItem = pedirInteiro(ID_ITEM);
-        if (idItem.isEmpty()) {
-            return;
-        }
-
-        mostraItem(idItem.get());
+        pedirInteiro(ID_ITEM).ifPresent(this::mostraItem);
     }
 
     private void fazPesquisa(String pesquisado) {
-        List<Item> itensFiltrados = sistema.filtrarItem(pesquisado);
-        if (itensFiltrados.isEmpty()) {
-            tabela.getItems().clear();
-            return;
-        }
-        tabela.setItems(FXCollections.observableArrayList(itensFiltrados));
+        List<Item> filtrados = sistema.filtrarItem(pesquisado);
+        tabela.setItems(FXCollections.observableArrayList(filtrados));
     }
 
     @FXML
     private void listarItens() {
         List<Item> listaItens = sistema.listarItens();
-
-        if (listaItens.isEmpty()) {
-            return;
+        if (!listaItens.isEmpty()) {
+            tabela.setItems(FXCollections.observableArrayList(listaItens));
         }
-
-        tabela.setItems(FXCollections.observableArrayList(listaItens));
     }
 
     @FXML
     private void atualizarItem() {
         Item atual = obterItemAlvo();
         if (atual == null) return;
-
-        Optional<Integer> id = Optional.of(atual.getId());
 
         Optional<String> nome = pedirTexto("Nome:", atual.getNome());
         if (nome.isEmpty()) return;
@@ -131,12 +117,12 @@ public class MenuItensController extends MenuController {
         String novaDescricao = pegaNovo(descricao.get(), atual.getDescricao());
         String novoEstado = estado.get() < 0 ? atual.getEstadoConservacao() : ESTADOS.get(estado.get());
 
-        Item itemNovo = new Item(id.get(), novoNome, novaDescricao, taxaDiaria.get(), novoEstado,
+        Item itemNovo = new Item(atual.getId(), novoNome, novaDescricao, taxaDiaria.get(), novoEstado,
                 valorReposicao.get(), atual.getCategoria(), atual.getFornecedor());
 
         if (sistema.atualizarItem(itemNovo)) {
             info("Item atualizado com sucesso.");
-            mostraItem(id.get());
+            mostraItem(atual.getId());
         } else {
             erro("Erro ao atualizar item.");
         }
@@ -147,37 +133,34 @@ public class MenuItensController extends MenuController {
         Item item = obterItemAlvo();
         if (item == null) return;
 
-        Optional<Integer> id = Optional.of(item.getId());
-
         if (!confirmar("Tem certeza que deseja desativar \"" + item.getNome() + "\"?")) {
             return;
         }
 
-        if (sistema.excluirItem(id.get())) {
+        if (sistema.excluirItem(item.getId())) {
             info("Item desativado com sucesso");
-            mostraItem(id.get());
+            mostraItem(item.getId());
         } else {
             erro("Erro ao desativar item (não encontrado ou alugado)");
         }
     }
 
     private Item obterItemAlvo() {
-        Item atual = tabela.getSelectionModel().getSelectedItem();
+        Item selecionado = tabela.getSelectionModel().getSelectedItem();
         tabela.getSelectionModel().clearSelection();
 
-        if (atual == null) {
-            Optional<Integer> id = pedirInteiro(ID_ITEM);
-            if (id.isEmpty()) return null;
-            atual = sistema.buscarItem(id.get());
-            if (atual == null) {
-                erro(NAO_ENCONTRADO);
-            }
+        if (selecionado != null) {
+            return selecionado;
         }
-        return atual;
-    }
 
-    private String pegaNovo(String novo, String antigo) {
-        return novo.isEmpty() ? antigo : novo;
+        Optional<Integer> id = pedirInteiro(ID_ITEM);
+        if (id.isEmpty()) return null;
+
+        Item item = sistema.buscarItem(id.get());
+        if (item == null) {
+            erro(NAO_ENCONTRADO);
+        }
+        return item;
     }
 
     private void mostraItem(int id) {
@@ -186,59 +169,37 @@ public class MenuItensController extends MenuController {
             info("Item não cadastrado.");
             return;
         }
-
         tabela.getItems().setAll(item);
     }
 
     private Optional<Escolha<Categoria>> selecionarCategoria() {
-        List<Categoria> categorias = sistema.listarCategorias();
-
-        if (categorias.isEmpty()) {
-            info("Nenhuma categoria cadastrada. O item será cadastrado sem categoria");
-            return Optional.of(new Escolha<Categoria>(null));
-        }
-
-        List<String> rotulos = categorias.stream().map(this::rotuloCategoria).toList();
-
-        Optional<Integer> posicao = escolherPosicao("Categoria do item:", rotulos, "(Sem categoria)");
-        if (posicao.isEmpty()) {
-            return Optional.empty();
-        }
-
-        if (posicao.get() < 0) {
-            return Optional.of(new Escolha<Categoria>(null));
-        }
-
-        return Optional.of(new Escolha<Categoria>(categorias.get(posicao.get())));
+        return selecionarEntidade(sistema.listarCategorias(),"Nenhuma categoria cadastrada. O item será cadastrado sem categoria", "Categoria do item:", "(Sem categoria)", c -> "[" + c.getId() + "] " + c.getNome());
     }
 
     private Optional<Escolha<Fornecedor>> selecionarFornecedor() {
-        List<Fornecedor> fornecedores = sistema.listarFornecedores();
+        return selecionarEntidade(sistema.listarFornecedores(),"Nenhum fornecedor cadastrado. O item será cadastrado sem fornecedor", "Fornecedor do item:", "(Sem fornecedor)",f -> "[" + f.getId() + "] " + f.getRazaoSocial());
+    }
 
-        if (fornecedores.isEmpty()) {
-            info("Nenhum fornecedor cadastrado. O item será cadastrado sem fornecedor");
-            return Optional.of(new Escolha<Fornecedor>(null));
+    private <T> Optional<Escolha<T>> selecionarEntidade(
+            List<T> lista,
+            String mensagemVazio,
+            String titulo,
+            String opcaoSem,
+            Function<T, String> rotuloMapper) {
+
+        if (lista.isEmpty()) {
+            info(mensagemVazio);
+            return Optional.of(new Escolha<>(null));
         }
 
-        List<String> rotulos = fornecedores.stream().map(this::rotuloFornecedor).toList();
+        List<String> rotulos = lista.stream().map(rotuloMapper).toList();
+        Optional<Integer> posicao = escolherPosicao(titulo, rotulos, opcaoSem);
 
-        Optional<Integer> posicao = escolherPosicao("Fornecedor do item:", rotulos, "(Sem fornecedor)");
         if (posicao.isEmpty()) {
             return Optional.empty();
         }
 
-        if (posicao.get() < 0) {
-            return Optional.of(new Escolha<Fornecedor>(null));
-        }
-
-        return Optional.of(new Escolha<Fornecedor>(fornecedores.get(posicao.get())));
-    }
-
-    private String rotuloCategoria(Categoria categoria) {
-        return "[" + categoria.getId() + "] " + categoria.getNome();
-    }
-
-    private String rotuloFornecedor(Fornecedor fornecedor) {
-        return "[" + fornecedor.getId() + "] " + fornecedor.getRazaoSocial();
+        T selecionado = posicao.get() < 0 ? null : lista.get(posicao.get());
+        return Optional.of(new Escolha<>(selecionado));
     }
 }
