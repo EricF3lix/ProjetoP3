@@ -1,10 +1,7 @@
 package apresentacao;
  
 import java.util.Scanner;
- 
-import entidades.Administrador;
-import entidades.Cliente;
-import entidades.Funcionario;
+
 import entidades.Usuario;
 import facade.SistemaFacade;
 
