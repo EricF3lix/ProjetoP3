@@ -103,21 +103,7 @@ public class MenuContratosController extends MenuController {
     }
 
     private void fazPesquisa(String pesquisado) {
-        if (pesquisado == null || pesquisado.isBlank()) {
-            listarContratos();
-            return;
-        }
-
-        String termo = pesquisado.toLowerCase().trim();
-        List<ContratoAluguel> filtrados = sistema.listarContratos().stream()
-                .filter(c -> String.valueOf(c.getId()).contains(termo)
-                        || (c.getCliente() != null && c.getCliente().getNome() != null 
-                            && c.getCliente().getNome().toLowerCase().contains(termo))
-                        || (c.getItem() != null && c.getItem().getNome() != null 
-                            && c.getItem().getNome().toLowerCase().contains(termo))
-                        || (c.getStatus() != null && c.getStatus().toLowerCase().contains(termo)))
-                .toList();
-
+        List<ContratoAluguel> filtrados = sistema.filtrarContratos(pesquisado);
         tabela.setItems(FXCollections.observableArrayList(filtrados));
     }
 

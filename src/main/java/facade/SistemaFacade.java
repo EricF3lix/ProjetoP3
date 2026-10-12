@@ -99,6 +99,10 @@ public class SistemaFacade {
         return gerenciamentoContratos.listarContratos();
     }
 
+    public List<ContratoAluguel> filtrarContratos(String filtro) {
+        return gerenciamentoContratos.filtrarContratos(filtro);
+    }
+
     public boolean finalizarContrato(int id) {
         return gerenciamentoContratos.finalizarContrato(id);
     }
