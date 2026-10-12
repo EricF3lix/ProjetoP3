@@ -75,7 +75,7 @@ public class MenuMultasController extends MenuController {
                 super.updateItem(paga, empty);
                 if (empty || paga == null) {
                     setText(null);
-                } else if (paga) {
+                } else if (paga.booleanValue()) {
                     setText("Paga");
                 } else {
                     setText("Pendente");
