@@ -9,21 +9,35 @@ import entidades.Cliente;
 import entidades.ContratoAluguel;
 import entidades.Item;
 import entidades.Usuario;
+import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
+import javafx.scene.control.Label;
+import javafx.scene.control.TableView;
 
 public class MenuContratosController extends MenuController {
 
-    private static final String ID_CONTRATO = "ID do contrato:";
-    private static final String CONTRATO_NAO_ENCONTRADO = "Contrato não encontrado";
+    private static final String ID_CONTRATO = "Digite o ID do contrato: ";
+    private static final String CONTRATO_NAO_ENCONTRADO = "Contrato não encontrado.";
+
+    @FXML private TableView<ContratoAluguel> tabela;
+    private boolean listenerConfigurado = false;
 
     @Override
     protected String getTitulo() {
         return "Gerenciar Contratos";
     }
 
+    @Override
+    protected void aoExibir() {
+        tabela.setPlaceholder(new Label(""));
+        if (!listenerConfigurado) {
+            pesquisa.textProperty().addListener((obj, antigo, novo) -> fazPesquisa(novo));
+            this.listenerConfigurado = true;
+        }
+    }
+
     @FXML
     private void registrarAluguel() {
-
         Optional<Integer> idCliente = pedirInteiro("ID do cliente:");
         if (idCliente.isEmpty()) return;
 
@@ -79,51 +93,45 @@ public class MenuContratosController extends MenuController {
         }
 
         item.alugar();
-
-        limpar();
-        escrever("=== ALUGUEL REGISTRADO COM SUCESSO ===");
-        escrever("Contrato ID:   " + idContrato);
-        escrever("Cliente:       " + cliente.getNome());
-        escrever("Item:          " + item.getNome());
-        escreverf("Período:       %d dia(s)", quantidadeDias);
-        escreverf("Taxa diária:   R$ %.2f", item.getTaxaDiaria());
-        escreverf("Valor total:   R$ %.2f", valorTotal);
+        info("Aluguel registrado com sucesso! ID do Contrato: " + idContrato);
+        mostraContrato(idContrato);
     }
 
     @FXML
     private void buscarContrato() {
-        ContratoAluguel contrato = pedirContrato();
-        if (contrato == null) return;
+        pedirInteiro(ID_CONTRATO).ifPresent(this::mostraContrato);
+    }
 
-        limpar();
-        exibirDetalhesContrato(contrato);
+    private void fazPesquisa(String pesquisado) {
+        if (pesquisado == null || pesquisado.isBlank()) {
+            listarContratos();
+            return;
+        }
+
+        String termo = pesquisado.toLowerCase().trim();
+        List<ContratoAluguel> filtrados = sistema.listarContratos().stream()
+                .filter(c -> String.valueOf(c.getId()).contains(termo)
+                        || (c.getCliente() != null && c.getCliente().getNome() != null 
+                            && c.getCliente().getNome().toLowerCase().contains(termo))
+                        || (c.getItem() != null && c.getItem().getNome() != null 
+                            && c.getItem().getNome().toLowerCase().contains(termo))
+                        || (c.getStatus() != null && c.getStatus().toLowerCase().contains(termo)))
+                .toList();
+
+        tabela.setItems(FXCollections.observableArrayList(filtrados));
     }
 
     @FXML
     private void listarContratos() {
         List<ContratoAluguel> contratos = sistema.listarContratos();
-
-        limpar();
-        escrever("===== CONTRATOS CADASTRADOS =====");
-
-        if (contratos.isEmpty()) {
-            escrever("Nenhum contrato cadastrado");
-            return;
-        }
-
-        escreverf("%-5s %-22s %-22s %-12s %-10s", "ID", "CLIENTE", "ITEM", "STATUS", "VALOR");
-        escrever("-".repeat(80));
-
-        for (ContratoAluguel c : contratos) {
-            escreverf("%-5d %-22s %-22s %-12s R$%.2f",
-                    c.getId(), c.getCliente().getNome(), c.getItem().getNome(),
-                    c.getStatus(), c.getValorTotal());
+        if (!contratos.isEmpty()) {
+            tabela.setItems(FXCollections.observableArrayList(contratos));
         }
     }
 
     @FXML
     private void finalizarContrato() {
-        ContratoAluguel contrato = pedirContrato();
+        ContratoAluguel contrato = obterContratoAlvo();
         if (contrato == null) return;
 
         if (!contrato.estaAtivo() || contrato.estaFinalizado()) {
@@ -138,28 +146,21 @@ public class MenuContratosController extends MenuController {
         LocalDate real = LocalDate.parse(dataReal.get());
 
         contrato.setDataDevolucaoReal(dataReal.get());
-
         long diasAtraso = ChronoUnit.DAYS.between(prevista, real);
-
-        limpar();
 
         if (diasAtraso > 0) {
             double multa = sistema.calcularMulta(diasAtraso, contrato.getItem().getTaxaDiaria());
-
             contrato.setValorMulta(multa);
             contrato.setMultaPaga(false);
-
-            escrever("=== MULTA POR ATRASO ===");
-            escrever("Dias de atraso: " + diasAtraso);
-            escreverf("Multa total:    R$ %.2f", multa);
+            info(String.format("Contrato finalizado com atraso de %d dia(s). Multa gerada: R$ %.2f", diasAtraso, multa));
         } else {
-            escrever("Devolução dentro do prazo");
+            info("Devolução realizada dentro do prazo.");
         }
 
         contrato.getItem().devolver();
 
         if (sistema.finalizarContrato(contrato.getId())) {
-            info("Contrato finalizado. Item devolvido ao estoque");
+            mostraContrato(contrato.getId());
         } else {
             erro("Erro ao finalizar contrato");
         }
@@ -167,22 +168,35 @@ public class MenuContratosController extends MenuController {
 
     @FXML
     private void cancelarContrato() {
-        ContratoAluguel contrato = pedirContrato();
+        ContratoAluguel contrato = obterContratoAlvo();
         if (contrato == null) return;
 
-        if (contrato.getStatus().equals("FINALIZADO")) {
+        if ("FINALIZADO".equalsIgnoreCase(contrato.getStatus())) {
             erro("Não é possível cancelar um contrato já finalizado");
-           
-        } else {
+            return;
+        }
 
-        sistema.cancelarContrato(contrato.getId());
-        contrato.getItem().devolver();
-        info("Contrato cancelado. Item devolvido ao estoque");
+        if (!confirmar("Tem certeza que deseja cancelar o contrato ID " + contrato.getId() + "?")) {
+            return;
+        }
+
+        if (sistema.cancelarContrato(contrato.getId())) {
+            contrato.getItem().devolver();
+            info("Contrato cancelado com sucesso. Item devolvido ao estoque.");
+            mostraContrato(contrato.getId());
+        } else {
+            erro("Erro ao cancelar contrato.");
         }
     }
 
-    
-    private ContratoAluguel pedirContrato() {
+    private ContratoAluguel obterContratoAlvo() {
+        ContratoAluguel selecionado = tabela.getSelectionModel().getSelectedItem();
+        tabela.getSelectionModel().clearSelection();
+
+        if (selecionado != null) {
+            return selecionado;
+        }
+
         Optional<Integer> id = pedirInteiro(ID_CONTRATO);
         if (id.isEmpty()) return null;
 
@@ -193,20 +207,12 @@ public class MenuContratosController extends MenuController {
         return contrato;
     }
 
-    private void exibirDetalhesContrato(ContratoAluguel contrato) {
-        String devolucaoReal = contrato.getDataDevolucaoReal();
-        boolean semDevolucao = devolucaoReal == null || devolucaoReal.isBlank();
-
-        escrever("===== DETALHES DO CONTRATO =====");
-        escrever("ID:                 " + contrato.getId());
-        escrever("Cliente:            " + contrato.getCliente().getNome());
-        escrever("Item:               " + contrato.getItem().getNome());
-        escrever("Data de retirada:   " + contrato.getDataRetirada());
-        escrever("Devolução prevista: " + contrato.getDataDevolucaoPrevista());
-        escrever("Devolução real:     " + (semDevolucao ? "-" : devolucaoReal));
-        escrever("Status:             " + contrato.getStatus());
-        escreverf("Valor total:        R$ %.2f", contrato.getValorTotal());
-        escreverf("Valor multa:        R$ %.2f", contrato.getValorMulta());
-        escrever("Multa paga:         " + contrato.isMultaPaga());
+    private void mostraContrato(int id) {
+        ContratoAluguel contrato = sistema.buscarContrato(id);
+        if (contrato == null) {
+            info("Contrato não encontrado.");
+            return;
+        }
+        tabela.getItems().setAll(contrato);
     }
 }

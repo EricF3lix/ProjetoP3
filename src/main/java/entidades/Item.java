@@ -35,6 +35,11 @@ public class Item {
         return id;
     }
 
+    @Override
+    public String toString() {
+        return this.getNome() != null ? this.getNome() : "-";
+    }
+    
     public String getNome() {
         return nome;
     }

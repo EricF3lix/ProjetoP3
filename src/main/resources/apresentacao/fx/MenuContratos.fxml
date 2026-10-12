@@ -55,11 +55,11 @@
              <cellValueFactory><PropertyValueFactory property="item" /></cellValueFactory>
           </TableColumn>
           <TableColumn prefWidth="100.0" text="Data Início">
-             <cellValueFactory><PropertyValueFactory property="dataInicio" /></cellValueFactory>
-          </TableColumn>
-          <TableColumn prefWidth="100.0" text="Data Fim">
-             <cellValueFactory><PropertyValueFactory property="dataFimPrevista" /></cellValueFactory>
-          </TableColumn>
+            <cellValueFactory><PropertyValueFactory property="dataRetirada" /></cellValueFactory>
+         </TableColumn>
+         <TableColumn prefWidth="100.0" text="Data Fim">
+            <cellValueFactory><PropertyValueFactory property="dataDevolucaoPrevista" /></cellValueFactory>
+         </TableColumn>
           <TableColumn prefWidth="90.0" text="Status">
              <cellValueFactory><PropertyValueFactory property="status" /></cellValueFactory>
           </TableColumn>

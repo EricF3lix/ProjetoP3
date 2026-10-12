@@ -10,5 +10,9 @@ public class Cliente extends Usuario {
     public String getTipo() {
         return "CLIENTE";
     }
+    @Override
+    public String toString() {
+        return this.getNome() != null ? this.getNome() : "-";
+    }
 
 }
