@@ -11,7 +11,6 @@ import entidades.Item;
 import entidades.Usuario;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
-import javafx.scene.control.Label;
 import javafx.scene.control.TableView;
 
 public class MenuContratosController extends MenuController {
@@ -20,7 +19,6 @@ public class MenuContratosController extends MenuController {
     private static final String CONTRATO_NAO_ENCONTRADO = "Contrato não encontrado.";
 
     @FXML private TableView<ContratoAluguel> tabela;
-    private boolean listenerConfigurado = false;
 
     @Override
     protected String getTitulo() {
@@ -29,11 +27,7 @@ public class MenuContratosController extends MenuController {
 
     @Override
     protected void aoExibir() {
-        tabela.setPlaceholder(new Label(""));
-        if (!listenerConfigurado) {
-            pesquisa.textProperty().addListener((obj, antigo, novo) -> fazPesquisa(novo));
-            this.listenerConfigurado = true;
-        }
+        configurarTabelaEPesquisa(tabela, this::fazPesquisa);
     }
 
     @FXML
@@ -183,14 +177,13 @@ public class MenuContratosController extends MenuController {
             return selecionado;
         }
 
-        Optional<Integer> id = pedirInteiro(ID_CONTRATO);
-        if (id.isEmpty()) return null;
-
-        ContratoAluguel contrato = sistema.buscarContrato(id.get());
-        if (contrato == null) {
-            erro(CONTRATO_NAO_ENCONTRADO);
-        }
-        return contrato;
+        return pedirInteiro(ID_CONTRATO)
+                .map(id -> {
+                    ContratoAluguel c = sistema.buscarContrato(id);
+                    if (c == null) erro(CONTRATO_NAO_ENCONTRADO);
+                    return c;
+                })
+                .orElse(null);
     }
 
     private void mostraContrato(int id) {
