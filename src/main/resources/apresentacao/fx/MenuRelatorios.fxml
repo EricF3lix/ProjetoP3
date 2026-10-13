@@ -5,12 +5,11 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Separator?>
 <?import javafx.scene.control.TableView?>
-<?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane prefHeight="600.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="apresentacao.fx.MenuRelatoriosController">
+<BorderPane prefHeight="600.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="apresentacao.fx.MenuRelatoriosController">
    <left>
       <VBox prefHeight="359.0" prefWidth="199.0" BorderPane.alignment="CENTER">
          <children>
@@ -19,7 +18,6 @@
                   <Font name="System Bold" size="20.0" />
                </font>
             </Label>
-            <TextField fx:id="pesquisa" />
             <Button alignment="CENTER" contentDisplay="TOP" layoutX="10.0" mnemonicParsing="false" onAction="#itensPorCategoria" prefHeight="47.0" prefWidth="189.0" text="Itens disponíveis por categoria" textAlignment="CENTER" wrapText="true">
                <VBox.margin>
                   <Insets bottom="3.0" left="5.0" right="5.0" top="5.0" />
@@ -55,11 +53,11 @@
    <padding>
       <Insets bottom="16.0" left="16.0" right="16.0" top="16.0" />
    </padding>
-   <right>
+   <center>
       <TableView fx:id="tabela" prefHeight="568.0" prefWidth="659.0" BorderPane.alignment="CENTER">
          <columnResizePolicy>
             <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
          </columnResizePolicy>
       </TableView>
-   </right>
+   </center>
 </BorderPane>

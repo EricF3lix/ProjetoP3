@@ -32,8 +32,6 @@ public class MenuRelatoriosController extends MenuController {
         tabela.getColumns().clear();
         tabela.getItems().clear();
 
-        tabela.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
-
         for (int i = 0; i < cabecalhos.length; i++) {
             final int indice = i;
             TableColumn<ObservableList<String>, String> coluna = new TableColumn<>(cabecalhos[i]);
