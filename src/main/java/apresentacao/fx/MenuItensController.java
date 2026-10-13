@@ -19,7 +19,6 @@ public class MenuItensController extends MenuController {
     private static final List<String> ESTADOS = List.of("NOVO", "BOM", "REGULAR", "RUIM");
 
     @FXML private TableView<Item> tabela;
-    private boolean listenerConfigurado = false;
 
     private record Escolha<T>(T valor) {}
 
