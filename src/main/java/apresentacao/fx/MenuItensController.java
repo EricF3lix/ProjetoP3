@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.Optional;
 
 import entidades.Item;
-import facade.SistemaFacade;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
@@ -52,13 +51,11 @@ public class MenuItensController extends MenuController {
     public void initialize() {
         configurarFiltroPesquisa();
         configurarColunaAtivo();
-        if (sistema != null) {
-            carregarTabela();
-        }
     }
 
-    public void setSistema(SistemaFacade sistema) {
-        this.sistema = sistema;
+    @Override
+    protected void aoExibir() {
+        // Disparado automaticamente pelo Navegador sempre que a tela é aberta
         carregarTabela();
     }
 

@@ -6,6 +6,7 @@
 <?import javafx.scene.control.Separator?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.VBox?>
 
@@ -41,7 +42,14 @@
                   <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
                </padding>
                <children>
-                  <Label style="-fx-font-family: -apple-system, 'SF Pro Display', 'Segoe UI', sans-serif; -fx-font-weight: bold; -fx-font-size: 18px; -fx-text-fill: #1d1d1f;" text="Resultados do Relatório" />
+                  <!-- Barra Superior do Card com Título e Botão de Exportar -->
+                  <HBox alignment="CENTER_LEFT">
+                     <children>
+                        <Label fx:id="lblTituloRelatorio" style="-fx-font-family: -apple-system, 'SF Pro Display', 'Segoe UI', sans-serif; -fx-font-weight: bold; -fx-font-size: 18px; -fx-text-fill: #1d1d1f;" text="Resultados do Relatório" />
+                        <Pane HBox.hgrow="ALWAYS" />
+                        <Button mnemonicParsing="false" onAction="#abrirPreviaExportacao" style="-fx-background-color: #007AFF; -fx-background-radius: 8px; -fx-text-fill: #ffffff; -fx-font-weight: bold; -fx-cursor: hand; -fx-font-size: 13px; -fx-padding: 7 14;" text="Exportar PDF" />
+                     </children>
+                  </HBox>
                   
                   <TableView fx:id="tabela" style="-fx-border-color: #e5e5ea; -fx-border-radius: 8px; -fx-background-radius: 8px;" VBox.vgrow="ALWAYS">
                      <columnResizePolicy>
