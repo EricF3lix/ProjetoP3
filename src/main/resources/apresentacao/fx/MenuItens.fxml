@@ -65,4 +65,19 @@
           <TableColumn prefWidth="120.0" text="Categoria">
              <cellValueFactory><PropertyValueFactory property="categoria" /></cellValueFactory>
           </TableColumn>
-          <TableColumn pref
+          <TableColumn prefWidth="100.0" text="Taxa Diária (R$)">
+             <cellValueFactory><PropertyValueFactory property="taxaDiaria" /></cellValueFactory>
+          </TableColumn>
+          <TableColumn prefWidth="100.0" text="Estado">
+             <cellValueFactory><PropertyValueFactory property="estadoConservacao" /></cellValueFactory>
+          </TableColumn>
+          <TableColumn prefWidth="90.0" text="Status">
+             <cellValueFactory><PropertyValueFactory property="status" /></cellValueFactory>
+          </TableColumn>
+          <TableColumn fx:id="colAtivo" prefWidth="110.0" text="Disponibilidade">
+             <cellValueFactory><PropertyValueFactory property="ativo" /></cellValueFactory>
+          </TableColumn>
+        </columns>
+      </TableView>
+   </center>
+</BorderPane>

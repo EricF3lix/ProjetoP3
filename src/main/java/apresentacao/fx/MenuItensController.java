@@ -11,10 +11,14 @@ import javafx.collections.transformation.FilteredList;
 import javafx.collections.transformation.SortedList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.geometry.Pos;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.Label;
+import javafx.scene.control.TableCell;
+import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TextInputDialog;
@@ -33,6 +37,9 @@ public class MenuItensController extends MenuController {
     @FXML
     private TableView<Item> tabela;
 
+    @FXML
+    private TableColumn<Item, Boolean> colAtivo;
+
     private final ObservableList<Item> listaItens = FXCollections.observableArrayList();
     private FilteredList<Item> listaFiltrada;
 
@@ -44,6 +51,7 @@ public class MenuItensController extends MenuController {
     @FXML
     public void initialize() {
         configurarFiltroPesquisa();
+        configurarColunaAtivo();
         if (sistema != null) {
             carregarTabela();
         }
@@ -60,6 +68,49 @@ public class MenuItensController extends MenuController {
             if (itens != null) {
                 listaItens.setAll(itens);
             }
+        }
+    }
+
+    private void configurarColunaAtivo() {
+        if (colAtivo != null) {
+            colAtivo.setCellFactory(col -> new TableCell<Item, Boolean>() {
+                private final Label badge = new Label();
+
+                @Override
+                protected void updateItem(Boolean ativo, boolean empty) {
+                    super.updateItem(ativo, empty);
+
+                    if (empty || ativo == null) {
+                        setGraphic(null);
+                        setText(null);
+                    } else {
+                        if (ativo) {
+                            badge.setText("● Disponível");
+                            badge.setStyle(
+                                "-fx-background-color: #d4edda; " +
+                                "-fx-text-fill: #155724; " +
+                                "-fx-font-weight: bold; " +
+                                "-fx-padding: 3 8 3 8; " +
+                                "-fx-background-radius: 10; " +
+                                "-fx-font-size: 11px;"
+                            );
+                        } else {
+                            badge.setText("● Indisponível");
+                            badge.setStyle(
+                                "-fx-background-color: #f8d7da; " +
+                                "-fx-text-fill: #721c24; " +
+                                "-fx-font-weight: bold; " +
+                                "-fx-padding: 3 8 3 8; " +
+                                "-fx-background-radius: 10; " +
+                                "-fx-font-size: 11px;"
+                            );
+                        }
+                        setAlignment(Pos.CENTER);
+                        setGraphic(badge);
+                        setText(null);
+                    }
+                }
+            });
         }
     }
 
