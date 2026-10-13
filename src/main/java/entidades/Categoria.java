@@ -49,5 +49,9 @@ public class Categoria {
     public void desativar() {
         this.ativa = false;
     }
+    @Override 
+    public String toString() {
+        return this.getNome() != null ? this.getNome() : "-";
+    }
 
 }
