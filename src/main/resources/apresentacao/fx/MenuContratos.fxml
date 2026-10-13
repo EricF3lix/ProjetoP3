@@ -8,65 +8,79 @@
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.control.cell.PropertyValueFactory?>
-<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.VBox?>
 
-<BorderPane prefHeight="600.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="apresentacao.fx.MenuContratosController">
-   <padding>
-      <Insets bottom="16.0" left="16.0" right="16.0" top="16.0" />
-   </padding>
-   <top>
-      <Label style="-fx-font-size: 22px; -fx-font-weight: bold;" text="Gerenciar Contratos" BorderPane.alignment="CENTER_LEFT">
-         <BorderPane.margin>
-            <Insets bottom="12.0" />
-         </BorderPane.margin>
-      </Label>
-   </top>
-   <left>
-      <VBox prefWidth="260.0" spacing="8.0" BorderPane.alignment="CENTER">
-         <padding>
-            <Insets right="12.0" />
-         </padding>
+<AnchorPane prefHeight="660.0" prefWidth="950.0" style="-fx-background-color: #F5F5F7;" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml" fx:controller="apresentacao.fx.MenuContratosController">
+   <children>
+      <!-- Cabecalho Moderno -->
+      <Label layoutX="40.0" layoutY="25.0" style="-fx-font-family: -apple-system, 'SF Pro Display', 'Segoe UI', sans-serif; -fx-font-weight: 900; -fx-font-size: 26px; -fx-text-fill: #1d1d1f;" text="Gerenciar Contratos" />
+      <Label layoutX="40.0" layoutY="58.0" style="-fx-font-family: -apple-system, 'SF Pro Text', 'Segoe UI', sans-serif; -fx-font-size: 14px; -fx-text-fill: #86868b;" text="Painel de Contratos e Aluguéis" />
+
+      <!-- Menu Lateral Estilo Apple -->
+      <VBox layoutX="40.0" layoutY="100.0" prefWidth="250.0" spacing="12.0">
          <children>
-            <TextField fx:id="pesquisa" promptText="Busque por ID/Cliente/Status" />
-            <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#buscarContrato" text="Buscar Contrato por ID" />
-            <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#registrarAluguel" text="Registrar Aluguel" />
-            <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#listarContratos" text="Listar todos os Contratos" />
-            <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#finalizarContrato" text="Finalizar Contrato (devolução)" />
-            <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#cancelarContrato" text="Cancelar Contrato" />
-            <Separator />
-            <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#voltar" text="Voltar" />
+            <!-- Barra de Pesquisa Integrada -->
+            <TextField fx:id="pesquisa" promptText="Busque por ID/Cliente/Status" style="-fx-background-color: #e5e5ea; -fx-background-radius: 10px; -fx-padding: 10px; -fx-font-size: 13px;" />
+            
+            <Pane prefHeight="2.0" />
+
+            <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#registrarAluguel" prefHeight="38.0" style="-fx-background-color: #ffffff; -fx-background-radius: 10px; -fx-border-color: #d1d1d6; -fx-border-radius: 10px; -fx-text-fill: #007AFF; -fx-font-weight: bold; -fx-cursor: hand; -fx-font-size: 13px;" text="Registrar Aluguel" />
+            
+            <Separator style="-fx-padding: 5 0 5 0;" />
+            
+            <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#buscarContrato" prefHeight="38.0" style="-fx-background-color: #ffffff; -fx-background-radius: 10px; -fx-border-color: #d1d1d6; -fx-border-radius: 10px; -fx-text-fill: #1d1d1f; -fx-font-weight: bold; -fx-cursor: hand; -fx-font-size: 13px;" text="Buscar Contrato por ID" />
+            <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#listarContratos" prefHeight="38.0" style="-fx-background-color: #ffffff; -fx-background-radius: 10px; -fx-border-color: #d1d1d6; -fx-border-radius: 10px; -fx-text-fill: #1d1d1f; -fx-font-weight: bold; -fx-cursor: hand; -fx-font-size: 13px;" text="Listar todos os Contratos" />
+            <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#finalizarContrato" prefHeight="38.0" style="-fx-background-color: #ffffff; -fx-background-radius: 10px; -fx-border-color: #d1d1d6; -fx-border-radius: 10px; -fx-text-fill: #34c759; -fx-font-weight: bold; -fx-cursor: hand; -fx-font-size: 13px;" text="Finalizar Contrato (devolução)" />
+            <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#cancelarContrato" prefHeight="38.0" style="-fx-background-color: #fff0f0; -fx-background-radius: 10px; -fx-border-color: #ffcccc; -fx-border-radius: 10px; -fx-text-fill: #ff3b30; -fx-font-weight: bold; -fx-cursor: hand; -fx-font-size: 13px;" text="Cancelar Contrato" />
+            
+            <Pane prefHeight="5.0" />
+            <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#voltar" prefHeight="38.0" style="-fx-background-color: #e5e5ea; -fx-background-radius: 10px; -fx-text-fill: #1d1d1f; -fx-font-weight: bold; -fx-cursor: hand; -fx-font-size: 13px;" text="Voltar" />
          </children>
       </VBox>
-   </left>
-   <center>
-      <TableView fx:id="tabela" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
-        <columnResizePolicy>
-            <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
-        </columnResizePolicy>
-        <columns>
-          <TableColumn prefWidth="50.0" text="ID">
-             <cellValueFactory><PropertyValueFactory property="id" /></cellValueFactory>
-          </TableColumn>
-          <TableColumn prefWidth="160.0" text="Cliente">
-             <cellValueFactory><PropertyValueFactory property="cliente" /></cellValueFactory>
-          </TableColumn>
-          <TableColumn prefWidth="160.0" text="Item">
-             <cellValueFactory><PropertyValueFactory property="item" /></cellValueFactory>
-          </TableColumn>
-          <TableColumn prefWidth="100.0" text="Data Início">
-            <cellValueFactory><PropertyValueFactory property="dataRetirada" /></cellValueFactory>
-         </TableColumn>
-         <TableColumn prefWidth="100.0" text="Data Fim">
-            <cellValueFactory><PropertyValueFactory property="dataDevolucaoPrevista" /></cellValueFactory>
-         </TableColumn>
-          <TableColumn prefWidth="90.0" text="Status">
-             <cellValueFactory><PropertyValueFactory property="status" /></cellValueFactory>
-          </TableColumn>
-          <TableColumn prefWidth="90.0" text="Valor Total">
-             <cellValueFactory><PropertyValueFactory property="valorTotal" /></cellValueFactory>
-          </TableColumn>
-        </columns>
-      </TableView>
-   </center>
-</BorderPane>
+
+      <!-- Cartão Dinâmico de Conteúdo -->
+      <AnchorPane layoutX="320.0" layoutY="100.0" prefHeight="520.0" prefWidth="590.0" style="-fx-background-color: #ffffff; -fx-background-radius: 16px; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 12, 0, 2, 6);">
+         <children>
+            <VBox spacing="15.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+               <padding>
+                  <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+               </padding>
+               <children>
+                  <Label style="-fx-font-family: -apple-system, 'SF Pro Display', 'Segoe UI', sans-serif; -fx-font-weight: bold; -fx-font-size: 18px; -fx-text-fill: #1d1d1f;" text="Lista de Contratos" />
+                  
+                  <TableView fx:id="tabela" style="-fx-border-color: #e5e5ea; -fx-border-radius: 8px; -fx-background-radius: 8px;" VBox.vgrow="ALWAYS">
+                    <columnResizePolicy>
+                        <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+                    </columnResizePolicy>
+                    <columns>
+                      <TableColumn prefWidth="45.0" text="ID">
+                         <cellValueFactory><PropertyValueFactory property="id" /></cellValueFactory>
+                      </TableColumn>
+                      <TableColumn prefWidth="130.0" text="Cliente">
+                         <cellValueFactory><PropertyValueFactory property="cliente" /></cellValueFactory>
+                      </TableColumn>
+                      <TableColumn prefWidth="130.0" text="Item">
+                         <cellValueFactory><PropertyValueFactory property="item" /></cellValueFactory>
+                      </TableColumn>
+                      <TableColumn prefWidth="85.0" text="Início">
+                        <cellValueFactory><PropertyValueFactory property="dataRetirada" /></cellValueFactory>
+                     </TableColumn>
+                     <TableColumn prefWidth="85.0" text="Fim">
+                        <cellValueFactory><PropertyValueFactory property="dataDevolucaoPrevista" /></cellValueFactory>
+                     </TableColumn>
+                      <TableColumn prefWidth="75.0" text="Status">
+                         <cellValueFactory><PropertyValueFactory property="status" /></cellValueFactory>
+                      </TableColumn>
+                      <TableColumn prefWidth="80.0" text="Valor">
+                         <cellValueFactory><PropertyValueFactory property="valorTotal" /></cellValueFactory>
+                      </TableColumn>
+                    </columns>
+                  </TableView>
+               </children>
+            </VBox>
+         </children>
+      </AnchorPane>
+   </children>
+</AnchorPane>

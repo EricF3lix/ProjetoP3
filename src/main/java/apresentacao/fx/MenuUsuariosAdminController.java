@@ -8,6 +8,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 
 public class MenuUsuariosAdminController extends MenuUsuariosFuncionarioController {
@@ -67,6 +68,17 @@ public class MenuUsuariosAdminController extends MenuUsuariosFuncionarioControll
         if (painelDesejado != null) {
             painelDesejado.toFront();
         }
+    }
+
+    @Override
+    protected void exibirSaudacaoInicial(Pane container) {
+        saudacaoExibida = true;
+        SaudacaoHelper.exibir(
+            container,
+            "Bem-vindo, Administrador!",
+            "Painel de controlo e administração pronto para utilização.",
+            "🛡️"
+        );
     }
 
     @FXML

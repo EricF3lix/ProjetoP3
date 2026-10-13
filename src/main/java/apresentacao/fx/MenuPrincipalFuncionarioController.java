@@ -2,48 +2,66 @@ package apresentacao.fx;
 
 import entidades.Funcionario;
 import javafx.fxml.FXML;
-import javafx.scene.control.Menu;
+import javafx.scene.control.Label;
 
-public class MenuPrincipalFuncionarioController extends MenuController{
+public class MenuPrincipalFuncionarioController extends MenuController {
 
     @FXML
-    private Menu lblBemVindo;
+    private Label lblBemVindo;
 
     private Funcionario funcionario;
 
     public void setFuncionario(Funcionario funcionario) {
         this.funcionario = funcionario;
+        if (funcionario != null && lblBemVindo != null) {
+            lblBemVindo.setText("Bem-vindo(a), " + funcionario.getNome());
+        }
     }
 
     @Override
-    protected String getTitulo() {return "Menu Funcionario";}
+    protected String getTitulo() {
+        return "Menu Funcionario";
+    }
 
     @Override
     protected void aoExibir() {
-        lblBemVindo.setText("Bem-vindo(a), " + funcionario.getNome());
+        if (funcionario != null && lblBemVindo != null) {
+            lblBemVindo.setText("Bem-vindo(a), " + funcionario.getNome());
+        }
     }
 
     @FXML
-    private void abrirCategorias() {navegador.abrir("MenuCategorias.fxml");}
-
-    @FXML
-    private void abrirMultas() {navegador.abrir("MenuMultas.fxml");}
-
-    @FXML
-    private void abrirRelatorios() {navegador.abrir("MenuRelatorios.fxml");}
-
-    @FXML
-    private void abrirUsuarios(){ 
-    	navegador.abrir("MenuUsuariosFuncionario.fxml");
+    private void abrirCategorias() {
+        navegador.abrir("MenuCategorias.fxml");
     }
 
     @FXML
-    private void abrirItens(){navegador.abrir("MenuItens.fxml");}
+    private void abrirMultas() {
+        navegador.abrir("MenuMultas.fxml");
+    }
 
     @FXML
-    private void abrirFornecedores(){navegador.abrir("MenuFornecedores.fxml");}
+    private void abrirRelatorios() {
+        navegador.abrir("MenuRelatorios.fxml");
+    }
 
     @FXML
-    private void abrirContratos(){navegador.abrir("MenuContratos.fxml");}
+    private void abrirUsuarios() { 
+        navegador.abrir("MenuUsuariosFuncionario.fxml");
+    }
 
+    @FXML
+    private void abrirItens() {
+        navegador.abrir("MenuItens.fxml");
+    }
+
+    @FXML
+    private void abrirFornecedores() {
+        navegador.abrir("MenuFornecedores.fxml");
+    }
+
+    @FXML
+    private void abrirContratos() {
+        navegador.abrir("MenuContratos.fxml");
+    }
 }
