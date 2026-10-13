@@ -5,6 +5,7 @@
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.Separator?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextField?>
@@ -15,31 +16,32 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="650.0" prefWidth="880.0" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml" fx:controller="apresentacao.fx.MenuUsuariosAdminController">
+<AnchorPane prefHeight="640.0" prefWidth="920.0" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml" fx:controller="apresentacao.fx.MenuUsuariosAdminController">
    <children>
-      <Label layoutX="35.0" layoutY="25.0" text="Gerenciar Usuários (Administrador)">
+      <Label layoutX="35.0" layoutY="20.0" text="Gerenciar Usuários (Administrador)">
          <font>
             <Font name="System Bold" size="22.0" />
          </font>
       </Label>
 
-      <!-- Menu Lateral do Administrador -->
-      <VBox layoutX="35.0" layoutY="70.0" prefWidth="240.0" spacing="10.0">
+      <!-- Menu Lateral de Botoes -->
+      <VBox layoutX="35.0" layoutY="65.0" prefWidth="250.0" spacing="10.0">
          <children>
-            <Button fx:id="btnCadastrarCliente" mnemonicParsing="false" onAction="#aoCadastrarCliente" prefHeight="35.0" prefWidth="240.0" text="Cadastrar Cliente" />
-            <Button fx:id="btnCadastrarFuncionario" mnemonicParsing="false" onAction="#aoCadastrarFuncionario" prefHeight="35.0" prefWidth="240.0" text="Cadastrar Funcionário" />
-            <Button fx:id="btnCadastrarAdmin" mnemonicParsing="false" onAction="#aoCadastrarAdmin" prefHeight="35.0" prefWidth="240.0" text="Cadastrar Administrador" />
-            <Button fx:id="btnBuscarUsuario" mnemonicParsing="false" onAction="#aoBuscarUsuario" prefHeight="35.0" prefWidth="240.0" text="Buscar Usuário por ID" />
-            <Button fx:id="btnListarUsuarios" mnemonicParsing="false" onAction="#aoListarUsuarios" prefHeight="35.0" prefWidth="240.0" text="Listar todos os Usuários" />
-            <Button fx:id="btnAtualizarUsuario" mnemonicParsing="false" onAction="#aoAtualizarUsuario" prefHeight="35.0" prefWidth="240.0" text="Atualizar Usuário" />
-            <Button fx:id="btnDesativarUsuario" mnemonicParsing="false" onAction="#aoDesativarUsuario" prefHeight="35.0" prefWidth="240.0" text="Desativar Usuário" />
+            <Button fx:id="btnCadastrarCliente" mnemonicParsing="false" onAction="#aoCadastrarCliente" prefHeight="32.0" prefWidth="250.0" text="Cadastrar Cliente" />
+            <Button fx:id="btnCadastrarFuncionario" mnemonicParsing="false" onAction="#aoCadastrarFuncionario" prefHeight="32.0" prefWidth="250.0" text="Cadastrar Funcionário" />
+            <Button fx:id="btnCadastrarAdmin" mnemonicParsing="false" onAction="#aoCadastrarAdmin" prefHeight="32.0" prefWidth="250.0" text="Cadastrar Administrador" />
+            <Separator />
+            <Button fx:id="btnBuscarUsuario" mnemonicParsing="false" onAction="#aoBuscarUsuario" prefHeight="32.0" prefWidth="250.0" text="Buscar Usuário por ID" />
+            <Button fx:id="btnListarUsuarios" mnemonicParsing="false" onAction="#aoListarUsuarios" prefHeight="32.0" prefWidth="250.0" text="Listar todos os Usuários" />
+            <Button fx:id="btnAtualizarUsuario" mnemonicParsing="false" onAction="#aoAtualizarUsuario" prefHeight="32.0" prefWidth="250.0" text="Atualizar Usuário" />
+            <Button fx:id="btnDesativarUsuario" mnemonicParsing="false" onAction="#aoDesativarUsuario" prefHeight="32.0" prefWidth="250.0" text="Desativar Usuário" />
             <Pane prefHeight="10.0" />
-            <Button fx:id="btnVoltar" mnemonicParsing="false" onAction="#voltar" prefHeight="35.0" prefWidth="240.0" text="Voltar" />
+            <Button fx:id="btnVoltar" mnemonicParsing="false" onAction="#voltar" prefHeight="32.0" prefWidth="250.0" text="Voltar" />
          </children>
       </VBox>
 
-      <!-- Painel Dinamico -->
-      <AnchorPane layoutX="300.0" layoutY="70.0" prefHeight="550.0" prefWidth="540.0" style="-fx-border-color: #cccccc; -fx-background-color: #ffffff;">
+      <!-- Painel Dinamico de Conteudo -->
+      <AnchorPane layoutX="310.0" layoutY="65.0" prefHeight="550.0" prefWidth="575.0" style="-fx-border-color: #cccccc; -fx-background-color: #ffffff;">
          <children>
             <StackPane fx:id="painelConteudo" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                <children>
@@ -49,13 +51,13 @@
                         <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
                      </padding>
                      <children>
-                        <Label text="Todos os Usuários Cadastrados">
+                        <Label text="Usuários Cadastrados">
                            <font>
                               <Font name="System Bold" size="16.0" />
                            </font>
                         </Label>
 
-                        <!-- Barra de Pesquisa com Filtro -->
+                        <!-- Barra de Busca Dinamica -->
                         <HBox alignment="CENTER_LEFT" spacing="8.0">
                            <children>
                               <Label text="Filtrar por:" />
@@ -65,19 +67,19 @@
                            </children>
                         </HBox>
 
-                        <TableView fx:id="tabelaUsuarios" prefHeight="440.0" prefWidth="510.0" VBox.vgrow="ALWAYS">
+                        <TableView fx:id="tabelaUsuarios" prefHeight="440.0" prefWidth="545.0" VBox.vgrow="ALWAYS">
                            <columns>
                               <TableColumn fx:id="colId" prefWidth="50.0" text="ID" />
                               <TableColumn fx:id="colNome" prefWidth="130.0" text="Nome" />
                               <TableColumn fx:id="colEmail" prefWidth="150.0" text="E-mail" />
                               <TableColumn fx:id="colPerfil" prefWidth="100.0" text="Perfil" />
-                              <TableColumn fx:id="colAtivo" prefWidth="60.0" text="Ativo" />
+                              <TableColumn fx:id="colAtivo" prefWidth="100.0" text="Status" />
                            </columns>
                         </TableView>
                      </children>
                   </VBox>
 
-                  <!-- Painel de Cadastro -->
+                  <!-- Painel de Cadastro (Cliente / Funcionario / Admin) -->
                   <VBox fx:id="painelCadastro" spacing="8.0" visible="false">
                      <padding>
                         <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
@@ -102,7 +104,7 @@
                      </children>
                   </VBox>
 
-                  <!-- Painel de Busca -->
+                  <!-- Painel de Busca Direta por ID -->
                   <VBox fx:id="painelBusca" spacing="12.0" visible="false">
                      <padding>
                         <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
@@ -127,7 +129,7 @@
                      </children>
                   </VBox>
 
-                  <!-- Painel de Atualizacao -->
+                  <!-- Painel de Atualizar Usuario -->
                   <VBox fx:id="painelAtualizar" spacing="8.0" visible="false">
                      <padding>
                         <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
@@ -138,27 +140,26 @@
                               <Font name="System Bold" size="16.0" />
                            </font>
                         </Label>
-                        <Label text="ID do Usuário:" />
                         <HBox spacing="8.0">
                            <children>
-                              <TextField fx:id="txtAtualizarId" promptText="ID do usuário a atualizar" />
+                              <TextField fx:id="txtAtualizarId" promptText="ID do usuário" />
                               <Button mnemonicParsing="false" onAction="#aoCarregarUsuarioParaAtualizar" text="Carregar" />
                            </children>
                         </HBox>
                         <Label text="Nome:" />
-                        <TextField fx:id="txtAtualizarNome" disable="true" />
+                        <TextField fx:id="txtAtualizarNome" promptText="Novo nome" />
                         <Label text="E-mail:" />
-                        <TextField fx:id="txtAtualizarEmail" disable="true" />
+                        <TextField fx:id="txtAtualizarEmail" promptText="Novo e-mail" />
                         <Label text="Senha:" />
-                        <PasswordField fx:id="txtAtualizarSenha" disable="true" promptText="Deixe em branco para manter" />
+                        <PasswordField fx:id="txtAtualizarSenha" promptText="Nova senha (opcional)" />
                         <Pane prefHeight="5.0" />
-                        <Button fx:id="btnAtualizarSalvar" disable="true" mnemonicParsing="false" onAction="#aoConfirmarAtualizar" text="Salvar Alterações" />
+                        <Button fx:id="btnAtualizarSalvar" mnemonicParsing="false" onAction="#aoConfirmarAtualizar" text="Salvar Alterações" />
                         <Label fx:id="lblAtualizarStatus" />
                      </children>
                   </VBox>
 
-                  <!-- Painel de Desativacao -->
-                  <VBox fx:id="painelDesativar" spacing="10.0" visible="false">
+                  <!-- Painel de Desativar Usuario -->
+                  <VBox fx:id="painelDesativar" spacing="12.0" visible="false">
                      <padding>
                         <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
                      </padding>
@@ -168,9 +169,12 @@
                               <Font name="System Bold" size="16.0" />
                            </font>
                         </Label>
-                        <Label text="ID:" />
-                        <TextField fx:id="txtDesativarId" promptText="Digite o ID do usuário" />
-                        <Button mnemonicParsing="false" onAction="#aoConfirmarDesativar" text="Confirmar Desativação" />
+                        <HBox spacing="8.0">
+                           <children>
+                              <TextField fx:id="txtDesativarId" promptText="ID do usuário" />
+                              <Button mnemonicParsing="false" onAction="#aoConfirmarDesativar" text="Desativar" />
+                           </children>
+                        </HBox>
                         <Label fx:id="lblDesativarStatus" />
                      </children>
                   </VBox>
