@@ -2,6 +2,7 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Separator?>
 <?import javafx.scene.control.TableColumn?>
@@ -9,9 +10,10 @@
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.control.cell.PropertyValueFactory?>
 <?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<BorderPane prefHeight="600.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="apresentacao.fx.MenuItensController">
+<BorderPane prefHeight="600.0" prefWidth="950.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="apresentacao.fx.MenuItensController">
    <padding>
       <Insets bottom="16.0" left="16.0" right="16.0" top="16.0" />
    </padding>
@@ -23,12 +25,21 @@
       </Label>
    </top>
    <left>
-      <VBox prefWidth="260.0" spacing="8.0" BorderPane.alignment="CENTER">
+      <VBox prefWidth="270.0" spacing="8.0" BorderPane.alignment="CENTER">
          <padding>
             <Insets right="12.0" />
          </padding>
          <children>
-            <TextField fx:id="pesquisa" promptText="Busque por Nome/ID" />
+            <!-- Barra de Pesquisa com Filtro -->
+            <Label style="-fx-font-weight: bold;" text="Pesquisar Itens:" />
+            <ComboBox fx:id="cbFiltro" maxWidth="1.7976931348623157E308" />
+            <HBox spacing="6.0">
+               <children>
+                  <TextField fx:id="pesquisa" promptText="Digite para buscar..." HBox.hgrow="ALWAYS" />
+                  <Button fx:id="btnLimparPesquisa" mnemonicParsing="false" onAction="#aoLimparPesquisa" text="Limpar" />
+               </children>
+            </HBox>
+            <Separator />
             <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#buscarItem" text="Buscar Item por ID" />
             <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#cadastrarItem" text="Cadastrar Item" />
             <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#listarItens" text="Listar todos os Itens" />
@@ -54,19 +65,4 @@
           <TableColumn prefWidth="120.0" text="Categoria">
              <cellValueFactory><PropertyValueFactory property="categoria" /></cellValueFactory>
           </TableColumn>
-          <TableColumn prefWidth="100.0" text="Taxa Diária (R$)">
-             <cellValueFactory><PropertyValueFactory property="taxaDiaria" /></cellValueFactory>
-          </TableColumn>
-          <TableColumn prefWidth="100.0" text="Estado">
-             <cellValueFactory><PropertyValueFactory property="estadoConservacao" /></cellValueFactory>
-          </TableColumn>
-          <TableColumn prefWidth="90.0" text="Status">
-             <cellValueFactory><PropertyValueFactory property="status" /></cellValueFactory>
-          </TableColumn>
-          <TableColumn prefWidth="60.0" text="Ativo">
-             <cellValueFactory><PropertyValueFactory property="ativo" /></cellValueFactory>
-          </TableColumn>
-        </columns>
-      </TableView>
-   </center>
-</BorderPane>
+          <TableColumn pref
