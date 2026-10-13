@@ -1,9 +1,9 @@
 package apresentacao.fx;
 
+
 import entidades.ContratoAluguel;
 import entidades.Item;
 import entidades.Usuario;
-import javafx.beans.Observable;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -11,7 +11,6 @@ import javafx.fxml.FXML;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 
-import java.lang.reflect.Array;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.ArrayList;
@@ -21,7 +20,8 @@ import java.util.Optional;
 
 public class MenuRelatoriosController extends MenuController {
 
-    @FXML private TableView<ObservableList<String>> tabela;
+    @FXML
+    private TableView<ObservableList<String>> tabela;
 
     @Override
     protected String getTitulo() {
@@ -53,16 +53,13 @@ public class MenuRelatoriosController extends MenuController {
             erro("Erro ao encontrar relatorios");
             return;
         }
-
-        List<List<String>> linhas = new ArrayList<>();
-        for (Item i : itens) {
-            linhas.add(Arrays.asList(
-                    i.getCategoria().getNome(),
-                    String.valueOf(i.getId()),
-                    i.getNome(),
-                    String.format("%.2f", i.getTaxaDiaria())
-            ));
-        }
+        List<List<String>> linhas = itens.stream()
+                .map(i -> Arrays.asList(
+                        i.getCategoria().getNome(),
+                        String.valueOf(i.getId()),
+                        i.getNome(),
+                        String.format("%.2f", i.getTaxaDiaria())))
+                .toList();
 
         montarTabela(new String[]{"CATEGORIA", "ID", "NOME", "TAXA"}, linhas);
     }
@@ -71,7 +68,7 @@ public class MenuRelatoriosController extends MenuController {
     private void historicoAlugueisCliente() {
         Optional<Integer> id = pedirInteiro("ID do cliente:");
 
-        if (id.isEmpty()){
+        if (id.isEmpty()) {
             erro("O ID não pode ser vazio");
             return;
         }
@@ -88,24 +85,20 @@ public class MenuRelatoriosController extends MenuController {
         if (historico.isEmpty()) {
             escrever("Cliente sem historico");
             return;
-
         }
 
-        List<List<String>> linhas = new ArrayList<>();
-        for (ContratoAluguel c : historico) {
-            linhas.add(Arrays.asList(
-                    String.valueOf(c.getId()),
-                    c.getItem().getNome(),
-                    String.valueOf(c.getDataRetirada()),
-                    String.valueOf(c.getDataDevolucaoPrevista()),
-                    String.valueOf(c.getStatus()),
-                    String.format("%.2f", c.getValorTotal()),
-                    String.format("%.2f", c.getValorMulta())
-            ));
-        }
+        List<List<String>> linhas = historico.stream()
+                .map(c -> Arrays.asList(
+                        String.valueOf(c.getId()),
+                        c.getItem().getNome(),
+                        String.valueOf(c.getDataRetirada()),
+                        String.valueOf(c.getDataDevolucaoPrevista()),
+                        String.valueOf(c.getStatus()),
+                        String.format("%.2f", c.getValorTotal()),
+                        String.format("%.2f", c.getValorMulta())))
+                .toList();
 
         montarTabela(new String[]{"ID", "ITEM", "RETIRADA", "PREVISTA", "STATUS", "VALOR", "MULTA"}, linhas);
-
     }
 
 
@@ -115,7 +108,7 @@ public class MenuRelatoriosController extends MenuController {
         List<ContratoAluguel> contratosAtivos = sistema.gerarRelatorioItensAlugados();
 
         if (contratosAtivos.isEmpty()) {
-            escrever("Não existem contratos ativos.");
+            erro("Não existem contratos ativos.");
         }
 
         LocalDate hoje = LocalDate.now(ZoneId.of("America/Recife"));
@@ -140,33 +133,34 @@ public class MenuRelatoriosController extends MenuController {
     }
 
     @FXML
-    private void relatorioPeriodo(){
-        Optional<String> dataInicial= pedirData("Data inicial");
+    private void relatorioPeriodo() {
+        Optional<String> dataInicial = pedirData("Data inicial");
+        if (dataInicial.isEmpty()) {
+            return;
+        }
         Optional<String> dataFinal = pedirData("Data final");
+        if (dataFinal.isEmpty()) {
+            return;
+        }
 
-        List<ContratoAluguel> contratosPeriodo = sistema.gerarRelatorioFaturamento(dataInicial.get(), dataFinal.get());
-        if (!contratosPeriodo.isEmpty()) {
+        List<ContratoAluguel> contratosPeriodo =
+                sistema.gerarRelatorioFaturamento(dataInicial.get(), dataFinal.get());
 
-            List<List<String>> linhas = new ArrayList<>();
+        if (contratosPeriodo.isEmpty()) {
+            erro("Nenhum contrato encontrado no período.");
+            return;
+        }
 
-            for (ContratoAluguel c : contratosPeriodo) {
-
-                linhas.add(Arrays.asList(
+        List<List<String>> linhas = contratosPeriodo.stream()
+                .map(c -> Arrays.asList(
                         String.valueOf(c.getId()),
                         c.getCliente().getNome(),
                         String.format("%.2f", c.getValorTotal()),
                         String.format("%.2f", c.getValorMulta()),
-                        c.isAtivo() ? "Sim" : "Não"
-                ));
+                        c.isAtivo() ? "Sim" : "Não"))
+                .toList();
 
-            }
-
-            montarTabela(new String[]{"ID", "CLIENTE", "ALUGUEL", "MULTA", "ATIVO"}, linhas);
-        }
-        else {
-            erro( "Nenhum contrato encontrado no período.");
-        }
-
+        montarTabela(new String[]{"ID", "CLIENTE", "ALUGUEL", "MULTA", "ATIVO"}, linhas);
     }
 }
 
