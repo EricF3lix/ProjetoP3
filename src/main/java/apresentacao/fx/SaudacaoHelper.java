@@ -17,16 +17,27 @@ import javafx.util.Duration;
 
 public class SaudacaoHelper {
 
+    // Controla para ser exibido apenas UMA vez por sessão de login
+    private static boolean jaExibiuNaSessao = false;
+
     /**
-     * Exibe um modal de boas-vindas estilo iOS (iPhone) sobre o painel indicado.
-     *
-     * @param containerAlvo Container principal da tela (ex: AnchorPane raiz)
-     * @param titulo        Título de destaque
-     * @param subtitulo     Descrição ou instrução breve
-     * @param iconeEmoji    Emoji/ícone de destaque (ex: "👋", "🛡️")
+     * Reseta a trava quando o usuário faz logout / volta para a tela de login.
+     */
+    public static void resetar() {
+        jaExibiuNaSessao = false;
+    }
+
+    /**
+     * Exibe o modal de boas-vindas apenas UMA vez após o login.
+     * Se o usuário navegar para outras telas e voltar ao menu, não reaparece.
      */
     public static void exibir(Pane containerAlvo, String titulo, String subtitulo, String iconeEmoji) {
-        if (containerAlvo == null) return;
+        if (containerAlvo == null || jaExibiuNaSessao) {
+            return;
+        }
+
+        // Marca como já exibido nesta sessão
+        jaExibiuNaSessao = true;
 
         Platform.runLater(() -> {
             // Fundo escurecido translúcido moderno
@@ -43,7 +54,7 @@ public class SaudacaoHelper {
                 overlay.prefHeightProperty().bind(containerAlvo.heightProperty());
             }
 
-            // Cartão estilo Apple (cantos arredondados, fundo branco e padding)
+            // Cartão estilo Apple
             VBox card = new VBox(18);
             card.setAlignment(Pos.CENTER);
             card.setMaxWidth(430);
@@ -137,7 +148,7 @@ public class SaudacaoHelper {
                 )
             );
 
-            // Transição de saída estilo desbloqueio do iPhone (Slide Up + Fade Out)
+            // Transição de saída (Slide Up + Fade Out)
             btnProsseguir.setOnAction(event -> {
                 FadeTransition fade = new FadeTransition(Duration.millis(260), overlay);
                 fade.setFromValue(1.0);
@@ -155,7 +166,7 @@ public class SaudacaoHelper {
             card.getChildren().addAll(iconeBadge, lblTitulo, lblSubtitulo, btnProsseguir);
             overlay.getChildren().add(card);
 
-            // Transição de entrada suave (Pop-in com Fade)
+            // Transição de entrada (Pop-in com Fade)
             overlay.setOpacity(0.0);
             card.setTranslateY(25);
             containerAlvo.getChildren().add(overlay);
