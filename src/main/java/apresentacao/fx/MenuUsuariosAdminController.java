@@ -8,6 +8,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 
 public class MenuUsuariosAdminController extends MenuUsuariosFuncionarioController {
@@ -67,6 +68,17 @@ public class MenuUsuariosAdminController extends MenuUsuariosFuncionarioControll
         if (painelDesejado != null) {
             painelDesejado.toFront();
         }
+    }
+
+    @Override
+    protected void exibirSaudacaoInicial(Pane container) {
+        saudacaoExibida = true;
+        SaudacaoHelper.exibir(
+            container,
+            "Bem-vindo, Administrador!",
+            "Painel de controlo e administração pronto para utilização.",
+            "🛡️"
+        );
     }
 
     @FXML
@@ -132,6 +144,7 @@ public class MenuUsuariosAdminController extends MenuUsuariosFuncionarioControll
         if (sistema.atualizarUsuario(id, novoNome, novoEmail, novaSenha)) {
             lblAtualizarStatus.setText("Usuário atualizado com sucesso!");
             lblAtualizarStatus.setStyle("-fx-text-fill: green;");
+            carregarTabela();
         } else {
             lblAtualizarStatus.setText("Erro ao atualizar usuário.");
             lblAtualizarStatus.setStyle("-fx-text-fill: red;");
@@ -154,6 +167,7 @@ public class MenuUsuariosAdminController extends MenuUsuariosFuncionarioControll
                 lblDesativarStatus.setText("Usuário desativado com sucesso!");
                 lblDesativarStatus.setStyle("-fx-text-fill: green;");
                 txtDesativarId.clear();
+                carregarTabela();
             } else {
                 lblDesativarStatus.setText("Não foi possível desativar (verifique pendências/multas).");
                 lblDesativarStatus.setStyle("-fx-text-fill: red;");

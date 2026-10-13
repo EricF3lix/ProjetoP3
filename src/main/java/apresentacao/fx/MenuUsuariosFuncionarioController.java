@@ -7,18 +7,26 @@ import entidades.Cliente;
 import entidades.Funcionario;
 import entidades.Usuario;
 import facade.SistemaFacade;
+import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.collections.transformation.FilteredList;
+import javafx.collections.transformation.SortedList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
+import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 
@@ -29,6 +37,15 @@ public class MenuUsuariosFuncionarioController extends MenuController {
 
     @FXML
     protected VBox painelTabela;
+
+    @FXML
+    protected ComboBox<String> cbFiltro;
+
+    @FXML
+    protected TextField txtPesquisa;
+
+    @FXML
+    protected Button btnLimparPesquisa;
 
     @FXML
     protected TableView<Usuario> tabelaUsuarios;
@@ -94,6 +111,9 @@ public class MenuUsuariosFuncionarioController extends MenuController {
     protected Button btnVoltar;
 
     protected String tipoCadastroAtual = "Cliente";
+    protected ObservableList<Usuario> listaUsuarios = FXCollections.observableArrayList();
+    protected FilteredList<Usuario> listaFiltrada;
+    protected boolean saudacaoExibida = false;
 
     @Override
     public String getTitulo() {
@@ -102,6 +122,18 @@ public class MenuUsuariosFuncionarioController extends MenuController {
 
     @FXML
     public void initialize() {
+        configurarColunasTabela();
+        configurarFiltroPesquisa();
+
+        Platform.runLater(() -> {
+            exibirPainel(painelTabela);
+            if (sistema != null) {
+                carregarTabela();
+            }
+        });
+    }
+
+    private void configurarColunasTabela() {
         if (colId != null) colId.setCellValueFactory(new PropertyValueFactory<>("id"));
         if (colNome != null) colNome.setCellValueFactory(new PropertyValueFactory<>("nome"));
         if (colEmail != null) colEmail.setCellValueFactory(new PropertyValueFactory<>("email"));
@@ -109,10 +141,95 @@ public class MenuUsuariosFuncionarioController extends MenuController {
             colPerfil.setCellValueFactory(dado ->
                 new SimpleStringProperty(dado.getValue().getClass().getSimpleName()));
         }
+
+        // Badge visual de status (● Ativo em verde / ● Inativo em vermelho)
         if (colAtivo != null) {
             colAtivo.setCellValueFactory(dado ->
                 new SimpleStringProperty(dado.getValue().isAtivo() ? "Sim" : "Não"));
+            colAtivo.setCellFactory(col -> new TableCell<Usuario, String>() {
+                private final Label badge = new Label();
+
+                @Override
+                protected void updateItem(String item, boolean empty) {
+                    super.updateItem(item, empty);
+                    if (empty || item == null) {
+                        setGraphic(null);
+                        setText(null);
+                    } else {
+                        boolean ativo = "Sim".equalsIgnoreCase(item) || "true".equalsIgnoreCase(item);
+                        if (ativo) {
+                            badge.setText("● Ativo");
+                            badge.setStyle(
+                                "-fx-background-color: #d4edda; -fx-text-fill: #155724; " +
+                                "-fx-font-weight: bold; -fx-padding: 3 8 3 8; " +
+                                "-fx-background-radius: 10; -fx-font-size: 11px;"
+                            );
+                        } else {
+                            badge.setText("● Inativo");
+                            badge.setStyle(
+                                "-fx-background-color: #f8d7da; -fx-text-fill: #721c24; " +
+                                "-fx-font-weight: bold; -fx-padding: 3 8 3 8; " +
+                                "-fx-background-radius: 10; -fx-font-size: 11px;"
+                            );
+                        }
+                        setAlignment(Pos.CENTER);
+                        setGraphic(badge);
+                        setText(null);
+                    }
+                }
+            });
         }
+    }
+
+    private void configurarFiltroPesquisa() {
+        if (cbFiltro != null) {
+            cbFiltro.setItems(FXCollections.observableArrayList("Todos", "Nome", "ID"));
+            cbFiltro.setValue("Todos");
+            cbFiltro.valueProperty().addListener((obs, antigo, novo) ->
+                aplicarFiltro(txtPesquisa != null ? txtPesquisa.getText() : "")
+            );
+        }
+
+        listaFiltrada = new FilteredList<>(listaUsuarios, p -> true);
+
+        if (txtPesquisa != null) {
+            txtPesquisa.textProperty().addListener((obs, valorAntigo, novoValor) -> aplicarFiltro(novoValor));
+        }
+
+        SortedList<Usuario> listaOrdenada = new SortedList<>(listaFiltrada);
+        if (tabelaUsuarios != null) {
+            listaOrdenada.comparatorProperty().bind(tabelaUsuarios.comparatorProperty());
+            tabelaUsuarios.setItems(listaOrdenada);
+        }
+    }
+
+    private void aplicarFiltro(String termo) {
+        if (listaFiltrada == null) return;
+
+        listaFiltrada.setPredicate(usuario -> {
+            if (usuario == null) return false;
+            if (termo == null || termo.trim().isEmpty()) {
+                return true;
+            }
+
+            String termoFormatado = termo.trim().toLowerCase();
+            String filtroSelecionado = cbFiltro != null && cbFiltro.getValue() != null ? cbFiltro.getValue() : "Todos";
+
+            boolean bateuId = String.valueOf(usuario.getId()).contains(termoFormatado);
+            boolean bateuNome = usuario.getNome() != null && usuario.getNome().toLowerCase().contains(termoFormatado);
+
+            return switch (filtroSelecionado) {
+                case "ID" -> bateuId;
+                case "Nome" -> bateuNome;
+                default -> bateuId || bateuNome;
+            };
+        });
+    }
+
+    @FXML
+    public void aoLimparPesquisa(ActionEvent event) {
+        if (txtPesquisa != null) txtPesquisa.clear();
+        if (cbFiltro != null) cbFiltro.setValue("Todos");
     }
 
     public void setSistema(SistemaFacade sistema) {
@@ -121,23 +238,48 @@ public class MenuUsuariosFuncionarioController extends MenuController {
     }
 
     protected void carregarTabela() {
-        if (sistema != null && tabelaUsuarios != null) {
+        if (sistema != null) {
             List<Usuario> usuarios = sistema.listarUsuarios();
-            tabelaUsuarios.setItems(FXCollections.observableArrayList(usuarios));
+            if (usuarios != null) {
+                listaUsuarios.setAll(usuarios);
+            }
         }
     }
 
     protected void exibirPainel(Node painelDesejado) {
-        painelTabela.setVisible(painelDesejado == painelTabela);
-        painelCadastro.setVisible(painelDesejado == painelCadastro);
-        painelBusca.setVisible(painelDesejado == painelBusca);
+        if (painelTabela != null) painelTabela.setVisible(painelDesejado == painelTabela);
+        if (painelCadastro != null) painelCadastro.setVisible(painelDesejado == painelCadastro);
+        if (painelBusca != null) painelBusca.setVisible(painelDesejado == painelBusca);
         if (painelDesejado != null) {
             painelDesejado.toFront();
         }
+
+        if (!saudacaoExibida) {
+            Pane container = null;
+            if (painelConteudo != null && painelConteudo.getParent() instanceof Pane pai) {
+                container = pai;
+            } else if (painelConteudo != null) {
+                container = painelConteudo;
+            }
+            if (container != null) {
+                exibirSaudacaoInicial(container);
+            }
+        }
+    }
+
+    protected void exibirSaudacaoInicial(Pane container) {
+        saudacaoExibida = true;
+        SaudacaoHelper.exibir(
+            container,
+            "Bem-vindo, Funcionário!",
+            "Painel de consulta e atendimento pronto para utilização.",
+            "👤"
+        );
     }
 
     @FXML
     public void aoListarUsuarios(ActionEvent event) {
+        aoLimparPesquisa(event);
         exibirPainel(painelTabela);
         carregarTabela();
     }
@@ -188,8 +330,9 @@ public class MenuUsuariosFuncionarioController extends MenuController {
             txtCadEmail.clear();
             txtCadCpf.clear();
             txtCadSenha.clear();
+            carregarTabela();
         } else {
-            lblCadMensagem.setText("Erro: CPF ou e-mail já cadastrado");
+            lblCadMensagem.setText("Erro: CPF ou e-mail já cadastrado.");
             lblCadMensagem.setStyle("-fx-text-fill: red;");
         }
     }
@@ -220,7 +363,7 @@ public class MenuUsuariosFuncionarioController extends MenuController {
                 );
                 lblBuscaResultado.setStyle("-fx-text-fill: black;");
             } else {
-                lblBuscaResultado.setText("Usuário não encontrado");
+                lblBuscaResultado.setText("Usuário não encontrado.");
                 lblBuscaResultado.setStyle("-fx-text-fill: red;");
             }
         } catch (NumberFormatException ex) {
