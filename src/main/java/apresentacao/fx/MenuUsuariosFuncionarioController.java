@@ -9,10 +9,14 @@ import entidades.Usuario;
 import facade.SistemaFacade;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.collections.transformation.FilteredList;
+import javafx.collections.transformation.SortedList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TableColumn;
@@ -29,6 +33,15 @@ public class MenuUsuariosFuncionarioController extends MenuController {
 
     @FXML
     protected VBox painelTabela;
+
+    @FXML
+    protected ComboBox<String> cbFiltro;
+
+    @FXML
+    protected TextField txtPesquisa;
+
+    @FXML
+    protected Button btnLimparPesquisa;
 
     @FXML
     protected TableView<Usuario> tabelaUsuarios;
@@ -94,6 +107,8 @@ public class MenuUsuariosFuncionarioController extends MenuController {
     protected Button btnVoltar;
 
     protected String tipoCadastroAtual = "Cliente";
+    protected ObservableList<Usuario> listaUsuarios = FXCollections.observableArrayList();
+    protected FilteredList<Usuario> listaFiltrada;
 
     @Override
     public String getTitulo() {
@@ -102,6 +117,11 @@ public class MenuUsuariosFuncionarioController extends MenuController {
 
     @FXML
     public void initialize() {
+        configurarColunasTabela();
+        configurarFiltroPesquisa();
+    }
+
+    private void configurarColunasTabela() {
         if (colId != null) colId.setCellValueFactory(new PropertyValueFactory<>("id"));
         if (colNome != null) colNome.setCellValueFactory(new PropertyValueFactory<>("nome"));
         if (colEmail != null) colEmail.setCellValueFactory(new PropertyValueFactory<>("email"));
@@ -115,15 +135,66 @@ public class MenuUsuariosFuncionarioController extends MenuController {
         }
     }
 
+    private void configurarFiltroPesquisa() {
+        if (cbFiltro != null) {
+            cbFiltro.setItems(FXCollections.observableArrayList("Todos", "Nome", "ID"));
+            cbFiltro.setValue("Todos");
+            cbFiltro.valueProperty().addListener((obs, antigo, novo) -> 
+                aplicarFiltro(txtPesquisa != null ? txtPesquisa.getText() : "")
+            );
+        }
+
+        listaFiltrada = new FilteredList<>(listaUsuarios, p -> true);
+
+        if (txtPesquisa != null) {
+            txtPesquisa.textProperty().addListener((obs, valorAntigo, novoValor) -> aplicarFiltro(novoValor));
+        }
+
+        SortedList<Usuario> listaOrdenada = new SortedList<>(listaFiltrada);
+        if (tabelaUsuarios != null) {
+            listaOrdenada.comparatorProperty().bind(tabelaUsuarios.comparatorProperty());
+            tabelaUsuarios.setItems(listaOrdenada);
+        }
+    }
+
+    private void aplicarFiltro(String termo) {
+        if (listaFiltrada == null) return;
+
+        listaFiltrada.setPredicate(usuario -> {
+            if (usuario == null) return false;
+            if (termo == null || termo.trim().isEmpty()) {
+                return true;
+            }
+
+            String termoFormatado = termo.trim().toLowerCase();
+            String filtroSelecionado = cbFiltro != null && cbFiltro.getValue() != null ? cbFiltro.getValue() : "Todos";
+
+            boolean bateuId = String.valueOf(usuario.getId()).contains(termoFormatado);
+            boolean bateuNome = usuario.getNome() != null && usuario.getNome().toLowerCase().contains(termoFormatado);
+
+            return switch (filtroSelecionado) {
+                case "ID" -> bateuId;
+                case "Nome" -> bateuNome;
+                default -> bateuId || bateuNome;
+            };
+        });
+    }
+
+    @FXML
+    public void aoLimparPesquisa(ActionEvent event) {
+        if (txtPesquisa != null) txtPesquisa.clear();
+        if (cbFiltro != null) cbFiltro.setValue("Todos");
+    }
+
     public void setSistema(SistemaFacade sistema) {
         this.sistema = sistema;
         carregarTabela();
     }
 
     protected void carregarTabela() {
-        if (sistema != null && tabelaUsuarios != null) {
+        if (sistema != null) {
             List<Usuario> usuarios = sistema.listarUsuarios();
-            tabelaUsuarios.setItems(FXCollections.observableArrayList(usuarios));
+            listaUsuarios.setAll(usuarios);
         }
     }
 
@@ -188,6 +259,7 @@ public class MenuUsuariosFuncionarioController extends MenuController {
             txtCadEmail.clear();
             txtCadCpf.clear();
             txtCadSenha.clear();
+            carregarTabela();
         } else {
             lblCadMensagem.setText("Erro: CPF ou e-mail já cadastrado");
             lblCadMensagem.setStyle("-fx-text-fill: red;");

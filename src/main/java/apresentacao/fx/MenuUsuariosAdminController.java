@@ -132,6 +132,7 @@ public class MenuUsuariosAdminController extends MenuUsuariosFuncionarioControll
         if (sistema.atualizarUsuario(id, novoNome, novoEmail, novaSenha)) {
             lblAtualizarStatus.setText("Usuário atualizado com sucesso!");
             lblAtualizarStatus.setStyle("-fx-text-fill: green;");
+            carregarTabela();
         } else {
             lblAtualizarStatus.setText("Erro ao atualizar usuário.");
             lblAtualizarStatus.setStyle("-fx-text-fill: red;");
@@ -154,6 +155,7 @@ public class MenuUsuariosAdminController extends MenuUsuariosFuncionarioControll
                 lblDesativarStatus.setText("Usuário desativado com sucesso!");
                 lblDesativarStatus.setStyle("-fx-text-fill: green;");
                 txtDesativarId.clear();
+                carregarTabela();
             } else {
                 lblDesativarStatus.setText("Não foi possível desativar (verifique pendências/multas).");
                 lblDesativarStatus.setStyle("-fx-text-fill: red;");
