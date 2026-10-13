@@ -1,2 +1,4 @@
 IdContrato,Cliente,Item,DataRetirada,DataPrevista,Status,ValorTotal,Multa
-1;Cliente Fiel;Cafeteira de catiguria;2026-06-02;2026-07-01;ATIVO;1450.0;0.0
+1;Yan;Cafeteira de catiguria;2026-06-02;2026-07-01;CANCELADO;1450.0;0.0
+2;Yan;Cafeteira;2027-03-12;2028-10-02;FINALIZADO;5700.0;14.0
+3;Yan;Cafeteira de catiguria;2026-10-26;2026-10-29;FINALIZADO;150.0;15.0

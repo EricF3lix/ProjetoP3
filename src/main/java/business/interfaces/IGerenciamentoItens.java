@@ -12,6 +12,8 @@ public interface IGerenciamentoItens {
 
     public abstract List<Item> listarItens();
 
+    public abstract List<Item> filtrarItem(String filtro);
+
     public abstract boolean atualizarItem(Item itemNovo);
 
     public abstract boolean excluirItem(int id);
