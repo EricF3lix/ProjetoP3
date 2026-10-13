@@ -113,7 +113,6 @@ public class MenuUsuariosFuncionarioController extends MenuController {
     protected String tipoCadastroAtual = "Cliente";
     protected ObservableList<Usuario> listaUsuarios = FXCollections.observableArrayList();
     protected FilteredList<Usuario> listaFiltrada;
-    protected boolean saudacaoExibida = false;
 
     @Override
     public String getTitulo() {
@@ -253,28 +252,6 @@ public class MenuUsuariosFuncionarioController extends MenuController {
         if (painelDesejado != null) {
             painelDesejado.toFront();
         }
-
-        if (!saudacaoExibida) {
-            Pane container = null;
-            if (painelConteudo != null && painelConteudo.getParent() instanceof Pane pai) {
-                container = pai;
-            } else if (painelConteudo != null) {
-                container = painelConteudo;
-            }
-            if (container != null) {
-                exibirSaudacaoInicial(container);
-            }
-        }
-    }
-
-    protected void exibirSaudacaoInicial(Pane container) {
-        saudacaoExibida = true;
-        SaudacaoHelper.exibir(
-            container,
-            "Bem-vindo, Funcionário!",
-            "Painel de consulta e atendimento pronto para utilização.",
-            "👤"
-        );
     }
 
     @FXML
