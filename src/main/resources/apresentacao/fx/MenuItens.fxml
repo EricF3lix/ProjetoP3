@@ -2,71 +2,94 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Separator?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.control.cell.PropertyValueFactory?>
-<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.VBox?>
 
-<BorderPane prefHeight="600.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="apresentacao.fx.MenuItensController">
-   <padding>
-      <Insets bottom="16.0" left="16.0" right="16.0" top="16.0" />
-   </padding>
-   <top>
-      <Label style="-fx-font-size: 22px; -fx-font-weight: bold;" text="Gerenciar Itens" BorderPane.alignment="CENTER_LEFT">
-         <BorderPane.margin>
-            <Insets bottom="12.0" />
-         </BorderPane.margin>
-      </Label>
-   </top>
-   <left>
-      <VBox prefWidth="260.0" spacing="8.0" BorderPane.alignment="CENTER">
-         <padding>
-            <Insets right="12.0" />
-         </padding>
+<AnchorPane prefHeight="660.0" prefWidth="950.0" style="-fx-background-color: #F5F5F7;" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml" fx:controller="apresentacao.fx.MenuItensController">
+   <children>
+      <!-- Cabecalho Moderno -->
+      <Label layoutX="40.0" layoutY="25.0" style="-fx-font-family: -apple-system, 'SF Pro Display', 'Segoe UI', sans-serif; -fx-font-weight: 900; -fx-font-size: 26px; -fx-text-fill: #1d1d1f;" text="Gerenciar Itens" />
+      <Label layoutX="40.0" layoutY="58.0" style="-fx-font-family: -apple-system, 'SF Pro Text', 'Segoe UI', sans-serif; -fx-font-size: 14px; -fx-text-fill: #86868b;" text="Painel de Produtos e Equipamentos" />
+
+      <!-- Menu Lateral Estilo Apple -->
+      <VBox layoutX="40.0" layoutY="100.0" prefWidth="250.0" spacing="12.0">
          <children>
-            <TextField fx:id="pesquisa" promptText="Busque por Nome/ID" />
-            <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#buscarItem" text="Buscar Item por ID" />
-            <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#cadastrarItem" text="Cadastrar Item" />
-            <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#listarItens" text="Listar todos os Itens" />
-            <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#atualizarItem" text="Atualizar Item" />
-            <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#desativarItem" text="Desativar Item" />
-            <Separator />
-            <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#voltar" text="Voltar" />
+            <!-- Área de Pesquisa e Filtros -->
+            <Label style="-fx-text-fill: #6e6e73; -fx-font-size: 12px; -fx-font-weight: bold;" text="Filtrar Itens:" />
+            <ComboBox fx:id="cbFiltro" prefHeight="35.0" prefWidth="250.0" style="-fx-background-color: #e5e5ea; -fx-background-radius: 8px;" />
+            <HBox spacing="8.0">
+               <children>
+                  <TextField fx:id="pesquisa" promptText="Digite para buscar..." style="-fx-background-color: #e5e5ea; -fx-background-radius: 8px; -fx-padding: 8px;" HBox.hgrow="ALWAYS" />
+                  <Button fx:id="btnLimparPesquisa" mnemonicParsing="false" onAction="#aoLimparPesquisa" style="-fx-background-color: #d1d1d6; -fx-text-fill: #1d1d1f; -fx-background-radius: 8px; -fx-cursor: hand;" text="Limpar" />
+               </children>
+            </HBox>
+
+            <Pane prefHeight="2.0" />
+
+            <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#cadastrarItem" prefHeight="38.0" style="-fx-background-color: #ffffff; -fx-background-radius: 10px; -fx-border-color: #d1d1d6; -fx-border-radius: 10px; -fx-text-fill: #007AFF; -fx-font-weight: bold; -fx-cursor: hand; -fx-font-size: 13px;" text="Cadastrar Item" />
+
+            <Separator style="-fx-padding: 5 0 5 0;" />
+
+            <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#buscarItem" prefHeight="38.0" style="-fx-background-color: #ffffff; -fx-background-radius: 10px; -fx-border-color: #d1d1d6; -fx-border-radius: 10px; -fx-text-fill: #1d1d1f; -fx-font-weight: bold; -fx-cursor: hand; -fx-font-size: 13px;" text="Buscar Item por ID" />
+            <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#listarItens" prefHeight="38.0" style="-fx-background-color: #ffffff; -fx-background-radius: 10px; -fx-border-color: #d1d1d6; -fx-border-radius: 10px; -fx-text-fill: #1d1d1f; -fx-font-weight: bold; -fx-cursor: hand; -fx-font-size: 13px;" text="Listar todos os Itens" />
+            <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#atualizarItem" prefHeight="38.0" style="-fx-background-color: #ffffff; -fx-background-radius: 10px; -fx-border-color: #d1d1d6; -fx-border-radius: 10px; -fx-text-fill: #1d1d1f; -fx-font-weight: bold; -fx-cursor: hand; -fx-font-size: 13px;" text="Atualizar Item" />
+            <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#desativarItem" prefHeight="38.0" style="-fx-background-color: #fff0f0; -fx-background-radius: 10px; -fx-border-color: #ffcccc; -fx-border-radius: 10px; -fx-text-fill: #ff3b30; -fx-font-weight: bold; -fx-cursor: hand; -fx-font-size: 13px;" text="Desativar Item" />
+
+            <Pane prefHeight="5.0" />
+            <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#voltar" prefHeight="38.0" style="-fx-background-color: #e5e5ea; -fx-background-radius: 10px; -fx-text-fill: #1d1d1f; -fx-font-weight: bold; -fx-cursor: hand; -fx-font-size: 13px;" text="Voltar" />
          </children>
       </VBox>
-   </left>
-   <center>
-      <TableView fx:id="tabela" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
-        <columnResizePolicy>
-               <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
-        </columnResizePolicy>
-        <columns>
-          <TableColumn prefWidth="50.0" text="ID">
-             <cellValueFactory><PropertyValueFactory property="id" /></cellValueFactory>
-          </TableColumn>
-          <TableColumn prefWidth="150.0" text="Nome">
-             <cellValueFactory><PropertyValueFactory property="nome" /></cellValueFactory>
-          </TableColumn>
-          <TableColumn prefWidth="120.0" text="Categoria">
-             <cellValueFactory><PropertyValueFactory property="categoria" /></cellValueFactory>
-          </TableColumn>
-          <TableColumn prefWidth="100.0" text="Taxa Diária (R$)">
-             <cellValueFactory><PropertyValueFactory property="taxaDiaria" /></cellValueFactory>
-          </TableColumn>
-          <TableColumn prefWidth="100.0" text="Estado">
-             <cellValueFactory><PropertyValueFactory property="estadoConservacao" /></cellValueFactory>
-          </TableColumn>
-          <TableColumn prefWidth="90.0" text="Status">
-             <cellValueFactory><PropertyValueFactory property="status" /></cellValueFactory>
-          </TableColumn>
-          <TableColumn prefWidth="60.0" text="Ativo">
-             <cellValueFactory><PropertyValueFactory property="ativo" /></cellValueFactory>
-          </TableColumn>
-        </columns>
-      </TableView>
-   </center>
-</BorderPane>
+
+      <!-- Cartão Dinâmico de Conteúdo -->
+      <AnchorPane layoutX="320.0" layoutY="100.0" prefHeight="520.0" prefWidth="590.0" style="-fx-background-color: #ffffff; -fx-background-radius: 16px; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 12, 0, 2, 6);">
+         <children>
+            <VBox spacing="15.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+               <padding>
+                  <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+               </padding>
+               <children>
+                  <Label style="-fx-font-family: -apple-system, 'SF Pro Display', 'Segoe UI', sans-serif; -fx-font-weight: bold; -fx-font-size: 18px; -fx-text-fill: #1d1d1f;" text="Lista de Itens" />
+                  
+                  <TableView fx:id="tabela" style="-fx-border-color: #e5e5ea; -fx-border-radius: 8px; -fx-background-radius: 8px;" VBox.vgrow="ALWAYS">
+                    <columnResizePolicy>
+                        <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+                    </columnResizePolicy>
+                    <columns>
+                      <TableColumn prefWidth="40.0" text="ID">
+                         <cellValueFactory><PropertyValueFactory property="id" /></cellValueFactory>
+                      </TableColumn>
+                      <TableColumn prefWidth="130.0" text="Nome">
+                         <cellValueFactory><PropertyValueFactory property="nome" /></cellValueFactory>
+                      </TableColumn>
+                      <TableColumn prefWidth="100.0" text="Categoria">
+                         <cellValueFactory><PropertyValueFactory property="categoria" /></cellValueFactory>
+                      </TableColumn>
+                      <TableColumn prefWidth="90.0" text="Taxa Diária">
+                         <cellValueFactory><PropertyValueFactory property="taxaDiaria" /></cellValueFactory>
+                      </TableColumn>
+                      <TableColumn prefWidth="80.0" text="Estado">
+                         <cellValueFactory><PropertyValueFactory property="estadoConservacao" /></cellValueFactory>
+                      </TableColumn>
+                      <TableColumn prefWidth="75.0" text="Status">
+                         <cellValueFactory><PropertyValueFactory property="status" /></cellValueFactory>
+                      </TableColumn>
+                      <TableColumn fx:id="colAtivo" prefWidth="75.0" text="Disponibilidade">
+                         <cellValueFactory><PropertyValueFactory property="ativo" /></cellValueFactory>
+                      </TableColumn>
+                    </columns>
+                  </TableView>
+               </children>
+            </VBox>
+         </children>
+      </AnchorPane>
+   </children>
+</AnchorPane>

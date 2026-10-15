@@ -29,6 +29,13 @@ public class Navegador {
         this.stage = stage;
         this.sistema = sistema;
         this.scene = new Scene(new StackPane(), 900, 600);
+
+        // Aplica o CSS global para todas as telas do sistema
+        URL cssUrl = Navegador.class.getResource("style.css");
+        if (cssUrl != null) {
+            this.scene.getStylesheets().add(cssUrl.toExternalForm());
+        }
+
         stage.setScene(scene);
     }
 
