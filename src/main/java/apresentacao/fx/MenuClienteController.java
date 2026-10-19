@@ -58,9 +58,7 @@ public class MenuClienteController extends MenuController {
 	
 	private void exibirContratos(List<ContratoAluguel> lista, String msgVazio) {
 		mostrarTabelas(true);
-		if (!lista.isEmpty()) {
-			tabelaContratos.setItems(FXCollections.observableArrayList(lista));
-	}
+		tabelaContratos.setItems(FXCollections.observableArrayList(lista));
 		}
 	
 	@FXML
@@ -71,13 +69,7 @@ public class MenuClienteController extends MenuController {
 		List<Item> disponiveis = sistema.listarItens().stream()
 				.filter(Item::estaDisponivel)
 				.toList();
-
-		if (disponiveis.isEmpty()) {
-			info(NENHUM_ITEM);
-		}
-		else {
 			tabelaItens.setItems(FXCollections.observableArrayList(disponiveis));
-		}
 	}
 	
 	@FXML
