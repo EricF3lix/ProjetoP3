@@ -103,46 +103,6 @@ public class MenuClienteController extends MenuController {
 		exibirContratos(buscarMultasPendentes(), NENHUMA_MULTA);
 	}
 
-	@FXML
-	private void pagarMulta() {
-
-		mostrarTabelas(true);
-
-		List<ContratoAluguel> pendentes = buscarMultasPendentes();
-
-		if (pendentes.isEmpty()) {
-			info(SEM_MULTAS_PENDENTES);
-			return;
-		}
-
-		tabelaContratos.setItems(FXCollections.observableArrayList(pendentes));
-
-		Optional<Integer> id = pedirInteiro(ID_CONTRATO);
-		if (id.isEmpty()) return;
-
-		ContratoAluguel contrato = sistema.buscarContrato(id.get());
-
-		if (contrato == null || contrato.getCliente().getId() != cliente.getId()) {
-			erro(CONTRATO_NAO_ENCONTRADO);
-			return;
-		}
-
-		if (contrato.getValorMulta() <= 0 || contrato.isMultaPaga()) {
-			erro(CONTRATO_SEM_MULTA);
-			return;
-		}
-
-		if (!confirmar(String.format("Confirma o pagamento de R$ %.2f?", contrato.getValorMulta()))) {
-			return;
-		}
-
-		if (sistema.quitarMultaContrato(id.get())) {
-			info(MULTA_PAGA);
-			multasPendentes();
-		} else {
-			erro(ERRO_PAGAMENTO);
-		}
-	}
 
 	private List<ContratoAluguel> buscarMultasPendentes() {
 		return sistema.listarContratos().stream()
