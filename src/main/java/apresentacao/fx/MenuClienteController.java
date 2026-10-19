@@ -9,6 +9,7 @@ import entidades.ContratoAluguel;
 import entidades.Item;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableView;
 
@@ -27,6 +28,9 @@ public class MenuClienteController extends MenuController {
 
 	@FXML private TableView<Item> tabelaItens;
 	@FXML private TableView<ContratoAluguel> tabelaContratos;
+	
+	@FXML private ComboBox<String> filtroTipo; 
+	@FXML private ComboBox<String> filtroCampo;
 	
 	@FXML private Label bemVindo;
 	private Cliente cliente;
@@ -102,5 +106,10 @@ public class MenuClienteController extends MenuController {
 						&& contrato.getValorMulta() > 0
 						&& !contrato.isMultaPaga())
 				.toList();
+	}
+	
+	@FXML
+	private void aoLimparPesquisa() {
+		
 	}
 }
