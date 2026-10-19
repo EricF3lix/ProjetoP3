@@ -5,17 +5,26 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.PasswordField?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 
 <StackPane prefHeight="660.0" prefWidth="950.0" style="-fx-background-color: #F5F5F7;" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="apresentacao.fx.MenuLoginController">
    <children>
-      <VBox alignment="CENTER" maxHeight="420.0" maxWidth="400.0" spacing="20.0" style="-fx-background-color: #ffffff; -fx-background-radius: 20px; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 25, 0, 0, 8);">
+      <VBox alignment="CENTER" maxHeight="560.0" maxWidth="400.0" spacing="20.0" style="-fx-background-color: #ffffff; -fx-background-radius: 20px; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 25, 0, 0, 8);">
          <padding>
             <Insets bottom="45.0" left="40.0" right="40.0" top="45.0" />
          </padding>
          <children>
+
             
+            <StackPane fx:id="areaLogo" maxHeight="100.0" maxWidth="100.0" minHeight="100.0" minWidth="100.0" prefHeight="100.0" prefWidth="100.0" style="-fx-border-color: #c7c7cc; -fx-border-style: segments(6, 6); -fx-border-radius: 12px;">
+               <children>
+                  <Label fx:id="lblLogoPadrao" style="-fx-font-size: 14px; -fx-text-fill: #c7c7cc;" text="LOGO" />
+                  <ImageView fx:id="imgLogo" fitHeight="100.0" fitWidth="100.0" pickOnBounds="true" preserveRatio="true" />
+               </children>
+            </StackPane>
+
             <VBox alignment="CENTER" spacing="5.0">
                <children>
                   <Label alignment="CENTER" style="-fx-font-family: -apple-system, 'SF Pro Display', 'Segoe UI', sans-serif; -fx-font-size: 22px; -fx-font-weight: 900; -fx-text-fill: #1d1d1f;" text="LOJA QUE ALUGA TUDO" textAlignment="CENTER" wrapText="true" />
@@ -28,12 +37,12 @@
 
             <VBox spacing="12.0">
                <children>
-                  <TextField fx:id="txtEmail" prefHeight="45.0" promptText="E-mail" style="-fx-background-color: #F2F2F7; -fx-background-radius: 10px; -fx-padding: 12px; -fx-font-size: 14px; -fx-text-fill: #1d1d1f;" />
-                  <PasswordField fx:id="txtSenha" onAction="#entrar" prefHeight="45.0" promptText="Senha" style="-fx-background-color: #F2F2F7; -fx-background-radius: 10px; -fx-padding: 12px; -fx-font-size: 14px; -fx-text-fill: #1d1d1f;" />
+                  <TextField fx:id="txtEmail" prefHeight="45.0" promptText="👤 Email" style="-fx-background-color: #F2F2F7; -fx-background-radius: 10px; -fx-padding: 12px; -fx-font-size: 14px; -fx-text-fill: #1d1d1f;" />
+                  <PasswordField fx:id="txtSenha" onAction="#entrar" prefHeight="45.0" promptText="🔒 Senha" style="-fx-background-color: #F2F2F7; -fx-background-radius: 10px; -fx-padding: 12px; -fx-font-size: 14px; -fx-text-fill: #1d1d1f;" />
                </children>
             </VBox>
 
-            <!-- Botões de Ação -->
+            
             <VBox spacing="12.0">
                <VBox.margin>
                   <Insets top="10.0" />
