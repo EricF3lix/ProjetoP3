@@ -66,8 +66,8 @@
                               <TableColumn prefWidth="150.0" text="Categoria">
                                  <cellValueFactory><PropertyValueFactory property="categoriaNome" /></cellValueFactory>
                               </TableColumn>
-                              <TableColumn prefWidth="90.0" text="Taxa/Dia">
-                                 <cellValueFactory><PropertyValueFactory property="taxaDiaria" /></cellValueFactory>
+                              <TableColumn prefWidth="90.0" text="Taxa diária">
+                                 <cellValueFactory><PropertyValueFactory property="TaxaDiariaFormatada" /></cellValueFactory>
                               </TableColumn>
                            </columns>
                         </TableView>
@@ -94,10 +94,10 @@
                                  <cellValueFactory><PropertyValueFactory property="status" /></cellValueFactory>
                               </TableColumn>
                               <TableColumn prefWidth="90.0" text="Valor total">
-                                 <cellValueFactory><PropertyValueFactory property="valorTotal" /></cellValueFactory>
+                                 <cellValueFactory><PropertyValueFactory property="valorTotalFormatado" /></cellValueFactory>
                               </TableColumn>
                               <TableColumn prefWidth="90.0" text="Multa">
-                                 <cellValueFactory><PropertyValueFactory property="valorMulta" /></cellValueFactory>
+                                 <cellValueFactory><PropertyValueFactory property="valorMultaFormatado" /></cellValueFactory>
                               </TableColumn>
                            </columns>
                         </TableView>
