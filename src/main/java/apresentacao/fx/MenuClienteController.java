@@ -39,6 +39,9 @@ public class MenuClienteController extends MenuController {
 	@Override
 	protected void aoExibir() {
 		bemVindo.setText("Bem-vindo(a), " + cliente.getNome());
+		tabelaItens.setPlaceholder(new Label("Nenhum item disponível"));
+		tabelaContratos.setPlaceholder(new Label ("Você não tem aluguéis ativos"));
+		listarItensDisponiveis();
 	}
 
 	public void setCliente(Cliente cliente) {
@@ -55,13 +58,10 @@ public class MenuClienteController extends MenuController {
 	
 	private void exibirContratos(List<ContratoAluguel> lista, String msgVazio) {
 		mostrarTabelas(true);
-		if (lista.isEmpty()) {
-			info(msgVazio);
-		}
-		else {
+		if (!lista.isEmpty()) {
 			tabelaContratos.setItems(FXCollections.observableArrayList(lista));
-		}
 	}
+		}
 	
 	@FXML
 	private void listarItensDisponiveis() {
