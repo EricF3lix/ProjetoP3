@@ -26,7 +26,7 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.layout.Pane;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 
@@ -121,8 +121,10 @@ public class MenuUsuariosFuncionarioController extends MenuController {
 
     @FXML
     public void initialize() {
+        configurarResponsividade();
         configurarColunasTabela();
         configurarFiltroPesquisa();
+        removerRedundanciaBusca();
 
         Platform.runLater(() -> {
             exibirPainel(painelTabela);
@@ -132,6 +134,42 @@ public class MenuUsuariosFuncionarioController extends MenuController {
         });
     }
 
+    /**
+     * Issue #995: Configura a tabela e os painéis para expandirem fluidamente
+     * em fullscreen e alterações de resolução.
+     */
+    private void configurarResponsividade() {
+        if (painelConteudo != null) {
+            painelConteudo.setMaxWidth(Double.MAX_VALUE);
+            painelConteudo.setMaxHeight(Double.MAX_VALUE);
+        }
+
+        if (painelTabela != null) {
+            VBox.setVgrow(painelTabela, Priority.ALWAYS);
+            painelTabela.setMaxWidth(Double.MAX_VALUE);
+            painelTabela.setMaxHeight(Double.MAX_VALUE);
+            painelTabela.setFillWidth(true);
+        }
+
+        if (tabelaUsuarios != null) {
+            VBox.setVgrow(tabelaUsuarios, Priority.ALWAYS);
+            tabelaUsuarios.setMaxWidth(Double.MAX_VALUE);
+            tabelaUsuarios.setMaxHeight(Double.MAX_VALUE);
+            tabelaUsuarios.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+        }
+    }
+
+    /**
+     * Issue #996: Oculta o botão redundante de busca por ID já que a barra de pesquisa
+     * rápida atende a busca por ID, Nome, E-mail e CPF.
+     */
+    private void removerRedundanciaBusca() {
+        if (btnBuscarUsuario != null) {
+            btnBuscarUsuario.setVisible(false);
+            btnBuscarUsuario.setManaged(false);
+        }
+    }
+
     private void configurarColunasTabela() {
         if (colId != null) colId.setCellValueFactory(new PropertyValueFactory<>("id"));
         if (colNome != null) colNome.setCellValueFactory(new PropertyValueFactory<>("nome"));
@@ -139,6 +177,20 @@ public class MenuUsuariosFuncionarioController extends MenuController {
         if (colPerfil != null) {
             colPerfil.setCellValueFactory(dado ->
                 new SimpleStringProperty(dado.getValue().getClass().getSimpleName()));
+        }
+
+        // Issue #996: Adiciona a coluna CPF na TableView caso ainda não exista no FXML
+        if (tabelaUsuarios != null) {
+            boolean jaTemColCpf = tabelaUsuarios.getColumns().stream()
+                .anyMatch(c -> "CPF".equalsIgnoreCase(c.getText()));
+
+            if (!jaTemColCpf) {
+                TableColumn<Usuario, String> colCpf = new TableColumn<>("CPF");
+                colCpf.setCellValueFactory(new PropertyValueFactory<>("cpf"));
+                colCpf.setStyle("-fx-alignment: CENTER-LEFT;");
+                int posicao = Math.min(3, tabelaUsuarios.getColumns().size());
+                tabelaUsuarios.getColumns().add(posicao, colCpf);
+            }
         }
 
         // Badge visual de status (● Ativo em verde / ● Inativo em vermelho)
@@ -180,9 +232,12 @@ public class MenuUsuariosFuncionarioController extends MenuController {
         }
     }
 
+    /**
+     * Issue #996: Adiciona suporte a filtros por E-mail e CPF.
+     */
     private void configurarFiltroPesquisa() {
         if (cbFiltro != null) {
-            cbFiltro.setItems(FXCollections.observableArrayList("Todos", "Nome", "ID"));
+            cbFiltro.setItems(FXCollections.observableArrayList("Todos", "Nome", "ID", "E-mail", "CPF"));
             cbFiltro.setValue("Todos");
             cbFiltro.valueProperty().addListener((obs, antigo, novo) ->
                 aplicarFiltro(txtPesquisa != null ? txtPesquisa.getText() : "")
@@ -212,15 +267,22 @@ public class MenuUsuariosFuncionarioController extends MenuController {
             }
 
             String termoFormatado = termo.trim().toLowerCase();
-            String filtroSelecionado = cbFiltro != null && cbFiltro.getValue() != null ? cbFiltro.getValue() : "Todos";
+            String termoNumerico = termoFormatado.replaceAll("\\D", "");
+            String filtroSelecionado = (cbFiltro != null && cbFiltro.getValue() != null) ? cbFiltro.getValue() : "Todos";
 
             boolean bateuId = String.valueOf(usuario.getId()).contains(termoFormatado);
             boolean bateuNome = usuario.getNome() != null && usuario.getNome().toLowerCase().contains(termoFormatado);
+            boolean bateuEmail = usuario.getEmail() != null && usuario.getEmail().toLowerCase().contains(termoFormatado);
+            
+            String cpfUsuario = usuario.getCpf() != null ? usuario.getCpf().replaceAll("\\D", "") : "";
+            boolean bateuCpf = !termoNumerico.isEmpty() && cpfUsuario.contains(termoNumerico);
 
             return switch (filtroSelecionado) {
                 case "ID" -> bateuId;
                 case "Nome" -> bateuNome;
-                default -> bateuId || bateuNome;
+                case "E-mail" -> bateuEmail;
+                case "CPF" -> bateuCpf;
+                default -> bateuId || bateuNome || bateuEmail || bateuCpf;
             };
         });
     }
