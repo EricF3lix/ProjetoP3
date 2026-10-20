@@ -45,6 +45,19 @@ public class MenuClienteController extends MenuController {
 		bemVindo.setText("Bem-vindo(a), " + cliente.getNome());
 		tabelaItens.setPlaceholder(new Label("Nenhum item disponível"));
 		tabelaContratos.setPlaceholder(new Label ("Você não tem aluguéis ativos"));
+		
+		filtroTipo.valueProperty().addListener((obs, old, novo) -> {
+		    switch (novo) {
+		        case "Itens"      -> filtroCampo.getItems().setAll("ID", "Nome", "Categoria", "Taxa");
+		        case "Aluguéis"-> filtroCampo.getItems().setAll("ID", "Item", "Data de Retirada", "Data de Devolução", "Status", "Valor total", "Valor multa");
+		    }
+		    filtroCampo.getSelectionModel().clearSelection();
+		});
+		
+		pesquisa.textProperty().addListener((obs, old, novo) -> {if (filtroTipo.getValue().equals("Itens") ) {pesquisaItens();} 
+		else if (filtroTipo.getValue().equals("Aluguéis")) {pesquisaContratos();}
+		});
+		
 		listarItensDisponiveis();
 	}
 
@@ -59,6 +72,25 @@ public class MenuClienteController extends MenuController {
 		tabelaContratos.setVisible(tipo);
 		tabelaContratos.setManaged(tipo);
 	}
+	
+	private void pesquisaItens() {
+	    String pesquisado = pesquisa.getText();
+	    String campo = filtroCampo.getValue();
+
+	    if (campo == null) {
+	        tabelaItens.getItems().setAll(sistema.listarItens());
+	        return;
+	    }
+
+	    switch (campo) {
+	        case "ID" -> tabelaItens.getItems().setAll(sistema.filtraID(pesquisado));
+	        case "Nome" -> tabelaItens.getItems().setAll(sistema.filtraNome(pesquisado));
+	        case "Categoria" -> tabelaItens.getItems().setAll(sistema.filtraCategoria(pesquisado));
+	        case "Taxa" -> tabelaItens.getItems().setAll(sistema.filtraTaxa(pesquisado));
+	    }
+	}
+	
+	private void pesquisaContratos() {}
 	
 	private void exibirContratos(List<ContratoAluguel> lista, String msgVazio) {
 		mostrarTabelas(true);

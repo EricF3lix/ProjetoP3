@@ -87,4 +87,38 @@ public class GerenciamentoItens implements IGerenciamentoItens {
     public int gerarProximoId() {
         return repositorio.gerarProximoId();
     }
+    
+    @Override
+    public List<Item> filtrarPorId(String pesquisado) {
+        String termo = pesquisado.toLowerCase();
+        return repositorio.listarTodos().stream()
+                .filter(item -> String.valueOf(item.getId()).toLowerCase().startsWith(termo))
+                .toList();
+    }
+
+    @Override
+    public List<Item> filtrarPorNome(String pesquisado) {
+        String termo = pesquisado.toLowerCase();
+        return repositorio.listarTodos().stream()
+                .filter(item -> item.getNome() != null && item.getNome().toLowerCase().startsWith(termo))
+                .toList();
+    }
+
+    @Override
+    public List<Item> filtrarPorCategoria(String pesquisado) {
+        String termo = pesquisado.toLowerCase();
+        return repositorio.listarTodos().stream()
+                .filter(item -> item.getCategoria() != null
+                        && item.getCategoria().getNome() != null
+                        && item.getCategoria().getNome().toLowerCase().startsWith(termo))
+                .toList();
+    }
+
+    @Override
+    public List<Item> filtrarPorTaxa(String pesquisado) {
+        String termo = pesquisado.toLowerCase();
+        return repositorio.listarTodos().stream()
+                .filter(item -> String.valueOf(item.getTaxaDiaria()).toLowerCase().startsWith(termo))
+                .toList();
+    }
 }

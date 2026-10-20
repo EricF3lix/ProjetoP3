@@ -17,4 +17,5 @@ public interface IItemRepositorio {
     public abstract void salvar();
 
     public abstract int gerarProximoId();
+    
 }

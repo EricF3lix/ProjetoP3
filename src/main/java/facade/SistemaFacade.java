@@ -149,6 +149,23 @@ public class SistemaFacade {
     public List<Item> filtrarItem(String filtro) {
         return gerenciamentoItens.filtrarItem(filtro);
     }
+    
+    public List<Item> filtraID(String pesquisado) {
+        return gerenciamentoItens.filtrarPorId(pesquisado);
+    }
+
+    public List<Item> filtraNome(String pesquisado) {
+        return gerenciamentoItens.filtrarPorNome(pesquisado);
+    }
+
+    public List<Item> filtraCategoria(String pesquisado) {
+        return gerenciamentoItens.filtrarPorCategoria(pesquisado);
+    }
+
+    public List<Item> filtraTaxa(String pesquisado) {
+        return gerenciamentoItens.filtrarPorTaxa(pesquisado);
+    }
+    
     public boolean atualizarItem(Item itemNovo) {
         return gerenciamentoItens.atualizarItem(itemNovo);
     }

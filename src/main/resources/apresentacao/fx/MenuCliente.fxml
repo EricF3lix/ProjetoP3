@@ -30,7 +30,7 @@
             <Label style="-fx-text-fill: #6e6e73; -fx-font-size: 12px; -fx-font-weight: bold;" text="Filtrar Itens:" />
             <HBox spacing="8.0">
                <children>
-                  <ComboBox fx:id="cbFiltro" prefHeight="35.0" prefWidth="160.0" style="-fx-background-color: #e5e5ea; -fx-background-radius: 8px;" HBox.hgrow="ALWAYS">
+                  <ComboBox fx:id="filtroTipo" prefHeight="35.0" prefWidth="160.0" style="-fx-background-color: #e5e5ea; -fx-background-radius: 8px;" HBox.hgrow="ALWAYS">
                   	<items>
         				<FXCollections fx:factory="observableArrayList">
             				<String fx:value="Itens" />
@@ -38,7 +38,7 @@
        				 	</FXCollections>
     			    </items>
     			     </ComboBox>
-                  <ComboBox fx:id="cbFiltroSecundario" prefHeight="35.0" prefWidth="82.0" style="-fx-background-color: #e5e5ea; -fx-background-radius: 8px;" />
+                  <ComboBox fx:id="filtroCampo" prefHeight="35.0" prefWidth="82.0" style="-fx-background-color: #e5e5ea; -fx-background-radius: 8px;" />
                </children>
             </HBox>
             <HBox spacing="8.0">
