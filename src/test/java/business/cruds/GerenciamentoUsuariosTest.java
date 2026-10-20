@@ -37,8 +37,6 @@ class GerenciamentoUsuariosTest {
         return new Cliente(id, "Maria Silva", email, cpf, "senha123");
     }
 
-   
-
     @Test
     @DisplayName("cadastrarUsuario deve cadastrar um usuário novo")
     void deveCadastrarUsuarioNovo() {
@@ -77,8 +75,6 @@ class GerenciamentoUsuariosTest {
         assertFalse(resultado);
     }
 
-    
-
     @Test
     @DisplayName("atualizarUsuario deve retornar false quando o usuário não existe")
     void deveRetornarFalseAoAtualizarUsuarioInexistente() {
@@ -98,8 +94,6 @@ class GerenciamentoUsuariosTest {
         assertEquals("maria.souza@email.com", usuario.getEmail());
         assertEquals("novaSenha", usuario.getSenha());
     }
-
-    
 
     @Test
     @DisplayName("desativaUsuario deve retornar false quando o usuário não existe")
@@ -133,8 +127,6 @@ class GerenciamentoUsuariosTest {
         assertFalse(resultado, "Usuário com multa pendente não deveria poder ser desativado");
         assertTrue(gerenciamentoUsuarios.buscarUsuario(1).isAtivo());
     }
-
-   
 
     @Test
     @DisplayName("realizarLogin deve autenticar quando e-mail e senha estão corretos")
@@ -182,7 +174,7 @@ class GerenciamentoUsuariosTest {
         assertEquals("ADMINISTRADOR", usuario.getTipo());
     }
 
-   
+  
     private static class GerenciamentoContratosComMultaPendenteFalsa implements IGerenciamentoContratos {
 
         @Override
@@ -191,33 +183,89 @@ class GerenciamentoUsuariosTest {
         }
 
         @Override
-        public boolean cadastrarContrato(entidades.ContratoAluguel contrato) { return false; }
+        public boolean cadastrarContrato(ContratoAluguel contrato) {
+            return false;
+        }
 
         @Override
-        public entidades.ContratoAluguel buscarContrato(int id) { return null; }
+        public ContratoAluguel buscarContrato(int id) {
+            return null;
+        }
 
         @Override
-        public java.util.List<entidades.ContratoAluguel> listarContratos() { return java.util.List.of(); }
+        public List<ContratoAluguel> listarContratos() {
+            return List.of();
+        }
 
         @Override
-        public boolean finalizarContrato(int id) { return false; }
+        public boolean finalizarContrato(int id) {
+            return false;
+        }
 
         @Override
-        public boolean cancelarContrato(int id) { return false; }
+        public boolean cancelarContrato(int id) {
+            return false;
+        }
 
         @Override
-        public boolean quitarMultaContrato(int idContrato) { return false; }
+        public boolean quitarMultaContrato(int idContrato) {
+            return false;
+        }
 
         @Override
-        public int gerarProximoId() { return 1; }
+        public int gerarProximoId() {
+            return 1;
+        }
 
         @Override
-        public boolean clientePossuiMultaPendente(int idCliente) { return true; }
+        public boolean clientePossuiMultaPendente(int idCliente) {
+            return true; 
+        }
 
         @Override
-        public boolean clientePossuiHistorico(int idCliente) { return true; }
+        public boolean clientePossuiHistorico(int idCliente) {
+            return true;
+        }
 
         @Override
-        public double calcularMulta(long diasAtraso, double taxaDiaria) { return 0; }
+        public double calcularMulta(long diasAtraso, double taxaDiaria) {
+            return 0;
+        }
+
+
+        @Override
+        public List<ContratoAluguel> filtrarPorId(String pesquisado) {
+            return List.of();
+        }
+
+        @Override
+        public List<ContratoAluguel> filtrarPorItem(String pesquisado) {
+            return List.of();
+        }
+
+        @Override
+        public List<ContratoAluguel> filtrarPorDataRetirada(String pesquisado) {
+            return List.of();
+        }
+
+        @Override
+        public List<ContratoAluguel> filtrarPorDataDevolucao(String pesquisado) {
+            return List.of();
+        }
+
+        @Override
+        public List<ContratoAluguel> filtrarPorStatus(String pesquisado) {
+            return List.of();
+        }
+
+        @Override
+        public List<ContratoAluguel> filtrarPorValorTotal(String pesquisado) {
+            return List.of();
+        }
+
+        @Override
+        public List<ContratoAluguel> filtrarPorValorMulta(String pesquisado) {
+            return List.of();
+        }
     }
 }

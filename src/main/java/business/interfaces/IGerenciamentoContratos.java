@@ -26,5 +26,19 @@ public interface IGerenciamentoContratos {
     public boolean clientePossuiHistorico(int idCliente);
 
     public double calcularMulta(long diasAtraso, double taxaDiaria);
+    
+    public abstract List<ContratoAluguel> filtrarPorId(String pesquisado);
+    
+    public abstract List<ContratoAluguel> filtrarPorItem(String pesquisado);
+    
+    public abstract List<ContratoAluguel> filtrarPorDataRetirada(String pesquisado);
+    
+    public abstract List<ContratoAluguel> filtrarPorDataDevolucao(String pesquisado);
+    
+    public abstract List<ContratoAluguel> filtrarPorStatus(String pesquisado);
+    
+    public abstract List<ContratoAluguel> filtrarPorValorTotal(String pesquisado);
+    
+    public abstract List<ContratoAluguel> filtrarPorValorMulta(String pesquisado);
 
 }
