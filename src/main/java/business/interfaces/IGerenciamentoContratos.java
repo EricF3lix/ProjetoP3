@@ -27,18 +27,18 @@ public interface IGerenciamentoContratos {
 
     public double calcularMulta(long diasAtraso, double taxaDiaria);
     
-    public List<ContratoAluguel> filtrarPorId(String pesquisado);
+    public abstract List<ContratoAluguel> filtrarPorId(String pesquisado);
     
-    public List<ContratoAluguel> filtrarPorItem(String pesquisado);
+    public abstract List<ContratoAluguel> filtrarPorItem(String pesquisado);
     
-    public List<ContratoAluguel> filtrarPorDataRetirada(String pesquisado);
+    public abstract List<ContratoAluguel> filtrarPorDataRetirada(String pesquisado);
     
-    public List<ContratoAluguel> filtrarPorDataDevolucao(String pesquisado);
+    public abstract List<ContratoAluguel> filtrarPorDataDevolucao(String pesquisado);
     
-    public List<ContratoAluguel> filtrarPorStatus(String pesquisado);
+    public abstract List<ContratoAluguel> filtrarPorStatus(String pesquisado);
     
-    public List<ContratoAluguel> filtrarPorValorTotal(String pesquisado);
+    public abstract List<ContratoAluguel> filtrarPorValorTotal(String pesquisado);
     
-    public List<ContratoAluguel> filtrarPorValorMulta(String pesquisado);
+    public abstract List<ContratoAluguel> filtrarPorValorMulta(String pesquisado);
 
 }
