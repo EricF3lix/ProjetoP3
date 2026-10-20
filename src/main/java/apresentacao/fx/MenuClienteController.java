@@ -2,7 +2,6 @@ package apresentacao.fx;
 
 
 import java.util.List;
-import java.util.Optional;
 
 import entidades.Cliente;
 import entidades.ContratoAluguel;
@@ -15,16 +14,10 @@ import javafx.scene.control.TableView;
 
 public class MenuClienteController extends MenuController {
 
-	private static final String NENHUM_ITEM = "Nenhum item disponível no momento";
 	private static final String NENHUM_ALUGUEL = "Nenhum aluguel ativo";
 	private static final String NENHUM_CONTRATO = "Nenhum contrato encontrado";
 	private static final String NENHUMA_MULTA = "Nenhuma multa pendente";
-	private static final String SEM_MULTAS_PENDENTES = "Você não possui multas pendentes";
-	private static final String CONTRATO_NAO_ENCONTRADO = "Contrato não encontrado";
-	private static final String CONTRATO_SEM_MULTA = "Este contrato não possui multa pendente";
-	private static final String MULTA_PAGA = "Multa paga com sucesso!";
-	private static final String ERRO_PAGAMENTO = "Erro ao processar pagamento";
-	private static final String ID_CONTRATO = "Digite o ID do contrato para quitar a multa: ";
+
 
 	@FXML private TableView<Item> tabelaItens;
 	@FXML private TableView<ContratoAluguel> tabelaContratos;
