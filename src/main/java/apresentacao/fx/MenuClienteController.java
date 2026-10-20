@@ -14,10 +14,6 @@ import javafx.scene.control.TableView;
 
 public class MenuClienteController extends MenuController {
 
-	private static final String NENHUM_ALUGUEL = "Nenhum aluguel ativo";
-	private static final String NENHUM_CONTRATO = "Nenhum contrato encontrado";
-	private static final String NENHUMA_MULTA = "Nenhuma multa pendente";
-
 
 	@FXML private TableView<Item> tabelaItens;
 	@FXML private TableView<ContratoAluguel> tabelaContratos;
@@ -105,7 +101,7 @@ public class MenuClienteController extends MenuController {
 	    }
 	}
 	
-	private void exibirContratos(List<ContratoAluguel> lista, String msgVazio) {
+	private void exibirContratos(List<ContratoAluguel> lista) {
 		mostrarTabelas(true);
 		tabelaContratos.setItems(FXCollections.observableArrayList(lista));
 		}
@@ -125,7 +121,7 @@ public class MenuClienteController extends MenuController {
 				.filter(contrato -> contrato.getCliente().getId() == cliente.getId() && contrato.estaAtivo())
 				.toList();
 
-		exibirContratos(contratosAtivos, NENHUM_ALUGUEL);
+		exibirContratos(contratosAtivos);
 	}
 
 	@FXML
@@ -134,12 +130,12 @@ public class MenuClienteController extends MenuController {
 				.filter(contrato -> contrato.getCliente().getId() == cliente.getId())
 				.toList();
 
-		exibirContratos(historico, NENHUM_CONTRATO);
+		exibirContratos(historico);
 	}
 
 	@FXML
 	private void multasPendentes() {
-		exibirContratos(buscarMultasPendentes(), NENHUMA_MULTA);
+		exibirContratos(buscarMultasPendentes());
 	}
 
 
