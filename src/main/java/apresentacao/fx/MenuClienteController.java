@@ -48,8 +48,8 @@ public class MenuClienteController extends MenuController {
 		
 		filtroTipo.valueProperty().addListener((obs, old, novo) -> {
 		    switch (novo) {
-		        case "Itens"      -> filtroCampo.getItems().setAll("ID", "Nome", "Categoria", "Taxa");
-		        case "Aluguéis"-> filtroCampo.getItems().setAll("ID", "Item", "Data de Retirada", "Data de Devolução", "Status", "Valor total", "Valor multa");
+		        case "Itens"      -> { filtroCampo.getItems().setAll("ID", "Nome", "Categoria", "Taxa"); listarItensDisponiveis(); }
+		        case "Aluguéis"   -> { filtroCampo.getItems().setAll("ID", "Item", "Data de Retirada", "Data de Devolução", "Status", "Valor total", "Valor multa"); historicoAlugueis(); }
 		    }
 		    filtroCampo.getSelectionModel().clearSelection();
 		});
@@ -74,6 +74,7 @@ public class MenuClienteController extends MenuController {
 	}
 	
 	private void pesquisaItens() {
+		mostrarTabelas(false);
 	    String pesquisado = pesquisa.getText();
 	    String campo = filtroCampo.getValue();
 
@@ -90,7 +91,26 @@ public class MenuClienteController extends MenuController {
 	    }
 	}
 	
-	private void pesquisaContratos() {}
+	private void pesquisaContratos() {
+		mostrarTabelas(true);
+	    String pesquisado = pesquisa.getText();
+	    String campo = filtroCampo.getValue();
+
+	    if (campo == null) {
+	        tabelaContratos.getItems().setAll(sistema.listarContratos());
+	        return;
+	    }
+
+	    switch (campo) {
+	        case "ID" -> tabelaContratos.getItems().setAll(sistema.filtraIDContrato(pesquisado));
+	        case "Item" -> tabelaContratos.getItems().setAll(sistema.filtraItemContrato(pesquisado));
+	        case "Data de Retirada" -> tabelaContratos.getItems().setAll(sistema.filtraDataRetiradaContrato(pesquisado));
+	        case "Data de Devolução" -> tabelaContratos.getItems().setAll(sistema.filtraDataDevolucaoContrato(pesquisado));
+	        case "Status" -> tabelaContratos.getItems().setAll(sistema.filtraStatusContrato(pesquisado));
+	        case "Valor total" -> tabelaContratos.getItems().setAll(sistema.filtraValorTotalContrato(pesquisado));
+	        case "Valor multa" -> tabelaContratos.getItems().setAll(sistema.filtraValorMultaContrato(pesquisado));
+	    }
+	}
 	
 	private void exibirContratos(List<ContratoAluguel> lista, String msgVazio) {
 		mostrarTabelas(true);
@@ -99,9 +119,7 @@ public class MenuClienteController extends MenuController {
 	
 	@FXML
 	private void listarItensDisponiveis() {
-
 		mostrarTabelas(false);
-
 		List<Item> disponiveis = sistema.listarItens().stream()
 				.filter(Item::estaDisponivel)
 				.toList();
@@ -142,6 +160,9 @@ public class MenuClienteController extends MenuController {
 	
 	@FXML
 	private void aoLimparPesquisa() {
-		
+	    pesquisa.clear();
+	    filtroCampo.getSelectionModel().clearSelection();
+	    tabelaItens.getItems().clear();
+	    tabelaContratos.getItems().clear();
 	}
 }

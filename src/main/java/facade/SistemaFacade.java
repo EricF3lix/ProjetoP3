@@ -129,6 +129,34 @@ public class SistemaFacade {
         return gerenciamentoContratos.calcularMulta(diasAtraso, taxaDiaria);
 
     }
+    
+    public List<ContratoAluguel> filtraIDContrato(String pesquisado) {
+        return gerenciamentoContratos.filtrarPorId(pesquisado);
+    }
+
+    public List<ContratoAluguel> filtraItemContrato(String pesquisado) {
+        return gerenciamentoContratos.filtrarPorItem(pesquisado);
+    }
+
+    public List<ContratoAluguel> filtraDataRetiradaContrato(String pesquisado) {
+        return gerenciamentoContratos.filtrarPorDataRetirada(pesquisado);
+    }
+
+    public List<ContratoAluguel> filtraDataDevolucaoContrato(String pesquisado) {
+        return gerenciamentoContratos.filtrarPorDataDevolucao(pesquisado);
+    }
+
+    public List<ContratoAluguel> filtraStatusContrato(String pesquisado) {
+        return gerenciamentoContratos.filtrarPorStatus(pesquisado);
+    }
+
+    public List<ContratoAluguel> filtraValorTotalContrato(String pesquisado) {
+        return gerenciamentoContratos.filtrarPorValorTotal(pesquisado);
+    }
+
+    public List<ContratoAluguel> filtraValorMultaContrato(String pesquisado) {
+        return gerenciamentoContratos.filtrarPorValorMulta(pesquisado);
+    }
 
     // =========================================================================
     // ITENS
