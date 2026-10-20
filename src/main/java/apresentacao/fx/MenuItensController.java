@@ -58,7 +58,7 @@ public class MenuItensController extends MenuController {
     private final ObservableList<Item> listaItens = FXCollections.observableArrayList();
     private FilteredList<Item> listaFiltrada;
 
-    private static final NumberFormat MOEDA = NumberFormat.getCurrencyInstance(new Locale("pt", "BR"));
+    private static final NumberFormat MOEDA = NumberFormat.getCurrencyInstance(Locale.forLanguageTag("pt-BR"));
 
     @Override
     public String getTitulo() {
@@ -79,6 +79,7 @@ public class MenuItensController extends MenuController {
         carregarTabela();
     }
 
+    @SuppressWarnings("deprecation")
     private void configurarResponsividade() {
         if (tabela != null) {
             VBox.setVgrow(tabela, Priority.ALWAYS);
@@ -228,7 +229,9 @@ public class MenuItensController extends MenuController {
 
             boolean bateuId = String.valueOf(item.getId()).contains(termoFormatado);
             boolean bateuNome = item.getNome() != null && item.getNome().toLowerCase().contains(termoFormatado);
-            boolean bateuCategoria = item.getCategoria() != null && item.getCategoria().toLowerCase().contains(termoFormatado);
+            
+            String catTexto = item.getCategoria() != null ? String.valueOf(item.getCategoria()).toLowerCase() : "";
+            boolean bateuCategoria = catTexto.contains(termoFormatado);
 
             return switch (filtroSelecionado) {
                 case "ID" -> bateuId;
@@ -322,7 +325,9 @@ public class MenuItensController extends MenuController {
         grid.setPadding(new Insets(20, 20, 10, 10));
 
         TextField txtNome = new TextField(selecionado.getNome());
-        TextField txtCategoria = new TextField(selecionado.getCategoria());
+        String nomeCat = selecionado.getCategoria() != null ? String.valueOf(selecionado.getCategoria()) : "";
+        TextField txtCategoria = new TextField(nomeCat);
+        txtCategoria.setDisable(true);
         TextField txtTaxa = new TextField(String.valueOf(selecionado.getTaxaDiaria()));
         TextField txtEstado = new TextField(selecionado.getEstadoConservacao());
 
@@ -342,22 +347,20 @@ public class MenuItensController extends MenuController {
         if (res.isPresent() && res.get() == btnSalvar) {
             try {
                 String novoNome = txtNome.getText().trim();
-                String novaCat = txtCategoria.getText().trim();
                 double novaTaxa = Double.parseDouble(txtTaxa.getText().trim());
                 String novoEstado = txtEstado.getText().trim();
 
                 boolean atualizou = false;
                 try {
-                    var m = sistema.getClass().getMethod("atualizarItem", int.class, String.class, String.class, double.class, String.class);
-                    atualizou = (boolean) m.invoke(sistema, selecionado.getId(), novoNome, novaCat, novaTaxa, novoEstado);
+                    var m = sistema.getClass().getMethod("atualizarItem", Item.class);
+                    selecionado.setNome(novoNome);
+                    selecionado.setTaxaDiaria(novaTaxa);
+                    selecionado.setEstadoConservacao(novoEstado);
+                    atualizou = (boolean) m.invoke(sistema, selecionado);
                 } catch (NoSuchMethodException e1) {
                     try {
-                        var m = sistema.getClass().getMethod("atualizarItem", Item.class);
-                        selecionado.setNome(novoNome);
-                        selecionado.setCategoria(novaCat);
-                        selecionado.setTaxaDiaria(novaTaxa);
-                        selecionado.setEstadoConservacao(novoEstado);
-                        atualizou = (boolean) m.invoke(sistema, selecionado);
+                        var m = sistema.getClass().getMethod("atualizarItem", int.class, String.class, double.class, String.class);
+                        atualizou = (boolean) m.invoke(sistema, selecionado.getId(), novoNome, novaTaxa, novoEstado);
                     } catch (Exception e2) {
                         atualizou = false;
                     }
