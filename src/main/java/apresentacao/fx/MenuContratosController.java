@@ -9,49 +9,124 @@ import entidades.Cliente;
 import entidades.ContratoAluguel;
 import entidades.Item;
 import entidades.Usuario;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
+import javafx.geometry.Insets;
+import javafx.scene.control.ButtonBar.ButtonData;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.CheckBox;
+import javafx.scene.control.DatePicker;
+import javafx.scene.control.Dialog;
+import javafx.scene.control.Label;
 import javafx.scene.control.TableView;
+import javafx.scene.control.TextField;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.VBox;
 
 public class MenuContratosController extends MenuController {
 
     private static final String ID_CONTRATO = "Digite o ID do contrato: ";
     private static final String CONTRATO_NAO_ENCONTRADO = "Contrato não encontrado.";
 
-    @FXML private TableView<ContratoAluguel> tabela;
+    @FXML 
+    private TableView<ContratoAluguel> tabela;
 
     @Override
     protected String getTitulo() {
         return "Gerenciar Contratos";
     }
 
+    @FXML
+    public void initialize() {
+        configurarResponsividade();
+    }
+
     @Override
     protected void aoExibir() {
+        configurarResponsividade();
         configurarTabelaEPesquisa(tabela, this::fazPesquisa);
+        listarContratos();
+    }
+
+    @SuppressWarnings("deprecation")
+    private void configurarResponsividade() {
+        if (tabela != null) {
+            VBox.setVgrow(tabela, Priority.ALWAYS);
+            tabela.setMaxWidth(Double.MAX_VALUE);
+            tabela.setMaxHeight(Double.MAX_VALUE);
+            tabela.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+        }
     }
 
     @FXML
     private void registrarAluguel() {
-        Optional<Integer> idCliente = pedirInteiro("ID do cliente:");
-        if (idCliente.isEmpty()) return;
+        if (sistema == null) return;
 
-        Usuario usuario = sistema.buscarUsuario(idCliente.get());
+        Dialog<ButtonType> dialog = new Dialog<>();
+        dialog.setTitle("Registrar Aluguel");
+        dialog.setHeaderText("Preencha os dados do novo contrato de aluguel");
+
+        ButtonType btnConfirmar = new ButtonType("Registrar", ButtonData.OK_DONE);
+        dialog.getDialogPane().getButtonTypes().addAll(btnConfirmar, ButtonType.CANCEL);
+
+        GridPane grid = new GridPane();
+        grid.setHgap(10);
+        grid.setVgap(12);
+        grid.setPadding(new Insets(20, 20, 10, 10));
+
+        TextField txtIdCliente = new TextField();
+        txtIdCliente.setPromptText("Ex: 1");
+
+        TextField txtIdItem = new TextField();
+        txtIdItem.setPromptText("Ex: 10");
+
+        DatePicker dpRetirada = new DatePicker(LocalDate.now());
+        DatePicker dpDevolucao = new DatePicker(LocalDate.now().plusDays(1));
+
+        grid.add(new Label("ID do Cliente:"), 0, 0);
+        grid.add(txtIdCliente, 1, 0);
+        grid.add(new Label("ID do Item:"), 0, 1);
+        grid.add(txtIdItem, 1, 1);
+        grid.add(new Label("Data de Retirada:"), 0, 2);
+        grid.add(dpRetirada, 1, 2);
+        grid.add(new Label("Devolução Prevista:"), 0, 3);
+        grid.add(dpDevolucao, 1, 3);
+
+        dialog.getDialogPane().setContent(grid);
+        Platform.runLater(txtIdCliente::requestFocus);
+
+        Optional<ButtonType> resultado = dialog.showAndWait();
+        if (resultado.isEmpty() || resultado.get() != btnConfirmar) {
+            return;
+        }
+
+        int idCliente;
+        int idItem;
+
+        try {
+            idCliente = Integer.parseInt(txtIdCliente.getText().trim());
+            idItem = Integer.parseInt(txtIdItem.getText().trim());
+        } catch (NumberFormatException e) {
+            erro("Os IDs do cliente e do item devem ser numéricos.");
+            return;
+        }
+
+        Usuario usuario = sistema.buscarUsuario(idCliente);
         if (!(usuario instanceof Cliente cliente)) {
-            erro("Cliente não encontrado");
+            erro("Cliente não encontrado.");
             return;
         }
 
         if (sistema.clientePossuiMultaPendente(cliente.getId())) {
-            erro("Cliente possui multa pendente e não pode realizar novos aluguéis");
+            erro("Cliente possui multa pendente e não pode realizar novos aluguéis.");
             return;
         }
 
-        Optional<Integer> idItem = pedirInteiro("ID do item:");
-        if (idItem.isEmpty()) return;
-
-        Item item = sistema.buscarItem(idItem.get());
+        Item item = sistema.buscarItem(idItem);
         if (item == null) {
-            erro("Item não encontrado");
+            erro("Item não encontrado.");
             return;
         }
 
@@ -60,18 +135,17 @@ public class MenuContratosController extends MenuController {
             return;
         }
 
-        Optional<String> dataRetirada = pedirData("Data de retirada");
-        if (dataRetirada.isEmpty()) return;
+        LocalDate dataRet = dpRetirada.getValue();
+        LocalDate dataDev = dpDevolucao.getValue();
 
-        Optional<String> dataDevolucao = pedirData("Data de devolução prevista");
-        if (dataDevolucao.isEmpty()) return;
+        if (dataRet == null || dataDev == null) {
+            erro("Por favor, selecione as duas datas no calendário.");
+            return;
+        }
 
-        long quantidadeDias = ChronoUnit.DAYS.between(
-                LocalDate.parse(dataRetirada.get()),
-                LocalDate.parse(dataDevolucao.get()));
-
+        long quantidadeDias = ChronoUnit.DAYS.between(dataRet, dataDev);
         if (quantidadeDias <= 0) {
-            erro("A data de devolução deve ser posterior à data de retirada");
+            erro("A data de devolução deve ser posterior à data de retirada.");
             return;
         }
 
@@ -79,16 +153,16 @@ public class MenuContratosController extends MenuController {
         int idContrato = sistema.gerarProximoIdContrato();
 
         ContratoAluguel contrato = new ContratoAluguel(
-                idContrato, cliente, item, dataRetirada.get(), dataDevolucao.get(), valorTotal);
+                idContrato, cliente, item, dataRet.toString(), dataDev.toString(), valorTotal);
 
         if (!sistema.cadastrarContrato(contrato)) {
-            erro("Erro ao registrar aluguel");
+            erro("Erro ao registrar aluguel.");
             return;
         }
 
         item.alugar();
         info("Aluguel registrado com sucesso! ID do Contrato: " + idContrato);
-        mostraContrato(idContrato);
+        listarContratos();
     }
 
     @FXML
@@ -97,14 +171,21 @@ public class MenuContratosController extends MenuController {
     }
 
     private void fazPesquisa(String pesquisado) {
+        if (pesquisado == null || pesquisado.trim().isEmpty()) {
+            listarContratos();
+            return;
+        }
         List<ContratoAluguel> filtrados = sistema.filtrarContratos(pesquisado);
-        tabela.setItems(FXCollections.observableArrayList(filtrados));
+        if (filtrados != null) {
+            tabela.setItems(FXCollections.observableArrayList(filtrados));
+        }
     }
 
     @FXML
     private void listarContratos() {
+        if (sistema == null || tabela == null) return;
         List<ContratoAluguel> contratos = sistema.listarContratos();
-        if (!contratos.isEmpty()) {
+        if (contratos != null) {
             tabela.setItems(FXCollections.observableArrayList(contratos));
         }
     }
@@ -119,13 +200,51 @@ public class MenuContratosController extends MenuController {
             return;
         }
 
-        Optional<String> dataReal = pedirData("Data real da devolução");
-        if (dataReal.isEmpty()) return;
+        Dialog<ButtonType> dialog = new Dialog<>();
+        dialog.setTitle("Finalizar Contrato");
+        dialog.setHeaderText("Encerramento do Contrato ID: " + contrato.getId());
+
+        ButtonType btnFinalizar = new ButtonType("Finalizar", ButtonData.OK_DONE);
+        dialog.getDialogPane().getButtonTypes().addAll(btnFinalizar, ButtonType.CANCEL);
+
+        GridPane grid = new GridPane();
+        grid.setHgap(10);
+        grid.setVgap(12);
+        grid.setPadding(new Insets(20, 20, 10, 10));
+
+        DatePicker dpReal = new DatePicker(LocalDate.now());
+        dpReal.setDisable(true);
+
+        CheckBox chkHoje = new CheckBox("Data de hoje (" + LocalDate.now() + ")");
+        chkHoje.setSelected(true);
+
+        chkHoje.selectedProperty().addListener((obs, antigo, selecionado) -> {
+            dpReal.setDisable(selecionado);
+            if (selecionado) {
+                dpReal.setValue(LocalDate.now());
+            }
+        });
+
+        grid.add(chkHoje, 0, 0, 2, 1);
+        grid.add(new Label("Data real de devolução:"), 0, 1);
+        grid.add(dpReal, 1, 1);
+
+        dialog.getDialogPane().setContent(grid);
+
+        Optional<ButtonType> resultado = dialog.showAndWait();
+        if (resultado.isEmpty() || resultado.get() != btnFinalizar) {
+            return;
+        }
+
+        LocalDate real = dpReal.getValue();
+        if (real == null) {
+            erro("Selecione uma data válida.");
+            return;
+        }
 
         LocalDate prevista = LocalDate.parse(contrato.getDataDevolucaoPrevista());
-        LocalDate real = LocalDate.parse(dataReal.get());
+        contrato.setDataDevolucaoReal(real.toString());
 
-        contrato.setDataDevolucaoReal(dataReal.get());
         long diasAtraso = ChronoUnit.DAYS.between(prevista, real);
 
         if (diasAtraso > 0) {
@@ -140,7 +259,7 @@ public class MenuContratosController extends MenuController {
         contrato.getItem().devolver();
 
         if (sistema.finalizarContrato(contrato.getId())) {
-            mostraContrato(contrato.getId());
+            listarContratos();
         } else {
             erro("Erro ao finalizar contrato");
         }
@@ -163,7 +282,7 @@ public class MenuContratosController extends MenuController {
         if (sistema.cancelarContrato(contrato.getId())) {
             contrato.getItem().devolver();
             info("Contrato cancelado com sucesso. Item devolvido ao estoque.");
-            mostraContrato(contrato.getId());
+            listarContratos();
         } else {
             erro("Erro ao cancelar contrato.");
         }
