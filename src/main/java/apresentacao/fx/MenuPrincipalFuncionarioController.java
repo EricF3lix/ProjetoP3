@@ -34,18 +34,6 @@ public class MenuPrincipalFuncionarioController extends MenuController {
         if (lblBemVindo != null) {
             lblBemVindo.setText("Bem-vindo(a), " + nome);
 
-            // Dispara a saudação uma única vez na sessão
-            Platform.runLater(() -> {
-                Pane container = encontrarContainerRaiz();
-                if (container != null) {
-                    SaudacaoHelper.exibir(
-                        container,
-                        "Bem-vindo(a)!",
-                        "Painel de atendimento pronto para utilização.",
-                        "👤"
-                    );
-                }
-            });
         }
     }
 
