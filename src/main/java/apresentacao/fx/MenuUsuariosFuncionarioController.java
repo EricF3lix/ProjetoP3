@@ -110,6 +110,7 @@ public class MenuUsuariosFuncionarioController extends MenuController {
     @FXML
     protected Button btnVoltar;
 
+    protected ComboBox<String> cbTipoCadastroForm;
     protected String tipoCadastroAtual = "Cliente";
     protected ObservableList<Usuario> listaUsuarios = FXCollections.observableArrayList();
     protected FilteredList<Usuario> listaFiltrada;
@@ -125,6 +126,7 @@ public class MenuUsuariosFuncionarioController extends MenuController {
         configurarColunasTabela();
         configurarFiltroPesquisa();
         removerRedundanciaBusca();
+        configurarFormularioUnificado();
 
         Platform.runLater(() -> {
             exibirPainel(painelTabela);
@@ -134,10 +136,6 @@ public class MenuUsuariosFuncionarioController extends MenuController {
         });
     }
 
-    /**
-     * Issue #995: Configura a tabela e os painéis para expandirem fluidamente
-     * em fullscreen e alterações de resolução.
-     */
     private void configurarResponsividade() {
         if (painelConteudo != null) {
             painelConteudo.setMaxWidth(Double.MAX_VALUE);
@@ -159,15 +157,41 @@ public class MenuUsuariosFuncionarioController extends MenuController {
         }
     }
 
-    /**
-     * Issue #996: Oculta o botão redundante de busca por ID já que a barra de pesquisa
-     * rápida atende a busca por ID, Nome, E-mail e CPF.
-     */
     private void removerRedundanciaBusca() {
         if (btnBuscarUsuario != null) {
             btnBuscarUsuario.setVisible(false);
             btnBuscarUsuario.setManaged(false);
         }
+    }
+
+    protected void configurarFormularioUnificado() {
+        if (btnCadastrarCliente != null) {
+            btnCadastrarCliente.setText("Novo Usuário");
+        }
+
+        if (painelCadastro != null && cbTipoCadastroForm == null) {
+            cbTipoCadastroForm = new ComboBox<>(obterOpcoesCadastro());
+            cbTipoCadastroForm.setValue("Cliente");
+            cbTipoCadastroForm.setMaxWidth(Double.MAX_VALUE);
+
+            cbTipoCadastroForm.valueProperty().addListener((obs, antigo, novo) -> {
+                if (novo != null) {
+                    this.tipoCadastroAtual = novo;
+                    if (lblCadTitulo != null) lblCadTitulo.setText("Cadastrar " + novo);
+                    if (btnCadSalvar != null) btnCadSalvar.setText("Salvar " + novo);
+                }
+            });
+
+            int indice = 0;
+            if (lblCadTitulo != null && painelCadastro.getChildren().contains(lblCadTitulo)) {
+                indice = painelCadastro.getChildren().indexOf(lblCadTitulo) + 1;
+            }
+            painelCadastro.getChildren().add(indice, cbTipoCadastroForm);
+        }
+    }
+
+    protected ObservableList<String> obterOpcoesCadastro() {
+        return FXCollections.observableArrayList("Cliente");
     }
 
     private void configurarColunasTabela() {
@@ -179,21 +203,6 @@ public class MenuUsuariosFuncionarioController extends MenuController {
                 new SimpleStringProperty(dado.getValue().getClass().getSimpleName()));
         }
 
-        // Issue #996: Adiciona a coluna CPF na TableView caso ainda não exista no FXML
-        if (tabelaUsuarios != null) {
-            boolean jaTemColCpf = tabelaUsuarios.getColumns().stream()
-                .anyMatch(c -> "CPF".equalsIgnoreCase(c.getText()));
-
-            if (!jaTemColCpf) {
-                TableColumn<Usuario, String> colCpf = new TableColumn<>("CPF");
-                colCpf.setCellValueFactory(new PropertyValueFactory<>("cpf"));
-                colCpf.setStyle("-fx-alignment: CENTER-LEFT;");
-                int posicao = Math.min(3, tabelaUsuarios.getColumns().size());
-                tabelaUsuarios.getColumns().add(posicao, colCpf);
-            }
-        }
-
-        // Badge visual de status (● Ativo em verde / ● Inativo em vermelho)
         if (colAtivo != null) {
             colAtivo.setCellValueFactory(dado ->
                 new SimpleStringProperty(dado.getValue().isAtivo() ? "Sim" : "Não"));
@@ -232,9 +241,6 @@ public class MenuUsuariosFuncionarioController extends MenuController {
         }
     }
 
-    /**
-     * Issue #996: Adiciona suporte a filtros por E-mail e CPF.
-     */
     private void configurarFiltroPesquisa() {
         if (cbFiltro != null) {
             cbFiltro.setItems(FXCollections.observableArrayList("Todos", "Nome", "ID", "E-mail", "CPF"));
@@ -325,13 +331,16 @@ public class MenuUsuariosFuncionarioController extends MenuController {
 
     @FXML
     public void aoCadastrarCliente(ActionEvent event) {
-        prepararFormularioCadastro("Cliente");
+        prepararFormularioCadastro(tipoCadastroAtual);
     }
 
     protected void prepararFormularioCadastro(String tipo) {
         this.tipoCadastroAtual = tipo;
-        lblCadTitulo.setText("Cadastrar " + tipo);
-        btnCadSalvar.setText("Salvar " + tipo);
+        if (cbTipoCadastroForm != null) {
+            cbTipoCadastroForm.setValue(tipo);
+        }
+        if (lblCadTitulo != null) lblCadTitulo.setText("Cadastrar " + tipo);
+        if (btnCadSalvar != null) btnCadSalvar.setText("Salvar " + tipo);
         txtCadNome.clear();
         txtCadEmail.clear();
         txtCadCpf.clear();

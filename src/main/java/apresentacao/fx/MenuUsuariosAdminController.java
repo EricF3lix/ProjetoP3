@@ -1,6 +1,8 @@
 package apresentacao.fx;
 
 import entidades.Usuario;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
@@ -60,6 +62,28 @@ public class MenuUsuariosAdminController extends MenuUsuariosFuncionarioControll
     }
 
     @Override
+    public void initialize() {
+        super.initialize();
+        removerBotoesCadastroRedundantes();
+    }
+
+    private void removerBotoesCadastroRedundantes() {
+        if (btnCadastrarFuncionario != null) {
+            btnCadastrarFuncionario.setVisible(false);
+            btnCadastrarFuncionario.setManaged(false);
+        }
+        if (btnCadastrarAdmin != null) {
+            btnCadastrarAdmin.setVisible(false);
+            btnCadastrarAdmin.setManaged(false);
+        }
+    }
+
+    @Override
+    protected ObservableList<String> obterOpcoesCadastro() {
+        return FXCollections.observableArrayList("Cliente", "Funcionário", "Administrador");
+    }
+
+    @Override
     protected void exibirPainel(Node painelDesejado) {
         super.exibirPainel(painelDesejado);
         if (painelAtualizar != null) painelAtualizar.setVisible(painelDesejado == painelAtualizar);
@@ -87,7 +111,6 @@ public class MenuUsuariosAdminController extends MenuUsuariosFuncionarioControll
         txtAtualizarSenha.clear();
         lblAtualizarStatus.setText("");
 
-        // Pega a linha selecionada na TableView herdada
         Usuario selecionado = (tabelaUsuarios != null) ? tabelaUsuarios.getSelectionModel().getSelectedItem() : null;
 
         if (selecionado != null) {
@@ -175,7 +198,6 @@ public class MenuUsuariosAdminController extends MenuUsuariosFuncionarioControll
         txtDesativarId.clear();
         lblDesativarStatus.setText("");
 
-        // Pega a linha selecionada na TableView herdada
         Usuario selecionado = (tabelaUsuarios != null) ? tabelaUsuarios.getSelectionModel().getSelectedItem() : null;
 
         if (selecionado != null) {
@@ -200,7 +222,6 @@ public class MenuUsuariosAdminController extends MenuUsuariosFuncionarioControll
                 return;
             }
 
-            // Se estiver ativo, desativa. Se já estiver inativo, tenta reativar (se existir método no backend) ou avisa
             if (usuario.isAtivo()) {
                 if (sistema.desativaUsuario(id)) {
                     lblDesativarStatus.setText("Usuário desativado com sucesso!");
@@ -212,10 +233,8 @@ public class MenuUsuariosAdminController extends MenuUsuariosFuncionarioControll
                     lblDesativarStatus.setStyle("-fx-text-fill: red;");
                 }
             } else {
-                // Tenta ativar se houver método no facade, senão avisa o status
                 boolean reativado = false;
                 try {
-                    // Verifica se existe método ativaUsuario no SistemaFacade por reflexão segura
                     var metodoAtivar = sistema.getClass().getMethod("ativaUsuario", int.class);
                     reativado = (boolean) metodoAtivar.invoke(sistema, id);
                 } catch (NoSuchMethodException ignored) {
