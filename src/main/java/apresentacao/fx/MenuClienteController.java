@@ -40,10 +40,8 @@ public class MenuClienteController extends MenuController {
 		tabelaContratos.setPlaceholder(new Label ("Você não tem aluguéis ativos"));
 		
 		filtroTipo.valueProperty().addListener((obs, old, novo) -> {
-		    switch (novo) {
-		        case "Itens"      -> { filtroCampo.getItems().setAll("ID", "Nome", "Categoria", "Taxa"); listarItensDisponiveis(); }
-		        case "Aluguéis"   -> { filtroCampo.getItems().setAll("ID", "Item", "Data de Retirada", "Data de Devolução", "Status", "Valor total", "Valor multa"); historicoAlugueis(); }
-		    }
+		    if (novo.equals("Itens")) { filtroCampo.getItems().setAll("ID", "Nome", "Categoria", "Taxa"); listarItensDisponiveis(); }
+		    else if (novo.equals("Aluguéis")) { filtroCampo.getItems().setAll("ID", "Item", "Data de Retirada", "Data de Devolução", "Status", "Valor total", "Valor multa"); historicoAlugueis(); }	    
 		    filtroCampo.getSelectionModel().clearSelection();
 		});
 		
