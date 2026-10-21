@@ -14,14 +14,14 @@
 
 <AnchorPane prefHeight="660.0" prefWidth="950.0" style="-fx-background-color: #F5F5F7;" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml" fx:controller="apresentacao.fx.MenuFornecedoresController">
    <children>
-      <!-- Cabecalho Moderno -->
+      
       <Label layoutX="40.0" layoutY="25.0" style="-fx-font-family: -apple-system, 'SF Pro Display', 'Segoe UI', sans-serif; -fx-font-weight: 900; -fx-font-size: 26px; -fx-text-fill: #1d1d1f;" text="Gerenciar Fornecedores" />
       <Label layoutX="40.0" layoutY="58.0" style="-fx-font-family: -apple-system, 'SF Pro Text', 'Segoe UI', sans-serif; -fx-font-size: 14px; -fx-text-fill: #86868b;" text="Painel de Parceiros e Fornecedores" />
 
-      <!-- Menu Lateral Estilo Apple -->
+      
       <VBox layoutX="40.0" layoutY="100.0" prefWidth="250.0" spacing="12.0">
          <children>
-            <!-- Barra de Pesquisa Integrada -->
+           
             <TextField fx:id="pesquisa" promptText="Busque por Nome/CNPJ/ID" style="-fx-background-color: #e5e5ea; -fx-background-radius: 10px; -fx-padding: 10px; -fx-font-size: 13px;" />
             
             <Pane prefHeight="2.0" />
@@ -30,7 +30,6 @@
             
             <Separator style="-fx-padding: 5 0 5 0;" />
             
-            <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#buscarFornecedor" prefHeight="38.0" style="-fx-background-color: #ffffff; -fx-background-radius: 10px; -fx-border-color: #d1d1d6; -fx-border-radius: 10px; -fx-text-fill: #1d1d1f; -fx-font-weight: bold; -fx-cursor: hand; -fx-font-size: 13px;" text="Buscar Fornecedor por ID" />
             <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#listarFornecedores" prefHeight="38.0" style="-fx-background-color: #ffffff; -fx-background-radius: 10px; -fx-border-color: #d1d1d6; -fx-border-radius: 10px; -fx-text-fill: #1d1d1f; -fx-font-weight: bold; -fx-cursor: hand; -fx-font-size: 13px;" text="Listar todos os Fornecedores" />
             <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#atualizarFornecedor" prefHeight="38.0" style="-fx-background-color: #ffffff; -fx-background-radius: 10px; -fx-border-color: #d1d1d6; -fx-border-radius: 10px; -fx-text-fill: #1d1d1f; -fx-font-weight: bold; -fx-cursor: hand; -fx-font-size: 13px;" text="Atualizar Fornecedor" />
             <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#desativarFornecedor" prefHeight="38.0" style="-fx-background-color: #fff0f0; -fx-background-radius: 10px; -fx-border-color: #ffcccc; -fx-border-radius: 10px; -fx-text-fill: #ff3b30; -fx-font-weight: bold; -fx-cursor: hand; -fx-font-size: 13px;" text="Desativar Fornecedor" />
@@ -40,7 +39,7 @@
          </children>
       </VBox>
 
-      <!-- Cartão Dinâmico de Conteúdo -->
+      
       <AnchorPane layoutX="320.0" layoutY="100.0" prefHeight="520.0" prefWidth="590.0" style="-fx-background-color: #ffffff; -fx-background-radius: 16px; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 12, 0, 2, 6);">
          <children>
             <VBox spacing="15.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
