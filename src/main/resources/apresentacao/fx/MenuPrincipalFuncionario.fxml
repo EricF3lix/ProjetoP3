@@ -3,61 +3,169 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.control.Separator?>
 <?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.shape.Circle?>
+<?import org.kordamp.ikonli.javafx.FontIcon?>
 
-<StackPane prefHeight="660.0" prefWidth="950.0" style="-fx-background-color: #F5F5F7;" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="apresentacao.fx.MenuPrincipalFuncionarioController">
-   <children>
-      <VBox alignment="TOP_CENTER" maxHeight="640.0" maxWidth="450.0" spacing="12.0" style="-fx-background-color: #ffffff; -fx-background-radius: 20px; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 25, 0, 0, 8);">
-         <padding>
-            <Insets bottom="30.0" left="40.0" right="40.0" top="30.0" />
-         </padding>
-         <children>
-            <HBox alignment="CENTER" spacing="12.0">
-               <children>
-                  <StackPane prefHeight="45.0" prefWidth="45.0">
-                     <children>
-                        <Circle fill="#34c759" radius="22.5" />
-                        <Label style="-fx-font-family: -apple-system, 'SF Pro Text', sans-serif; -fx-font-weight: bold; -fx-font-size: 15px; -fx-text-fill: white;" text="FC" />
-                     </children>
-                  </StackPane>
-                  <VBox alignment="CENTER_LEFT" spacing="2.0">
-                     <children>
-                        <Label style="-fx-font-family: -apple-system, 'SF Pro Text', sans-serif; -fx-font-weight: bold; -fx-font-size: 14px; -fx-text-fill: #1d1d1f;" text="Funcionário" />
-                        <Label fx:id="lblBemVindo" style="-fx-font-family: -apple-system, 'SF Pro Text', 'Segoe UI', sans-serif; -fx-font-size: 13px; -fx-text-fill: #86868b;" text="Bem-vindo(a)" />
-                     </children>
-                  </VBox>
-               </children>
-               <VBox.margin>
-                  <Insets bottom="5.0" />
-               </VBox.margin>
-            </HBox>
+<StackPane prefHeight="640" prefWidth="1027" style="-fx-background-color: #f3f4f6; -fx-font-family: 'Inter', 'Segoe UI', 'System';" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="apresentacao.fx.MenuPrincipalFuncionarioController">
 
-            <Separator style="-fx-padding: 0 0 5 0;" />
-            
-            <!-- Botões de Navegação Principal -->
-            <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#abrirUsuarios" prefHeight="42.0" style="-fx-background-color: #F2F2F7; -fx-background-radius: 12px; -fx-text-fill: #1d1d1f; -fx-font-weight: bold; -fx-font-size: 14px; -fx-cursor: hand;" text="Usuários" />
-            
-            <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#abrirItens" prefHeight="42.0" style="-fx-background-color: #F2F2F7; -fx-background-radius: 12px; -fx-text-fill: #1d1d1f; -fx-font-weight: bold; -fx-font-size: 14px; -fx-cursor: hand;" text="Itens" />
-            
-            <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#abrirCategorias" prefHeight="42.0" style="-fx-background-color: #F2F2F7; -fx-background-radius: 12px; -fx-text-fill: #1d1d1f; -fx-font-weight: bold; -fx-font-size: 14px; -fx-cursor: hand;" text="Categorias" />
-            
-            <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#abrirFornecedores" prefHeight="42.0" style="-fx-background-color: #F2F2F7; -fx-background-radius: 12px; -fx-text-fill: #1d1d1f; -fx-font-weight: bold; -fx-font-size: 14px; -fx-cursor: hand;" text="Fornecedores" />
-            
-            <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#abrirContratos" prefHeight="42.0" style="-fx-background-color: #F2F2F7; -fx-background-radius: 12px; -fx-text-fill: #1d1d1f; -fx-font-weight: bold; -fx-font-size: 14px; -fx-cursor: hand;" text="Contratos" />
-            
-            <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#abrirMultas" prefHeight="42.0" style="-fx-background-color: #F2F2F7; -fx-background-radius: 12px; -fx-text-fill: #1d1d1f; -fx-font-weight: bold; -fx-font-size: 14px; -fx-cursor: hand;" text="Multas" />
-            
-            <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#abrirRelatorios" prefHeight="42.0" style="-fx-background-color: #e5f1ff; -fx-background-radius: 12px; -fx-text-fill: #007AFF; -fx-font-weight: bold; -fx-font-size: 14px; -fx-cursor: hand;" text="Relatórios" />
-            
-            <Separator style="-fx-padding: 3 0 0 0;" />
-            
-            <!-- Botão de Sair -->
-            <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#voltar" prefHeight="42.0" style="-fx-background-color: #fff0f0; -fx-background-radius: 12px; -fx-text-fill: #ff3b30; -fx-font-weight: bold; -fx-font-size: 14px; -fx-cursor: hand;" text="Encerrar Sessão" />
-         </children>
-      </VBox>
-   </children>
+   <VBox maxWidth="900" spacing="24" StackPane.alignment="TOP_CENTER">
+      <padding>
+         <Insets bottom="36" left="40" right="40" top="36" />
+      </padding>
+
+      <HBox alignment="CENTER_LEFT" spacing="16">
+         <StackPane>
+            <Circle fill="#1d4ed8" radius="26" />
+            <Label style="-fx-text-fill: white; -fx-font-size: 16px; -fx-font-weight: bold;" text="VI" />
+         </StackPane>
+         <VBox spacing="2">
+            <Label fx:id="lblBemVindo" style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #0f1b3d;" text="Olá, " />
+            <Label fx:id="lblPerfil" style="-fx-font-size: 13px; -fx-text-fill: #4b5563;" text="Funcionário · Menu principal" />
+         </VBox>
+         <Region HBox.hgrow="ALWAYS" />
+         <Button graphicTextGap="8" onAction="#voltar" prefHeight="44" prefWidth="166" style="-fx-background-color: white; -fx-border-color: #d9dde5; -fx-border-radius: 10; -fx-background-radius: 10; -fx-text-fill: #b91c1c; -fx-font-size: 14px; -fx-font-weight: bold; -fx-cursor: hand;" text="Encerrar sessão">
+            <graphic>
+               <FontIcon iconColor="#b91c1c" iconLiteral="fas-sign-out-alt" iconSize="16" />
+            </graphic>
+         </Button>
+      </HBox>
+
+      <HBox alignment="TOP_LEFT" spacing="22">
+
+         <VBox maxHeight="-Infinity" prefWidth="440" spacing="12" style="-fx-background-color: white; -fx-background-radius: 16; -fx-border-color: #e5e7eb; -fx-border-radius: 16;" HBox.hgrow="ALWAYS">
+            <padding>
+               <Insets bottom="20" left="20" right="20" top="20" />
+            </padding>
+            <VBox spacing="2">
+               <Label style="-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: #0f1b3d;" text="Cadastros" />
+               <Label style="-fx-font-size: 13px; -fx-text-fill: #4b5563;" text="Dados-base do sistema" />
+            </VBox>
+
+            <Button alignment="CENTER_LEFT" maxWidth="Infinity" onAction="#abrirUsuarios" prefHeight="74" style="-fx-background-color: #f8f9fb; -fx-border-color: #d9dde5; -fx-border-radius: 12; -fx-background-radius: 12; -fx-cursor: hand; -fx-padding: 0 14 0 14;">
+               <graphic>
+                  <HBox alignment="CENTER_LEFT" spacing="14">
+                     <StackPane minHeight="44" minWidth="44" prefHeight="44" prefWidth="44" style="-fx-background-color: #e3e9fb; -fx-background-radius: 10;">
+                        <FontIcon iconColor="#1d4ed8" iconLiteral="fas-users" iconSize="20" />
+                     </StackPane>
+                     <VBox alignment="CENTER_LEFT" spacing="2">
+                        <Label style="-fx-font-size: 15px; -fx-font-weight: bold; -fx-text-fill: #0f1b3d;" text="Usuários" />
+                        <Label style="-fx-font-size: 13px; -fx-text-fill: #4b5563;" text="Contas e permissões" />
+                     </VBox>
+                  </HBox>
+               </graphic>
+            </Button>
+
+            <Button alignment="CENTER_LEFT" maxWidth="Infinity" onAction="#abrirItens" prefHeight="74" style="-fx-background-color: #f8f9fb; -fx-border-color: #d9dde5; -fx-border-radius: 12; -fx-background-radius: 12; -fx-cursor: hand; -fx-padding: 0 14 0 14;">
+               <graphic>
+                  <HBox alignment="CENTER_LEFT" spacing="14">
+                     <StackPane minHeight="44" minWidth="44" prefHeight="44" prefWidth="44" style="-fx-background-color: #e3e9fb; -fx-background-radius: 10;">
+                        <FontIcon iconColor="#1d4ed8" iconLiteral="fas-box" iconSize="20" />
+                     </StackPane>
+                     <VBox alignment="CENTER_LEFT" spacing="2">
+                        <Label style="-fx-font-size: 15px; -fx-font-weight: bold; -fx-text-fill: #0f1b3d;" text="Itens" />
+                        <Label style="-fx-font-size: 13px; -fx-text-fill: #4b5563;" text="Cadastro de itens" />
+                     </VBox>
+                  </HBox>
+               </graphic>
+            </Button>
+
+            <Button alignment="CENTER_LEFT" maxWidth="Infinity" onAction="#abrirCategorias" prefHeight="74" style="-fx-background-color: #f8f9fb; -fx-border-color: #d9dde5; -fx-border-radius: 12; -fx-background-radius: 12; -fx-cursor: hand; -fx-padding: 0 14 0 14;">
+               <graphic>
+                  <HBox alignment="CENTER_LEFT" spacing="14">
+                     <StackPane minHeight="44" minWidth="44" prefHeight="44" prefWidth="44" style="-fx-background-color: #e3e9fb; -fx-background-radius: 10;">
+                        <FontIcon iconColor="#1d4ed8" iconLiteral="fas-tag" iconSize="20" />
+                     </StackPane>
+                     <VBox alignment="CENTER_LEFT" spacing="2">
+                        <Label style="-fx-font-size: 15px; -fx-font-weight: bold; -fx-text-fill: #0f1b3d;" text="Categorias" />
+                        <Label style="-fx-font-size: 13px; -fx-text-fill: #4b5563;" text="Organização dos itens" />
+                     </VBox>
+                  </HBox>
+               </graphic>
+            </Button>
+
+            <Button alignment="CENTER_LEFT" maxWidth="Infinity" onAction="#abrirFornecedores" prefHeight="74" style="-fx-background-color: #f8f9fb; -fx-border-color: #d9dde5; -fx-border-radius: 12; -fx-background-radius: 12; -fx-cursor: hand; -fx-padding: 0 14 0 14;">
+               <graphic>
+                  <HBox alignment="CENTER_LEFT" spacing="14">
+                     <StackPane minHeight="44" minWidth="44" prefHeight="44" prefWidth="44" style="-fx-background-color: #e3e9fb; -fx-background-radius: 10;">
+                        <FontIcon iconColor="#1d4ed8" iconLiteral="fas-truck" iconSize="20" />
+                     </StackPane>
+                     <VBox alignment="CENTER_LEFT" spacing="2">
+                        <Label style="-fx-font-size: 15px; -fx-font-weight: bold; -fx-text-fill: #0f1b3d;" text="Fornecedores" />
+                        <Label style="-fx-font-size: 13px; -fx-text-fill: #4b5563;" text="Empresas parceiras" />
+                     </VBox>
+                  </HBox>
+               </graphic>
+            </Button>
+         </VBox>
+
+         <VBox prefWidth="440" spacing="22" HBox.hgrow="ALWAYS">
+
+            <VBox spacing="12" style="-fx-background-color: white; -fx-background-radius: 16; -fx-border-color: #e5e7eb; -fx-border-radius: 16;">
+               <padding>
+                  <Insets bottom="20" left="20" right="20" top="20" />
+               </padding>
+               <VBox spacing="2">
+                  <Label style="-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: #0f1b3d;" text="Operações" />
+                  <Label style="-fx-font-size: 13px; -fx-text-fill: #4b5563;" text="Rotina do dia a dia" />
+               </VBox>
+
+               <Button alignment="CENTER_LEFT" maxWidth="Infinity" onAction="#abrirContratos" prefHeight="74" style="-fx-background-color: #f8f9fb; -fx-border-color: #d9dde5; -fx-border-radius: 12; -fx-background-radius: 12; -fx-cursor: hand; -fx-padding: 0 14 0 14;">
+                  <graphic>
+                     <HBox alignment="CENTER_LEFT" spacing="14">
+                        <StackPane minHeight="44" minWidth="44" prefHeight="44" prefWidth="44" style="-fx-background-color: #e3e9fb; -fx-background-radius: 10;">
+                           <FontIcon iconColor="#1d4ed8" iconLiteral="fas-file-alt" iconSize="20" />
+                        </StackPane>
+                        <VBox alignment="CENTER_LEFT" spacing="2">
+                           <Label style="-fx-font-size: 15px; -fx-font-weight: bold; -fx-text-fill: #0f1b3d;" text="Contratos" />
+                           <Label style="-fx-font-size: 13px; -fx-text-fill: #4b5563;" text="Acordos e prazos" />
+                        </VBox>
+                     </HBox>
+                  </graphic>
+               </Button>
+
+               <Button alignment="CENTER_LEFT" maxWidth="Infinity" onAction="#abrirMultas" prefHeight="74" style="-fx-background-color: #f8f9fb; -fx-border-color: #d9dde5; -fx-border-radius: 12; -fx-background-radius: 12; -fx-cursor: hand; -fx-padding: 0 14 0 14;">
+                  <graphic>
+                     <HBox alignment="CENTER_LEFT" spacing="14">
+                        <StackPane minHeight="44" minWidth="44" prefHeight="44" prefWidth="44" style="-fx-background-color: #e3e9fb; -fx-background-radius: 10;">
+                           <FontIcon iconColor="#1d4ed8" iconLiteral="fas-exclamation-triangle" iconSize="20" />
+                        </StackPane>
+                        <VBox alignment="CENTER_LEFT" spacing="2">
+                           <Label style="-fx-font-size: 15px; -fx-font-weight: bold; -fx-text-fill: #0f1b3d;" text="Multas" />
+                           <Label style="-fx-font-size: 13px; -fx-text-fill: #4b5563;" text="Cobranças e pendências" />
+                        </VBox>
+                     </HBox>
+                  </graphic>
+               </Button>
+            </VBox>
+
+            <VBox spacing="12" style="-fx-background-color: white; -fx-background-radius: 16; -fx-border-color: #e5e7eb; -fx-border-radius: 16;">
+               <padding>
+                  <Insets bottom="20" left="20" right="20" top="20" />
+               </padding>
+               <VBox spacing="2">
+                  <Label style="-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: #0f1b3d;" text="Análise" />
+                  <Label style="-fx-font-size: 13px; -fx-text-fill: #4b5563;" text="Consulta e acompanhamento" />
+               </VBox>
+
+               <Button alignment="CENTER_LEFT" maxWidth="Infinity" onAction="#abrirRelatorios" prefHeight="74" style="-fx-background-color: #f8f9fb; -fx-border-color: #d9dde5; -fx-border-radius: 12; -fx-background-radius: 12; -fx-cursor: hand; -fx-padding: 0 14 0 14;">
+                  <graphic>
+                     <HBox alignment="CENTER_LEFT" spacing="14">
+                        <StackPane minHeight="44" minWidth="44" prefHeight="44" prefWidth="44" style="-fx-background-color: #e3e9fb; -fx-background-radius: 10;">
+                           <FontIcon iconColor="#1d4ed8" iconLiteral="fas-chart-bar" iconSize="20" />
+                        </StackPane>
+                        <VBox alignment="CENTER_LEFT" spacing="2">
+                           <Label style="-fx-font-size: 15px; -fx-font-weight: bold; -fx-text-fill: #0f1b3d;" text="Relatórios" />
+                           <Label style="-fx-font-size: 13px; -fx-text-fill: #4b5563;" text="Consultas e indicadores" />
+                        </VBox>
+                     </HBox>
+                  </graphic>
+               </Button>
+            </VBox>
+         </VBox>
+      </HBox>
+   </VBox>
 </StackPane>
