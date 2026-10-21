@@ -140,7 +140,6 @@ public class MenuUsuariosFuncionarioController extends MenuController {
                 new SimpleStringProperty(dado.getValue().getClass().getSimpleName()));
         }
 
-        // Badge visual de status (● Ativo em verde / ● Inativo em vermelho)
         if (colAtivo != null) {
             colAtivo.setCellValueFactory(dado ->
                 new SimpleStringProperty(dado.getValue().isAtivo() ? "Sim" : "Não"));

@@ -3,6 +3,8 @@ package apresentacao.fx;
 import entidades.ContratoAluguel;
 import entidades.Item;
 import entidades.Usuario;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -45,6 +47,11 @@ public class MenuRelatoriosController extends MenuController {
     @FXML
     private Label lblTituloRelatorio;
 
+    @FXML
+    private Button relatorioadm;
+
+    private final BooleanProperty mostrarRelatorioAdm = new SimpleBooleanProperty(false);
+
     private String[] ultimosCabecalhos = new String[0];
     private String nomeRelatorioAtual = "Relatório do Sistema";
 
@@ -75,6 +82,18 @@ public class MenuRelatoriosController extends MenuController {
         }
         for (List<String> linha : linhas) {
             tabela.getItems().add(FXCollections.observableArrayList(linha));
+        }
+    }
+
+    @Override
+    protected void aoExibir(){
+        if (MenuLoginController.tipousuario == 1){
+            relatorioadm.setVisible(false);
+            relatorioadm.setManaged(false);
+        }
+        else{
+            relatorioadm.setVisible(true);
+            relatorioadm.setManaged(true);
         }
     }
 

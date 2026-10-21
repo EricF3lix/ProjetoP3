@@ -37,16 +37,6 @@ public class MenuPrincipalFuncionarioController extends MenuController {
         }
     }
 
-    private Pane encontrarContainerRaiz() {
-        if (lblBemVindo == null || lblBemVindo.getScene() == null) {
-            return null;
-        }
-        if (lblBemVindo.getScene().getRoot() instanceof Pane raiz) {
-            return raiz;
-        }
-        return (lblBemVindo.getParent() instanceof Pane p) ? p : null;
-    }
-
     @FXML
     private void abrirCategorias() {
         navegador.abrir("MenuCategorias.fxml");
