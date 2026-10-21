@@ -24,7 +24,7 @@ public class MenuLoginController extends MenuController {
 
     @Override
     protected void aoExibir() {
-        
+        sistema.reiniciaTipoUsuarioLogado();
         txtEmail.clear();
         txtSenha.clear();
         Platform.runLater(txtEmail::requestFocus);
@@ -57,7 +57,7 @@ public class MenuLoginController extends MenuController {
                     (MenuPrincipalFuncionarioController c) -> c.setFuncionario(funcionario));
 
         } else if (usuario instanceof Cliente cliente) {
-            navegador.abrir("MenuCliente.fxml", (MenuClienteController c) -> c.setCliente(cliente)); 
+            navegador.abrir("MenuCliente.fxml", (MenuClienteController c) -> c.setCliente(cliente));
         }
     }
 

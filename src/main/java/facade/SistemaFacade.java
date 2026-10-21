@@ -18,6 +18,8 @@ import entidades.Usuario;
 
 public class SistemaFacade {
 
+    private Usuario usuarioLogado;
+
     private IGerenciamentoUsuarios   gerenciamentoUsuarios;
     private IGerenciamentoContratos  gerenciamentoContratos;
     private IGerenciamentoItens      gerenciamentoItens;
@@ -76,7 +78,16 @@ public class SistemaFacade {
     }
 
     public Usuario realizarLogin(String email, String senha) {
-        return gerenciamentoUsuarios.realizarLogin(email, senha);
+        this.usuarioLogado = gerenciamentoUsuarios.realizarLogin(email, senha);
+        return usuarioLogado;
+    }
+
+    public Usuario getTipoUsuarioLogado() {
+        return usuarioLogado;
+    }
+
+    public void reiniciaTipoUsuarioLogado() {
+        this.usuarioLogado = null;
     }
 
     public int gerarProximoIdUsuario() {

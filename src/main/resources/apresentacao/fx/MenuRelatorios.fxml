@@ -25,7 +25,7 @@
             
             <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#alugados" prefHeight="42.0" style="-fx-background-color: #ffffff; -fx-background-radius: 10px; -fx-border-color: #d1d1d6; -fx-border-radius: 10px; -fx-text-fill: #1d1d1f; -fx-font-weight: bold; -fx-cursor: hand; -fx-font-size: 13px;" text="Itens Alugados Agora" textAlignment="CENTER" wrapText="true" />
             
-            <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#relatorioPeriodo" prefHeight="42.0" style="-fx-background-color: #ffffff; -fx-background-radius: 10px; -fx-border-color: #d1d1d6; -fx-border-radius: 10px; -fx-text-fill: #1d1d1f; -fx-font-weight: bold; -fx-cursor: hand; -fx-font-size: 13px;" text="Faturamento por Período" textAlignment="CENTER" wrapText="true" />
+            <Button fx:id="relatorioadm" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#relatorioPeriodo" prefHeight="42.0" style="-fx-background-color: #ffffff; -fx-background-radius: 10px; -fx-border-color: #d1d1d6; -fx-border-radius: 10px; -fx-text-fill: #1d1d1f; -fx-font-weight: bold; -fx-cursor: hand; -fx-font-size: 13px;" text="Faturamento por Período" textAlignment="CENTER" wrapText="true" />
             
             <Separator style="-fx-padding: 5 0 5 0;" />
             

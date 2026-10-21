@@ -1,10 +1,8 @@
 package apresentacao.fx;
 
 import entidades.Funcionario;
-import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
-import javafx.scene.layout.Pane;
 
 public class MenuPrincipalFuncionarioController extends MenuController {
 
@@ -34,29 +32,7 @@ public class MenuPrincipalFuncionarioController extends MenuController {
         if (lblBemVindo != null) {
             lblBemVindo.setText("Bem-vindo(a), " + nome);
 
-            // Dispara a saudação uma única vez na sessão
-            Platform.runLater(() -> {
-                Pane container = encontrarContainerRaiz();
-                if (container != null) {
-                    SaudacaoHelper.exibir(
-                        container,
-                        "Bem-vindo(a)!",
-                        "Painel de atendimento pronto para utilização.",
-                        "👤"
-                    );
-                }
-            });
         }
-    }
-
-    private Pane encontrarContainerRaiz() {
-        if (lblBemVindo == null || lblBemVindo.getScene() == null) {
-            return null;
-        }
-        if (lblBemVindo.getScene().getRoot() instanceof Pane raiz) {
-            return raiz;
-        }
-        return (lblBemVindo.getParent() instanceof Pane p) ? p : null;
     }
 
     @FXML
