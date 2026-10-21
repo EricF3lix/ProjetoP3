@@ -1,5 +1,6 @@
 package apresentacao.fx;
 
+import entidades.Administrador;
 import entidades.ContratoAluguel;
 import entidades.Item;
 import entidades.Usuario;
@@ -50,8 +51,6 @@ public class MenuRelatoriosController extends MenuController {
     @FXML
     private Button relatorioadm;
 
-    private final BooleanProperty mostrarRelatorioAdm = new SimpleBooleanProperty(false);
-
     private String[] ultimosCabecalhos = new String[0];
     private String nomeRelatorioAtual = "Relatório do Sistema";
 
@@ -87,15 +86,12 @@ public class MenuRelatoriosController extends MenuController {
 
     @Override
     protected void aoExibir(){
-        if (MenuLoginController.tipousuario == 1){
-            relatorioadm.setVisible(false);
-            relatorioadm.setManaged(false);
-        }
-        else{
-            relatorioadm.setVisible(true);
-            relatorioadm.setManaged(true);
-        }
+        System.out.println("Logado: " + sistema.getTipoUsuarioLogado());
+        boolean ehAdministrador = (sistema.getTipoUsuarioLogado() instanceof Administrador);
+        relatorioadm.setVisible(ehAdministrador);
+        relatorioadm.setManaged(ehAdministrador);
     }
+
 
     @FXML
     private void itensPorCategoria() {

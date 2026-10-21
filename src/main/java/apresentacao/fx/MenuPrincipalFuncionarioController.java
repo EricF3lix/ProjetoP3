@@ -1,10 +1,8 @@
 package apresentacao.fx;
 
 import entidades.Funcionario;
-import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
-import javafx.scene.layout.Pane;
 
 public class MenuPrincipalFuncionarioController extends MenuController {
 

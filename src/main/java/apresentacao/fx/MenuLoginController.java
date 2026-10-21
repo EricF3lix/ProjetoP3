@@ -11,8 +11,6 @@ import javafx.scene.control.TextField;
 
 public class MenuLoginController extends MenuController {
 
-    public static int tipousuario = 0;
-
     @FXML
     private TextField txtEmail;
 
@@ -26,7 +24,7 @@ public class MenuLoginController extends MenuController {
 
     @Override
     protected void aoExibir() {
-        tipousuario = 0;
+        sistema.reiniciaTipoUsuarioLogado();
         txtEmail.clear();
         txtSenha.clear();
         Platform.runLater(txtEmail::requestFocus);
@@ -55,12 +53,11 @@ public class MenuLoginController extends MenuController {
                     (MenuPrincipalAdministradorController c) -> c.setAdministrador(administrador));
 
         } else if (usuario instanceof Funcionario funcionario) {
-            tipousuario = 1;
             navegador.abrir("MenuPrincipalFuncionario.fxml",
                     (MenuPrincipalFuncionarioController c) -> c.setFuncionario(funcionario));
 
         } else if (usuario instanceof Cliente cliente) {
-            navegador.abrir("MenuCliente.fxml", (MenuClienteController c) -> c.setCliente(cliente)); 
+            navegador.abrir("MenuCliente.fxml", (MenuClienteController c) -> c.setCliente(cliente));
         }
     }
 
