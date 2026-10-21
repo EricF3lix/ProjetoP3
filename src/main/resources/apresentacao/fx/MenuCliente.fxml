@@ -2,46 +2,70 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Separator?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
 <?import javafx.scene.control.cell.PropertyValueFactory?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.collections.FXCollections?>
+<?import java.lang.String?>
 
 <AnchorPane prefHeight="660.0" prefWidth="950.0" style="-fx-background-color: #F5F5F7;" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml" fx:controller="apresentacao.fx.MenuClienteController">
    <children>
-      <!-- Cabecalho Moderno -->
-      <Label layoutX="40.0" layoutY="25.0" style="-fx-font-family: -apple-system, 'SF Pro Display', 'Segoe UI', sans-serif; -fx-font-weight: 900; -fx-font-size: 26px; -fx-text-fill: #1d1d1f;" text="Área do Cliente" />
+      
+      <Label fx:id="bemVindo" layoutX="40.0" layoutY="25.0" style="-fx-font-family: -apple-system, 'SF Pro Display', 'Segoe UI', sans-serif; -fx-font-weight: 900; -fx-font-size: 26px; -fx-text-fill: #1d1d1f;" text="Área do Cliente" />
       <Label layoutX="40.0" layoutY="58.0" style="-fx-font-family: -apple-system, 'SF Pro Text', 'Segoe UI', sans-serif; -fx-font-size: 14px; -fx-text-fill: #86868b;" text="Consulte seus aluguéis, multas e itens disponíveis" />
 
-      <!-- Menu Lateral Estilo Apple -->
+      
       <VBox layoutX="40.0" layoutY="100.0" prefWidth="250.0" spacing="12.0">
          <children>
-            <!-- Badge Dinâmico de Boas-vindas -->
-            <Label fx:id="bemVindo" alignment="CENTER" prefWidth="250.0" style="-fx-font-family: -apple-system, 'SF Pro Text', 'Segoe UI', sans-serif; -fx-font-weight: bold; -fx-font-size: 14px; -fx-text-fill: #1d1d1f; -fx-background-color: #e5e5ea; -fx-background-radius: 10px; -fx-padding: 10px;" text="bemVindo" textAlignment="CENTER" />
+            
+            <Label style="-fx-text-fill: #6e6e73; -fx-font-size: 12px; -fx-font-weight: bold;" text="Filtrar Itens:" />
+            <HBox spacing="8.0">
+               <children>
+                  <ComboBox fx:id="filtroTipo" prefHeight="35.0" prefWidth="160.0" style="-fx-background-color: #e5e5ea; -fx-background-radius: 8px;" HBox.hgrow="ALWAYS">
+                  	<items>
+        				<FXCollections fx:factory="observableArrayList">
+            				<String fx:value="Itens" />
+            				<String fx:value="Aluguéis" />
+       				 	</FXCollections>
+    			    </items>
+    			     </ComboBox>
+                  <ComboBox fx:id="filtroCampo" prefHeight="35.0" prefWidth="82.0" style="-fx-background-color: #e5e5ea; -fx-background-radius: 8px;" />
+               </children>
+            </HBox>
+            <HBox spacing="8.0">
+               <children>
+                  <TextField fx:id="pesquisa" promptText="Digite para buscar..." style="-fx-background-color: #e5e5ea; -fx-background-radius: 8px; -fx-padding: 8px;" HBox.hgrow="ALWAYS" />
+                  <Button fx:id="btnLimparPesquisa" mnemonicParsing="false" onAction="#aoLimparPesquisa" prefWidth="82.0" style="-fx-background-color: #d1d1d6; -fx-text-fill: #1d1d1f; -fx-background-radius: 8px; -fx-cursor: hand;" text="Limpar" />
+               </children>
+            </HBox>
+
             <Pane prefHeight="2.0" />
 
             <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#listarItensDisponiveis" prefHeight="38.0" style="-fx-background-color: #ffffff; -fx-background-radius: 10px; -fx-border-color: #d1d1d6; -fx-border-radius: 10px; -fx-text-fill: #007AFF; -fx-font-weight: bold; -fx-cursor: hand; -fx-font-size: 13px;" text="Ver itens disponíveis" />
+
+            <Separator style="-fx-padding: 5 0 5 0;" />
+
             <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#listarAlugueisAtivos" prefHeight="38.0" style="-fx-background-color: #ffffff; -fx-background-radius: 10px; -fx-border-color: #d1d1d6; -fx-border-radius: 10px; -fx-text-fill: #1d1d1f; -fx-font-weight: bold; -fx-cursor: hand; -fx-font-size: 13px;" text="Meus aluguéis ativos" />
             <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#historicoAlugueis" prefHeight="38.0" style="-fx-background-color: #ffffff; -fx-background-radius: 10px; -fx-border-color: #d1d1d6; -fx-border-radius: 10px; -fx-text-fill: #1d1d1f; -fx-font-weight: bold; -fx-cursor: hand; -fx-font-size: 13px;" text="Histórico de aluguéis" />
             
-            <Separator style="-fx-padding: 5 0 5 0;" />
-            
-            <!-- Botões relacionados a Multas em destaque -->
-            <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#multasPendentes" prefHeight="38.0" style="-fx-background-color: #ffffff; -fx-background-radius: 10px; -fx-border-color: #d1d1d6; -fx-border-radius: 10px; -fx-text-fill: #FF9500; -fx-font-weight: bold; -fx-cursor: hand; -fx-font-size: 13px;" text="Minhas multas pendentes" />
-            <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#pagarMulta" prefHeight="38.0" style="-fx-background-color: #fff0f0; -fx-background-radius: 10px; -fx-border-color: #ffcccc; -fx-border-radius: 10px; -fx-text-fill: #ff3b30; -fx-font-weight: bold; -fx-cursor: hand; -fx-font-size: 13px;" text="Pagar multa" />
+            <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#multasPendentes" prefHeight="38.0" style="-fx-background-color: #ffffff; -fx-background-radius: 10px; -fx-border-color: #d1d1d6; -fx-border-radius: 10px; -fx-text-fill: #f44336; -fx-font-weight: bold; -fx-cursor: hand; -fx-font-size: 13px;" text="Minhas multas pendentes" />
             
             <Pane prefHeight="5.0" />
             <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#voltar" prefHeight="38.0" style="-fx-background-color: #e5e5ea; -fx-background-radius: 10px; -fx-text-fill: #1d1d1f; -fx-font-weight: bold; -fx-cursor: hand; -fx-font-size: 13px;" text="Voltar" />
          </children>
       </VBox>
 
-      <!-- Cartão Dinâmico de Conteúdo -->
-      <AnchorPane layoutX="320.0" layoutY="100.0" prefHeight="520.0" prefWidth="590.0" style="-fx-background-color: #ffffff; -fx-background-radius: 16px; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 12, 0, 2, 6);">
+     
+      <AnchorPane AnchorPane.topAnchor="100.0" AnchorPane.leftAnchor="320.0" AnchorPane.rightAnchor="40.0" AnchorPane.bottomAnchor="40.0" prefWidth="590.0" style="-fx-background-color: #ffffff; -fx-background-radius: 16px; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 12, 0, 2, 6);">
          <children>
             <VBox spacing="15.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                <padding>
@@ -52,7 +76,7 @@
                   
                   <StackPane VBox.vgrow="ALWAYS">
                      <children>
-                        <!-- Tabela de Itens (Visível por padrão) -->
+                        
                         <TableView fx:id="tabelaItens" style="-fx-border-color: #e5e5ea; -fx-border-radius: 8px; -fx-background-radius: 8px;">
                            <columnResizePolicy>
                               <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
@@ -67,13 +91,13 @@
                               <TableColumn prefWidth="150.0" text="Categoria">
                                  <cellValueFactory><PropertyValueFactory property="categoriaNome" /></cellValueFactory>
                               </TableColumn>
-                              <TableColumn prefWidth="90.0" text="Taxa/Dia">
-                                 <cellValueFactory><PropertyValueFactory property="taxaDiaria" /></cellValueFactory>
+                              <TableColumn prefWidth="90.0" text="Taxa diária">
+                                 <cellValueFactory><PropertyValueFactory property="TaxaDiariaFormatada" /></cellValueFactory>
                               </TableColumn>
                            </columns>
                         </TableView>
 
-                        <!-- Tabela de Contratos/Multas -->
+                       
                         <TableView fx:id="tabelaContratos" managed="false" style="-fx-border-color: #e5e5ea; -fx-border-radius: 8px; -fx-background-radius: 8px;" visible="false">
                            <columnResizePolicy>
                               <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
@@ -95,10 +119,10 @@
                                  <cellValueFactory><PropertyValueFactory property="status" /></cellValueFactory>
                               </TableColumn>
                               <TableColumn prefWidth="90.0" text="Valor total">
-                                 <cellValueFactory><PropertyValueFactory property="valorTotal" /></cellValueFactory>
+                                 <cellValueFactory><PropertyValueFactory property="valorTotalFormatado" /></cellValueFactory>
                               </TableColumn>
                               <TableColumn prefWidth="90.0" text="Multa">
-                                 <cellValueFactory><PropertyValueFactory property="valorMulta" /></cellValueFactory>
+                                 <cellValueFactory><PropertyValueFactory property="valorMultaFormatado" /></cellValueFactory>
                               </TableColumn>
                            </columns>
                         </TableView>

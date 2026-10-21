@@ -1,5 +1,6 @@
 package entidades;
 
+
 @SuppressWarnings("java:S107")
 public class Item {
 
@@ -142,5 +143,9 @@ public class Item {
 
     public void enviarParaManutencao() {
         this.status = "MANUTENCAO";
+    }
+    
+    public String getTaxaDiariaFormatada() {
+    	return ("R$ " + String.format("%.2f", taxaDiaria).replace('.', ','));
     }
 }

@@ -65,6 +65,10 @@ public class ContratoAluguel {
         return valorTotal;
     }
 
+    public String getValorTotalFormatado() {
+    	return ("R$ " + String.format("%.2f", valorTotal).replace('.', ','));
+    }
+    
     public String getStatus() {
         return status;
     }
@@ -79,6 +83,10 @@ public class ContratoAluguel {
 
     public double getValorMulta() {
         return valorMulta;
+    }
+    
+    public String getValorMultaFormatado() {
+    	return ("R$ " + String.format("%.2f", valorMulta).replace('.', ','));
     }
 
     public void setValorMulta(double valorMulta) {

@@ -150,4 +150,65 @@ public class GerenciamentoContratos implements IGerenciamentoContratos {
         }
         return 10 + (0.05 * taxaDiaria * diasAtraso);
     }
+    
+    @Override
+    public List<ContratoAluguel> filtrarPorId(String pesquisado) {
+        String termo = pesquisado.toLowerCase();
+        return repositorio.listarTodos().stream()
+                .filter(contrato -> String.valueOf(contrato.getId()).toLowerCase().startsWith(termo))
+                .toList();
+    }
+
+    @Override
+    public List<ContratoAluguel> filtrarPorItem(String pesquisado) {
+        String termo = pesquisado.toLowerCase();
+        return repositorio.listarTodos().stream()
+                .filter(contrato -> contrato.getItem() != null
+                        && contrato.getItem().getNome() != null
+                        && contrato.getItem().getNome().toLowerCase().startsWith(termo))
+                .toList();
+    }
+
+    @Override
+    public List<ContratoAluguel> filtrarPorDataRetirada(String pesquisado) {
+        String termo = pesquisado.toLowerCase();
+        return repositorio.listarTodos().stream()
+                .filter(contrato -> contrato.getDataRetirada() != null
+                        && String.valueOf(contrato.getDataRetirada()).toLowerCase().startsWith(termo))
+                .toList();
+    }
+
+    @Override
+    public List<ContratoAluguel> filtrarPorDataDevolucao(String pesquisado) {
+        String termo = pesquisado.toLowerCase();
+        return repositorio.listarTodos().stream()
+                .filter(contrato -> contrato.getDataDevolucaoPrevista() != null
+                        && String.valueOf(contrato.getDataDevolucaoPrevista()).toLowerCase().startsWith(termo))
+                .toList();
+    }
+
+    @Override
+    public List<ContratoAluguel> filtrarPorStatus(String pesquisado) {
+        String termo = pesquisado.toLowerCase();
+        return repositorio.listarTodos().stream()
+                .filter(contrato -> contrato.getStatus() != null
+                        && contrato.getStatus().toLowerCase().startsWith(termo))
+                .toList();
+    }
+
+    @Override
+    public List<ContratoAluguel> filtrarPorValorTotal(String pesquisado) {
+        String termo = pesquisado.toLowerCase();
+        return repositorio.listarTodos().stream()
+                .filter(contrato -> String.valueOf(contrato.getValorTotal()).toLowerCase().startsWith(termo))
+                .toList();
+    }
+
+    @Override
+    public List<ContratoAluguel> filtrarPorValorMulta(String pesquisado) {
+        String termo = pesquisado.toLowerCase();
+        return repositorio.listarTodos().stream()
+                .filter(contrato -> String.valueOf(contrato.getValorMulta()).toLowerCase().startsWith(termo))
+                .toList();
+    }
 }
