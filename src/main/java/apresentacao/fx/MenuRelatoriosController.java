@@ -4,8 +4,6 @@ import entidades.Administrador;
 import entidades.ContratoAluguel;
 import entidades.Item;
 import entidades.Usuario;
-import javafx.beans.property.BooleanProperty;
-import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -86,7 +84,7 @@ public class MenuRelatoriosController extends MenuController {
 
     @Override
     protected void aoExibir(){
-        System.out.println("Logado: " + sistema.getTipoUsuarioLogado());
+
         boolean ehAdministrador = (sistema.getTipoUsuarioLogado() instanceof Administrador);
         relatorioadm.setVisible(ehAdministrador);
         relatorioadm.setManaged(ehAdministrador);
