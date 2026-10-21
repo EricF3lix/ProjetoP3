@@ -23,11 +23,12 @@ public class MenuFornecedoresController extends MenuController{
 	
 	@Override
 	protected void aoExibir() {
-		tabela.setPlaceholder(new Label(""));
+		tabela.setPlaceholder(new Label("Nenhum fornecedor cadastrado"));
 		if (!listener) {
 			pesquisa.textProperty().addListener((obj, antigo, novo) -> fazPesquisa(novo));
 			this.listener = true;
 		}
+		listarFornecedores();
 	}
 	
 	@FXML
@@ -78,14 +79,7 @@ public class MenuFornecedoresController extends MenuController{
 	
 	@FXML
 	private void listarFornecedores() {
-		List<Fornecedor> listaFornecedores = sistema.listarFornecedores();
-		
-	
-		if (listaFornecedores.isEmpty()) {
-			return;
-		}
-		
-		tabela.setItems(FXCollections.observableArrayList(listaFornecedores));
+		tabela.setItems(FXCollections.observableArrayList(sistema.listarFornecedores()));
 		
 	}
 	
