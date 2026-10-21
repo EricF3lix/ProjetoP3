@@ -1,11 +1,11 @@
 package apresentacao.fx;
 
-import java.util.List;
 import java.util.Optional;
 
 import entidades.Fornecedor;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableView;
 
@@ -13,7 +13,10 @@ public class MenuFornecedoresController extends MenuController{
 
 	private static final String ID = "Digite o ID do fornecedor: ";
 	private static final String NAO_ENCONTRADO = "Fornecedor não encontrado.";
+	
 	@FXML private TableView<Fornecedor> tabela;
+	@FXML private ComboBox<String> filtro;
+	
 	private boolean listener = false;
 	
 	@Override
@@ -28,6 +31,7 @@ public class MenuFornecedoresController extends MenuController{
 			pesquisa.textProperty().addListener((obj, antigo, novo) -> fazPesquisa(novo));
 			this.listener = true;
 		}
+		filtro.setValue("Todos");
 		listarFornecedores();
 	}
 	
@@ -69,12 +73,15 @@ public class MenuFornecedoresController extends MenuController{
 	}
 	
 	private void fazPesquisa(String pesquisado) {
-		List<Fornecedor> fornecedoresFiltrado = sistema.filtrarFornecedor(pesquisado);
-		if (fornecedoresFiltrado.isEmpty()) {
-			tabela.getItems().clear();
-			return;
+		switch(filtro.getValue()) {
+		case "Todos" -> tabela.setItems(FXCollections.observableArrayList(sistema.buscarPorTodos(pesquisado)));
+		case "ID" -> tabela.setItems(FXCollections.observableArrayList(sistema.buscarPorId(pesquisado)));
+		case "Razão Social" -> tabela.setItems(FXCollections.observableArrayList(sistema.buscarPorNome(pesquisado)));
+		case "CNPJ" -> tabela.setItems(FXCollections.observableArrayList(sistema.buscarPorCnpj(pesquisado)));
+		case "E-mail" -> tabela.setItems(FXCollections.observableArrayList(sistema.buscarPorEmail(pesquisado)));
+		case "Telefone" -> tabela.setItems(FXCollections.observableArrayList(sistema.buscarPorTelefone(pesquisado)));
+		default -> { return; }
 		}
-		tabela.setItems(FXCollections.observableArrayList(fornecedoresFiltrado));
 	}
 	
 	@FXML
