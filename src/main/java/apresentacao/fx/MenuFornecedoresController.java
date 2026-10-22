@@ -9,7 +9,6 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
-import javafx.geometry.Pos;
 import javafx.scene.control.TableCell;
 
 public class MenuFornecedoresController extends MenuController{
@@ -36,7 +35,6 @@ public class MenuFornecedoresController extends MenuController{
 			this.listener = true;
 			
 			colunaStatus.setCellFactory(c -> new TableCell<Fornecedor, String>() {{
-			    setAlignment(Pos.CENTER);
 			    itemProperty().addListener((obs, antigo, status) -> {
 			        if (status == null) { setGraphic(null); return; }
 			        boolean ativo = status.equals("ATIVO");
@@ -185,5 +183,11 @@ public class MenuFornecedoresController extends MenuController{
 		
 		tabela.getItems().setAll(fornecedor);
 		
+	}
+	
+	@FXML
+	private void aoLimparPesquisa() {
+		pesquisa.clear();
+		filtro.getSelectionModel().clearSelection();
 	}
 }
