@@ -29,7 +29,7 @@
          <Region HBox.hgrow="ALWAYS" />
          <Button graphicTextGap="8" onAction="#voltar" prefHeight="44" prefWidth="166" style="-fx-background-color: white; -fx-border-color: #d9dde5; -fx-border-radius: 10; -fx-background-radius: 10; -fx-text-fill: #b91c1c; -fx-font-size: 14px; -fx-font-weight: bold; -fx-cursor: hand;" text="Encerrar sessão">
             <graphic>
-               <FontIcon iconColor="#b91c1c" iconLiteral="fas-sign-out-alt" iconSize="16" />
+               <FontIcon fx:id="iconSair" iconColor="#b91c1c" iconSize="16" />
             </graphic>
          </Button>
       </HBox>
@@ -49,7 +49,7 @@
                <graphic>
                   <HBox alignment="CENTER_LEFT" spacing="14">
                      <StackPane minHeight="44" minWidth="44" prefHeight="44" prefWidth="44" style="-fx-background-color: #e3e9fb; -fx-background-radius: 10;">
-                        <FontIcon iconColor="#1d4ed8" iconLiteral="fas-users" iconSize="20" />
+                        <FontIcon fx:id="iconUsuarios" iconColor="#1d4ed8" iconSize="20" />
                      </StackPane>
                      <VBox alignment="CENTER_LEFT" spacing="2">
                         <Label style="-fx-font-size: 15px; -fx-font-weight: bold; -fx-text-fill: #0f1b3d;" text="Usuários" />
@@ -63,7 +63,7 @@
                <graphic>
                   <HBox alignment="CENTER_LEFT" spacing="14">
                      <StackPane minHeight="44" minWidth="44" prefHeight="44" prefWidth="44" style="-fx-background-color: #e3e9fb; -fx-background-radius: 10;">
-                        <FontIcon iconColor="#1d4ed8" iconLiteral="fas-box" iconSize="20" />
+                        <FontIcon fx:id="iconItens" iconColor="#1d4ed8" iconSize="20" />
                      </StackPane>
                      <VBox alignment="CENTER_LEFT" spacing="2">
                         <Label style="-fx-font-size: 15px; -fx-font-weight: bold; -fx-text-fill: #0f1b3d;" text="Itens" />
@@ -77,7 +77,7 @@
                <graphic>
                   <HBox alignment="CENTER_LEFT" spacing="14">
                      <StackPane minHeight="44" minWidth="44" prefHeight="44" prefWidth="44" style="-fx-background-color: #e3e9fb; -fx-background-radius: 10;">
-                        <FontIcon iconColor="#1d4ed8" iconLiteral="fas-tag" iconSize="20" />
+                        <FontIcon fx:id="iconCategorias" iconColor="#1d4ed8" iconSize="20" />
                      </StackPane>
                      <VBox alignment="CENTER_LEFT" spacing="2">
                         <Label style="-fx-font-size: 15px; -fx-font-weight: bold; -fx-text-fill: #0f1b3d;" text="Categorias" />
@@ -91,7 +91,7 @@
                <graphic>
                   <HBox alignment="CENTER_LEFT" spacing="14">
                      <StackPane minHeight="44" minWidth="44" prefHeight="44" prefWidth="44" style="-fx-background-color: #e3e9fb; -fx-background-radius: 10;">
-                        <FontIcon iconColor="#1d4ed8" iconLiteral="fas-truck" iconSize="20" />
+                        <FontIcon fx:id="iconFornecedores" iconColor="#1d4ed8" iconSize="20" />
                      </StackPane>
                      <VBox alignment="CENTER_LEFT" spacing="2">
                         <Label style="-fx-font-size: 15px; -fx-font-weight: bold; -fx-text-fill: #0f1b3d;" text="Fornecedores" />
@@ -117,7 +117,7 @@
                   <graphic>
                      <HBox alignment="CENTER_LEFT" spacing="14">
                         <StackPane minHeight="44" minWidth="44" prefHeight="44" prefWidth="44" style="-fx-background-color: #e3e9fb; -fx-background-radius: 10;">
-                           <FontIcon iconColor="#1d4ed8" iconLiteral="fas-file-alt" iconSize="20" />
+                           <FontIcon fx:id="iconContratos" iconColor="#1d4ed8" iconSize="20" />
                         </StackPane>
                         <VBox alignment="CENTER_LEFT" spacing="2">
                            <Label style="-fx-font-size: 15px; -fx-font-weight: bold; -fx-text-fill: #0f1b3d;" text="Contratos" />
@@ -131,7 +131,7 @@
                   <graphic>
                      <HBox alignment="CENTER_LEFT" spacing="14">
                         <StackPane minHeight="44" minWidth="44" prefHeight="44" prefWidth="44" style="-fx-background-color: #e3e9fb; -fx-background-radius: 10;">
-                           <FontIcon iconColor="#1d4ed8" iconLiteral="fas-exclamation-triangle" iconSize="20" />
+                           <FontIcon fx:id="iconMultas" iconColor="#1d4ed8" iconSize="20" />
                         </StackPane>
                         <VBox alignment="CENTER_LEFT" spacing="2">
                            <Label style="-fx-font-size: 15px; -fx-font-weight: bold; -fx-text-fill: #0f1b3d;" text="Multas" />
@@ -155,7 +155,7 @@
                   <graphic>
                      <HBox alignment="CENTER_LEFT" spacing="14">
                         <StackPane minHeight="44" minWidth="44" prefHeight="44" prefWidth="44" style="-fx-background-color: #e3e9fb; -fx-background-radius: 10;">
-                           <FontIcon iconColor="#1d4ed8" iconLiteral="fas-chart-bar" iconSize="20" />
+                           <FontIcon fx:id="iconRelatorios" iconColor="#1d4ed8" iconSize="20" />
                         </StackPane>
                         <VBox alignment="CENTER_LEFT" spacing="2">
                            <Label style="-fx-font-size: 15px; -fx-font-weight: bold; -fx-text-fill: #0f1b3d;" text="Relatórios" />
