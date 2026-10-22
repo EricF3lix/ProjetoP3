@@ -7,7 +7,10 @@ import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.geometry.Pos;
+import javafx.scene.control.TableCell;
 
 public class MenuFornecedoresController extends MenuController{
 
@@ -16,6 +19,7 @@ public class MenuFornecedoresController extends MenuController{
 	
 	@FXML private TableView<Fornecedor> tabela;
 	@FXML private ComboBox<String> filtro;
+	@FXML private TableColumn<Fornecedor, String> colunaStatus;
 	
 	private boolean listener = false;
 	
@@ -30,6 +34,21 @@ public class MenuFornecedoresController extends MenuController{
 		if (!listener) {
 			pesquisa.textProperty().addListener((obj, antigo, novo) -> fazPesquisa(novo));
 			this.listener = true;
+			
+			colunaStatus.setCellFactory(c -> new TableCell<Fornecedor, String>() {{
+			    setAlignment(Pos.CENTER);
+			    itemProperty().addListener((obs, antigo, status) -> {
+			        if (status == null) { setGraphic(null); return; }
+			        boolean ativo = status.equals("ATIVO");
+			        Label badge = new Label(ativo ? "● Ativo" : "● Inativo");
+			        badge.setStyle(
+			            "-fx-background-color: " + (ativo ? "#d4edda" : "#f8d7da") + "; " +
+			            "-fx-text-fill: " + (ativo ? "#155724" : "#721c24") + "; " +
+			            "-fx-font-weight: bold; -fx-padding: 3 8 3 8; " +
+			            "-fx-background-radius: 10; -fx-font-size: 11px;");
+			        setGraphic(badge);
+			    });
+			}});
 		}
 		filtro.setValue("Todos");
 		listarFornecedores();

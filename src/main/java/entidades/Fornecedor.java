@@ -58,6 +58,10 @@ public class Fornecedor {
     public boolean isAtivo() {
         return ativo;
     }
+    
+    public String getStatus() {
+    	return ((ativo == true ? "ATIVO" : "INATIVO"));
+    }
 
     public void setAtivo(boolean ativo) {
         this.ativo = ativo;
