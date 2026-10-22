@@ -9,7 +9,10 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.TextField;
+import javafx.scene.layout.VBox;
 import javafx.scene.control.TableCell;
+import javafx.scene.control.Button;
 
 public class MenuFornecedoresController extends MenuController{
 
@@ -19,6 +22,17 @@ public class MenuFornecedoresController extends MenuController{
 	@FXML private TableView<Fornecedor> tabela;
 	@FXML private ComboBox<String> filtro;
 	@FXML private TableColumn<Fornecedor, String> colunaStatus;
+	
+	@FXML private VBox dadosFornecedor;
+	@FXML private Label tituloFornecedor;
+	
+	@FXML private TextField txtNome;
+	@FXML private TextField txtCNPJ;
+	@FXML private TextField txtEmail;
+	@FXML private TextField txtTelefone;
+	
+	@FXML private Button btnCadastrar;
+	@FXML private Button btnAtualizar;
 	
 	private boolean listener = false;
 	
