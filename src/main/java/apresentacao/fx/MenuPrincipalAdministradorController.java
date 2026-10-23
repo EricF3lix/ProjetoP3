@@ -32,7 +32,6 @@ public class MenuPrincipalAdministradorController extends MenuController {
             lblBemVindo.setText("Bem-vindo(a), " + nome);
         }
 
-        // Dispara o pop-up animado na primeira exibição após o login
         if (!saudacaoExibida) {
             saudacaoExibida = true;
             Platform.runLater(() -> {

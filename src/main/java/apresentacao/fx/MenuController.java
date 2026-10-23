@@ -53,7 +53,9 @@ public abstract class MenuController {
     }
 
     public void voltar() {
-        navegador.voltar();
+        if (navegador != null) {
+            navegador.voltar();
+        }
     }
 
     protected void limpar() {
@@ -255,11 +257,19 @@ public abstract class MenuController {
     }
 
     protected Optional<Integer> escolherPosicao(String mensagem, List<String> rotulos, String rotuloNenhum) {
+        if (rotulos == null) {
+            return Optional.empty();
+        }
+
         List<String> opcoes = new ArrayList<>();
         if (rotuloNenhum != null) {
             opcoes.add(rotuloNenhum);
         }
         opcoes.addAll(rotulos);
+
+        if (opcoes.isEmpty()) {
+            return Optional.empty();
+        }
 
         ChoiceDialog<String> dialogo = new ChoiceDialog<>(opcoes.get(0), opcoes);
         dialogo.setHeaderText(mensagem);
@@ -278,15 +288,21 @@ public abstract class MenuController {
     }
 
     protected String pegaNovo(String novo, String antigo) {
-        return (novo != null && !novo.isBlank()) ? novo : antigo;
+        if (novo != null && !novo.isBlank()) {
+            return novo;
+        }
+        return antigo;
     }
 
     protected <T> void configurarTabelaEPesquisa(
         javafx.scene.control.TableView<T> tabela, 
         java.util.function.Consumer<String> metodoPesquisa) {
 
-        tabela.setPlaceholder(new javafx.scene.control.Label(""));
-        if (!listenerConfigurado) {
+        if (tabela != null) {
+            tabela.setPlaceholder(new javafx.scene.control.Label(""));
+        }
+
+        if (pesquisa != null && !listenerConfigurado && metodoPesquisa != null) {
             pesquisa.textProperty().addListener((obs, antigo, novo) -> metodoPesquisa.accept(novo));
             this.listenerConfigurado = true;
         }

@@ -65,7 +65,9 @@ public class MenuRelatoriosController extends MenuController {
             + "-fx-border-color: #007AFF; -fx-border-radius: 10px; -fx-text-fill: #007AFF; "
             + "-fx-font-weight: bold; -fx-cursor: hand; -fx-font-size: 13px;";
 
-    private static final DateTimeFormatter FORMATO_DATA = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+
+    private static final String PADRAO_DATA = "dd/MM/yyyy";
+    private static final DateTimeFormatter FORMATO_DATA = DateTimeFormatter.ofPattern(PADRAO_DATA);
 
     @FXML
     private TableView<ObservableList<String>> tabela;
@@ -380,7 +382,8 @@ public class MenuRelatoriosController extends MenuController {
         Label lblTitulo = new Label(nomeRelatorioAtual);
         lblTitulo.setStyle("-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: #1D1D1F;");
 
-        String dataHoje = LocalDate.now(FUSO_HORARIO).format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+        // Correção Sonar #1070: Uso direto da constante FORMATO_DATA em vez de recriar o padrão "dd/MM/yyyy"
+        String dataHoje = LocalDate.now(FUSO_HORARIO).format(FORMATO_DATA);
         Label lblData = new Label("Emitido em: " + dataHoje + " • Total de registros: " + tabela.getItems().size());
         lblData.setStyle("-fx-font-size: 12px; -fx-text-fill: #86868B;");
 
@@ -419,7 +422,6 @@ public class MenuRelatoriosController extends MenuController {
         modalStage.setScene(scene);
         modalStage.showAndWait();
     }
-
     private void solicitarDestinoESalvarPDF() {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Salvar Relatório em PDF");
@@ -492,7 +494,8 @@ public class MenuRelatoriosController extends MenuController {
         alerta.setHeaderText("Relatório exportado com sucesso!");
 
         File pastaDestino = arquivoSalvo.getParentFile();
-        String caminhoPasta = (pastaDestino != null) ? pastaDestino.getAbsolutePath() : System.getProperty("user.dir");
+        File pastaAbertura = (pastaDestino != null) ? pastaDestino : new File(System.getProperty("user.dir"));
+        String caminhoPasta = pastaAbertura.getAbsolutePath();
 
         alerta.setContentText("Arquivo: " + arquivoSalvo.getName() + "\nPasta: " + caminhoPasta);
 
@@ -505,9 +508,9 @@ public class MenuRelatoriosController extends MenuController {
         if (resultado.isPresent() && resultado.get() == btnAbrirPasta) {
             try {
                 if (Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Desktop.Action.OPEN)) {
-                    Desktop.getDesktop().open(pastaDestino != null ? pastaDestino : new File(System.getProperty("user.dir")));
+                    Desktop.getDesktop().open(pastaAbertura);
                 } else {
-                    new ProcessBuilder("open", caminhoPasta).start();
+                    info("Relatório guardado em: " + caminhoPasta);
                 }
             } catch (Exception e) {
                 erro("Não foi possível abrir a pasta do relatório: " + e.getMessage());
