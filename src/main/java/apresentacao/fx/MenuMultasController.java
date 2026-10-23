@@ -126,15 +126,27 @@ public class MenuMultasController extends MenuController {
     }
         
     private void configurarValueFactory() {
-    	
-    	if (colID != null) colID.setCellValueFactory(new PropertyValueFactory<>("id"));
-        if (colContrato != null) colContrato.setCellValueFactory(new PropertyValueFactory<>("idContrato"));
-        if (colTipo != null) colTipo.setCellValueFactory(new PropertyValueFactory<>("tipo"));
-        if (colDescricao != null) colDescricao.setCellValueFactory(new PropertyValueFactory<>("descricao"));
-        if (colValor != null) colValor.setCellValueFactory(new PropertyValueFactory<>("valor"));
-        if (colStatus != null) colStatus.setCellValueFactory(new PropertyValueFactory<>("paga"));
-        if (colData != null) colData.setCellValueFactory(new PropertyValueFactory<>("dataCriacao"));
-    	
+        if (colID != null) {
+            colID.setCellValueFactory(new PropertyValueFactory<>("id"));
+        }
+        if (colContrato != null) {
+            colContrato.setCellValueFactory(new PropertyValueFactory<>("idContrato"));
+        }
+        if (colTipo != null) {
+            colTipo.setCellValueFactory(new PropertyValueFactory<>("tipo"));
+        }
+        if (colDescricao != null) {
+            colDescricao.setCellValueFactory(new PropertyValueFactory<>("descricao"));
+        }
+        if (colValor != null) {
+            colValor.setCellValueFactory(new PropertyValueFactory<>("valor"));
+        }
+        if (colStatus != null) {
+            colStatus.setCellValueFactory(new PropertyValueFactory<>("paga"));
+        }
+        if (colData != null) {
+            colData.setCellValueFactory(new PropertyValueFactory<>("dataCriacao"));
+        }
     }
     
     private void configurarBadge(Label badge, boolean paga) {
