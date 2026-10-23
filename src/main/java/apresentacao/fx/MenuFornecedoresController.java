@@ -62,14 +62,8 @@ public class MenuFornecedoresController extends MenuController{
 			            setText(null);
 			            return;
 			        }
-			        boolean ativo = status.equals("ATIVO");
-			        badge.setText(ativo ? "● Ativo" : "● Inativo");
-			        badge.setStyle(
-			            "-fx-background-color: " + (ativo ? "#d4edda" : "#f8d7da") + "; " +
-			            "-fx-text-fill: " + (ativo ? "#155724" : "#721c24") + "; " +
-			            "-fx-font-weight: bold; -fx-padding: 3 8 3 8; " +
-			            "-fx-background-radius: 10; -fx-font-size: 11px;");
-
+			        boolean ativo = status.equals("ATIVO"); 
+			        configuraBadge(badge, ativo);
 			        setGraphic(badge);
 			        setText(null);
 			    }
@@ -78,6 +72,15 @@ public class MenuFornecedoresController extends MenuController{
 		}
 		filtro.setValue("Todos");
 		listarFornecedores();
+	}
+	
+	private void configuraBadge(Label badge, boolean ativo) {
+		badge.setText(ativo ? "● Ativo" : "● Inativo");
+        badge.setStyle(
+            "-fx-background-color: " + (ativo ? "#d4edda" : "#f8d7da") + "; " +
+            "-fx-text-fill: " + (ativo ? "#155724" : "#721c24") + "; " +
+            "-fx-font-weight: bold; -fx-padding: 3 8 3 8; " +
+            "-fx-background-radius: 10; -fx-font-size: 11px;");
 	}
 	
 	private void tiraTabela() {
@@ -179,7 +182,6 @@ public class MenuFornecedoresController extends MenuController{
 		case "CNPJ" -> tabela.setItems(FXCollections.observableArrayList(sistema.buscarPorCnpj(pesquisado)));
 		case "E-mail" -> tabela.setItems(FXCollections.observableArrayList(sistema.buscarPorEmail(pesquisado)));
 		case "Telefone" -> tabela.setItems(FXCollections.observableArrayList(sistema.buscarPorTelefone(pesquisado)));
-		default -> {}
 		}
 	}
 	
