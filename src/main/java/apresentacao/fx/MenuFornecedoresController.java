@@ -51,19 +51,30 @@ public class MenuFornecedoresController extends MenuController{
 			pesquisa.textProperty().addListener((obj, antigo, novo) -> fazPesquisa(novo));
 			this.listener = true;
 			
-			colunaStatus.setCellFactory(c -> new TableCell<Fornecedor, String>() {{
-			    itemProperty().addListener((obs, antigo, status) -> {
-			        if (status == null) { setGraphic(null); return; }
+			colunaStatus.setCellFactory(c -> new TableCell<Fornecedor, String>() {
+			    private final Label badge = new Label();
+
+			    @Override
+			    protected void updateItem(String status, boolean vazio) {
+			        super.updateItem(status, vazio);
+			        if (vazio || status == null) {
+			            setGraphic(null);
+			            setText(null);
+			            return;
+			        }
 			        boolean ativo = status.equals("ATIVO");
-			        Label badge = new Label(ativo ? "● Ativo" : "● Inativo");
+			        badge.setText(ativo ? "● Ativo" : "● Inativo");
 			        badge.setStyle(
 			            "-fx-background-color: " + (ativo ? "#d4edda" : "#f8d7da") + "; " +
 			            "-fx-text-fill: " + (ativo ? "#155724" : "#721c24") + "; " +
 			            "-fx-font-weight: bold; -fx-padding: 3 8 3 8; " +
 			            "-fx-background-radius: 10; -fx-font-size: 11px;");
+
 			        setGraphic(badge);
-			    });
-			}});
+			        setText(null);
+			    }
+			});
+			
 		}
 		filtro.setValue("Todos");
 		listarFornecedores();
