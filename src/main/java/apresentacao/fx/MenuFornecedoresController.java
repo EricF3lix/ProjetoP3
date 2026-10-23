@@ -157,6 +157,10 @@ public class MenuFornecedoresController extends MenuController{
 	private void fazPesquisa(String pesquisado) {
 		colocaTabela();
 		
+		if (filtro.getValue() == null) {
+			filtro.getSelectionModel().selectFirst();
+		}
+		
 		switch(filtro.getValue()) {
 		case "Todos" -> tabela.setItems(FXCollections.observableArrayList(sistema.buscarPorTodos(pesquisado)));
 		case "ID" -> tabela.setItems(FXCollections.observableArrayList(sistema.buscarPorId(pesquisado)));
@@ -164,7 +168,7 @@ public class MenuFornecedoresController extends MenuController{
 		case "CNPJ" -> tabela.setItems(FXCollections.observableArrayList(sistema.buscarPorCnpj(pesquisado)));
 		case "E-mail" -> tabela.setItems(FXCollections.observableArrayList(sistema.buscarPorEmail(pesquisado)));
 		case "Telefone" -> tabela.setItems(FXCollections.observableArrayList(sistema.buscarPorTelefone(pesquisado)));
-		default -> { return; }
+		default -> {}
 		}
 	}
 	
