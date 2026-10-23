@@ -36,7 +36,6 @@ public class MenuCategoriasController extends MenuController {
     @FXML private TableColumn<Categoria, Boolean> colAtiva;
 
     private final ObservableList<Categoria> listaCategorias = FXCollections.observableArrayList();
-    private FilteredList<Categoria> listaFiltrada;
 
     @Override
     protected String getTitulo() {
@@ -84,7 +83,8 @@ public class MenuCategoriasController extends MenuController {
                     return;
                 }
 
-                boolean disponivel = Boolean.TRUE.equals(ativa);
+                // Correção Sonar #1302: Uso do booleano primitivo direto após verificação de nulo
+                boolean disponivel = ativa;
                 badge.setText(disponivel ? "● Disponível" : "● Indisponível");
                 badge.setStyle(disponivel ? ESTILO_BADGE_DISPONIVEL : ESTILO_BADGE_INDISPONIVEL);
 
@@ -96,10 +96,10 @@ public class MenuCategoriasController extends MenuController {
     }
 
     private void configurarFiltroPesquisa() {
-        listaFiltrada = new FilteredList<>(listaCategorias, p -> true);
+        FilteredList<Categoria> listaFiltrada = new FilteredList<>(listaCategorias, p -> true);
 
         if (pesquisa != null) {
-            pesquisa.textProperty().addListener((obs, antigo, novo) -> aplicarFiltro(novo));
+            pesquisa.textProperty().addListener((obs, antigo, novo) -> aplicarFiltro(listaFiltrada, novo));
         }
 
         SortedList<Categoria> listaOrdenada = new SortedList<>(listaFiltrada);
@@ -110,22 +110,38 @@ public class MenuCategoriasController extends MenuController {
         }
     }
 
-    private void aplicarFiltro(String termo) {
+    private void aplicarFiltro(FilteredList<Categoria> listaFiltrada, String termo) {
         if (listaFiltrada == null) return;
 
-        listaFiltrada.setPredicate(c -> {
-            if (c == null) return false;
-            if (termo == null || termo.trim().isEmpty()) {
-                return true;
-            }
+        if (termo == null || termo.trim().isEmpty()) {
+            listaFiltrada.setPredicate(c -> true);
+            return;
+        }
 
-            String termoFormatado = termo.trim().toLowerCase();
-            boolean bateuId = String.valueOf(c.getId()).contains(termoFormatado);
-            boolean bateuNome = c.getNome() != null && c.getNome().toLowerCase().contains(termoFormatado);
-            boolean bateuDesc = c.getDescricao() != null && c.getDescricao().toLowerCase().contains(termoFormatado);
+        String termoFormatado = termo.trim().toLowerCase();
+        listaFiltrada.setPredicate(c -> categoriaCorrespondeAoFiltro(c, termoFormatado));
+    }
 
-            return bateuId || bateuNome || bateuDesc;
-        });
+    private boolean categoriaCorrespondeAoFiltro(Categoria c, String termo) {
+        if (c == null) return false;
+        boolean bateuId = String.valueOf(c.getId()).contains(termo);
+        boolean bateuNome = c.getNome() != null && c.getNome().toLowerCase().contains(termo);
+        boolean bateuDesc = c.getDescricao() != null && c.getDescricao().toLowerCase().contains(termo);
+        return bateuId || bateuNome || bateuDesc;
+    }
+
+    private Categoria obterCategoriaAlvo() {
+        if (tabela != null && tabela.getSelectionModel().getSelectedItem() != null) {
+            return tabela.getSelectionModel().getSelectedItem();
+        }
+
+        return pedirInteiro(ID_CATEGORIA)
+                .map(id -> {
+                    Categoria c = sistema.buscarCategoria(id);
+                    if (c == null) erro(NAO_ENCONTRADA);
+                    return c;
+                })
+                .orElse(null);
     }
 
     @FXML
@@ -167,18 +183,8 @@ public class MenuCategoriasController extends MenuController {
 
     @FXML
     public void atualizarCategoria(ActionEvent event) {
-        Categoria atual = tabela != null ? tabela.getSelectionModel().getSelectedItem() : null;
-
-        if (atual == null) {
-            Optional<Integer> id = pedirInteiro(ID_CATEGORIA);
-            if (id.isEmpty()) return;
-            atual = sistema.buscarCategoria(id.get());
-        }
-
-        if (atual == null) {
-            erro(NAO_ENCONTRADA);
-            return;
-        }
+        Categoria atual = obterCategoriaAlvo();
+        if (atual == null) return;
 
         Optional<String> nome = pedirTexto("Novo nome:", atual.getNome());
         if (nome.isEmpty()) return;
@@ -201,18 +207,8 @@ public class MenuCategoriasController extends MenuController {
 
     @FXML
     public void desativarCategoria(ActionEvent event) {
-        Categoria categoria = tabela != null ? tabela.getSelectionModel().getSelectedItem() : null;
-
-        if (categoria == null) {
-            Optional<Integer> id = pedirInteiro(ID_CATEGORIA);
-            if (id.isEmpty()) return;
-            categoria = sistema.buscarCategoria(id.get());
-        }
-
-        if (categoria == null) {
-            erro(NAO_ENCONTRADA);
-            return;
-        }
+        Categoria categoria = obterCategoriaAlvo();
+        if (categoria == null) return;
 
         if (!confirmar("Tem certeza que deseja desativar \"" + categoria.getNome() + "\"?")) {
             return;

@@ -31,9 +31,13 @@ public class MenuContratosController extends MenuController {
     private static final String ID_CONTRATO = "Digite o ID do contrato: ";
     private static final String CONTRATO_NAO_ENCONTRADO = "Contrato não encontrado.";
     private static final ZoneId FUSO_HORARIO = ZoneId.of("America/Recife");
+    
+    private static final String ESTILO_ALINHAMENTO_CENTRO = "-fx-alignment: CENTER;";
 
     @FXML 
     private TableView<ContratoAluguel> tabela;
+
+    private record DadosAluguelForm(String idClienteStr, String idItemStr, LocalDate dataRet, LocalDate dataDev) {}
 
     @Override
     protected String getTitulo() {
@@ -66,6 +70,13 @@ public class MenuContratosController extends MenuController {
     private void registrarAluguel() {
         if (sistema == null) return;
 
+        DadosAluguelForm form = exibirDialogoAluguel();
+        if (form == null) return;
+
+        processarRegistroAluguel(form);
+    }
+
+    private DadosAluguelForm exibirDialogoAluguel() {
         Dialog<ButtonType> dialog = new Dialog<>();
         dialog.setTitle("Registrar Aluguel");
         dialog.setHeaderText("Preencha os dados do novo contrato de aluguel");
@@ -101,56 +112,85 @@ public class MenuContratosController extends MenuController {
 
         Optional<ButtonType> resultado = dialog.showAndWait();
         if (resultado.isEmpty() || resultado.get() != btnConfirmar) {
-            return;
+            return null;
         }
 
-        int idCliente;
-        int idItem;
+        return new DadosAluguelForm(
+                txtIdCliente.getText().trim(),
+                txtIdItem.getText().trim(),
+                dpRetirada.getValue(),
+                dpDevolucao.getValue()
+        );
+    }
 
-        try {
-            idCliente = Integer.parseInt(txtIdCliente.getText().trim());
-            idItem = Integer.parseInt(txtIdItem.getText().trim());
-        } catch (NumberFormatException e) {
-            erro("Os IDs do cliente e do item devem ser numéricos.");
-            return;
-        }
-
-        Usuario usuario = sistema.buscarUsuario(idCliente);
-        if (!(usuario instanceof Cliente cliente)) {
-            erro("Cliente não encontrado.");
-            return;
-        }
-
-        if (sistema.clientePossuiMultaPendente(cliente.getId())) {
-            erro("Cliente possui multa pendente e não pode realizar novos aluguéis.");
-            return;
-        }
-
-        Item item = sistema.buscarItem(idItem);
-        if (item == null) {
-            erro("Item não encontrado.");
-            return;
-        }
-
-        if (!item.estaDisponivel()) {
-            erro("Item indisponível para aluguel. Status atual: " + item.getStatus());
-            return;
-        }
-
-        LocalDate dataRet = dpRetirada.getValue();
-        LocalDate dataDev = dpDevolucao.getValue();
-
-        if (dataRet == null || dataDev == null) {
+    private void processarRegistroAluguel(DadosAluguelForm form) {
+        if (form.dataRet() == null || form.dataDev() == null) {
             erro("Por favor, selecione as duas datas no calendário.");
             return;
         }
 
-        long quantidadeDias = ChronoUnit.DAYS.between(dataRet, dataDev);
+        long quantidadeDias = ChronoUnit.DAYS.between(form.dataRet(), form.dataDev());
         if (quantidadeDias <= 0) {
             erro("A data de devolução deve ser posterior à data de retirada.");
             return;
         }
 
+        Cliente cliente = validarEObterCliente(form.idClienteStr());
+        if (cliente == null) return;
+
+        Item item = validarEObterItem(form.idItemStr());
+        if (item == null) return;
+
+        executarCadastroContrato(cliente, item, form.dataRet(), form.dataDev(), quantidadeDias);
+    }
+
+    private Cliente validarEObterCliente(String idClienteStr) {
+        int idCliente;
+        try {
+            idCliente = Integer.parseInt(idClienteStr);
+        } catch (NumberFormatException e) {
+            erro("Os IDs do cliente e do item devem ser numéricos.");
+            return null;
+        }
+
+        Usuario usuario = sistema.buscarUsuario(idCliente);
+        if (!(usuario instanceof Cliente cliente)) {
+            erro("Cliente não encontrado.");
+            return null;
+        }
+
+        if (sistema.clientePossuiMultaPendente(cliente.getId())) {
+            erro("Cliente possui multa pendente e não pode realizar novos aluguéis.");
+            return null;
+        }
+
+        return cliente;
+    }
+
+    private Item validarEObterItem(String idItemStr) {
+        int idItem;
+        try {
+            idItem = Integer.parseInt(idItemStr);
+        } catch (NumberFormatException e) {
+            erro("Os IDs do cliente e do item devem ser numéricos.");
+            return null;
+        }
+
+        Item item = sistema.buscarItem(idItem);
+        if (item == null) {
+            erro("Item não encontrado.");
+            return null;
+        }
+
+        if (!item.estaDisponivel()) {
+            erro("Item indisponível para aluguel. Status atual: " + item.getStatus());
+            return null;
+        }
+
+        return item;
+    }
+
+    private void executarCadastroContrato(Cliente cliente, Item item, LocalDate dataRet, LocalDate dataDev, long quantidadeDias) {
         double valorTotal = quantidadeDias * item.getTaxaDiaria();
         int idContrato = sistema.gerarProximoIdContrato();
 
@@ -202,6 +242,13 @@ public class MenuContratosController extends MenuController {
             return;
         }
 
+        LocalDate real = exibirDialogoFinalizacao(contrato);
+        if (real == null) return;
+
+        processarFinalizacao(contrato, real);
+    }
+
+    private LocalDate exibirDialogoFinalizacao(ContratoAluguel contrato) {
         Dialog<ButtonType> dialog = new Dialog<>();
         dialog.setTitle("Finalizar Contrato");
         dialog.setHeaderText("Encerramento do Contrato ID: " + contrato.getId());
@@ -236,15 +283,13 @@ public class MenuContratosController extends MenuController {
 
         Optional<ButtonType> resultado = dialog.showAndWait();
         if (resultado.isEmpty() || resultado.get() != btnFinalizar) {
-            return;
+            return null;
         }
 
-        LocalDate real = dpReal.getValue();
-        if (real == null) {
-            erro("Selecione uma data válida.");
-            return;
-        }
+        return dpReal.getValue();
+    }
 
+    private void processarFinalizacao(ContratoAluguel contrato, LocalDate real) {
         LocalDate prevista = LocalDate.parse(contrato.getDataDevolucaoPrevista());
         contrato.setDataDevolucaoReal(real.toString());
 
