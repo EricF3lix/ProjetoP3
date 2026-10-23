@@ -182,6 +182,7 @@ public class MenuFornecedoresController extends MenuController{
 		case "CNPJ" -> tabela.setItems(FXCollections.observableArrayList(sistema.buscarPorCnpj(pesquisado)));
 		case "E-mail" -> tabela.setItems(FXCollections.observableArrayList(sistema.buscarPorEmail(pesquisado)));
 		case "Telefone" -> tabela.setItems(FXCollections.observableArrayList(sistema.buscarPorTelefone(pesquisado)));
+		default -> { filtro.getSelectionModel().selectFirst(); }
 		}
 	}
 	
