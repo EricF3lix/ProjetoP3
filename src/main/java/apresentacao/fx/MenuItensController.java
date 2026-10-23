@@ -1,38 +1,45 @@
 package apresentacao.fx;
 
-import java.text.NumberFormat;
 import java.util.List;
-import java.util.Locale;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
+import entidades.Categoria;
+import entidades.Fornecedor;
 import entidades.Item;
-import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.collections.transformation.SortedList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
-import javafx.scene.control.ButtonBar.ButtonData;
-import javafx.scene.control.ButtonType;
 import javafx.scene.control.ComboBox;
-import javafx.scene.control.Dialog;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TextInputDialog;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.Priority;
-import javafx.scene.layout.VBox;
 
 public class MenuItensController extends MenuController {
+
+    private static final String PEDIR_ID_ITEM = "Digite o ID do item:";
+    private static final String ESTILO_BADGE_COMUM =
+            "-fx-font-weight: bold; -fx-padding: 3 8 3 8; -fx-background-radius: 10; -fx-font-size: 11px;";
+    private static final String ESTILO_BADGE_DISPONIVEL =
+            "-fx-background-color: #d4edda; -fx-text-fill: #155724; " + ESTILO_BADGE_COMUM;
+    private static final String ESTILO_BADGE_INDISPONIVEL =
+            "-fx-background-color: #f8d7da; -fx-text-fill: #721c24; " + ESTILO_BADGE_COMUM;
+    private static final String FILTRO_TODOS = "Todos";
+    private static final String SEPARADOR_OPCOES = " | Opções: ";
+    private static final String NENHUM = "nenhum";
+    private static final String INDISPONIVEL = "INDISPONIVEL";
+    private static final List<String> STATUS_VALIDOS =
+            List.of("DISPONIVEL", "MANUTENCAO", "ALUGADO", INDISPONIVEL);
 
     @FXML
     private ComboBox<String> cbFiltro;
@@ -44,21 +51,13 @@ public class MenuItensController extends MenuController {
     private Button btnLimparPesquisa;
 
     @FXML
-    private Button btnBuscarItem;
-
-    @FXML
     private TableView<Item> tabela;
-
-    @FXML
-    private TableColumn<Item, Double> colTaxaDiaria;
 
     @FXML
     private TableColumn<Item, Boolean> colAtivo;
 
     private final ObservableList<Item> listaItens = FXCollections.observableArrayList();
     private FilteredList<Item> listaFiltrada;
-
-    private static final NumberFormat MOEDA = NumberFormat.getCurrencyInstance(Locale.forLanguageTag("pt-BR"));
 
     @Override
     public String getTitulo() {
@@ -67,33 +66,14 @@ public class MenuItensController extends MenuController {
 
     @FXML
     public void initialize() {
-        configurarResponsividade();
         configurarFiltroPesquisa();
-        configurarColunaTaxaDiaria();
         configurarColunaAtivo();
-        removerRedundanciaBusca();
     }
 
     @Override
     protected void aoExibir() {
+
         carregarTabela();
-    }
-
-    @SuppressWarnings("deprecation")
-    private void configurarResponsividade() {
-        if (tabela != null) {
-            VBox.setVgrow(tabela, Priority.ALWAYS);
-            tabela.setMaxWidth(Double.MAX_VALUE);
-            tabela.setMaxHeight(Double.MAX_VALUE);
-            tabela.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
-        }
-    }
-
-    private void removerRedundanciaBusca() {
-        if (btnBuscarItem != null) {
-            btnBuscarItem.setVisible(false);
-            btnBuscarItem.setManaged(false);
-        }
     }
 
     private void carregarTabela() {
@@ -105,98 +85,41 @@ public class MenuItensController extends MenuController {
         }
     }
 
-    private void configurarColunaTaxaDiaria() {
-        if (colTaxaDiaria != null) {
-            colTaxaDiaria.setCellFactory(col -> new TableCell<Item, Double>() {
-                @Override
-                protected void updateItem(Double valor, boolean empty) {
-                    super.updateItem(valor, empty);
-                    if (empty || valor == null) {
-                        setText(null);
-                        setGraphic(null);
-                    } else {
-                        setText(MOEDA.format(valor));
-                        setAlignment(Pos.CENTER_RIGHT);
-                    }
-                }
-            });
-        } else if (tabela != null) {
-            for (TableColumn<Item, ?> col : tabela.getColumns()) {
-                String titulo = col.getText() != null ? col.getText().toLowerCase() : "";
-                if (titulo.contains("taxa") || titulo.contains("diária") || titulo.contains("diaria")) {
-                    @SuppressWarnings("unchecked")
-                    TableColumn<Item, Object> colGenerica = (TableColumn<Item, Object>) col;
-                    colGenerica.setCellFactory(c -> new TableCell<Item, Object>() {
-                        @Override
-                        protected void updateItem(Object valor, boolean empty) {
-                            super.updateItem(valor, empty);
-                            if (empty || valor == null) {
-                                setText(null);
-                                setGraphic(null);
-                            } else {
-                                try {
-                                    double num = Double.parseDouble(valor.toString());
-                                    setText(MOEDA.format(num));
-                                    setAlignment(Pos.CENTER_RIGHT);
-                                } catch (NumberFormatException e) {
-                                    setText(valor.toString());
-                                }
-                            }
-                        }
-                    });
-                    break;
-                }
-            }
+    private void configurarColunaAtivo() {
+        if (colAtivo != null) {
+            colAtivo.setCellFactory(col -> criarCelulaAtivo());
         }
     }
 
-    private void configurarColunaAtivo() {
-        if (colAtivo != null) {
-            colAtivo.setCellFactory(col -> new TableCell<Item, Boolean>() {
-                private final Label badge = new Label();
+    private TableCell<Item, Boolean> criarCelulaAtivo() {
+        return new TableCell<>() {
+            private final Label badge = new Label();
 
-                @Override
-                protected void updateItem(Boolean ativo, boolean empty) {
-                    super.updateItem(ativo, empty);
+            @Override
+            protected void updateItem(Boolean ativo, boolean empty) {
+                super.updateItem(ativo, empty);
 
-                    if (empty || ativo == null) {
-                        setGraphic(null);
-                        setText(null);
-                    } else {
-                        if (ativo) {
-                            badge.setText("● Disponível");
-                            badge.setStyle(
-                                "-fx-background-color: #d4edda; " +
-                                "-fx-text-fill: #155724; " +
-                                "-fx-font-weight: bold; " +
-                                "-fx-padding: 3 8 3 8; " +
-                                "-fx-background-radius: 10; " +
-                                "-fx-font-size: 11px;"
-                            );
-                        } else {
-                            badge.setText("● Indisponível");
-                            badge.setStyle(
-                                "-fx-background-color: #f8d7da; " +
-                                "-fx-text-fill: #721c24; " +
-                                "-fx-font-weight: bold; " +
-                                "-fx-padding: 3 8 3 8; " +
-                                "-fx-background-radius: 10; " +
-                                "-fx-font-size: 11px;"
-                            );
-                        }
-                        setAlignment(Pos.CENTER);
-                        setGraphic(badge);
-                        setText(null);
-                    }
+                if (empty || ativo == null) {
+                    setGraphic(null);
+                    setText(null);
+                    return;
                 }
-            });
-        }
+
+                boolean disponivel = Boolean.TRUE.equals(ativo);
+                badge.setText(disponivel ? "● Disponível" : "● Indisponível");
+                badge.setStyle(disponivel ? ESTILO_BADGE_DISPONIVEL : ESTILO_BADGE_INDISPONIVEL);
+
+                setAlignment(Pos.CENTER);
+                setGraphic(badge);
+                setText(null);
+            }
+        };
     }
 
     private void configurarFiltroPesquisa() {
         if (cbFiltro != null) {
-            cbFiltro.setItems(FXCollections.observableArrayList("Todos", "Nome", "ID", "Categoria"));
-            cbFiltro.setValue("Todos");
+            cbFiltro.setItems(FXCollections.observableArrayList(FILTRO_TODOS, "Nome", "ID"));
+            cbFiltro.setValue(FILTRO_TODOS);
             cbFiltro.valueProperty().addListener((obs, antigo, novo) ->
                 aplicarFiltro(pesquisa != null ? pesquisa.getText() : "")
             );
@@ -225,19 +148,15 @@ public class MenuItensController extends MenuController {
             }
 
             String termoFormatado = termo.trim().toLowerCase();
-            String filtroSelecionado = cbFiltro != null && cbFiltro.getValue() != null ? cbFiltro.getValue() : "Todos";
+            String filtroSelecionado = cbFiltro != null && cbFiltro.getValue() != null ? cbFiltro.getValue() : FILTRO_TODOS;
 
             boolean bateuId = String.valueOf(item.getId()).contains(termoFormatado);
             boolean bateuNome = item.getNome() != null && item.getNome().toLowerCase().contains(termoFormatado);
-            
-            String catTexto = item.getCategoria() != null ? String.valueOf(item.getCategoria()).toLowerCase() : "";
-            boolean bateuCategoria = catTexto.contains(termoFormatado);
 
             return switch (filtroSelecionado) {
                 case "ID" -> bateuId;
                 case "Nome" -> bateuNome;
-                case "Categoria" -> bateuCategoria;
-                default -> bateuId || bateuNome || bateuCategoria;
+                default -> bateuId || bateuNome;
             };
         });
     }
@@ -248,7 +167,7 @@ public class MenuItensController extends MenuController {
             pesquisa.clear();
         }
         if (cbFiltro != null) {
-            cbFiltro.setValue("Todos");
+            cbFiltro.setValue(FILTRO_TODOS);
         }
     }
 
@@ -261,158 +180,195 @@ public class MenuItensController extends MenuController {
     @FXML
     public void buscarItem(ActionEvent event) {
         String texto = pesquisa != null ? pesquisa.getText().trim() : "";
+
         if (texto.isEmpty()) {
-            TextInputDialog dialog = new TextInputDialog();
-            dialog.setTitle("Buscar Item");
-            dialog.setHeaderText("Buscar Item por ID");
-            dialog.setContentText("Digite o ID do item:");
-            Optional<String> resultado = dialog.showAndWait();
-            if (resultado.isPresent()) {
-                texto = resultado.get().trim();
-            } else {
-                return;
-            }
+            Optional<Integer> idOpt = pedirInteiro(PEDIR_ID_ITEM);
+            if (idOpt.isEmpty()) return;
+            texto = String.valueOf(idOpt.get());
         }
 
         try {
             int id = Integer.parseInt(texto);
             Item item = sistema != null ? sistema.buscarItem(id) : null;
+
             if (item != null) {
                 if (cbFiltro != null) cbFiltro.setValue("ID");
                 if (pesquisa != null) pesquisa.setText(String.valueOf(id));
-                mostrarAlerta(AlertType.INFORMATION, "Item Encontrado",
-                    "ID: " + item.getId() + "\n" +
-                    "Nome: " + item.getNome() + "\n" +
-                    "Categoria: " + item.getCategoria() + "\n" +
-                    "Taxa Diária: " + MOEDA.format(item.getTaxaDiaria()) + "\n" +
-                    "Estado: " + item.getEstadoConservacao() + "\n" +
-                    "Status: " + item.getStatus() + "\n" +
-                    "Ativo: " + (item.isAtivo() ? "Sim" : "Não")
-                );
             } else {
-                mostrarAlerta(AlertType.WARNING, "Não Encontrado", "Nenhum item encontrado com o ID " + id);
+                erro("Nenhum item encontrado com o ID " + id);
             }
         } catch (NumberFormatException e) {
-            mostrarAlerta(AlertType.ERROR, "Erro", "Por favor, informe um ID numérico válido.");
+            erro("Por favor, informe um ID numérico válido.");
         }
     }
 
     @FXML
     public void cadastrarItem(ActionEvent event) {
-        carregarTabela();
+        Optional<String> nome = pedirTexto("Nome do item:");
+        if (nome.isEmpty()) return;
+
+        Optional<String> desc = pedirTexto("Descrição:");
+        if (desc.isEmpty()) return;
+
+        Optional<Double> taxa = pedirDouble("Taxa diária:");
+        if (taxa.isEmpty()) return;
+
+        Optional<String> estado = pedirTexto("Estado de conservação:");
+        if (estado.isEmpty()) return;
+
+        Optional<Double> valorRep = pedirDouble("Valor de reposição:");
+        if (valorRep.isEmpty()) return;
+
+        Optional<String> catInput = pedirTexto("Categoria (Opções: " + opcoesCategorias()
+                + ")\n[Deixe em branco para sem categoria]:");
+        if (catInput.isEmpty()) return;
+
+        String termoCat = catInput.get();
+        Categoria categoria = resolverCategoria(termoCat, null);
+        if (referenciaInvalida(termoCat, categoria)) {
+            erro("Categoria '" + termoCat + "' não encontrada. Cadastre-a primeiro ou deixe em branco.");
+            return;
+        }
+
+        Optional<String> fornInput = pedirTexto("Fornecedor (Opções: " + opcoesFornecedores()
+                + ")\n[Deixe em branco para sem fornecedor]:");
+        if (fornInput.isEmpty()) return;
+
+        String termoForn = fornInput.get();
+        Fornecedor fornecedor = resolverFornecedor(termoForn, null);
+        if (referenciaInvalida(termoForn, fornecedor)) {
+            erro("Fornecedor '" + termoForn + "' não encontrado. Cadastre-o primeiro ou deixe em branco.");
+            return;
+        }
+
+        int id = sistema.gerarProximoIdItem();
+        Item novoItem = new Item(id, nome.get(), desc.get(), taxa.get(), estado.get(),
+                valorRep.get(), categoria, fornecedor);
+
+        if (sistema.cadastrarItem(novoItem)) {
+            info("Item cadastrado com sucesso! ID: " + id);
+            carregarTabela();
+        } else {
+            erro("Erro ao cadastrar o item.");
+        }
     }
 
     @FXML
     public void atualizarItem(ActionEvent event) {
-        if (tabela == null || sistema == null) return;
+        Item atual = obterItemParaAtualizar();
+        if (atual == null) return;
 
-        Item selecionado = tabela.getSelectionModel().getSelectedItem();
-        if (selecionado == null) {
-            mostrarAlerta(AlertType.WARNING, "Seleção Necessária", "Selecione um item na tabela para atualizar.");
+        Optional<String> nome = pedirTexto("Novo nome (atual: " + atual.getNome() + "):");
+        if (nome.isEmpty()) return;
+
+        Optional<String> catInput = pedirTexto("Categoria (Atual: " + nomeCategoria(atual)
+                + SEPARADOR_OPCOES + opcoesCategorias() + ")\n[Enter mantém | Digite '" + NENHUM + "' para remover]:");
+        if (catInput.isEmpty()) return;
+
+        String termoCat = catInput.get();
+        Categoria novaCategoria = resolverCategoria(termoCat, atual.getCategoria());
+        if (referenciaInvalida(termoCat, novaCategoria)) {
+            erro("Categoria '" + termoCat + "' não encontrada.");
             return;
         }
 
-        Dialog<ButtonType> dialog = new Dialog<>();
-        dialog.setTitle("Atualizar Item");
-        dialog.setHeaderText("Editar dados do item: " + selecionado.getNome() + " (ID: " + selecionado.getId() + ")");
+        Optional<String> fornInput = pedirTexto("Fornecedor (Atual: " + nomeFornecedor(atual)
+                + SEPARADOR_OPCOES + opcoesFornecedores() + ")\n[Enter mantém | Digite '" + NENHUM + "' para remover]:");
+        if (fornInput.isEmpty()) return;
 
-        ButtonType btnSalvar = new ButtonType("Salvar", ButtonData.OK_DONE);
-        dialog.getDialogPane().getButtonTypes().addAll(btnSalvar, ButtonType.CANCEL);
-
-        GridPane grid = new GridPane();
-        grid.setHgap(10);
-        grid.setVgap(12);
-        grid.setPadding(new Insets(20, 20, 10, 10));
-
-        TextField txtNome = new TextField(selecionado.getNome());
-        String nomeCat = selecionado.getCategoria() != null ? String.valueOf(selecionado.getCategoria()) : "";
-        TextField txtCategoria = new TextField(nomeCat);
-        txtCategoria.setDisable(true);
-        TextField txtTaxa = new TextField(String.valueOf(selecionado.getTaxaDiaria()));
-        TextField txtEstado = new TextField(selecionado.getEstadoConservacao());
-
-        grid.add(new Label("Nome:"), 0, 0);
-        grid.add(txtNome, 1, 0);
-        grid.add(new Label("Categoria:"), 0, 1);
-        grid.add(txtCategoria, 1, 1);
-        grid.add(new Label("Taxa Diária:"), 0, 2);
-        grid.add(txtTaxa, 1, 2);
-        grid.add(new Label("Estado:"), 0, 3);
-        grid.add(txtEstado, 1, 3);
-
-        dialog.getDialogPane().setContent(grid);
-        Platform.runLater(txtNome::requestFocus);
-
-        Optional<ButtonType> res = dialog.showAndWait();
-        if (res.isPresent() && res.get() == btnSalvar) {
-            try {
-                String novoNome = txtNome.getText().trim();
-                double novaTaxa = Double.parseDouble(txtTaxa.getText().trim());
-                String novoEstado = txtEstado.getText().trim();
-
-                boolean atualizou = false;
-                try {
-                    var m = sistema.getClass().getMethod("atualizarItem", Item.class);
-                    selecionado.setNome(novoNome);
-                    selecionado.setTaxaDiaria(novaTaxa);
-                    selecionado.setEstadoConservacao(novoEstado);
-                    atualizou = (boolean) m.invoke(sistema, selecionado);
-                } catch (NoSuchMethodException e1) {
-                    try {
-                        var m = sistema.getClass().getMethod("atualizarItem", int.class, String.class, double.class, String.class);
-                        atualizou = (boolean) m.invoke(sistema, selecionado.getId(), novoNome, novaTaxa, novoEstado);
-                    } catch (Exception e2) {
-                        atualizou = false;
-                    }
-                } catch (Exception e) {
-                    atualizou = false;
-                }
-
-                if (atualizou) {
-                    mostrarAlerta(AlertType.INFORMATION, "Sucesso", "Item atualizado com sucesso!");
-                    carregarTabela();
-                } else {
-                    mostrarAlerta(AlertType.ERROR, "Erro", "Não foi possível atualizar o item.");
-                }
-            } catch (NumberFormatException e) {
-                mostrarAlerta(AlertType.ERROR, "Erro", "Valor inválido para a taxa diária.");
-            }
+        String termoForn = fornInput.get();
+        Fornecedor novoFornecedor = resolverFornecedor(termoForn, atual.getFornecedor());
+        if (referenciaInvalida(termoForn, novoFornecedor)) {
+            erro("Fornecedor '" + termoForn + "' não encontrado.");
+            return;
         }
+
+        Optional<Double> taxa = pedirDouble("Nova taxa diária:", atual.getTaxaDiaria());
+        if (taxa.isEmpty()) return;
+
+        Optional<String> estado = pedirTexto("Novo estado (atual: " + atual.getEstadoConservacao() + "):");
+        if (estado.isEmpty()) return;
+
+        Optional<String> status = pedirNovoStatus(atual);
+        if (status.isEmpty()) return;
+
+        Item itemAtualizado = new Item(
+                atual.getId(),
+                pegaNovo(nome.get(), atual.getNome()),
+                atual.getDescricao(),
+                taxa.get(),
+                pegaNovo(estado.get(), atual.getEstadoConservacao()),
+                atual.getValorReposicao(),
+                novaCategoria,
+                novoFornecedor
+        );
+        itemAtualizado.setAtivo(atual.isAtivo());
+        itemAtualizado.setStatus(status.get());
+
+        if (sistema.atualizarItem(itemAtualizado)) {
+            info("Item atualizado com sucesso!");
+            carregarTabela();
+        } else {
+            erro("Erro ao atualizar o item.");
+        }
+    }
+
+    private Item obterItemParaAtualizar() {
+        Item selecionado = tabela.getSelectionModel().getSelectedItem();
+        if (selecionado != null) return selecionado;
+
+        Optional<Integer> id = pedirInteiro(PEDIR_ID_ITEM);
+        if (id.isEmpty()) return null;
+
+        Item item = sistema.buscarItem(id.get());
+        if (item == null) {
+            erro("Item não encontrado.");
+        }
+        return item;
+    }
+
+    private Optional<String> pedirNovoStatus(Item atual) {
+        if (!atual.isAtivo()) {
+            return Optional.of(INDISPONIVEL);
+        }
+
+        Optional<String> entrada = pedirTexto("Novo status (Atual: " + atual.getStatus()
+                + SEPARADOR_OPCOES + String.join(", ", STATUS_VALIDOS) + ")\n[Enter mantém]:");
+        if (entrada.isEmpty()) return Optional.empty();
+
+        String status = entrada.get().toUpperCase();
+        if (status.isEmpty()) return Optional.of(atual.getStatus());
+
+        if (!STATUS_VALIDOS.contains(status)) {
+            erro("Status inválido. Digite: " + String.join(", ", STATUS_VALIDOS) + ".");
+            return Optional.empty();
+        }
+        return Optional.of(status);
     }
 
     @FXML
     public void desativarItem(ActionEvent event) {
-        if (tabela == null || sistema == null) return;
+        TextInputDialog dialog = new TextInputDialog();
+        dialog.setTitle("Desativar Item");
+        dialog.setHeaderText("Desativar Item");
+        dialog.setContentText(PEDIR_ID_ITEM);
 
-        Item selecionado = tabela.getSelectionModel().getSelectedItem();
-        int idAlvo = -1;
-
-        if (selecionado != null) {
-            idAlvo = selecionado.getId();
-        } else {
-            TextInputDialog dialog = new TextInputDialog();
-            dialog.setTitle("Desativar Item");
-            dialog.setHeaderText("Desativar Item");
-            dialog.setContentText("Digite o ID do item:");
-            Optional<String> resultado = dialog.showAndWait();
-            if (resultado.isPresent()) {
-                try {
-                    idAlvo = Integer.parseInt(resultado.get().trim());
-                } catch (NumberFormatException e) {
-                    mostrarAlerta(AlertType.ERROR, "Erro", "Digite um ID numérico válido.");
-                    return;
+        Optional<String> resultado = dialog.showAndWait();
+        if (resultado.isPresent()) {
+            try {
+                int id = Integer.parseInt(resultado.get().trim());
+                if (sistema != null) {
+                    boolean sucesso = sistema.excluirItem(id);
+                    if (sucesso) {
+                        mostrarAlerta(AlertType.INFORMATION, "Sucesso", "Item desativado com sucesso!");
+                        carregarTabela();
+                    } else {
+                        mostrarAlerta(AlertType.ERROR, "Erro", "Não foi possível desativar o item.");
+                    }
                 }
-            } else {
-                return;
+            } catch (NumberFormatException e) {
+                mostrarAlerta(AlertType.ERROR, "Erro", "Digite um ID numérico válido.");
             }
-        }
-
-        boolean sucesso = sistema.excluirItem(idAlvo);
-        if (sucesso) {
-            mostrarAlerta(AlertType.INFORMATION, "Sucesso", "Item desativado com sucesso!");
-            carregarTabela();
-        } else {
-            mostrarAlerta(AlertType.ERROR, "Erro", "Não foi possível desativar o item.");
         }
     }
 
@@ -422,5 +378,69 @@ public class MenuItensController extends MenuController {
         alert.setHeaderText(null);
         alert.setContentText(mensagem);
         alert.showAndWait();
+    }
+
+    private String opcoesCategorias() {
+        List<Categoria> categorias = sistema.listarCategorias();
+        if (categorias.isEmpty()) return "Nenhuma";
+
+        return categorias.stream().map(this::rotuloCategoria).collect(Collectors.joining(", "));
+    }
+
+    private String opcoesFornecedores() {
+        List<Fornecedor> fornecedores = sistema.listarFornecedores();
+        if (fornecedores.isEmpty()) return "Nenhum";
+
+        return fornecedores.stream().map(this::rotuloFornecedor).collect(Collectors.joining(", "));
+    }
+
+    private String rotuloCategoria(Categoria categoria) {
+        return categoria.getId() + "-" + categoria.getNome();
+    }
+
+    private String rotuloFornecedor(Fornecedor fornecedor) {
+        return fornecedor.getId() + "-" + fornecedor.getRazaoSocial();
+    }
+
+    private String nomeCategoria(Item item) {
+        return item.getCategoria() != null ? item.getCategoria().getNome() : "Sem Categoria";
+    }
+
+    private String nomeFornecedor(Item item) {
+        return item.getFornecedor() != null ? item.getFornecedor().getRazaoSocial() : "Sem Fornecedor";
+    }
+
+    private Categoria resolverCategoria(String termo, Categoria atual) {
+        if (termo.isBlank()) return atual;
+        if (termo.equalsIgnoreCase(NENHUM)) return null;
+        return localizarCategoria(termo);
+    }
+
+    private Fornecedor resolverFornecedor(String termo, Fornecedor atual) {
+        if (termo.isBlank()) return atual;
+        if (termo.equalsIgnoreCase(NENHUM)) return null;
+        return localizarFornecedor(termo);
+    }
+
+    private Categoria localizarCategoria(String termo) {
+        return sistema.listarCategorias().stream()
+                .filter(c -> corresponde(String.valueOf(c.getId()), c.getNome(), termo))
+                .findFirst()
+                .orElse(null);
+    }
+
+    private Fornecedor localizarFornecedor(String termo) {
+        return sistema.listarFornecedores().stream()
+                .filter(f -> corresponde(String.valueOf(f.getId()), f.getRazaoSocial(), termo))
+                .findFirst()
+                .orElse(null);
+    }
+
+    private boolean corresponde(String id, String nome, String termo) {
+        return id.equals(termo) || (nome != null && nome.equalsIgnoreCase(termo));
+    }
+
+    private boolean referenciaInvalida(String termo, Object resolvido) {
+        return !termo.isBlank() && !termo.equalsIgnoreCase(NENHUM) && resolvido == null;
     }
 }
