@@ -215,7 +215,6 @@ public class MenuItensController extends MenuController {
         Optional<String> valorRepStr = pedirTexto("Valor de reposição:");
         if (valorRepStr.isEmpty()) return;
 
-       
         StringBuilder sbCats = new StringBuilder();
         for (Categoria c : sistema.listarCategorias()) {
             if (sbCats.length() > 0) sbCats.append(", ");
