@@ -1,10 +1,11 @@
 package apresentacao.fx;
 
+import org.kordamp.ikonli.javafx.FontIcon;
+
 import entidades.Funcionario;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
-import org.kordamp.ikonli.javafx.FontIcon;
 
 public class MenuPrincipalFuncionarioController extends MenuController {
 
@@ -58,7 +59,7 @@ public class MenuPrincipalFuncionarioController extends MenuController {
         if (!saudacaoExibida) {
             saudacaoExibida = true;
             Platform.runLater(() -> {
-                notificarPopUp("Bem-vindo(a), " + nome + "! Painel operacional pronto.");
+                notificarPopUp("Bem-vindo(a), " + nome + "!");
             });
         }
     }

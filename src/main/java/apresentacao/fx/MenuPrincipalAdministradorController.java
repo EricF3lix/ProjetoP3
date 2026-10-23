@@ -36,7 +36,7 @@ public class MenuPrincipalAdministradorController extends MenuController {
         if (!saudacaoExibida) {
             saudacaoExibida = true;
             Platform.runLater(() -> {
-                notificarPopUp("Bem-vindo(a), " + nome + "! Painel administrativo pronto.");
+                notificarPopUp("Bem-vindo(a), " + nome + "!");
             });
         }
     }
