@@ -382,7 +382,6 @@ public class MenuRelatoriosController extends MenuController {
         Label lblTitulo = new Label(nomeRelatorioAtual);
         lblTitulo.setStyle("-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: #1D1D1F;");
 
-        // Correção Sonar #1070: Uso direto da constante FORMATO_DATA em vez de recriar o padrão "dd/MM/yyyy"
         String dataHoje = LocalDate.now(FUSO_HORARIO).format(FORMATO_DATA);
         Label lblData = new Label("Emitido em: " + dataHoje + " • Total de registros: " + tabela.getItems().size());
         lblData.setStyle("-fx-font-size: 12px; -fx-text-fill: #86868B;");
@@ -450,7 +449,7 @@ public class MenuRelatoriosController extends MenuController {
             document.add(new Paragraph(nomeRelatorioAtual, fontTitulo));
 
             Font fontSub = FontFactory.getFont(FontFactory.HELVETICA, 10, Color.DARK_GRAY);
-            String dataHoje = LocalDate.now(FUSO_HORARIO).format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+            String dataHoje = LocalDate.now(FUSO_HORARIO).format(DateTimeFormatter.ofPattern(PADRAO_DATA));
             document.add(new Paragraph("Gerado em: " + dataHoje + " | Total de registros: " + tabela.getItems().size() + "\n\n", fontSub));
 
             PdfPTable tabelaPdf = new PdfPTable(ultimosCabecalhos.length);
