@@ -81,13 +81,7 @@ public class MenuMultasController extends MenuController {
     }
 
     private void configurarColunas() {
-        if (colID != null) colID.setCellValueFactory(new PropertyValueFactory<>("id"));
-        if (colContrato != null) colContrato.setCellValueFactory(new PropertyValueFactory<>("idContrato"));
-        if (colTipo != null) colTipo.setCellValueFactory(new PropertyValueFactory<>("tipo"));
-        if (colDescricao != null) colDescricao.setCellValueFactory(new PropertyValueFactory<>("descricao"));
-        if (colValor != null) colValor.setCellValueFactory(new PropertyValueFactory<>("valor"));
-        if (colStatus != null) colStatus.setCellValueFactory(new PropertyValueFactory<>("paga"));
-        if (colData != null) colData.setCellValueFactory(new PropertyValueFactory<>("dataCriacao"));
+    	configurarValueFactory();
 
         if (colValor != null) {
             colValor.setCellFactory(col -> new TableCell<>() {
@@ -112,34 +106,57 @@ public class MenuMultasController extends MenuController {
                 @Override
                 protected void updateItem(Boolean paga, boolean empty) {
                     super.updateItem(paga, empty);
+                    
                     if (empty || paga == null) {
-                        setGraphic(null);
-                        setText(null);
-                    } else {
-                        if (paga) {
-                            badge.setText("● Paga");
-                            badge.setStyle(
-                                "-fx-background-color: #d4edda; -fx-text-fill: #155724; " +
-                                "-fx-font-weight: bold; -fx-padding: 3 8 3 8; " +
-                                "-fx-background-radius: 10; -fx-font-size: 11px;"
-                            );
-                        } else {
-                            badge.setText("● Pendente");
-                            badge.setStyle(
-                                "-fx-background-color: #fff3cd; -fx-text-fill: #856404; " +
-                                "-fx-font-weight: bold; -fx-padding: 3 8 3 8; " +
-                                "-fx-background-radius: 10; -fx-font-size: 11px;"
-                            );
-                        }
-                        setAlignment(Pos.CENTER);
-                        setGraphic(badge);
-                        setText(null);
+                    	setGraphic(null);
+                    	setText(null);
+                    } 
+                    else {
+                    	configurarBadge(badge, paga);
+                    	
+                    	setAlignment(Pos.CENTER);
+                    	setGraphic(badge);
+                    	setText(null);
+                        }       
+                    	
                     }
-                }
-            });
-        }
+                });
+            }
+        
     }
-
+        
+    private void configurarValueFactory() {
+    	
+    	if (colID != null) colID.setCellValueFactory(new PropertyValueFactory<>("id"));
+        if (colContrato != null) colContrato.setCellValueFactory(new PropertyValueFactory<>("idContrato"));
+        if (colTipo != null) colTipo.setCellValueFactory(new PropertyValueFactory<>("tipo"));
+        if (colDescricao != null) colDescricao.setCellValueFactory(new PropertyValueFactory<>("descricao"));
+        if (colValor != null) colValor.setCellValueFactory(new PropertyValueFactory<>("valor"));
+        if (colStatus != null) colStatus.setCellValueFactory(new PropertyValueFactory<>("paga"));
+        if (colData != null) colData.setCellValueFactory(new PropertyValueFactory<>("dataCriacao"));
+    	
+    }
+    
+    private void configurarBadge(Label badge, Boolean paga) {
+    	
+    	if (paga == true) {
+            badge.setText("● Paga");
+            badge.setStyle(
+                "-fx-background-color: #d4edda; -fx-text-fill: #155724; " +
+                "-fx-font-weight: bold; -fx-padding: 3 8 3 8; " +
+                "-fx-background-radius: 10; -fx-font-size: 11px;"
+            );}
+            
+            else {
+                badge.setText("● Pendente");
+                badge.setStyle(
+                    "-fx-background-color: #fff3cd; -fx-text-fill: #856404; " +
+                    "-fx-font-weight: bold; -fx-padding: 3 8 3 8; " +
+                    "-fx-background-radius: 10; -fx-font-size: 11px;"
+                );}
+    	
+    }
+    
     private void configurarFiltroPesquisa() {
         listaFiltrada = new FilteredList<>(listaMultas, p -> true);
 
