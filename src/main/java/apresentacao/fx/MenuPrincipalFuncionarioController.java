@@ -9,6 +9,8 @@ import javafx.scene.control.Label;
 
 public class MenuPrincipalFuncionarioController extends MenuController {
 
+    private static final String PREFIXO_BEM_VINDO = "Bem-vindo(a), ";
+
     @FXML private FontIcon iconSair;
     @FXML private FontIcon iconUsuarios;
     @FXML private FontIcon iconItens;
@@ -27,7 +29,7 @@ public class MenuPrincipalFuncionarioController extends MenuController {
     public void setFuncionario(Funcionario funcionario) {
         this.funcionario = funcionario;
         if (funcionario != null && lblBemVindo != null) {
-            lblBemVindo.setText("Bem-vindo(a), " + funcionario.getNome());
+            lblBemVindo.setText(PREFIXO_BEM_VINDO + funcionario.getNome());
         }
     }
 
@@ -43,7 +45,7 @@ public class MenuPrincipalFuncionarioController extends MenuController {
                 : "Funcionário";
 
         if (lblBemVindo != null) {
-            lblBemVindo.setText("Bem-vindo(a), " + nome);
+            lblBemVindo.setText(PREFIXO_BEM_VINDO + nome);
         }
 
         if (iconSair != null) iconSair.setIconLiteral("fas-sign-out-alt");
@@ -55,11 +57,10 @@ public class MenuPrincipalFuncionarioController extends MenuController {
         if (iconMultas != null) iconMultas.setIconLiteral("fas-exclamation-triangle");
         if (iconRelatorios != null) iconRelatorios.setIconLiteral("fas-chart-bar");
 
-        // Dispara o pop-up animado na primeira exibição após o login
         if (!saudacaoExibida) {
             saudacaoExibida = true;
             Platform.runLater(() -> {
-                notificarPopUp("Bem-vindo(a), " + nome + "!");
+                notificarPopUp(PREFIXO_BEM_VINDO + nome + "!");
             });
         }
     }

@@ -33,6 +33,7 @@ import javafx.scene.layout.VBox;
 public class MenuUsuariosFuncionarioController extends MenuController {
     private static final String STYLE_TEXT_RED = "-fx-text-fill: red;";
     private static final String OPCAO_TODOS = "Todos";
+    protected static final String TIPO_CLIENTE = "Cliente";
 
     @FXML
     protected StackPane painelConteudo;
@@ -113,7 +114,7 @@ public class MenuUsuariosFuncionarioController extends MenuController {
     protected Button btnVoltar;
 
     protected ComboBox<String> cbTipoCadastroForm;
-    protected String tipoCadastroAtual = "Cliente";
+    protected String tipoCadastroAtual = TIPO_CLIENTE;
     protected ObservableList<Usuario> listaUsuarios = FXCollections.observableArrayList();
     protected FilteredList<Usuario> listaFiltrada;
 
@@ -172,28 +173,41 @@ public class MenuUsuariosFuncionarioController extends MenuController {
         }
 
         if (painelCadastro != null && cbTipoCadastroForm == null) {
-            cbTipoCadastroForm = new ComboBox<>(obterOpcoesCadastro());
-            cbTipoCadastroForm.setValue("Cliente");
-            cbTipoCadastroForm.setMaxWidth(Double.MAX_VALUE);
-
-            cbTipoCadastroForm.valueProperty().addListener((obs, antigo, novo) -> {
-                if (novo != null) {
-                    this.tipoCadastroAtual = novo;
-                    if (lblCadTitulo != null) lblCadTitulo.setText("Cadastrar " + novo);
-                    if (btnCadSalvar != null) btnCadSalvar.setText("Salvar " + novo);
-                }
-            });
-
-            int indice = 0;
-            if (lblCadTitulo != null && painelCadastro.getChildren().contains(lblCadTitulo)) {
-                indice = painelCadastro.getChildren().indexOf(lblCadTitulo) + 1;
-            }
-            painelCadastro.getChildren().add(indice, cbTipoCadastroForm);
+            inicializarComboBoxCadastro();
         }
     }
 
+    private void inicializarComboBoxCadastro() {
+        cbTipoCadastroForm = new ComboBox<>(obterOpcoesCadastro());
+        cbTipoCadastroForm.setValue(TIPO_CLIENTE);
+        cbTipoCadastroForm.setMaxWidth(Double.MAX_VALUE);
+
+        cbTipoCadastroForm.valueProperty().addListener((obs, antigo, novo) -> atualizarRotulosFormulario(novo));
+
+        int indice = calcularIndiceComboBox();
+        painelCadastro.getChildren().add(indice, cbTipoCadastroForm);
+    }
+
+    private void atualizarRotulosFormulario(String novoTipo) {
+        if (novoTipo == null) return;
+        this.tipoCadastroAtual = novoTipo;
+        if (lblCadTitulo != null) {
+            lblCadTitulo.setText("Cadastrar " + novoTipo);
+        }
+        if (btnCadSalvar != null) {
+            btnCadSalvar.setText("Salvar " + novoTipo);
+        }
+    }
+
+    private int calcularIndiceComboBox() {
+        if (lblCadTitulo != null && painelCadastro.getChildren().contains(lblCadTitulo)) {
+            return painelCadastro.getChildren().indexOf(lblCadTitulo) + 1;
+        }
+        return 0;
+    }
+
     protected ObservableList<String> obterOpcoesCadastro() {
-        return FXCollections.observableArrayList("Cliente");
+        return FXCollections.observableArrayList(TIPO_CLIENTE);
     }
 
     private void configurarColunasTabela() {

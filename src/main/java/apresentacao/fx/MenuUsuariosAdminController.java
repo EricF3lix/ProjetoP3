@@ -218,6 +218,7 @@ public class MenuUsuariosAdminController extends MenuUsuariosFuncionarioControll
     @FXML
     public void aoConfirmarDesativar(ActionEvent event) {
         if (sistema == null) return;
+        
         try {
             int id = Integer.parseInt(txtDesativarId.getText().trim());
             Usuario usuario = sistema.buscarUsuario(id);
@@ -229,44 +230,55 @@ public class MenuUsuariosAdminController extends MenuUsuariosFuncionarioControll
             }
 
             if (usuario.isAtivo()) {
-                if (sistema.desativaUsuario(id)) {
-                    lblDesativarStatus.setText("Usuário desativado com sucesso!");
-                    lblDesativarStatus.setStyle(STYLE_TEXT_GREEN);
-                    txtDesativarId.clear();
-                    carregarTabela();
-                } else {
-                    lblDesativarStatus.setText("Não foi possível desativar (verifique pendências/multas).");
-                    lblDesativarStatus.setStyle(STYLE_TEXT_RED);
-                }
+                executarDesativacao(id);
             } else {
-                boolean reativado = false;
-                try {
-                    Method metodoAtivar = sistema.getClass().getMethod("ativaUsuario", int.class);
-                    reativado = (boolean) metodoAtivar.invoke(sistema, id);
-                } catch (NoSuchMethodException ignored) {
-                    try {
-                        Method metodoAtivar2 = sistema.getClass().getMethod("ativarUsuario", int.class);
-                        reativado = (boolean) metodoAtivar2.invoke(sistema, id);
-                    } catch (Exception ex2) {
-                        reativado = false;
-                    }
-                } catch (Exception e) {
-                    reativado = false;
-                }
-
-                if (reativado) {
-                    lblDesativarStatus.setText("Usuário reativado com sucesso!");
-                    lblDesativarStatus.setStyle(STYLE_TEXT_GREEN);
-                    txtDesativarId.clear();
-                    carregarTabela();
-                } else {
-                    lblDesativarStatus.setText("Este usuário já se encontra inativo.");
-                    lblDesativarStatus.setStyle("-fx-text-fill: orange;");
-                }
+                executarReativacao(id);
             }
         } catch (NumberFormatException ex) {
             lblDesativarStatus.setText("Digite um ID numérico válido.");
             lblDesativarStatus.setStyle(STYLE_TEXT_RED);
+        }
+    }
+
+    private void executarDesativacao(int id) {
+        if (sistema.desativaUsuario(id)) {
+            lblDesativarStatus.setText("Usuário desativado com sucesso!");
+            lblDesativarStatus.setStyle(STYLE_TEXT_GREEN);
+            txtDesativarId.clear();
+            carregarTabela();
+        } else {
+            lblDesativarStatus.setText("Não foi possível desativar (verifique pendências/multas).");
+            lblDesativarStatus.setStyle(STYLE_TEXT_RED);
+        }
+    }
+
+    private void executarReativacao(int id) {
+        if (tentarReativarUsuario(id)) {
+            lblDesativarStatus.setText("Usuário reativado com sucesso!");
+            lblDesativarStatus.setStyle(STYLE_TEXT_GREEN);
+            txtDesativarId.clear();
+            carregarTabela();
+        } else {
+            lblDesativarStatus.setText("Este usuário já se encontra inativo.");
+            lblDesativarStatus.setStyle("-fx-text-fill: orange;");
+        }
+    }
+
+    private boolean tentarReativarUsuario(int id) {
+        try {
+            Method metodoAtivar = sistema.getClass().getMethod("ativaUsuario", int.class);
+            return (boolean) metodoAtivar.invoke(sistema, id);
+        } catch (Exception e) {
+            return invocarMetodoReativacaoAlternativo(id);
+        }
+    }
+
+    private boolean invocarMetodoReativacaoAlternativo(int id) {
+        try {
+            Method metodoAtivar2 = sistema.getClass().getMethod("ativarUsuario", int.class);
+            return (boolean) metodoAtivar2.invoke(sistema, id);
+        } catch (Exception ex) {
+            return false;
         }
     }
 }
