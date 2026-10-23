@@ -9,7 +9,7 @@ import entidades.Item;
 
 public class ItemRepositorio implements IItemRepositorio {
 
-    private final static String arquivo = "dados/itens.csv";
+    private static final String arquivo = "dados/itens.csv";
 
     private final List<Item> itens;
     private final ICategoriaRepositorio categoriaRepositorio;
