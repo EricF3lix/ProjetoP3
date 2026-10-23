@@ -3,6 +3,8 @@ package apresentacao.fx;
 import java.util.List;
 import java.util.Optional;
 
+import entidades.Categoria;
+import entidades.Fornecedor;
 import entidades.Item;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -55,7 +57,7 @@ public class MenuItensController extends MenuController {
 
     @Override
     protected void aoExibir() {
-        // Disparado automaticamente pelo Navegador sempre que a tela é aberta
+
         carregarTabela();
     }
 
@@ -189,7 +191,6 @@ public class MenuItensController extends MenuController {
             if (item != null) {
                 if (cbFiltro != null) cbFiltro.setValue("ID");
                 if (pesquisa != null) pesquisa.setText(String.valueOf(id));
-                // O item passa a ser exibido e filtrado diretamente na TableView
             } else {
                 erro("Nenhum item encontrado com o ID " + id);
             }
@@ -199,12 +200,208 @@ public class MenuItensController extends MenuController {
     }
     @FXML
     public void cadastrarItem(ActionEvent event) {
-        carregarTabela();
+        Optional<String> nome = pedirTexto("Nome do item:");
+        if (nome.isEmpty()) return;
+
+        Optional<String> desc = pedirTexto("Descrição:");
+        if (desc.isEmpty()) return;
+
+        Optional<String> taxaStr = pedirTexto("Taxa diária:");
+        if (taxaStr.isEmpty()) return;
+
+        Optional<String> estado = pedirTexto("Estado de conservação:");
+        if (estado.isEmpty()) return;
+
+        Optional<String> valorRepStr = pedirTexto("Valor de reposição:");
+        if (valorRepStr.isEmpty()) return;
+
+       
+        StringBuilder sbCats = new StringBuilder();
+        for (Categoria c : sistema.listarCategorias()) {
+            if (sbCats.length() > 0) sbCats.append(", ");
+            sbCats.append(c.getId()).append("-").append(c.getNome());
+        }
+        String listaCats = sbCats.length() > 0 ? sbCats.toString() : "Nenhuma";
+
+        Optional<String> catInput = pedirTexto("Categoria (Opções: " + listaCats + ")\n[Deixe em branco para sem categoria]:");
+        if (catInput.isEmpty()) return;
+
+        Categoria categoria = null;
+        if (!catInput.get().isBlank()) {
+            String termo = catInput.get().trim();
+            for (Categoria c : sistema.listarCategorias()) {
+                if (String.valueOf(c.getId()).equals(termo) || (c.getNome() != null && c.getNome().equalsIgnoreCase(termo))) {
+                    categoria = c;
+                    break;
+                }
+            }
+
+            if (categoria == null) {
+                erro("Categoria '" + termo + "' não encontrada. Cadastre-a primeiro ou deixe em branco.");
+                return;
+            }
+        }
+
+        StringBuilder sbForns = new StringBuilder();
+        for (Fornecedor f : sistema.listarFornecedores()) {
+            if (sbForns.length() > 0) sbForns.append(", ");
+            sbForns.append(f.getId()).append("-").append(f.getRazaoSocial());
+        }
+        String listaForns = sbForns.length() > 0 ? sbForns.toString() : "Nenhum";
+
+        Optional<String> fornInput = pedirTexto("Fornecedor (Opções: " + listaForns + ")\n[Deixe em branco para sem fornecedor]:");
+        if (fornInput.isEmpty()) return;
+
+        Fornecedor fornecedor = null;
+        if (!fornInput.get().isBlank()) {
+            String termo = fornInput.get().trim();
+            for (Fornecedor f : sistema.listarFornecedores()) {
+                if (String.valueOf(f.getId()).equals(termo) || (f.getRazaoSocial() != null && f.getRazaoSocial().equalsIgnoreCase(termo))) {
+                    fornecedor = f;
+                    break;
+                }
+            }
+
+            if (fornecedor == null) {
+                erro("Fornecedor '" + termo + "' não encontrado. Cadastre-o primeiro ou deixe em branco.");
+                return;
+            }
+        }
+
+        try {
+            double taxa = Double.parseDouble(taxaStr.get().replace(",", ".").trim());
+            double valorRep = Double.parseDouble(valorRepStr.get().replace(",", ".").trim());
+            int id = sistema.gerarProximoIdItem();
+
+            Item novoItem = new Item(
+                    id,
+                    nome.get().trim(),
+                    desc.get().trim(),
+                    taxa,
+                    estado.get().trim(),
+                    valorRep,
+                    categoria,
+                    fornecedor
+            );
+
+            if (sistema.cadastrarItem(novoItem)) {
+                info("Item cadastrado com sucesso! ID: " + id);
+                carregarTabela();
+            } else {
+                erro("Erro ao cadastrar o item.");
+            }
+        } catch (NumberFormatException e) {
+            erro("Valores numéricos inválidos para taxa diária ou valor de reposição.");
+        }
     }
 
     @FXML
     public void atualizarItem(ActionEvent event) {
-        carregarTabela();
+        Item atual = tabela != null ? tabela.getSelectionModel().getSelectedItem() : null;
+
+        if (atual == null) {
+            Optional<Integer> idOpt = pedirInteiro("Digite o ID do item:");
+            if (idOpt.isEmpty()) return;
+            atual = sistema != null ? sistema.buscarItem(idOpt.get()) : null;
+        }
+
+        if (atual == null) {
+            erro("Item não encontrado.");
+            return;
+        }
+
+        String catAtualNome = atual.getCategoria() != null ? atual.getCategoria().getNome() : "Sem Categoria";
+        String fornAtualNome = atual.getFornecedor() != null ? atual.getFornecedor().getRazaoSocial() : "Sem Fornecedor";
+
+        Optional<String> nome = pedirTexto("Novo nome (atual: " + atual.getNome() + "):");
+        if (nome.isEmpty()) return;
+
+        String listaCats = sistema.listarCategorias().stream()
+                .map(c -> c.getId() + "-" + c.getNome())
+                .reduce((a, b) -> a + ", " + b).orElse("Nenhuma");
+
+        Optional<String> catInput = pedirTexto("Categoria (Atual: " + catAtualNome + " | Opções: " + listaCats + ")\n[Enter mantém | Digite 'nenhum' para remover]:");
+        if (catInput.isEmpty()) return;
+
+        Categoria novaCategoria = atual.getCategoria();
+        if (!catInput.get().isBlank()) {
+            String termo = catInput.get().trim();
+            if (termo.equalsIgnoreCase("nenhum")) {
+                novaCategoria = null;
+            } else {
+                Categoria encontrada = sistema.listarCategorias().stream()
+                        .filter(c -> String.valueOf(c.getId()).equals(termo) || c.getNome().equalsIgnoreCase(termo))
+                        .findFirst()
+                        .orElse(null);
+
+                if (encontrada == null) {
+                    erro("Categoria '" + termo + "' não encontrada.");
+                    return;
+                }
+                novaCategoria = encontrada;
+            }
+        }
+
+        String listaForns = sistema.listarFornecedores().stream()
+                .map(f -> f.getId() + "-" + f.getRazaoSocial())
+                .reduce((a, b) -> a + ", " + b).orElse("Nenhum");
+
+        Optional<String> fornInput = pedirTexto("Fornecedor (Atual: " + fornAtualNome + " | Opções: " + listaForns + ")\n[Enter mantém | Digite 'nenhum' para remover]:");
+        if (fornInput.isEmpty()) return;
+
+        Fornecedor novoFornecedor = atual.getFornecedor();
+        if (!fornInput.get().isBlank()) {
+            String termo = fornInput.get().trim();
+            if (termo.equalsIgnoreCase("nenhum")) {
+                novoFornecedor = null;
+            } else {
+                Fornecedor encontrado = sistema.listarFornecedores().stream()
+                        .filter(f -> String.valueOf(f.getId()).equals(termo) || f.getRazaoSocial().equalsIgnoreCase(termo))
+                        .findFirst()
+                        .orElse(null);
+
+                if (encontrado == null) {
+                    erro("Fornecedor '" + termo + "' não encontrado.");
+                    return;
+                }
+                novoFornecedor = encontrado;
+            }
+        }
+
+        Optional<String> taxaStr = pedirTexto("Nova taxa diária (atual: " + atual.getTaxaDiaria() + "):");
+        if (taxaStr.isEmpty()) return;
+
+        Optional<String> estado = pedirTexto("Novo estado (atual: " + atual.getEstadoConservacao() + "):");
+        if (estado.isEmpty()) return;
+
+        try {
+            String novoNome = nome.get().isBlank() ? atual.getNome() : nome.get().trim();
+            double novaTaxa = taxaStr.get().isBlank() ? atual.getTaxaDiaria() : Double.parseDouble(taxaStr.get().replace(",", ".").trim());
+            String novoEstado = estado.get().isBlank() ? atual.getEstadoConservacao() : estado.get().trim();
+
+            Item itemAtualizado = new Item(
+                    atual.getId(),
+                    novoNome,
+                    atual.getDescricao(),
+                    novaTaxa,
+                    novoEstado,
+                    atual.getValorReposicao(),
+                    novaCategoria,
+                    novoFornecedor
+            );
+
+            itemAtualizado.setStatus(atual.getStatus());
+            itemAtualizado.setAtivo(atual.isAtivo());
+
+            if (sistema != null && sistema.atualizarItem(itemAtualizado)) {
+                info("Item atualizado com sucesso!");
+                carregarTabela();
+            } else {
+                erro("Erro ao atualizar o item.");
+            }
+        } catch (NumberFormatException e) {
+            erro("Valor da taxa diária inválido.");
+        }
     }
 
     @FXML
