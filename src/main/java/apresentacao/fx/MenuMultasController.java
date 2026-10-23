@@ -137,9 +137,9 @@ public class MenuMultasController extends MenuController {
     	
     }
     
-    private void configurarBadge(Label badge, Boolean paga) {
+    private void configurarBadge(Label badge, boolean paga) {
     	
-    	if (paga == true) {
+    	if (paga) {
             badge.setText("● Paga");
             badge.setStyle(
                 "-fx-background-color: #d4edda; -fx-text-fill: #155724; " +
