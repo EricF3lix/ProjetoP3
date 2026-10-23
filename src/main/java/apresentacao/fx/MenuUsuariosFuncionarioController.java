@@ -31,7 +31,9 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 
 public class MenuUsuariosFuncionarioController extends MenuController {
+
     private static final String STYLE_TEXT_RED = "-fx-text-fill: red;";
+    private static final String OPCAO_TODOS = "Todos";
 
     @FXML
     protected StackPane painelConteudo;
@@ -244,8 +246,8 @@ public class MenuUsuariosFuncionarioController extends MenuController {
 
     private void configurarFiltroPesquisa() {
         if (cbFiltro != null) {
-            cbFiltro.setItems(FXCollections.observableArrayList("Todos", "Nome", "ID", "E-mail", "CPF"));
-            cbFiltro.setValue("Todos");
+            cbFiltro.setItems(FXCollections.observableArrayList(OPCAO_TODOS, "Nome", "ID", "E-mail", "CPF"));
+            cbFiltro.setValue(OPCAO_TODOS);
             cbFiltro.valueProperty().addListener((obs, antigo, novo) ->
                 aplicarFiltro(txtPesquisa != null ? txtPesquisa.getText() : "")
             );
@@ -275,7 +277,7 @@ public class MenuUsuariosFuncionarioController extends MenuController {
 
             String termoFormatado = termo.trim().toLowerCase();
             String termoNumerico = termoFormatado.replaceAll("\\D", "");
-            String filtroSelecionado = (cbFiltro != null && cbFiltro.getValue() != null) ? cbFiltro.getValue() : "Todos";
+            String filtroSelecionado = (cbFiltro != null && cbFiltro.getValue() != null) ? cbFiltro.getValue() : OPCAO_TODOS;
 
             boolean bateuId = String.valueOf(usuario.getId()).contains(termoFormatado);
             boolean bateuNome = usuario.getNome() != null && usuario.getNome().toLowerCase().contains(termoFormatado);
@@ -297,7 +299,7 @@ public class MenuUsuariosFuncionarioController extends MenuController {
     @FXML
     public void aoLimparPesquisa(ActionEvent event) {
         if (txtPesquisa != null) txtPesquisa.clear();
-        if (cbFiltro != null) cbFiltro.setValue("Todos");
+        if (cbFiltro != null) cbFiltro.setValue(OPCAO_TODOS);
     }
 
     public void setSistema(SistemaFacade sistema) {
