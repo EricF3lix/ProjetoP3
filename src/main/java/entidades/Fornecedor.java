@@ -60,7 +60,7 @@ public class Fornecedor {
     }
     
     public String getStatus() {
-    	return ((ativo == true ? "ATIVO" : "INATIVO"));
+    	return (ativo ? "ATIVO" : "INATIVO");
     }
 
     public void setAtivo(boolean ativo) {
