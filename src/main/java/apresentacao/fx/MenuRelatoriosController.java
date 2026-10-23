@@ -441,8 +441,8 @@ public class MenuRelatoriosController extends MenuController {
 
     private void gerarArquivoPDF(File arquivoDestino) {
         Document document = new Document();
-        try {
-            PdfWriter.getInstance(document, new FileOutputStream(arquivoDestino));
+        try (FileOutputStream fos = new FileOutputStream(arquivoDestino)) {
+            PdfWriter.getInstance(document, fos);
             document.open();
 
             Font fontTitulo = FontFactory.getFont(FontFactory.HELVETICA_BOLD, 18, Color.BLACK);
@@ -473,13 +473,16 @@ public class MenuRelatoriosController extends MenuController {
             }
 
             document.add(tabelaPdf);
-            document.close();
-
-            exibirSucessoExportacao(arquivoDestino);
-
         } catch (Exception e) {
             erro("Falha ao gerar o arquivo PDF: " + e.getMessage());
+            return;
+        } finally {
+            if (document.isOpen()) {
+                document.close();
+            }
         }
+
+        exibirSucessoExportacao(arquivoDestino);
     }
 
     private void exibirSucessoExportacao(File arquivoSalvo) {
