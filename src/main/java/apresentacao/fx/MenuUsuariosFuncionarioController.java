@@ -36,83 +36,35 @@ import org.kordamp.ikonli.javafx.FontIcon;
 
 public class MenuUsuariosFuncionarioController extends MenuController {
 
-    @FXML
-    protected StackPane painelConteudo;
+    @FXML protected StackPane painelConteudo;
+    @FXML protected VBox painelTabela;
+    @FXML protected ComboBox<String> cbFiltro;
+    @FXML protected TextField txtPesquisa;
+    @FXML protected Button btnLimparPesquisa;
+    @FXML protected TableView<Usuario> tabelaUsuarios;
+    @FXML protected TableColumn<Usuario, Integer> colId;
+    @FXML protected TableColumn<Usuario, String> colNome;
+    @FXML protected TableColumn<Usuario, String> colEmail;
+    @FXML protected TableColumn<Usuario, String> colPerfil;
+    @FXML protected TableColumn<Usuario, String> colAtivo;
 
-    @FXML
-    protected VBox painelTabela;
+    @FXML protected VBox painelCadastro;
+    @FXML protected Label lblCadTitulo;
+    @FXML protected TextField txtCadNome;
+    @FXML protected TextField txtCadEmail;
+    @FXML protected TextField txtCadCpf;
+    @FXML protected PasswordField txtCadSenha;
+    @FXML protected Button btnCadSalvar;
+    @FXML protected Label lblCadMensagem;
 
-    @FXML
-    protected ComboBox<String> cbFiltro;
+    @FXML protected VBox painelBusca;
+    @FXML protected TextField txtBuscaId;
+    @FXML protected Label lblBuscaResultado;
 
-    @FXML
-    protected TextField txtPesquisa;
-
-    @FXML
-    protected Button btnLimparPesquisa;
-
-    @FXML
-    protected TableView<Usuario> tabelaUsuarios;
-
-    @FXML
-    protected TableColumn<Usuario, Integer> colId;
-
-    @FXML
-    protected TableColumn<Usuario, String> colNome;
-
-    @FXML
-    protected TableColumn<Usuario, String> colEmail;
-
-    @FXML
-    protected TableColumn<Usuario, String> colPerfil;
-
-    @FXML
-    protected TableColumn<Usuario, String> colAtivo;
-
-    @FXML
-    protected VBox painelCadastro;
-
-    @FXML
-    protected Label lblCadTitulo;
-
-    @FXML
-    protected TextField txtCadNome;
-
-    @FXML
-    protected TextField txtCadEmail;
-
-    @FXML
-    protected TextField txtCadCpf;
-
-    @FXML
-    protected PasswordField txtCadSenha;
-
-    @FXML
-    protected Button btnCadSalvar;
-
-    @FXML
-    protected Label lblCadMensagem;
-
-    @FXML
-    protected VBox painelBusca;
-
-    @FXML
-    protected TextField txtBuscaId;
-
-    @FXML
-    protected Label lblBuscaResultado;
-
-    @FXML
-    protected Button btnCadastrarCliente;
-
-    @FXML
-    protected Button btnBuscarUsuario;
-
-    @FXML
-    protected Button btnListarUsuarios;
-
-    @FXML
-    protected Button btnVoltar;
+    @FXML protected Button btnCadastrarCliente;
+    @FXML protected Button btnBuscarUsuario;
+    @FXML protected Button btnListarUsuarios;
+    @FXML protected Button btnVoltar;
 
     protected ComboBox<String> cbTipoCadastroForm;
     protected String tipoCadastroAtual = "Cliente";
@@ -130,10 +82,10 @@ public class MenuUsuariosFuncionarioController extends MenuController {
         configurarColunasTabela();
         configurarFiltroPesquisa();
         removerRedundanciaBusca();
-        configurarFormularioUnificado();
         configurarTabelaVazia();
 
         Platform.runLater(() -> {
+            configurarFormularioUnificado();
             exibirPainel(painelTabela);
             if (sistema != null) {
                 carregarTabela();
@@ -162,9 +114,6 @@ public class MenuUsuariosFuncionarioController extends MenuController {
         }
     }
 
-    /**
-     * Ilustração e mensagem explicativa quando a busca não retorna resultados.
-     */
     private void configurarTabelaVazia() {
         if (tabelaUsuarios == null) return;
 
@@ -177,10 +126,11 @@ public class MenuUsuariosFuncionarioController extends MenuController {
         icone.setStyle("-fx-icon-color: #8e8e93;");
 
         Label titulo = new Label("Nenhum usuário encontrado");
-        titulo.setStyle("-fx-font-weight: bold; -fx-font-size: 15px; -fx-text-fill: #1c1c1e;");
+        titulo.setStyle("-fx-font-weight: bold; -fx-font-size: 15px;");
 
         Label subtitulo = new Label("Ajuste os termos da busca ou mude a opção de filtro.");
-        subtitulo.setStyle("-fx-font-size: 13px; -fx-text-fill: #8e8e93;");
+        subtitulo.getStyleClass().add("label-subtitulo");
+        subtitulo.setStyle("-fx-font-size: 13px;");
 
         estadoVazio.getChildren().addAll(icone, titulo, subtitulo);
         tabelaUsuarios.setPlaceholder(estadoVazio);
@@ -194,28 +144,38 @@ public class MenuUsuariosFuncionarioController extends MenuController {
     }
 
     protected void configurarFormularioUnificado() {
-        if (btnCadastrarCliente != null) {
-            btnCadastrarCliente.setText("Novo Usuário");
-        }
-
-        if (painelCadastro != null && cbTipoCadastroForm == null) {
-            cbTipoCadastroForm = new ComboBox<>(obterOpcoesCadastro());
-            cbTipoCadastroForm.setValue("Cliente");
-            cbTipoCadastroForm.setMaxWidth(Double.MAX_VALUE);
-
-            cbTipoCadastroForm.valueProperty().addListener((obs, antigo, novo) -> {
-                if (novo != null) {
-                    this.tipoCadastroAtual = novo;
-                    if (lblCadTitulo != null) lblCadTitulo.setText("Cadastrar " + novo);
-                    if (btnCadSalvar != null) btnCadSalvar.setText("Salvar " + novo);
-                }
-            });
-
-            int indice = 0;
-            if (lblCadTitulo != null && painelCadastro.getChildren().contains(lblCadTitulo)) {
-                indice = painelCadastro.getChildren().indexOf(lblCadTitulo) + 1;
+        try {
+            if (btnCadastrarCliente != null) {
+                btnCadastrarCliente.setText("Novo Usuário");
             }
-            painelCadastro.getChildren().add(indice, cbTipoCadastroForm);
+
+            if (painelCadastro != null && cbTipoCadastroForm == null) {
+                cbTipoCadastroForm = new ComboBox<>(obterOpcoesCadastro());
+                cbTipoCadastroForm.setValue("Cliente");
+                cbTipoCadastroForm.setMaxWidth(Double.MAX_VALUE);
+
+                cbTipoCadastroForm.valueProperty().addListener((obs, antigo, novo) -> {
+                    if (novo != null) {
+                        this.tipoCadastroAtual = novo;
+                        if (lblCadTitulo != null) lblCadTitulo.setText("Cadastrar " + novo);
+                        if (btnCadSalvar != null) btnCadSalvar.setText("Salvar " + novo);
+                    }
+                });
+
+                if (!painelCadastro.getChildren().contains(cbTipoCadastroForm)) {
+                    int indice = 0;
+                    if (lblCadTitulo != null && painelCadastro.getChildren().contains(lblCadTitulo)) {
+                        indice = painelCadastro.getChildren().indexOf(lblCadTitulo) + 1;
+                    }
+                    if (indice >= 0 && indice <= painelCadastro.getChildren().size()) {
+                        painelCadastro.getChildren().add(indice, cbTipoCadastroForm);
+                    } else {
+                        painelCadastro.getChildren().add(cbTipoCadastroForm);
+                    }
+                }
+            }
+        } catch (Exception e) {
+            System.err.println("Aviso controlado em configurarFormularioUnificado: " + e.getMessage());
         }
     }
 
@@ -246,20 +206,13 @@ public class MenuUsuariosFuncionarioController extends MenuController {
                         setText(null);
                     } else {
                         boolean ativo = "Sim".equalsIgnoreCase(item) || "true".equalsIgnoreCase(item);
+                        badge.getStyleClass().removeAll("badge-sucesso", "badge-perigo");
                         if (ativo) {
                             badge.setText("● Ativo");
-                            badge.setStyle(
-                                "-fx-background-color: #d4edda; -fx-text-fill: #155724; " +
-                                "-fx-font-weight: bold; -fx-padding: 3 8 3 8; " +
-                                "-fx-background-radius: 10; -fx-font-size: 11px;"
-                            );
+                            badge.getStyleClass().add("badge-sucesso");
                         } else {
                             badge.setText("● Inativo");
-                            badge.setStyle(
-                                "-fx-background-color: #f8d7da; -fx-text-fill: #721c24; " +
-                                "-fx-font-weight: bold; -fx-padding: 3 8 3 8; " +
-                                "-fx-background-radius: 10; -fx-font-size: 11px;"
-                            );
+                            badge.getStyleClass().add("badge-perigo");
                         }
                         setAlignment(Pos.CENTER);
                         setGraphic(badge);
@@ -308,7 +261,7 @@ public class MenuUsuariosFuncionarioController extends MenuController {
             boolean bateuId = String.valueOf(usuario.getId()).contains(termoFormatado);
             boolean bateuNome = usuario.getNome() != null && usuario.getNome().toLowerCase().contains(termoFormatado);
             boolean bateuEmail = usuario.getEmail() != null && usuario.getEmail().toLowerCase().contains(termoFormatado);
-            
+
             String cpfUsuario = usuario.getCpf() != null ? usuario.getCpf().replaceAll("\\D", "") : "";
             boolean bateuCpf = !termoNumerico.isEmpty() && cpfUsuario.contains(termoNumerico);
 
@@ -384,7 +337,7 @@ public class MenuUsuariosFuncionarioController extends MenuController {
         if (lblCadTitulo != null) lblCadTitulo.setText("Cadastrar " + tipo);
         if (btnCadSalvar != null) btnCadSalvar.setText("Salvar " + tipo);
         limparCamposCadastro();
-        lblCadMensagem.setText("");
+        if (lblCadMensagem != null) lblCadMensagem.setText("");
         exibirPainel(painelCadastro);
     }
 
@@ -398,9 +351,10 @@ public class MenuUsuariosFuncionarioController extends MenuController {
         String senha = txtCadSenha.getText().trim();
 
         if (nome.isEmpty() || email.isEmpty() || cpf.isEmpty() || senha.isEmpty()) {
-            lblCadMensagem.setText("Por favor, preencha todos os campos obrigatórios.");
-            lblCadMensagem.setStyle("-fx-text-fill: #ff3b30; -fx-font-weight: bold;");
-
+            if (lblCadMensagem != null) {
+                lblCadMensagem.setText("Preencha todos os campos obrigatórios.");
+                lblCadMensagem.setStyle("-fx-text-fill: #F87171; -fx-font-weight: bold;");
+            }
             marcarCampoInvalido(txtCadNome, nome.isEmpty());
             marcarCampoInvalido(txtCadEmail, email.isEmpty());
             marcarCampoInvalido(txtCadCpf, cpf.isEmpty());
@@ -418,14 +372,18 @@ public class MenuUsuariosFuncionarioController extends MenuController {
         };
 
         if (sistema.cadastrarUsuario(novoUsuario)) {
-            lblCadMensagem.setText(tipoCadastroAtual + " cadastrado com sucesso! ID: " + id);
-            lblCadMensagem.setStyle("-fx-text-fill: #34c759; -fx-font-weight: bold;");
+            if (lblCadMensagem != null) {
+                lblCadMensagem.setText(tipoCadastroAtual + " cadastrado com sucesso! ID: " + id);
+                lblCadMensagem.setStyle("-fx-text-fill: #34D399; -fx-font-weight: bold;");
+            }
             limparCamposCadastro();
             carregarTabela();
             notificarPopUp(tipoCadastroAtual + " cadastrado com sucesso!", true);
         } else {
-            lblCadMensagem.setText("Erro: CPF ou e-mail já cadastrado.");
-            lblCadMensagem.setStyle("-fx-text-fill: #ff3b30; -fx-font-weight: bold;");
+            if (lblCadMensagem != null) {
+                lblCadMensagem.setText("Erro: CPF ou e-mail já cadastrado.");
+                lblCadMensagem.setStyle("-fx-text-fill: #F87171; -fx-font-weight: bold;");
+            }
             marcarCampoInvalido(txtCadEmail, true);
             marcarCampoInvalido(txtCadCpf, true);
             animarErroShake(painelCadastro);
@@ -459,37 +417,43 @@ public class MenuUsuariosFuncionarioController extends MenuController {
 
     @FXML
     public void aoBuscarUsuario(ActionEvent event) {
-        txtBuscaId.clear();
-        lblBuscaResultado.setText("");
+        if (txtBuscaId != null) txtBuscaId.clear();
+        if (lblBuscaResultado != null) lblBuscaResultado.setText("");
         exibirPainel(painelBusca);
     }
 
     @FXML
     public void aoConfirmarBusca(ActionEvent event) {
-        if (sistema == null) return;
+        if (sistema == null || txtBuscaId == null) return;
 
         try {
             int id = Integer.parseInt(txtBuscaId.getText().trim());
             Usuario usuario = sistema.buscarUsuario(id);
 
             if (usuario != null) {
-                lblBuscaResultado.setText(
-                    "ID: " + usuario.getId() + "\n" +
-                    "Nome: " + usuario.getNome() + "\n" +
-                    "E-mail: " + usuario.getEmail() + "\n" +
-                    "CPF: " + usuario.getCpf() + "\n" +
-                    "Perfil: " + usuario.getClass().getSimpleName() + "\n" +
-                    "Ativo: " + (usuario.isAtivo() ? "Sim" : "Não")
-                );
-                lblBuscaResultado.setStyle("-fx-text-fill: #1c1c1e; -fx-font-size: 13px;");
+                if (lblBuscaResultado != null) {
+                    lblBuscaResultado.setText(
+                        "ID: " + usuario.getId() + "\n" +
+                        "Nome: " + usuario.getNome() + "\n" +
+                        "E-mail: " + usuario.getEmail() + "\n" +
+                        "CPF: " + usuario.getCpf() + "\n" +
+                        "Perfil: " + usuario.getClass().getSimpleName() + "\n" +
+                        "Ativo: " + (usuario.isAtivo() ? "Sim" : "Não")
+                    );
+                    lblBuscaResultado.setStyle("-fx-text-fill: #FFFFFF; -fx-font-size: 13px;");
+                }
             } else {
-                lblBuscaResultado.setText("Usuário não encontrado.");
-                lblBuscaResultado.setStyle("-fx-text-fill: #ff3b30; -fx-font-weight: bold;");
+                if (lblBuscaResultado != null) {
+                    lblBuscaResultado.setText("Usuário não encontrado.");
+                    lblBuscaResultado.setStyle("-fx-text-fill: #F87171; -fx-font-weight: bold;");
+                }
                 animarErroShake(painelBusca);
             }
         } catch (NumberFormatException ex) {
-            lblBuscaResultado.setText("Digite um ID numérico válido.");
-            lblBuscaResultado.setStyle("-fx-text-fill: #ff3b30; -fx-font-weight: bold;");
+            if (lblBuscaResultado != null) {
+                lblBuscaResultado.setText("Digite um ID numérico válido.");
+                lblBuscaResultado.setStyle("-fx-text-fill: #F87171; -fx-font-weight: bold;");
+            }
             marcarCampoInvalido(txtBuscaId, true);
             animarErroShake(painelBusca);
         }

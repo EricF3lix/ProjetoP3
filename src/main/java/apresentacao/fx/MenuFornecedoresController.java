@@ -13,6 +13,8 @@ import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Dialog;
 import javafx.scene.control.Label;
+import javafx.scene.control.TableCell;
+import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
@@ -37,10 +39,12 @@ public class MenuFornecedoresController extends MenuController {
     public void initialize() {
         configurarResponsividade();
         configurarTabelaVazia();
+        configurarColunas();
     }
 
     @Override
     protected void aoExibir() {
+        aplicarEstiloTabela();
         if (!listener && pesquisa != null) {
             pesquisa.textProperty().addListener((obj, antigo, novo) -> fazPesquisa(novo));
             this.listener = true;
@@ -58,6 +62,111 @@ public class MenuFornecedoresController extends MenuController {
         }
     }
 
+    private void aplicarEstiloTabela() {
+        if (tabela == null) return;
+        boolean escuro = GerenciadorTema.isModoEscuro();
+        if (escuro) {
+            tabela.setStyle(
+                "-fx-background-color: #0D0E12 !important; " +
+                "-fx-control-inner-background: #0D0E12 !important; " +
+                "-fx-control-inner-background-alt: #08090B !important; " +
+                "-fx-table-cell-border-color: transparent transparent #161820 transparent !important; " +
+                "-fx-border-color: #1F2229 !important; " +
+                "-fx-border-radius: 10px; -fx-background-radius: 10px;"
+            );
+        } else {
+            tabela.setStyle(
+                "-fx-background-color: #FFFFFF; " +
+                "-fx-control-inner-background: #FFFFFF; " +
+                "-fx-control-inner-background-alt: #FAFAFC; " +
+                "-fx-border-color: #E5E7EB; " +
+                "-fx-border-radius: 10px; -fx-background-radius: 10px;"
+            );
+        }
+        tabela.refresh();
+    }
+
+    private void configurarColunas() {
+        if (tabela == null) return;
+
+        for (TableColumn<Fornecedor, ?> col : tabela.getColumns()) {
+            String titulo = col.getText() != null ? col.getText().trim() : "";
+
+            if (titulo.equalsIgnoreCase("ID")) {
+                col.setMinWidth(45);
+                col.setMaxWidth(65);
+                col.setStyle("-fx-alignment: CENTER;");
+            } 
+            else if (titulo.equalsIgnoreCase("Ativo")) {
+                @SuppressWarnings("unchecked")
+                TableColumn<Fornecedor, Object> colAtivo = (TableColumn<Fornecedor, Object>) col;
+                colAtivo.setMinWidth(110);
+                colAtivo.setPrefWidth(115);
+
+                colAtivo.setCellFactory(c -> new TableCell<>() {
+                    private final Label badge = new Label();
+
+                    @Override
+                    protected void updateItem(Object item, boolean empty) {
+                        super.updateItem(item, empty);
+                        if (empty || item == null) {
+                            setGraphic(null);
+                            setText(null);
+                        } else {
+                            boolean ativo = Boolean.parseBoolean(item.toString()) 
+                                    || "sim".equalsIgnoreCase(item.toString()) 
+                                    || "true".equalsIgnoreCase(item.toString());
+
+                            boolean escuro = GerenciadorTema.isModoEscuro();
+
+                            if (escuro) {
+                                if (ativo) {
+                                    badge.setText("● Ativo");
+                                    badge.setStyle(
+                                        "-fx-background-color: rgba(16, 185, 129, 0.20) !important; " +
+                                        "-fx-text-fill: #34D399 !important; " +
+                                        "-fx-border-color: rgba(52, 211, 153, 0.50) !important; " +
+                                        "-fx-border-radius: 10px; -fx-background-radius: 10px; " +
+                                        "-fx-font-weight: bold; -fx-font-size: 11px; -fx-padding: 3 8 3 8;"
+                                    );
+                                } else {
+                                    badge.setText("● Inativo");
+                                    badge.setStyle(
+                                        "-fx-background-color: rgba(239, 68, 68, 0.20) !important; " +
+                                        "-fx-text-fill: #F87171 !important; " +
+                                        "-fx-border-color: rgba(248, 113, 113, 0.50) !important; " +
+                                        "-fx-border-radius: 10px; -fx-background-radius: 10px; " +
+                                        "-fx-font-weight: bold; -fx-font-size: 11px; -fx-padding: 3 8 3 8;"
+                                    );
+                                }
+                            } else {
+                                if (ativo) {
+                                    badge.setText("● Ativo");
+                                    badge.setStyle(
+                                        "-fx-background-color: #D1FAE5; -fx-text-fill: #065F46; " +
+                                        "-fx-font-weight: bold; -fx-font-size: 11px; -fx-padding: 3 8 3 8; " +
+                                        "-fx-background-radius: 10px; -fx-border-radius: 10px; -fx-border-color: #A7F3D0;"
+                                    );
+                                } else {
+                                    badge.setText("● Inativo");
+                                    badge.setStyle(
+                                        "-fx-background-color: #FEE2E2; -fx-text-fill: #991B1B; " +
+                                        "-fx-font-weight: bold; -fx-font-size: 11px; -fx-padding: 3 8 3 8; " +
+                                        "-fx-background-radius: 10px; -fx-border-radius: 10px; -fx-border-color: #FECACA;"
+                                    );
+                                }
+                            }
+
+                            setAlignment(Pos.CENTER);
+                            setGraphic(badge);
+                            setText(null);
+                        }
+                    }
+                });
+            }
+        }
+    }
+
     private void configurarTabelaVazia() {
         if (tabela == null) return;
 
@@ -70,10 +179,11 @@ public class MenuFornecedoresController extends MenuController {
         icone.setStyle("-fx-icon-color: #8e8e93;");
 
         Label titulo = new Label("Nenhum fornecedor encontrado");
-        titulo.setStyle("-fx-font-weight: bold; -fx-font-size: 15px; -fx-text-fill: #1c1c1e;");
+        titulo.setStyle("-fx-font-weight: bold; -fx-font-size: 15px;");
 
         Label subtitulo = new Label("Utilize o campo de busca acima ou cadastre um novo parceiro.");
-        subtitulo.setStyle("-fx-font-size: 13px; -fx-text-fill: #8e8e93;");
+        subtitulo.getStyleClass().add("label-subtitulo");
+        subtitulo.setStyle("-fx-font-size: 13px;");
 
         estadoVazio.getChildren().addAll(icone, titulo, subtitulo);
         tabela.setPlaceholder(estadoVazio);
@@ -129,7 +239,6 @@ public class MenuFornecedoresController extends MenuController {
         String email = txtEmail.getText().trim();
         String telefone = txtTelefone.getText().trim();
 
-        // Validação estrita de campos em branco
         if (nome.isBlank() || cnpj.isBlank() || email.isBlank() || telefone.isBlank()) {
             animarErroShake(tabela);
             notificarPopUp("Todos os campos são obrigatórios e não podem ficar em branco!", false);

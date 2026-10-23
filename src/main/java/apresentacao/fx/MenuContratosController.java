@@ -96,10 +96,11 @@ public class MenuContratosController extends MenuController {
         icone.setStyle("-fx-icon-color: #8e8e93;");
 
         Label titulo = new Label("Nenhum contrato encontrado");
-        titulo.setStyle("-fx-font-weight: bold; -fx-font-size: 15px; -fx-text-fill: #1c1c1e;");
+        titulo.setStyle("-fx-font-weight: bold; -fx-font-size: 15px;");
 
         Label subtitulo = new Label("Utilize o campo de busca acima ou registre uma nova locação.");
-        subtitulo.setStyle("-fx-font-size: 13px; -fx-text-fill: #8e8e93;");
+        subtitulo.getStyleClass().add("label-subtitulo");
+        subtitulo.setStyle("-fx-font-size: 13px;");
 
         estadoVazio.getChildren().addAll(icone, titulo, subtitulo);
         tabela.setPlaceholder(estadoVazio);
@@ -116,7 +117,7 @@ public class MenuContratosController extends MenuController {
                 Cliente c = d.getValue().getCliente();
                 return new SimpleStringProperty(c != null ? c.getNome() : "N/D");
             });
-            colCliente.setStyle("-fx-font-weight: bold; -fx-text-fill: #1c1c1e;");
+            colCliente.setStyle("-fx-font-weight: bold;");
         }
 
         if (colItem != null) {
@@ -148,7 +149,7 @@ public class MenuContratosController extends MenuController {
                     } else {
                         setText(MOEDA.format(valor));
                         setAlignment(Pos.CENTER_RIGHT);
-                        setStyle("-fx-font-weight: bold; -fx-text-fill: #1c1c1e;");
+                        setStyle("-fx-font-weight: bold;");
                     }
                 }
             });
@@ -173,30 +174,21 @@ public class MenuContratosController extends MenuController {
                             prevista = LocalDate.parse(contrato.getDataDevolucaoPrevista());
                         } catch (Exception ignored) {}
 
+                        badge.getStyleClass().removeAll("badge-sucesso", "badge-perigo", "badge-aviso", "badge-info", "badge-neutro");
+                        badge.setStyle(""); // Limpa travas inline para a folha CSS atuar em claro/escuro
+
                         if ("FINALIZADO".equals(st)) {
                             badge.setText("● Concluído");
-                            badge.setStyle(
-                                "-fx-background-color: #e5e7eb; -fx-text-fill: #374151; " +
-                                "-fx-font-weight: bold; -fx-padding: 3 9 3 9; -fx-background-radius: 10; -fx-font-size: 11px;"
-                            );
+                            badge.getStyleClass().add("badge-neutro");
                         } else if ("CANCELADO".equals(st)) {
                             badge.setText("● Cancelado");
-                            badge.setStyle(
-                                "-fx-background-color: #fee2e2; -fx-text-fill: #991b1b; " +
-                                "-fx-font-weight: bold; -fx-padding: 3 9 3 9; -fx-background-radius: 10; -fx-font-size: 11px;"
-                            );
+                            badge.getStyleClass().add("badge-perigo");
                         } else if (prevista != null && hoje.isAfter(prevista)) {
                             badge.setText("● Atrasado");
-                            badge.setStyle(
-                                "-fx-background-color: #fee2e2; -fx-text-fill: #b91c1c; " +
-                                "-fx-font-weight: bold; -fx-padding: 3 9 3 9; -fx-background-radius: 10; -fx-font-size: 11px;"
-                            );
+                            badge.getStyleClass().add("badge-perigo");
                         } else {
                             badge.setText("● Em Dia");
-                            badge.setStyle(
-                                "-fx-background-color: #d1fae5; -fx-text-fill: #065f46; " +
-                                "-fx-font-weight: bold; -fx-padding: 3 9 3 9; -fx-background-radius: 10; -fx-font-size: 11px;"
-                            );
+                            badge.getStyleClass().add("badge-sucesso");
                         }
 
                         setAlignment(Pos.CENTER);

@@ -15,8 +15,6 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.control.ButtonType;
@@ -91,9 +89,6 @@ public class MenuItensController extends MenuController {
         }
     }
 
-    /**
-     * Empty State elegante estilo macOS caso a busca não retorne nenhum item.
-     */
     private void configurarTabelaVazia() {
         if (tabela == null) return;
 
@@ -106,10 +101,11 @@ public class MenuItensController extends MenuController {
         icone.setStyle("-fx-icon-color: #8e8e93;");
 
         Label titulo = new Label("Nenhum item encontrado");
-        titulo.setStyle("-fx-font-weight: bold; -fx-font-size: 15px; -fx-text-fill: #1c1c1e;");
+        titulo.setStyle("-fx-font-weight: bold; -fx-font-size: 15px;");
 
         Label subtitulo = new Label("Tente ajustar o termo pesquisado ou verifique os filtros.");
-        subtitulo.setStyle("-fx-font-size: 13px; -fx-text-fill: #8e8e93;");
+        subtitulo.getStyleClass().add("label-subtitulo");
+        subtitulo.setStyle("-fx-font-size: 13px;");
 
         estadoVazio.getChildren().addAll(icone, titulo, subtitulo);
         tabela.setPlaceholder(estadoVazio);
@@ -143,7 +139,7 @@ public class MenuItensController extends MenuController {
                     } else {
                         setText(MOEDA.format(valor));
                         setAlignment(Pos.CENTER_RIGHT);
-                        setStyle("-fx-font-weight: bold; -fx-text-fill: #1c1c1e;");
+                        setStyle("-fx-font-weight: bold;");
                     }
                 }
             });
@@ -165,7 +161,7 @@ public class MenuItensController extends MenuController {
                                     double num = Double.parseDouble(valor.toString());
                                     setText(MOEDA.format(num));
                                     setAlignment(Pos.CENTER_RIGHT);
-                                    setStyle("-fx-font-weight: bold; -fx-text-fill: #1c1c1e;");
+                                    setStyle("-fx-font-weight: bold;");
                                 } catch (NumberFormatException e) {
                                     setText(valor.toString());
                                 }
@@ -178,9 +174,6 @@ public class MenuItensController extends MenuController {
         }
     }
 
-    /**
-     * Badges coloridas de alta visibilidade para status e disponibilidade.
-     */
     private void configurarColunaAtivoEStatus() {
         if (colAtivo != null) {
             colAtivo.setCellFactory(col -> new TableCell<Item, Boolean>() {
@@ -199,46 +192,20 @@ public class MenuItensController extends MenuController {
                                 ? item.getStatus().toString().toLowerCase() 
                                 : "";
 
+                        badge.getStyleClass().removeAll("badge-sucesso", "badge-perigo", "badge-info", "badge-aviso");
+
                         if (!ativo) {
                             badge.setText("● Indisponível");
-                            badge.setStyle(
-                                "-fx-background-color: #fee2e2; " +
-                                "-fx-text-fill: #991b1b; " +
-                                "-fx-font-weight: bold; " +
-                                "-fx-padding: 3 8 3 8; " +
-                                "-fx-background-radius: 10; " +
-                                "-fx-font-size: 11px;"
-                            );
+                            badge.getStyleClass().add("badge-perigo");
                         } else if (statusTexto.contains("alugado") || statusTexto.contains("locado")) {
                             badge.setText("● Alugado");
-                            badge.setStyle(
-                                "-fx-background-color: #dbeafe; " +
-                                "-fx-text-fill: #1e40af; " +
-                                "-fx-font-weight: bold; " +
-                                "-fx-padding: 3 8 3 8; " +
-                                "-fx-background-radius: 10; " +
-                                "-fx-font-size: 11px;"
-                            );
+                            badge.getStyleClass().add("badge-info");
                         } else if (statusTexto.contains("manuten") || statusTexto.contains("reparo")) {
                             badge.setText("● Manutenção");
-                            badge.setStyle(
-                                "-fx-background-color: #fef3c7; " +
-                                "-fx-text-fill: #92400e; " +
-                                "-fx-font-weight: bold; " +
-                                "-fx-padding: 3 8 3 8; " +
-                                "-fx-background-radius: 10; " +
-                                "-fx-font-size: 11px;"
-                            );
+                            badge.getStyleClass().add("badge-aviso");
                         } else {
                             badge.setText("● Disponível");
-                            badge.setStyle(
-                                "-fx-background-color: #d1fae5; " +
-                                "-fx-text-fill: #065f46; " +
-                                "-fx-font-weight: bold; " +
-                                "-fx-padding: 3 8 3 8; " +
-                                "-fx-background-radius: 10; " +
-                                "-fx-font-size: 11px;"
-                            );
+                            badge.getStyleClass().add("badge-sucesso");
                         }
                         setAlignment(Pos.CENTER);
                         setGraphic(badge);
@@ -285,7 +252,7 @@ public class MenuItensController extends MenuController {
 
             boolean bateuId = String.valueOf(item.getId()).contains(termoFormatado);
             boolean bateuNome = item.getNome() != null && item.getNome().toLowerCase().contains(termoFormatado);
-            
+
             String catTexto = item.getCategoria() != null ? String.valueOf(item.getCategoria()).toLowerCase() : "";
             boolean bateuCategoria = catTexto.contains(termoFormatado);
 

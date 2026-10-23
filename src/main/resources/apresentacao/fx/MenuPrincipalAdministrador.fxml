@@ -33,6 +33,8 @@
                <FontIcon fx:id="iconSair" iconColor="#b91c1c" iconSize="16" />
             </graphic>
          </Button>
+         <!-- Espaço reservado para o toggle flutuante 24/7 -->
+         <Region minWidth="135" prefWidth="135" />
       </HBox>
 
       <!-- Grade Principal -->

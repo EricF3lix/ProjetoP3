@@ -94,10 +94,11 @@ public class MenuMultasController extends MenuController {
         icone.setStyle("-fx-icon-color: #8e8e93;");
 
         Label titulo = new Label("Nenhuma multa encontrada");
-        titulo.setStyle("-fx-font-weight: bold; -fx-font-size: 15px; -fx-text-fill: #1c1c1e;");
+        titulo.setStyle("-fx-font-weight: bold; -fx-font-size: 15px;");
 
         Label subtitulo = new Label("Não há registros correspondentes aos critérios de pesquisa.");
-        subtitulo.setStyle("-fx-font-size: 13px; -fx-text-fill: #8e8e93;");
+        subtitulo.getStyleClass().add("label-subtitulo");
+        subtitulo.setStyle("-fx-font-size: 13px;");
 
         estadoVazio.getChildren().addAll(icone, titulo, subtitulo);
         tabela.setPlaceholder(estadoVazio);
@@ -123,7 +124,7 @@ public class MenuMultasController extends MenuController {
                     } else {
                         setText(MOEDA.format(valor));
                         setAlignment(Pos.CENTER_RIGHT);
-                        setStyle("-fx-font-weight: bold; -fx-text-fill: #1c1c1e;");
+                        setStyle("-fx-font-weight: bold;");
                     }
                 }
             });
@@ -140,20 +141,13 @@ public class MenuMultasController extends MenuController {
                         setGraphic(null);
                         setText(null);
                     } else {
+                        badge.getStyleClass().removeAll("badge-sucesso", "badge-aviso");
                         if (paga) {
                             badge.setText("● Paga");
-                            badge.setStyle(
-                                "-fx-background-color: #d1fae5; -fx-text-fill: #065f46; " +
-                                "-fx-font-weight: bold; -fx-padding: 3 9 3 9; " +
-                                "-fx-background-radius: 10; -fx-font-size: 11px;"
-                            );
+                            badge.getStyleClass().add("badge-sucesso");
                         } else {
                             badge.setText("● Pendente");
-                            badge.setStyle(
-                                "-fx-background-color: #fef3c7; -fx-text-fill: #92400e; " +
-                                "-fx-font-weight: bold; -fx-padding: 3 9 3 9; " +
-                                "-fx-background-radius: 10; -fx-font-size: 11px;"
-                            );
+                            badge.getStyleClass().add("badge-aviso");
                         }
                         setAlignment(Pos.CENTER);
                         setGraphic(badge);

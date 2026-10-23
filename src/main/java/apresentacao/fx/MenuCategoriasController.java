@@ -73,11 +73,10 @@ public class MenuCategoriasController extends MenuController {
         }
         if (colNome != null) {
             colNome.setCellValueFactory(new PropertyValueFactory<>("nome"));
-            colNome.setStyle("-fx-font-weight: bold; -fx-text-fill: #1c1c1e;");
+            colNome.setStyle("-fx-font-weight: bold;");
         }
         if (colDescricao != null) {
             colDescricao.setCellValueFactory(new PropertyValueFactory<>("descricao"));
-            colDescricao.setStyle("-fx-text-fill: #48484a;");
         }
         if (colStatus != null) {
             colStatus.setCellValueFactory(new PropertyValueFactory<>("ativa"));
@@ -91,20 +90,13 @@ public class MenuCategoriasController extends MenuController {
                         setGraphic(null);
                         setText(null);
                     } else {
+                        badge.getStyleClass().removeAll("badge-sucesso", "badge-perigo");
                         if (ativa) {
                             badge.setText("● Ativa");
-                            badge.setStyle(
-                                "-fx-background-color: #d1fae5; -fx-text-fill: #065f46; " +
-                                "-fx-font-weight: bold; -fx-padding: 3 9 3 9; " +
-                                "-fx-background-radius: 10; -fx-font-size: 11px;"
-                            );
+                            badge.getStyleClass().add("badge-sucesso");
                         } else {
                             badge.setText("● Inativa");
-                            badge.setStyle(
-                                "-fx-background-color: #fee2e2; -fx-text-fill: #991b1b; " +
-                                "-fx-font-weight: bold; -fx-padding: 3 9 3 9; " +
-                                "-fx-background-radius: 10; -fx-font-size: 11px;"
-                            );
+                            badge.getStyleClass().add("badge-perigo");
                         }
                         setAlignment(Pos.CENTER);
                         setGraphic(badge);
@@ -127,10 +119,11 @@ public class MenuCategoriasController extends MenuController {
         icone.setStyle("-fx-icon-color: #8e8e93;");
 
         Label titulo = new Label("Nenhuma categoria encontrada");
-        titulo.setStyle("-fx-font-weight: bold; -fx-font-size: 15px; -fx-text-fill: #1c1c1e;");
+        titulo.setStyle("-fx-font-weight: bold; -fx-font-size: 15px;");
 
         Label subtitulo = new Label("Utilize a barra de pesquisa ou cadastre uma nova categoria.");
-        subtitulo.setStyle("-fx-font-size: 13px; -fx-text-fill: #8e8e93;");
+        subtitulo.getStyleClass().add("label-subtitulo");
+        subtitulo.setStyle("-fx-font-size: 13px;");
 
         estadoVazio.getChildren().addAll(icone, titulo, subtitulo);
         tabela.setPlaceholder(estadoVazio);

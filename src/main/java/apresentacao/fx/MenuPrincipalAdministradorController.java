@@ -6,15 +6,16 @@ import entidades.Administrador;
 import entidades.Usuario;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
-import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
+import javafx.scene.paint.Color;
 import org.kordamp.ikonli.javafx.FontIcon;
 
 public class MenuPrincipalAdministradorController extends MenuController {
 
     @FXML private FontIcon iconSair;
+    @FXML private FontIcon iconTema;
     @FXML private FontIcon iconUsuarios;
     @FXML private FontIcon iconItens;
     @FXML private FontIcon iconCategorias;
@@ -35,6 +36,7 @@ public class MenuPrincipalAdministradorController extends MenuController {
     @FXML private Label kpiMultas;
     @FXML private Label kpiRelatorios;
 
+    @FXML private Button btnTema;
     @FXML private Button btnUsuarios;
     @FXML private Button btnItens;
     @FXML private Button btnCategorias;
@@ -71,6 +73,7 @@ public class MenuPrincipalAdministradorController extends MenuController {
         Platform.runLater(this::ajustarLarguraBoxes);
         atualizarIdentificacaoUsuario();
         carregarIndicadoresKPI();
+        atualizarIconeTema();
 
         String nome = (administrador != null && administrador.getNome() != null)
                 ? administrador.getNome()
@@ -82,6 +85,24 @@ public class MenuPrincipalAdministradorController extends MenuController {
                 notificarPopUp("Bem-vindo(a), " + nome + "! Painel administrativo pronto.", true);
             });
         }
+    }
+
+    @FXML
+    private void alternarTema() {
+        if (btnTema != null && btnTema.getScene() != null) {
+            GerenciadorTema.alternarTema(btnTema.getScene());
+            atualizarIconeTema();
+            carregarIndicadoresKPI();
+            boolean escuro = GerenciadorTema.isModoEscuro();
+            notificarPopUp("Modo " + (escuro ? "Escuro" : "Claro") + " ativado.", true);
+        }
+    }
+
+    private void atualizarIconeTema() {
+        if (iconTema == null) return;
+        boolean escuro = GerenciadorTema.isModoEscuro();
+        iconTema.setIconLiteral(escuro ? "fas-sun" : "fas-moon");
+        iconTema.setIconColor(Color.web(escuro ? "#f59e0b" : "#1c1c1e"));
     }
 
     private void ajustarLarguraBoxes() {
@@ -103,75 +124,63 @@ public class MenuPrincipalAdministradorController extends MenuController {
     private void carregarIndicadoresKPI() {
         if (sistema == null) return;
 
-        // KPI Usuários
         try {
             List<Usuario> usuarios = sistema.listarUsuarios();
             if (usuarios != null) {
                 long ativos = usuarios.stream().filter(Usuario::isAtivo).count();
-                atualizarBadge(kpiUsuarios, ativos + " ativos", "#eef2ff", "#4f46e5");
+                atualizarBadge(kpiUsuarios, ativos + " ativos", "badge-info");
             }
         } catch (Exception ignored) {}
 
-        // KPI Itens
         try {
             var itens = sistema.listarItens();
             if (itens != null) {
-                atualizarBadge(kpiItens, itens.size() + " itens", "#eff6ff", "#2563eb");
+                atualizarBadge(kpiItens, itens.size() + " itens", "badge-info");
             }
         } catch (Exception ignored) {}
 
-        // KPI Categorias
         try {
             var metodo = sistema.getClass().getMethod("listarCategorias");
             var lista = (List<?>) metodo.invoke(sistema);
             if (lista != null) {
-                atualizarBadge(kpiCategorias, lista.size() + " ativas", "#ecfdf5", "#059669");
+                atualizarBadge(kpiCategorias, lista.size() + " ativas", "badge-sucesso");
             }
         } catch (Exception e) {
-            atualizarBadge(kpiCategorias, "Catálogo", "#ecfdf5", "#059669");
+            atualizarBadge(kpiCategorias, "Catálogo", "badge-sucesso");
         }
 
-        // KPI Fornecedores
         try {
             var fornecedores = sistema.listarFornecedores();
             if (fornecedores != null) {
-                atualizarBadge(kpiFornecedores, fornecedores.size() + " parceiros", "#fffbeb", "#d97706");
+                atualizarBadge(kpiFornecedores, fornecedores.size() + " parceiros", "badge-aviso");
             }
         } catch (Exception ignored) {}
 
-        // KPI Contratos
         try {
             var contratos = sistema.gerarRelatorioItensAlugados();
             if (contratos != null) {
-                atualizarBadge(kpiContratos, contratos.size() + " em aberto", "#f0f9ff", "#0284c7");
+                atualizarBadge(kpiContratos, contratos.size() + " em aberto", "badge-info");
             }
         } catch (Exception ignored) {}
 
-        // KPI Multas
         try {
             var pendentes = sistema.listarMultasPendentes();
             if (pendentes != null && !pendentes.isEmpty()) {
-                atualizarBadge(kpiMultas, pendentes.size() + " pendente" + (pendentes.size() > 1 ? "s" : ""), "#fee2e2", "#991b1b");
+                atualizarBadge(kpiMultas, pendentes.size() + " pendente" + (pendentes.size() > 1 ? "s" : ""), "badge-perigo");
             } else {
-                atualizarBadge(kpiMultas, "Zeradas", "#d1fae5", "#065f46");
+                atualizarBadge(kpiMultas, "Zeradas", "badge-sucesso");
             }
         } catch (Exception ignored) {}
 
-        // KPI Relatórios
-        atualizarBadge(kpiRelatorios, "PDF", "#faf5ff", "#7c3aed");
+        atualizarBadge(kpiRelatorios, "PDF", "badge-neutro");
     }
 
-    private void atualizarBadge(Label badge, String texto, String corFundo, String corTexto) {
+    private void atualizarBadge(Label badge, String texto, String tipoClasse) {
         if (badge == null) return;
         badge.setText(texto);
-        badge.setStyle(
-            "-fx-background-color: " + corFundo + ";" +
-            "-fx-text-fill: " + corTexto + ";" +
-            "-fx-font-size: 11px;" +
-            "-fx-font-weight: bold;" +
-            "-fx-padding: 3 8 3 8;" +
-            "-fx-background-radius: 10px;"
-        );
+        badge.setStyle("");
+        badge.getStyleClass().removeAll("badge-sucesso", "badge-perigo", "badge-aviso", "badge-info", "badge-neutro");
+        badge.getStyleClass().add(tipoClasse);
     }
 
     private void carregarIcones() {

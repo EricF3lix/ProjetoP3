@@ -14,17 +14,19 @@ import javafx.animation.Interpolator;
 import javafx.animation.ParallelTransition;
 import javafx.animation.TranslateTransition;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.CacheHint;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
 public class Navegador {
 
-    private record Tela(Parent raiz, MenuController controller) {
-    }
+    private record Tela(Parent raiz, MenuController controller) {}
 
     private final Stage stage;
     private final Scene scene;
@@ -32,15 +34,30 @@ public class Navegador {
     private final Deque<Tela> pilha = new ArrayDeque<>();
     private boolean animando = false;
 
+    private final StackPane rootMaster;
+    private final StackPane camadaTelas;
+    private final ThemeToggleSwitch seletorTemaGlobal;
+
     public Navegador(Stage stage, SistemaFacade sistema) {
         this.stage = stage;
         this.sistema = sistema;
-        this.scene = new Scene(new StackPane(), 900, 600);
+
+        this.camadaTelas = new StackPane();
+        this.seletorTemaGlobal = new ThemeToggleSwitch();
+
+        seletorTemaGlobal.setMaxSize(Region.USE_PREF_SIZE, Region.USE_PREF_SIZE);
+        StackPane.setAlignment(seletorTemaGlobal, Pos.BOTTOM_RIGHT);
+        StackPane.setMargin(seletorTemaGlobal, new Insets(0, 20, 18, 0));
+
+        this.rootMaster = new StackPane(camadaTelas, seletorTemaGlobal);
+        this.scene = new Scene(rootMaster, 1024, 660);
 
         URL cssUrl = Navegador.class.getResource("style.css");
         if (cssUrl != null) {
             this.scene.getStylesheets().add(cssUrl.toExternalForm());
         }
+
+        GerenciadorTema.aplicarTema(this.scene);
 
         stage.setScene(scene);
         stage.setMinWidth(800);
@@ -48,7 +65,7 @@ public class Navegador {
     }
 
     public void abrir(String fxml) {
-        abrir(fxml, c -> { });
+        abrir(fxml, c -> {});
     }
 
     public <T extends MenuController> void abrir(String fxml, Consumer<T> configurador) {
@@ -61,6 +78,8 @@ public class Navegador {
             T controller = loader.getController();
             controller.inicializar(sistema, this);
             configurador.accept(controller);
+
+            GerenciadorTema.aplicarTemaEmNo(raiz);
 
             Tela novaTela = new Tela(raiz, controller);
             Tela telaAnterior = pilha.peek();
@@ -81,7 +100,7 @@ public class Navegador {
     }
 
     public void reiniciar(String fxml) {
-        reiniciar(fxml, c -> { });
+        reiniciar(fxml, c -> {});
     }
 
     public <T extends MenuController> void reiniciar(String fxml, Consumer<T> configurador) {
@@ -94,6 +113,8 @@ public class Navegador {
             T controller = loader.getController();
             controller.inicializar(sistema, this);
             configurador.accept(controller);
+
+            GerenciadorTema.aplicarTemaEmNo(raiz);
 
             Tela telaAnterior = pilha.peek();
             pilha.clear();
@@ -111,13 +132,18 @@ public class Navegador {
         return stage;
     }
 
+    public Scene getScene() {
+        return scene;
+    }
+
     private void transicionarFade(Parent raizAntiga, Tela destino) {
         animando = true;
         stage.setTitle(destino.controller().getTitulo());
         Parent raizNova = destino.raiz();
+        GerenciadorTema.aplicarTemaEmNo(raizNova);
 
         if (raizAntiga == null) {
-            scene.setRoot(raizNova);
+            camadaTelas.getChildren().setAll(raizNova);
             raizNova.setOpacity(0.0);
             FadeTransition fade = new FadeTransition(Duration.millis(200), raizNova);
             fade.setFromValue(0.0);
@@ -131,9 +157,9 @@ public class Navegador {
         }
 
         StackPane container = new StackPane(raizAntiga, raizNova);
-        container.setStyle("-fx-background-color: #F5F5F7;");
+        container.setStyle("-fx-background-color: " + (GerenciadorTema.isModoEscuro() ? "#000000;" : "#F5F5F7;"));
         container.setMouseTransparent(true);
-        scene.setRoot(container);
+        camadaTelas.getChildren().setAll(container);
 
         raizNova.setOpacity(0.0);
         FadeTransition fadeIn = new FadeTransition(Duration.millis(220), raizNova);
@@ -147,7 +173,7 @@ public class Navegador {
         ParallelTransition animacao = new ParallelTransition(fadeIn, fadeOut);
         animacao.setOnFinished(e -> {
             container.getChildren().clear();
-            scene.setRoot(raizNova);
+            camadaTelas.getChildren().setAll(raizNova);
             raizNova.setOpacity(1.0);
             raizAntiga.setOpacity(1.0);
             animando = false;
@@ -167,6 +193,7 @@ public class Navegador {
 
         Parent raizOrigem = origem.raiz();
         Parent raizDestino = destino.raiz();
+        GerenciadorTema.aplicarTemaEmNo(raizDestino);
         double largura = scene.getWidth() > 0 ? scene.getWidth() : 900;
 
         raizOrigem.setCache(true);
@@ -175,9 +202,9 @@ public class Navegador {
         raizDestino.setCacheHint(CacheHint.SPEED);
 
         StackPane container = new StackPane();
-        container.setStyle("-fx-background-color: #F5F5F7;");
+        container.setStyle("-fx-background-color: " + (GerenciadorTema.isModoEscuro() ? "#000000;" : "#F5F5F7;"));
         container.setMouseTransparent(true);
-        scene.setRoot(container);
+        camadaTelas.getChildren().setAll(container);
 
         ParallelTransition animacao;
 
@@ -235,7 +262,7 @@ public class Navegador {
 
         animacao.setOnFinished(e -> {
             container.getChildren().clear();
-            scene.setRoot(raizDestino);
+            camadaTelas.getChildren().setAll(raizDestino);
 
             raizOrigem.setCache(false);
             raizDestino.setCache(false);
