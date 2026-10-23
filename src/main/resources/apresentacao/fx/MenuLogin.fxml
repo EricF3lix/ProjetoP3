@@ -9,7 +9,10 @@
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 
-<StackPane prefHeight="660.0" prefWidth="950.0" style="-fx-background-color: #F5F5F7;" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="apresentacao.fx.MenuLoginController">
+<VBox alignment="CENTER" prefHeight="600.0" prefWidth="900.0" spacing="12.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="apresentacao.fx.MenuLoginController">
+   <padding>
+      <Insets bottom="24.0" left="24.0" right="24.0" top="24.0" />
+   </padding>
    <children>
       <VBox alignment="CENTER" maxHeight="560.0" maxWidth="400.0" spacing="20.0" style="-fx-background-color: #ffffff; -fx-background-radius: 20px; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 25, 0, 0, 8);">
          <padding>
@@ -56,4 +59,4 @@
          </children>
       </VBox>
    </children>
-</StackPane>
+</VBox>

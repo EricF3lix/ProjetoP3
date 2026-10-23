@@ -2,31 +2,24 @@ package apresentacao.fx;
 
 
 import java.util.List;
-import java.util.Optional;
 
 import entidades.Cliente;
 import entidades.ContratoAluguel;
 import entidades.Item;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableView;
 
 public class MenuClienteController extends MenuController {
 
-	private static final String NENHUM_ITEM = "Nenhum item disponível no momento";
-	private static final String NENHUM_ALUGUEL = "Nenhum aluguel ativo";
-	private static final String NENHUM_CONTRATO = "Nenhum contrato encontrado";
-	private static final String NENHUMA_MULTA = "Nenhuma multa pendente";
-	private static final String SEM_MULTAS_PENDENTES = "Você não possui multas pendentes";
-	private static final String CONTRATO_NAO_ENCONTRADO = "Contrato não encontrado";
-	private static final String CONTRATO_SEM_MULTA = "Este contrato não possui multa pendente";
-	private static final String MULTA_PAGA = "Multa paga com sucesso!";
-	private static final String ERRO_PAGAMENTO = "Erro ao processar pagamento";
-	private static final String ID_CONTRATO = "Digite o ID do contrato para quitar a multa: ";
 
 	@FXML private TableView<Item> tabelaItens;
 	@FXML private TableView<ContratoAluguel> tabelaContratos;
+	
+	@FXML private ComboBox<String> filtroTipo; 
+	@FXML private ComboBox<String> filtroCampo;
 	
 	@FXML private Label bemVindo;
 	private Cliente cliente;
@@ -39,6 +32,20 @@ public class MenuClienteController extends MenuController {
 	@Override
 	protected void aoExibir() {
 		bemVindo.setText("Bem-vindo(a), " + cliente.getNome());
+		tabelaItens.setPlaceholder(new Label("Nenhum item disponível"));
+		tabelaContratos.setPlaceholder(new Label ("Você não tem aluguéis ativos"));
+		
+		filtroTipo.valueProperty().addListener((obs, old, novo) -> {
+		    if (novo.equals("Itens")) { filtroCampo.getItems().setAll("ID", "Nome", "Categoria", "Taxa"); listarItensDisponiveis(); }
+		    else if (novo.equals("Aluguéis")) { filtroCampo.getItems().setAll("ID", "Item", "Data de Retirada", "Data de Devolução", "Status", "Valor total", "Valor multa"); historicoAlugueis(); }	    
+		    filtroCampo.getSelectionModel().clearSelection();
+		});
+		
+		pesquisa.textProperty().addListener((obs, old, novo) -> {if (filtroTipo.getValue().equals("Itens") ) {pesquisaItens();} 
+		else if (filtroTipo.getValue().equals("Aluguéis")) {pesquisaContratos();}
+		});
+		
+		listarItensDisponiveis();
 	}
 
 	public void setCliente(Cliente cliente) {
@@ -53,31 +60,59 @@ public class MenuClienteController extends MenuController {
 		tabelaContratos.setManaged(tipo);
 	}
 	
-	private void exibirContratos(List<ContratoAluguel> lista, String msgVazio) {
-		mostrarTabelas(true);
-		if (lista.isEmpty()) {
-			info(msgVazio);
-		}
-		else {
-			tabelaContratos.setItems(FXCollections.observableArrayList(lista));
-		}
+	private void pesquisaItens() {
+		mostrarTabelas(false);
+	    String pesquisado = pesquisa.getText();
+	    String campo = filtroCampo.getValue();
+
+	    if (campo == null) {
+	        tabelaItens.getItems().setAll(sistema.listarItens());
+	        return;
+	    }
+
+	    switch (campo) {
+	        case "ID" -> tabelaItens.getItems().setAll(sistema.filtraID(pesquisado));
+	        case "Nome" -> tabelaItens.getItems().setAll(sistema.filtraNome(pesquisado));
+	        case "Categoria" -> tabelaItens.getItems().setAll(sistema.filtraCategoria(pesquisado));
+	        case "Taxa" -> tabelaItens.getItems().setAll(sistema.filtraTaxa(pesquisado));
+	        default -> info("Seleção inválida");
+	    }
 	}
+	
+	private void pesquisaContratos() {
+		mostrarTabelas(true);
+	    String pesquisado = pesquisa.getText();
+	    String campo = filtroCampo.getValue();
+
+	    if (campo == null) {
+	        tabelaContratos.getItems().setAll(sistema.listarContratos());
+	        return;
+	    }
+
+	    switch (campo) {
+	        case "ID" -> tabelaContratos.getItems().setAll(sistema.filtraIDContrato(pesquisado));
+	        case "Item" -> tabelaContratos.getItems().setAll(sistema.filtraItemContrato(pesquisado));
+	        case "Data de Retirada" -> tabelaContratos.getItems().setAll(sistema.filtraDataRetiradaContrato(pesquisado));
+	        case "Data de Devolução" -> tabelaContratos.getItems().setAll(sistema.filtraDataDevolucaoContrato(pesquisado));
+	        case "Status" -> tabelaContratos.getItems().setAll(sistema.filtraStatusContrato(pesquisado));
+	        case "Valor total" -> tabelaContratos.getItems().setAll(sistema.filtraValorTotalContrato(pesquisado));
+	        case "Valor multa" -> tabelaContratos.getItems().setAll(sistema.filtraValorMultaContrato(pesquisado));
+	        default -> info("Seleção inválida");
+	    }
+	}
+	
+	private void exibirContratos(List<ContratoAluguel> lista) {
+		mostrarTabelas(true);
+		tabelaContratos.setItems(FXCollections.observableArrayList(lista));
+		}
 	
 	@FXML
 	private void listarItensDisponiveis() {
-
 		mostrarTabelas(false);
-
 		List<Item> disponiveis = sistema.listarItens().stream()
 				.filter(Item::estaDisponivel)
 				.toList();
-
-		if (disponiveis.isEmpty()) {
-			info(NENHUM_ITEM);
-		}
-		else {
 			tabelaItens.setItems(FXCollections.observableArrayList(disponiveis));
-		}
 	}
 	
 	@FXML
@@ -86,7 +121,7 @@ public class MenuClienteController extends MenuController {
 				.filter(contrato -> contrato.getCliente().getId() == cliente.getId() && contrato.estaAtivo())
 				.toList();
 
-		exibirContratos(contratosAtivos, NENHUM_ALUGUEL);
+		exibirContratos(contratosAtivos);
 	}
 
 	@FXML
@@ -95,54 +130,14 @@ public class MenuClienteController extends MenuController {
 				.filter(contrato -> contrato.getCliente().getId() == cliente.getId())
 				.toList();
 
-		exibirContratos(historico, NENHUM_CONTRATO);
+		exibirContratos(historico);
 	}
 
 	@FXML
 	private void multasPendentes() {
-		exibirContratos(buscarMultasPendentes(), NENHUMA_MULTA);
+		exibirContratos(buscarMultasPendentes());
 	}
 
-	@FXML
-	private void pagarMulta() {
-
-		mostrarTabelas(true);
-
-		List<ContratoAluguel> pendentes = buscarMultasPendentes();
-
-		if (pendentes.isEmpty()) {
-			info(SEM_MULTAS_PENDENTES);
-			return;
-		}
-
-		tabelaContratos.setItems(FXCollections.observableArrayList(pendentes));
-
-		Optional<Integer> id = pedirInteiro(ID_CONTRATO);
-		if (id.isEmpty()) return;
-
-		ContratoAluguel contrato = sistema.buscarContrato(id.get());
-
-		if (contrato == null || contrato.getCliente().getId() != cliente.getId()) {
-			erro(CONTRATO_NAO_ENCONTRADO);
-			return;
-		}
-
-		if (contrato.getValorMulta() <= 0 || contrato.isMultaPaga()) {
-			erro(CONTRATO_SEM_MULTA);
-			return;
-		}
-
-		if (!confirmar(String.format("Confirma o pagamento de R$ %.2f?", contrato.getValorMulta()))) {
-			return;
-		}
-
-		if (sistema.quitarMultaContrato(id.get())) {
-			info(MULTA_PAGA);
-			multasPendentes();
-		} else {
-			erro(ERRO_PAGAMENTO);
-		}
-	}
 
 	private List<ContratoAluguel> buscarMultasPendentes() {
 		return sistema.listarContratos().stream()
@@ -150,5 +145,13 @@ public class MenuClienteController extends MenuController {
 						&& contrato.getValorMulta() > 0
 						&& !contrato.isMultaPaga())
 				.toList();
+	}
+	
+	@FXML
+	private void aoLimparPesquisa() {
+	    pesquisa.clear();
+	    filtroCampo.getSelectionModel().clearSelection();
+	    tabelaItens.getItems().clear();
+	    tabelaContratos.getItems().clear();
 	}
 }

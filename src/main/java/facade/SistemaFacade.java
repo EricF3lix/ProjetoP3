@@ -18,6 +18,8 @@ import entidades.Usuario;
 
 public class SistemaFacade {
 
+    private Usuario usuarioLogado;
+
     private IGerenciamentoUsuarios   gerenciamentoUsuarios;
     private IGerenciamentoContratos  gerenciamentoContratos;
     private IGerenciamentoItens      gerenciamentoItens;
@@ -76,7 +78,16 @@ public class SistemaFacade {
     }
 
     public Usuario realizarLogin(String email, String senha) {
-        return gerenciamentoUsuarios.realizarLogin(email, senha);
+        this.usuarioLogado = gerenciamentoUsuarios.realizarLogin(email, senha);
+        return usuarioLogado;
+    }
+
+    public Usuario getTipoUsuarioLogado() {
+        return usuarioLogado;
+    }
+
+    public void reiniciaTipoUsuarioLogado() {
+        this.usuarioLogado = null;
     }
 
     public int gerarProximoIdUsuario() {
@@ -129,6 +140,34 @@ public class SistemaFacade {
         return gerenciamentoContratos.calcularMulta(diasAtraso, taxaDiaria);
 
     }
+    
+    public List<ContratoAluguel> filtraIDContrato(String pesquisado) {
+        return gerenciamentoContratos.filtrarPorId(pesquisado);
+    }
+
+    public List<ContratoAluguel> filtraItemContrato(String pesquisado) {
+        return gerenciamentoContratos.filtrarPorItem(pesquisado);
+    }
+
+    public List<ContratoAluguel> filtraDataRetiradaContrato(String pesquisado) {
+        return gerenciamentoContratos.filtrarPorDataRetirada(pesquisado);
+    }
+
+    public List<ContratoAluguel> filtraDataDevolucaoContrato(String pesquisado) {
+        return gerenciamentoContratos.filtrarPorDataDevolucao(pesquisado);
+    }
+
+    public List<ContratoAluguel> filtraStatusContrato(String pesquisado) {
+        return gerenciamentoContratos.filtrarPorStatus(pesquisado);
+    }
+
+    public List<ContratoAluguel> filtraValorTotalContrato(String pesquisado) {
+        return gerenciamentoContratos.filtrarPorValorTotal(pesquisado);
+    }
+
+    public List<ContratoAluguel> filtraValorMultaContrato(String pesquisado) {
+        return gerenciamentoContratos.filtrarPorValorMulta(pesquisado);
+    }
 
     // =========================================================================
     // ITENS
@@ -149,6 +188,23 @@ public class SistemaFacade {
     public List<Item> filtrarItem(String filtro) {
         return gerenciamentoItens.filtrarItem(filtro);
     }
+    
+    public List<Item> filtraID(String pesquisado) {
+        return gerenciamentoItens.filtrarPorId(pesquisado);
+    }
+
+    public List<Item> filtraNome(String pesquisado) {
+        return gerenciamentoItens.filtrarPorNome(pesquisado);
+    }
+
+    public List<Item> filtraCategoria(String pesquisado) {
+        return gerenciamentoItens.filtrarPorCategoria(pesquisado);
+    }
+
+    public List<Item> filtraTaxa(String pesquisado) {
+        return gerenciamentoItens.filtrarPorTaxa(pesquisado);
+    }
+    
     public boolean atualizarItem(Item itemNovo) {
         return gerenciamentoItens.atualizarItem(itemNovo);
     }

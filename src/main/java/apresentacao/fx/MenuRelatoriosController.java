@@ -103,6 +103,9 @@ public class MenuRelatoriosController extends MenuController {
     private List<Cliente> clientes = new ArrayList<>();
     private Parametro parametroAtual;
 
+    @FXML
+    private Button relatorioadm;
+
     private String[] ultimosCabecalhos = new String[0];
     private String nomeRelatorioAtual = "Relatório do Sistema";
 
