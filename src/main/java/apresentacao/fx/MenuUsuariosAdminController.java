@@ -1,6 +1,8 @@
 package apresentacao.fx;
 
 import entidades.Usuario;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
@@ -60,6 +62,28 @@ public class MenuUsuariosAdminController extends MenuUsuariosFuncionarioControll
     }
 
     @Override
+    public void initialize() {
+        super.initialize();
+        removerBotoesCadastroRedundantes();
+    }
+
+    private void removerBotoesCadastroRedundantes() {
+        if (btnCadastrarFuncionario != null) {
+            btnCadastrarFuncionario.setVisible(false);
+            btnCadastrarFuncionario.setManaged(false);
+        }
+        if (btnCadastrarAdmin != null) {
+            btnCadastrarAdmin.setVisible(false);
+            btnCadastrarAdmin.setManaged(false);
+        }
+    }
+
+    @Override
+    protected ObservableList<String> obterOpcoesCadastro() {
+        return FXCollections.observableArrayList("Cliente", "Funcionário", "Administrador");
+    }
+
+    @Override
     protected void exibirPainel(Node painelDesejado) {
         super.exibirPainel(painelDesejado);
         if (painelAtualizar != null) painelAtualizar.setVisible(painelDesejado == painelAtualizar);
@@ -85,11 +109,30 @@ public class MenuUsuariosAdminController extends MenuUsuariosFuncionarioControll
         txtAtualizarNome.clear();
         txtAtualizarEmail.clear();
         txtAtualizarSenha.clear();
-        txtAtualizarNome.setDisable(true);
-        txtAtualizarEmail.setDisable(true);
-        txtAtualizarSenha.setDisable(true);
-        btnAtualizarSalvar.setDisable(true);
         lblAtualizarStatus.setText("");
+
+        Usuario selecionado = (tabelaUsuarios != null) ? tabelaUsuarios.getSelectionModel().getSelectedItem() : null;
+
+        if (selecionado != null) {
+            txtAtualizarId.setText(String.valueOf(selecionado.getId()));
+            txtAtualizarNome.setText(selecionado.getNome());
+            txtAtualizarEmail.setText(selecionado.getEmail());
+            txtAtualizarSenha.setText("");
+            txtAtualizarNome.setDisable(false);
+            txtAtualizarEmail.setDisable(false);
+            txtAtualizarSenha.setDisable(false);
+            btnAtualizarSalvar.setDisable(false);
+            lblAtualizarStatus.setText("Editando dados de: " + selecionado.getNome());
+            lblAtualizarStatus.setStyle("-fx-text-fill: #007AFF;");
+        } else {
+            txtAtualizarNome.setDisable(true);
+            txtAtualizarEmail.setDisable(true);
+            txtAtualizarSenha.setDisable(true);
+            btnAtualizarSalvar.setDisable(true);
+            lblAtualizarStatus.setText("Selecione um usuário na tabela ou informe o ID.");
+            lblAtualizarStatus.setStyle("-fx-text-fill: #6e6e73;");
+        }
+
         exibirPainel(painelAtualizar);
     }
 
@@ -122,19 +165,30 @@ public class MenuUsuariosAdminController extends MenuUsuariosFuncionarioControll
     @FXML
     public void aoConfirmarAtualizar(ActionEvent event) {
         if (sistema == null) return;
-        int id = Integer.parseInt(txtAtualizarId.getText().trim());
-        Usuario atual = sistema.buscarUsuario(id);
+        try {
+            int id = Integer.parseInt(txtAtualizarId.getText().trim());
+            Usuario atual = sistema.buscarUsuario(id);
 
-        String novoNome = txtAtualizarNome.getText().trim().isEmpty() ? atual.getNome() : txtAtualizarNome.getText().trim();
-        String novoEmail = txtAtualizarEmail.getText().trim().isEmpty() ? atual.getEmail() : txtAtualizarEmail.getText().trim();
-        String novaSenha = txtAtualizarSenha.getText().trim().isEmpty() ? atual.getSenha() : txtAtualizarSenha.getText().trim();
+            if (atual == null) {
+                lblAtualizarStatus.setText("Usuário não encontrado.");
+                lblAtualizarStatus.setStyle("-fx-text-fill: red;");
+                return;
+            }
 
-        if (sistema.atualizarUsuario(id, novoNome, novoEmail, novaSenha)) {
-            lblAtualizarStatus.setText("Usuário atualizado com sucesso!");
-            lblAtualizarStatus.setStyle("-fx-text-fill: green;");
-            carregarTabela();
-        } else {
-            lblAtualizarStatus.setText("Erro ao atualizar usuário.");
+            String novoNome = txtAtualizarNome.getText().trim().isEmpty() ? atual.getNome() : txtAtualizarNome.getText().trim();
+            String novoEmail = txtAtualizarEmail.getText().trim().isEmpty() ? atual.getEmail() : txtAtualizarEmail.getText().trim();
+            String novaSenha = txtAtualizarSenha.getText().trim().isEmpty() ? atual.getSenha() : txtAtualizarSenha.getText().trim();
+
+            if (sistema.atualizarUsuario(id, novoNome, novoEmail, novaSenha)) {
+                lblAtualizarStatus.setText("Usuário atualizado com sucesso!");
+                lblAtualizarStatus.setStyle("-fx-text-fill: green;");
+                carregarTabela();
+            } else {
+                lblAtualizarStatus.setText("Erro ao atualizar usuário.");
+                lblAtualizarStatus.setStyle("-fx-text-fill: red;");
+            }
+        } catch (NumberFormatException ex) {
+            lblAtualizarStatus.setText("ID inválido.");
             lblAtualizarStatus.setStyle("-fx-text-fill: red;");
         }
     }
@@ -143,6 +197,15 @@ public class MenuUsuariosAdminController extends MenuUsuariosFuncionarioControll
     public void aoDesativarUsuario(ActionEvent event) {
         txtDesativarId.clear();
         lblDesativarStatus.setText("");
+
+        Usuario selecionado = (tabelaUsuarios != null) ? tabelaUsuarios.getSelectionModel().getSelectedItem() : null;
+
+        if (selecionado != null) {
+            txtDesativarId.setText(String.valueOf(selecionado.getId()));
+            lblDesativarStatus.setText("Selecionado: " + selecionado.getNome() + (selecionado.isAtivo() ? " (Ativo)" : " (Inativo)"));
+            lblDesativarStatus.setStyle("-fx-text-fill: #007AFF;");
+        }
+
         exibirPainel(painelDesativar);
     }
 
@@ -151,14 +214,49 @@ public class MenuUsuariosAdminController extends MenuUsuariosFuncionarioControll
         if (sistema == null) return;
         try {
             int id = Integer.parseInt(txtDesativarId.getText().trim());
-            if (sistema.desativaUsuario(id)) {
-                lblDesativarStatus.setText("Usuário desativado com sucesso!");
-                lblDesativarStatus.setStyle("-fx-text-fill: green;");
-                txtDesativarId.clear();
-                carregarTabela();
-            } else {
-                lblDesativarStatus.setText("Não foi possível desativar (verifique pendências/multas).");
+            Usuario usuario = sistema.buscarUsuario(id);
+
+            if (usuario == null) {
+                lblDesativarStatus.setText("Usuário não encontrado.");
                 lblDesativarStatus.setStyle("-fx-text-fill: red;");
+                return;
+            }
+
+            if (usuario.isAtivo()) {
+                if (sistema.desativaUsuario(id)) {
+                    lblDesativarStatus.setText("Usuário desativado com sucesso!");
+                    lblDesativarStatus.setStyle("-fx-text-fill: green;");
+                    txtDesativarId.clear();
+                    carregarTabela();
+                } else {
+                    lblDesativarStatus.setText("Não foi possível desativar (verifique pendências/multas).");
+                    lblDesativarStatus.setStyle("-fx-text-fill: red;");
+                }
+            } else {
+                boolean reativado = false;
+                try {
+                    var metodoAtivar = sistema.getClass().getMethod("ativaUsuario", int.class);
+                    reativado = (boolean) metodoAtivar.invoke(sistema, id);
+                } catch (NoSuchMethodException ignored) {
+                    try {
+                        var metodoAtivar2 = sistema.getClass().getMethod("ativarUsuario", int.class);
+                        reativado = (boolean) metodoAtivar2.invoke(sistema, id);
+                    } catch (Exception ex2) {
+                        reativado = false;
+                    }
+                } catch (Exception e) {
+                    reativado = false;
+                }
+
+                if (reativado) {
+                    lblDesativarStatus.setText("Usuário reativado com sucesso!");
+                    lblDesativarStatus.setStyle("-fx-text-fill: green;");
+                    txtDesativarId.clear();
+                    carregarTabela();
+                } else {
+                    lblDesativarStatus.setText("Este usuário já se encontra inativo.");
+                    lblDesativarStatus.setStyle("-fx-text-fill: orange;");
+                }
             }
         } catch (NumberFormatException ex) {
             lblDesativarStatus.setText("Digite um ID numérico válido.");

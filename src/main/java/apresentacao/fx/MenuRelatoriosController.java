@@ -1,6 +1,7 @@
 package apresentacao.fx;
 
 import java.awt.Color;
+import java.awt.Desktop;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.time.LocalDate;
@@ -9,6 +10,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import com.lowagie.text.Document;
 import com.lowagie.text.Font;
@@ -30,7 +32,10 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonBar.ButtonData;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
@@ -46,7 +51,6 @@ import javafx.stage.Stage;
 
 public class MenuRelatoriosController extends MenuController {
 
-    
     private enum Parametro {
         CLIENTE, PERIODO
     }
@@ -66,7 +70,7 @@ public class MenuRelatoriosController extends MenuController {
 
     @FXML
     private Label lblTituloRelatorio;
-   
+
     @FXML
     private Button btnCategoria;
 
@@ -114,10 +118,6 @@ public class MenuRelatoriosController extends MenuController {
         return "Menu Relatorios";
     }
 
-    // ==========================================
-    // INICIALIZAÇÃO E CONTROLE DA BARRA DE FILTROS
-    // ==========================================
-
     @FXML
     private void initialize() {
         tabela.setPlaceholder(new Label("Escolha um relatório no menu ao lado."));
@@ -132,7 +132,6 @@ public class MenuRelatoriosController extends MenuController {
         mostrarParametros(null);
     }
 
-    
     private void configurarDatePicker(DatePicker datePicker) {
         datePicker.setEditable(false);
         datePicker.setPromptText("Selecione a data");
@@ -199,10 +198,6 @@ public class MenuRelatoriosController extends MenuController {
         }
     }
 
-    // ==========================================
-    // BOTÕES DO MENU LATERAL
-    // ==========================================
-
     @FXML
     private void itensPorCategoria() {
         marcarAtivo(btnCategoria);
@@ -224,7 +219,6 @@ public class MenuRelatoriosController extends MenuController {
         montarTabela("Itens por Categoria", new String[]{"CATEGORIA", "ID", "NOME", "TAXA"}, linhas);
     }
 
-    
     @FXML
     private void historicoAlugueisCliente() {
         marcarAtivo(btnHistorico);
@@ -265,17 +259,12 @@ public class MenuRelatoriosController extends MenuController {
                 new String[]{"ID", "CLIENTE", "ITEM", "DEVOLUÇÃO", "SITUAÇÃO"}, linhas);
     }
 
-    
     @FXML
     private void relatorioPeriodo() {
         marcarAtivo(btnPeriodo);
         mostrarParametros(Parametro.PERIODO);
         limparTabela("Faturamento por Período", "Escolha o período e clique em Gerar relatório.");
     }
-
-    // ==========================================
-    // BOTÃO "GERAR RELATÓRIO" DA BARRA DE FILTROS
-    // ==========================================
 
     @FXML
     private void gerarRelatorio() {
@@ -345,7 +334,6 @@ public class MenuRelatoriosController extends MenuController {
             return;
         }
 
-       
         List<ContratoAluguel> contratosPeriodo =
                 sistema.gerarRelatorioFaturamento(inicial.toString(), fim.toString());
 
@@ -367,10 +355,6 @@ public class MenuRelatoriosController extends MenuController {
                 new String[]{"ID", "CLIENTE", "ALUGUEL", "MULTA", "ATIVO"}, linhas);
     }
 
-    // ==========================================
-    // PRÉ-VISUALIZAÇÃO E EXPORTAÇÃO PDF
-    // ==========================================
-
     @FXML
     private void abrirPreviaExportacao() {
         if (tabela.getItems().isEmpty()) {
@@ -387,7 +371,6 @@ public class MenuRelatoriosController extends MenuController {
         raiz.setStyle("-fx-background-color: #F5F5F7;");
         raiz.setAlignment(Pos.TOP_CENTER);
 
-        
         VBox folha = new VBox(12);
         folha.setPadding(new Insets(24));
         folha.setStyle("-fx-background-color: white; -fx-background-radius: 12px; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 10, 0, 0, 3);");
@@ -400,7 +383,6 @@ public class MenuRelatoriosController extends MenuController {
         Label lblData = new Label("Emitido em: " + dataHoje + " • Total de registros: " + tabela.getItems().size());
         lblData.setStyle("-fx-font-size: 12px; -fx-text-fill: #86868B;");
 
-        
         TableView<ObservableList<String>> tabelaPrevia = new TableView<>();
         tabelaPrevia.setPrefHeight(300);
         tabelaPrevia.setStyle("-fx-background-radius: 8px; -fx-border-color: #E5E5EA;");
@@ -415,7 +397,6 @@ public class MenuRelatoriosController extends MenuController {
 
         folha.getChildren().addAll(lblTitulo, lblData, new Separator(), tabelaPrevia);
 
-       
         HBox botoes = new HBox(12);
         botoes.setAlignment(Pos.CENTER_RIGHT);
 
@@ -472,7 +453,6 @@ public class MenuRelatoriosController extends MenuController {
             PdfPTable tabelaPdf = new PdfPTable(ultimosCabecalhos.length);
             tabelaPdf.setWidthPercentage(100);
 
-           
             Font fontCabecalho = FontFactory.getFont(FontFactory.HELVETICA_BOLD, 10, Color.WHITE);
             for (String col : ultimosCabecalhos) {
                 PdfPCell cell = new PdfPCell(new Phrase(col, fontCabecalho));
@@ -481,7 +461,6 @@ public class MenuRelatoriosController extends MenuController {
                 tabelaPdf.addCell(cell);
             }
 
-            
             Font fontCorpo = FontFactory.getFont(FontFactory.HELVETICA, 9, Color.BLACK);
             for (ObservableList<String> linha : tabela.getItems()) {
                 for (String valor : linha) {
@@ -494,10 +473,41 @@ public class MenuRelatoriosController extends MenuController {
             document.add(tabelaPdf);
             document.close();
 
-            info("Relatório exportado com sucesso em: " + arquivoDestino.getName());
+            exibirSucessoExportacao(arquivoDestino);
 
         } catch (Exception e) {
             erro("Falha ao gerar o arquivo PDF: " + e.getMessage());
+        }
+    }
+
+    private void exibirSucessoExportacao(File arquivoSalvo) {
+        if (arquivoSalvo == null) return;
+
+        Alert alerta = new Alert(Alert.AlertType.INFORMATION);
+        alerta.setTitle("Exportação Concluída");
+        alerta.setHeaderText("Relatório exportado com sucesso!");
+
+        File pastaDestino = arquivoSalvo.getParentFile();
+        String caminhoPasta = (pastaDestino != null) ? pastaDestino.getAbsolutePath() : System.getProperty("user.dir");
+
+        alerta.setContentText("Arquivo: " + arquivoSalvo.getName() + "\nPasta: " + caminhoPasta);
+
+        ButtonType btnAbrirPasta = new ButtonType("Abrir na Pasta");
+        ButtonType btnConcluir = new ButtonType("Concluir", ButtonData.CANCEL_CLOSE);
+
+        alerta.getButtonTypes().setAll(btnAbrirPasta, btnConcluir);
+
+        Optional<ButtonType> resultado = alerta.showAndWait();
+        if (resultado.isPresent() && resultado.get() == btnAbrirPasta) {
+            try {
+                if (Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Desktop.Action.OPEN)) {
+                    Desktop.getDesktop().open(pastaDestino != null ? pastaDestino : new File(System.getProperty("user.dir")));
+                } else {
+                    new ProcessBuilder("open", caminhoPasta).start();
+                }
+            } catch (Exception e) {
+                erro("Não foi possível abrir a pasta do relatório: " + e.getMessage());
+            }
         }
     }
 }
