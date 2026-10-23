@@ -31,8 +31,6 @@ public class MenuContratosController extends MenuController {
     private static final String ID_CONTRATO = "Digite o ID do contrato: ";
     private static final String CONTRATO_NAO_ENCONTRADO = "Contrato não encontrado.";
     private static final ZoneId FUSO_HORARIO = ZoneId.of("America/Recife");
-    
-    private static final String ESTILO_ALINHAMENTO_CENTRO = "-fx-alignment: CENTER;";
 
     @FXML 
     private TableView<ContratoAluguel> tabela;
