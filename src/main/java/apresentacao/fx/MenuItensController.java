@@ -2,6 +2,7 @@ package apresentacao.fx;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import entidades.Categoria;
 import entidades.Fornecedor;
@@ -25,6 +26,20 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.TextInputDialog;
 
 public class MenuItensController extends MenuController {
+
+    private static final String PEDIR_ID_ITEM = "Digite o ID do item:";
+    private static final String ESTILO_BADGE_COMUM =
+            "-fx-font-weight: bold; -fx-padding: 3 8 3 8; -fx-background-radius: 10; -fx-font-size: 11px;";
+    private static final String ESTILO_BADGE_DISPONIVEL =
+            "-fx-background-color: #d4edda; -fx-text-fill: #155724; " + ESTILO_BADGE_COMUM;
+    private static final String ESTILO_BADGE_INDISPONIVEL =
+            "-fx-background-color: #f8d7da; -fx-text-fill: #721c24; " + ESTILO_BADGE_COMUM;
+    private static final String FILTRO_TODOS = "Todos";
+    private static final String SEPARADOR_OPCOES = " | Opções: ";
+    private static final String NENHUM = "nenhum";
+    private static final String INDISPONIVEL = "INDISPONIVEL";
+    private static final List<String> STATUS_VALIDOS =
+            List.of("DISPONIVEL", "MANUTENCAO", "ALUGADO", INDISPONIVEL);
 
     @FXML
     private ComboBox<String> cbFiltro;
@@ -72,51 +87,39 @@ public class MenuItensController extends MenuController {
 
     private void configurarColunaAtivo() {
         if (colAtivo != null) {
-            colAtivo.setCellFactory(col -> new TableCell<Item, Boolean>() {
-                private final Label badge = new Label();
-
-                @Override
-                protected void updateItem(Boolean ativo, boolean empty) {
-                    super.updateItem(ativo, empty);
-
-                    if (empty || ativo == null) {
-                        setGraphic(null);
-                        setText(null);
-                    } else {
-                        if (ativo) {
-                            badge.setText("● Disponível");
-                            badge.setStyle(
-                                "-fx-background-color: #d4edda; " +
-                                "-fx-text-fill: #155724; " +
-                                "-fx-font-weight: bold; " +
-                                "-fx-padding: 3 8 3 8; " +
-                                "-fx-background-radius: 10; " +
-                                "-fx-font-size: 11px;"
-                            );
-                        } else {
-                            badge.setText("● Indisponível");
-                            badge.setStyle(
-                                "-fx-background-color: #f8d7da; " +
-                                "-fx-text-fill: #721c24; " +
-                                "-fx-font-weight: bold; " +
-                                "-fx-padding: 3 8 3 8; " +
-                                "-fx-background-radius: 10; " +
-                                "-fx-font-size: 11px;"
-                            );
-                        }
-                        setAlignment(Pos.CENTER);
-                        setGraphic(badge);
-                        setText(null);
-                    }
-                }
-            });
+            colAtivo.setCellFactory(col -> criarCelulaAtivo());
         }
+    }
+
+    private TableCell<Item, Boolean> criarCelulaAtivo() {
+        return new TableCell<>() {
+            private final Label badge = new Label();
+
+            @Override
+            protected void updateItem(Boolean ativo, boolean empty) {
+                super.updateItem(ativo, empty);
+
+                if (empty || ativo == null) {
+                    setGraphic(null);
+                    setText(null);
+                    return;
+                }
+
+                boolean disponivel = Boolean.TRUE.equals(ativo);
+                badge.setText(disponivel ? "● Disponível" : "● Indisponível");
+                badge.setStyle(disponivel ? ESTILO_BADGE_DISPONIVEL : ESTILO_BADGE_INDISPONIVEL);
+
+                setAlignment(Pos.CENTER);
+                setGraphic(badge);
+                setText(null);
+            }
+        };
     }
 
     private void configurarFiltroPesquisa() {
         if (cbFiltro != null) {
-            cbFiltro.setItems(FXCollections.observableArrayList("Todos", "Nome", "ID"));
-            cbFiltro.setValue("Todos");
+            cbFiltro.setItems(FXCollections.observableArrayList(FILTRO_TODOS, "Nome", "ID"));
+            cbFiltro.setValue(FILTRO_TODOS);
             cbFiltro.valueProperty().addListener((obs, antigo, novo) ->
                 aplicarFiltro(pesquisa != null ? pesquisa.getText() : "")
             );
@@ -145,7 +148,7 @@ public class MenuItensController extends MenuController {
             }
 
             String termoFormatado = termo.trim().toLowerCase();
-            String filtroSelecionado = cbFiltro != null && cbFiltro.getValue() != null ? cbFiltro.getValue() : "Todos";
+            String filtroSelecionado = cbFiltro != null && cbFiltro.getValue() != null ? cbFiltro.getValue() : FILTRO_TODOS;
 
             boolean bateuId = String.valueOf(item.getId()).contains(termoFormatado);
             boolean bateuNome = item.getNome() != null && item.getNome().toLowerCase().contains(termoFormatado);
@@ -164,7 +167,7 @@ public class MenuItensController extends MenuController {
             pesquisa.clear();
         }
         if (cbFiltro != null) {
-            cbFiltro.setValue("Todos");
+            cbFiltro.setValue(FILTRO_TODOS);
         }
     }
 
@@ -177,9 +180,9 @@ public class MenuItensController extends MenuController {
     @FXML
     public void buscarItem(ActionEvent event) {
         String texto = pesquisa != null ? pesquisa.getText().trim() : "";
-        
+
         if (texto.isEmpty()) {
-            Optional<Integer> idOpt = pedirInteiro("Digite o ID do item:");
+            Optional<Integer> idOpt = pedirInteiro(PEDIR_ID_ITEM);
             if (idOpt.isEmpty()) return;
             texto = String.valueOf(idOpt.get());
         }
@@ -187,7 +190,7 @@ public class MenuItensController extends MenuController {
         try {
             int id = Integer.parseInt(texto);
             Item item = sistema != null ? sistema.buscarItem(id) : null;
-            
+
             if (item != null) {
                 if (cbFiltro != null) cbFiltro.setValue("ID");
                 if (pesquisa != null) pesquisa.setText(String.valueOf(id));
@@ -198,6 +201,7 @@ public class MenuItensController extends MenuController {
             erro("Por favor, informe um ID numérico válido.");
         }
     }
+
     @FXML
     public void cadastrarItem(ActionEvent event) {
         Optional<String> nome = pedirTexto("Nome do item:");
@@ -206,234 +210,140 @@ public class MenuItensController extends MenuController {
         Optional<String> desc = pedirTexto("Descrição:");
         if (desc.isEmpty()) return;
 
-        Optional<String> taxaStr = pedirTexto("Taxa diária:");
-        if (taxaStr.isEmpty()) return;
+        Optional<Double> taxa = pedirDouble("Taxa diária:");
+        if (taxa.isEmpty()) return;
 
         Optional<String> estado = pedirTexto("Estado de conservação:");
         if (estado.isEmpty()) return;
 
-        Optional<String> valorRepStr = pedirTexto("Valor de reposição:");
-        if (valorRepStr.isEmpty()) return;
+        Optional<Double> valorRep = pedirDouble("Valor de reposição:");
+        if (valorRep.isEmpty()) return;
 
-        StringBuilder sbCats = new StringBuilder();
-        for (Categoria c : sistema.listarCategorias()) {
-            if (sbCats.length() > 0) sbCats.append(", ");
-            sbCats.append(c.getId()).append("-").append(c.getNome());
-        }
-        String listaCats = sbCats.length() > 0 ? sbCats.toString() : "Nenhuma";
-
-        Optional<String> catInput = pedirTexto("Categoria (Opções: " + listaCats + ")\n[Deixe em branco para sem categoria]:");
+        Optional<String> catInput = pedirTexto("Categoria (Opções: " + opcoesCategorias()
+                + ")\n[Deixe em branco para sem categoria]:");
         if (catInput.isEmpty()) return;
 
-        Categoria categoria = null;
-        if (!catInput.get().isBlank()) {
-            String termo = catInput.get().trim();
-            for (Categoria c : sistema.listarCategorias()) {
-                if (String.valueOf(c.getId()).equals(termo) || (c.getNome() != null && c.getNome().equalsIgnoreCase(termo))) {
-                    categoria = c;
-                    break;
-                }
-            }
-
-            if (categoria == null) {
-                erro("Categoria '" + termo + "' não encontrada. Cadastre-a primeiro ou deixe em branco.");
-                return;
-            }
+        String termoCat = catInput.get();
+        Categoria categoria = resolverCategoria(termoCat, null);
+        if (referenciaInvalida(termoCat, categoria)) {
+            erro("Categoria '" + termoCat + "' não encontrada. Cadastre-a primeiro ou deixe em branco.");
+            return;
         }
 
-        StringBuilder sbForns = new StringBuilder();
-        for (Fornecedor f : sistema.listarFornecedores()) {
-            if (sbForns.length() > 0) sbForns.append(", ");
-            sbForns.append(f.getId()).append("-").append(f.getRazaoSocial());
-        }
-        String listaForns = sbForns.length() > 0 ? sbForns.toString() : "Nenhum";
-
-        Optional<String> fornInput = pedirTexto("Fornecedor (Opções: " + listaForns + ")\n[Deixe em branco para sem fornecedor]:");
+        Optional<String> fornInput = pedirTexto("Fornecedor (Opções: " + opcoesFornecedores()
+                + ")\n[Deixe em branco para sem fornecedor]:");
         if (fornInput.isEmpty()) return;
 
-        Fornecedor fornecedor = null;
-        if (!fornInput.get().isBlank()) {
-            String termo = fornInput.get().trim();
-            for (Fornecedor f : sistema.listarFornecedores()) {
-                if (String.valueOf(f.getId()).equals(termo) || (f.getRazaoSocial() != null && f.getRazaoSocial().equalsIgnoreCase(termo))) {
-                    fornecedor = f;
-                    break;
-                }
-            }
-
-            if (fornecedor == null) {
-                erro("Fornecedor '" + termo + "' não encontrado. Cadastre-o primeiro ou deixe em branco.");
-                return;
-            }
+        String termoForn = fornInput.get();
+        Fornecedor fornecedor = resolverFornecedor(termoForn, null);
+        if (referenciaInvalida(termoForn, fornecedor)) {
+            erro("Fornecedor '" + termoForn + "' não encontrado. Cadastre-o primeiro ou deixe em branco.");
+            return;
         }
 
-        try {
-            double taxa = Double.parseDouble(taxaStr.get().replace(",", ".").trim());
-            double valorRep = Double.parseDouble(valorRepStr.get().replace(",", ".").trim());
-            int id = sistema.gerarProximoIdItem();
+        int id = sistema.gerarProximoIdItem();
+        Item novoItem = new Item(id, nome.get(), desc.get(), taxa.get(), estado.get(),
+                valorRep.get(), categoria, fornecedor);
 
-            Item novoItem = new Item(
-                    id,
-                    nome.get().trim(),
-                    desc.get().trim(),
-                    taxa,
-                    estado.get().trim(),
-                    valorRep,
-                    categoria,
-                    fornecedor
-            );
-
-            if (sistema.cadastrarItem(novoItem)) {
-                info("Item cadastrado com sucesso! ID: " + id);
-                carregarTabela();
-            } else {
-                erro("Erro ao cadastrar o item.");
-            }
-        } catch (NumberFormatException e) {
-            erro("Valores numéricos inválidos para taxa diária ou valor de reposição.");
+        if (sistema.cadastrarItem(novoItem)) {
+            info("Item cadastrado com sucesso! ID: " + id);
+            carregarTabela();
+        } else {
+            erro("Erro ao cadastrar o item.");
         }
     }
 
     @FXML
     public void atualizarItem(ActionEvent event) {
-        Item atual = tabela != null ? tabela.getSelectionModel().getSelectedItem() : null;
-
-        if (atual == null) {
-            Optional<Integer> idOpt = pedirInteiro("Digite o ID do item:");
-            if (idOpt.isEmpty()) return;
-            atual = sistema != null ? sistema.buscarItem(idOpt.get()) : null;
-        }
-
-        if (atual == null) {
-            erro("Item não encontrado.");
-            return;
-        }
-
-        String catAtualNome = atual.getCategoria() != null ? atual.getCategoria().getNome() : "Sem Categoria";
-        String fornAtualNome = atual.getFornecedor() != null ? atual.getFornecedor().getRazaoSocial() : "Sem Fornecedor";
+        Item atual = obterItemParaAtualizar();
+        if (atual == null) return;
 
         Optional<String> nome = pedirTexto("Novo nome (atual: " + atual.getNome() + "):");
         if (nome.isEmpty()) return;
 
-        StringBuilder sbCats = new StringBuilder();
-        for (Categoria c : sistema.listarCategorias()) {
-            if (sbCats.length() > 0) sbCats.append(", ");
-            sbCats.append(c.getId()).append("-").append(c.getNome());
-        }
-        String listaCats = sbCats.length() > 0 ? sbCats.toString() : "Nenhuma";
-
-        Optional<String> catInput = pedirTexto("Categoria (Atual: " + catAtualNome + " | Opções: " + listaCats + ")\n[Enter mantém | Digite 'nenhum' para remover]:");
+        Optional<String> catInput = pedirTexto("Categoria (Atual: " + nomeCategoria(atual)
+                + SEPARADOR_OPCOES + opcoesCategorias() + ")\n[Enter mantém | Digite '" + NENHUM + "' para remover]:");
         if (catInput.isEmpty()) return;
 
-        Categoria novaCategoria = atual.getCategoria();
-        if (!catInput.get().isBlank()) {
-            String termo = catInput.get().trim();
-            if (termo.equalsIgnoreCase("nenhum")) {
-                novaCategoria = null;
-            } else {
-                Categoria encontrada = null;
-                for (Categoria c : sistema.listarCategorias()) {
-                    if (String.valueOf(c.getId()).equals(termo) || (c.getNome() != null && c.getNome().equalsIgnoreCase(termo))) {
-                        encontrada = c;
-                        break;
-                    }
-                }
-
-                if (encontrada == null) {
-                    erro("Categoria '" + termo + "' não encontrada.");
-                    return;
-                }
-                novaCategoria = encontrada;
-            }
+        String termoCat = catInput.get();
+        Categoria novaCategoria = resolverCategoria(termoCat, atual.getCategoria());
+        if (referenciaInvalida(termoCat, novaCategoria)) {
+            erro("Categoria '" + termoCat + "' não encontrada.");
+            return;
         }
 
-        StringBuilder sbForns = new StringBuilder();
-        for (Fornecedor f : sistema.listarFornecedores()) {
-            if (sbForns.length() > 0) sbForns.append(", ");
-            sbForns.append(f.getId()).append("-").append(f.getRazaoSocial());
-        }
-        String listaForns = sbForns.length() > 0 ? sbForns.toString() : "Nenhum";
-
-        Optional<String> fornInput = pedirTexto("Fornecedor (Atual: " + fornAtualNome + " | Opções: " + listaForns + ")\n[Enter mantém | Digite 'nenhum' para remover]:");
+        Optional<String> fornInput = pedirTexto("Fornecedor (Atual: " + nomeFornecedor(atual)
+                + SEPARADOR_OPCOES + opcoesFornecedores() + ")\n[Enter mantém | Digite '" + NENHUM + "' para remover]:");
         if (fornInput.isEmpty()) return;
 
-        Fornecedor novoFornecedor = atual.getFornecedor();
-        if (!fornInput.get().isBlank()) {
-            String termo = fornInput.get().trim();
-            if (termo.equalsIgnoreCase("nenhum")) {
-                novoFornecedor = null;
-            } else {
-                Fornecedor encontrado = null;
-                for (Fornecedor f : sistema.listarFornecedores()) {
-                    if (String.valueOf(f.getId()).equals(termo) || (f.getRazaoSocial() != null && f.getRazaoSocial().equalsIgnoreCase(termo))) {
-                        encontrado = f;
-                        break;
-                    }
-                }
-
-                if (encontrado == null) {
-                    erro("Fornecedor '" + termo + "' não encontrado.");
-                    return;
-                }
-                novoFornecedor = encontrado;
-            }
+        String termoForn = fornInput.get();
+        Fornecedor novoFornecedor = resolverFornecedor(termoForn, atual.getFornecedor());
+        if (referenciaInvalida(termoForn, novoFornecedor)) {
+            erro("Fornecedor '" + termoForn + "' não encontrado.");
+            return;
         }
 
-        Optional<String> taxaStr = pedirTexto("Nova taxa diária (atual: " + atual.getTaxaDiaria() + "):");
-        if (taxaStr.isEmpty()) return;
+        Optional<Double> taxa = pedirDouble("Nova taxa diária:", atual.getTaxaDiaria());
+        if (taxa.isEmpty()) return;
 
         Optional<String> estado = pedirTexto("Novo estado (atual: " + atual.getEstadoConservacao() + "):");
         if (estado.isEmpty()) return;
 
-        String novoStatus = atual.getStatus();
-        if (atual.isAtivo()) {
-            Optional<String> statusInput = pedirTexto("Novo status (Atual: " + atual.getStatus() + " | Opções: DISPONIVEL, MANUTENCAO, ALUGADO, INDISPONIVEL)\n[Enter mantém]:");
-            if (statusInput.isEmpty()) return;
+        Optional<String> status = pedirNovoStatus(atual);
+        if (status.isEmpty()) return;
 
-            if (!statusInput.get().isBlank()) {
-                String statusDigitado = statusInput.get().trim().toUpperCase();
-                if (statusDigitado.equals("DISPONIVEL") || statusDigitado.equals("MANUTENCAO")
-                        || statusDigitado.equals("ALUGADO") || statusDigitado.equals("INDISPONIVEL")) {
-                    novoStatus = statusDigitado;
-                } else {
-                    erro("Status inválido. Digite: DISPONIVEL, MANUTENCAO, ALUGADO ou INDISPONIVEL.");
-                    return;
-                }
-            }
+        Item itemAtualizado = new Item(
+                atual.getId(),
+                pegaNovo(nome.get(), atual.getNome()),
+                atual.getDescricao(),
+                taxa.get(),
+                pegaNovo(estado.get(), atual.getEstadoConservacao()),
+                atual.getValorReposicao(),
+                novaCategoria,
+                novoFornecedor
+        );
+        itemAtualizado.setAtivo(atual.isAtivo());
+        itemAtualizado.setStatus(status.get());
+
+        if (sistema.atualizarItem(itemAtualizado)) {
+            info("Item atualizado com sucesso!");
+            carregarTabela();
+        } else {
+            erro("Erro ao atualizar o item.");
+        }
+    }
+
+    private Item obterItemParaAtualizar() {
+        Item selecionado = tabela.getSelectionModel().getSelectedItem();
+        if (selecionado != null) return selecionado;
+
+        Optional<Integer> id = pedirInteiro(PEDIR_ID_ITEM);
+        if (id.isEmpty()) return null;
+
+        Item item = sistema.buscarItem(id.get());
+        if (item == null) {
+            erro("Item não encontrado.");
+        }
+        return item;
+    }
+
+    private Optional<String> pedirNovoStatus(Item atual) {
+        if (!atual.isAtivo()) {
+            return Optional.of(INDISPONIVEL);
         }
 
-        try {
-            String novoNome = nome.get().isBlank() ? atual.getNome() : nome.get().trim();
-            double novaTaxa = taxaStr.get().isBlank() ? atual.getTaxaDiaria() : Double.parseDouble(taxaStr.get().replace(",", ".").trim());
-            String novoEstado = estado.get().isBlank() ? atual.getEstadoConservacao() : estado.get().trim();
+        Optional<String> entrada = pedirTexto("Novo status (Atual: " + atual.getStatus()
+                + SEPARADOR_OPCOES + String.join(", ", STATUS_VALIDOS) + ")\n[Enter mantém]:");
+        if (entrada.isEmpty()) return Optional.empty();
 
-            Item itemAtualizado = new Item(
-                    atual.getId(),
-                    novoNome,
-                    atual.getDescricao(),
-                    novaTaxa,
-                    novoEstado,
-                    atual.getValorReposicao(),
-                    novaCategoria,
-                    novoFornecedor
-            );
+        String status = entrada.get().toUpperCase();
+        if (status.isEmpty()) return Optional.of(atual.getStatus());
 
-            itemAtualizado.setAtivo(atual.isAtivo());
-            if (!atual.isAtivo()) {
-                itemAtualizado.setStatus("INDISPONIVEL");
-            } else {
-                itemAtualizado.setStatus(novoStatus);
-            }
-
-            if (sistema != null && sistema.atualizarItem(itemAtualizado)) {
-                info("Item atualizado com sucesso!");
-                carregarTabela();
-            } else {
-                erro("Erro ao atualizar o item.");
-            }
-        } catch (NumberFormatException e) {
-            erro("Valor da taxa diária inválido.");
+        if (!STATUS_VALIDOS.contains(status)) {
+            erro("Status inválido. Digite: " + String.join(", ", STATUS_VALIDOS) + ".");
+            return Optional.empty();
         }
+        return Optional.of(status);
     }
 
     @FXML
@@ -441,7 +351,7 @@ public class MenuItensController extends MenuController {
         TextInputDialog dialog = new TextInputDialog();
         dialog.setTitle("Desativar Item");
         dialog.setHeaderText("Desativar Item");
-        dialog.setContentText("Digite o ID do item:");
+        dialog.setContentText(PEDIR_ID_ITEM);
 
         Optional<String> resultado = dialog.showAndWait();
         if (resultado.isPresent()) {
@@ -468,5 +378,69 @@ public class MenuItensController extends MenuController {
         alert.setHeaderText(null);
         alert.setContentText(mensagem);
         alert.showAndWait();
+    }
+
+    private String opcoesCategorias() {
+        List<Categoria> categorias = sistema.listarCategorias();
+        if (categorias.isEmpty()) return "Nenhuma";
+
+        return categorias.stream().map(this::rotuloCategoria).collect(Collectors.joining(", "));
+    }
+
+    private String opcoesFornecedores() {
+        List<Fornecedor> fornecedores = sistema.listarFornecedores();
+        if (fornecedores.isEmpty()) return "Nenhum";
+
+        return fornecedores.stream().map(this::rotuloFornecedor).collect(Collectors.joining(", "));
+    }
+
+    private String rotuloCategoria(Categoria categoria) {
+        return categoria.getId() + "-" + categoria.getNome();
+    }
+
+    private String rotuloFornecedor(Fornecedor fornecedor) {
+        return fornecedor.getId() + "-" + fornecedor.getRazaoSocial();
+    }
+
+    private String nomeCategoria(Item item) {
+        return item.getCategoria() != null ? item.getCategoria().getNome() : "Sem Categoria";
+    }
+
+    private String nomeFornecedor(Item item) {
+        return item.getFornecedor() != null ? item.getFornecedor().getRazaoSocial() : "Sem Fornecedor";
+    }
+
+    private Categoria resolverCategoria(String termo, Categoria atual) {
+        if (termo.isBlank()) return atual;
+        if (termo.equalsIgnoreCase(NENHUM)) return null;
+        return localizarCategoria(termo);
+    }
+
+    private Fornecedor resolverFornecedor(String termo, Fornecedor atual) {
+        if (termo.isBlank()) return atual;
+        if (termo.equalsIgnoreCase(NENHUM)) return null;
+        return localizarFornecedor(termo);
+    }
+
+    private Categoria localizarCategoria(String termo) {
+        return sistema.listarCategorias().stream()
+                .filter(c -> corresponde(String.valueOf(c.getId()), c.getNome(), termo))
+                .findFirst()
+                .orElse(null);
+    }
+
+    private Fornecedor localizarFornecedor(String termo) {
+        return sistema.listarFornecedores().stream()
+                .filter(f -> corresponde(String.valueOf(f.getId()), f.getRazaoSocial(), termo))
+                .findFirst()
+                .orElse(null);
+    }
+
+    private boolean corresponde(String id, String nome, String termo) {
+        return id.equals(termo) || (nome != null && nome.equalsIgnoreCase(termo));
+    }
+
+    private boolean referenciaInvalida(String termo, Object resolvido) {
+        return !termo.isBlank() && !termo.equalsIgnoreCase(NENHUM) && resolvido == null;
     }
 }

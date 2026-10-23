@@ -22,6 +22,13 @@ public class MenuCategoriasController extends MenuController {
     private static final String ID_CATEGORIA = "Digite o ID da categoria: ";
     private static final String NAO_ENCONTRADA = "Categoria não encontrada.";
 
+    private static final String ESTILO_BADGE_COMUM =
+            "-fx-font-weight: bold; -fx-padding: 3 8 3 8; -fx-background-radius: 10; -fx-font-size: 11px;";
+    private static final String ESTILO_BADGE_DISPONIVEL =
+            "-fx-background-color: #d4edda; -fx-text-fill: #155724; " + ESTILO_BADGE_COMUM;
+    private static final String ESTILO_BADGE_INDISPONIVEL =
+            "-fx-background-color: #f8d7da; -fx-text-fill: #721c24; " + ESTILO_BADGE_COMUM;
+
     @FXML private TableView<Categoria> tabela;
     @FXML private TableColumn<Categoria, Integer> colID;
     @FXML private TableColumn<Categoria, String> colNome;
@@ -56,47 +63,36 @@ public class MenuCategoriasController extends MenuController {
         if (colID != null) colID.setCellValueFactory(new PropertyValueFactory<>("id"));
         if (colNome != null) colNome.setCellValueFactory(new PropertyValueFactory<>("nome"));
         if (colDescricao != null) colDescricao.setCellValueFactory(new PropertyValueFactory<>("descricao"));
-        
+
         if (colAtiva != null) {
             colAtiva.setCellValueFactory(new PropertyValueFactory<>("ativa"));
-            colAtiva.setCellFactory(col -> new TableCell<>() {
-                private final Label badge = new Label();
-
-                @Override
-                protected void updateItem(Boolean ativa, boolean empty) {
-                    super.updateItem(ativa, empty);
-                    if (empty || ativa == null) {
-                        setGraphic(null);
-                        setText(null);
-                    } else {
-                        if (ativa) {
-                            badge.setText("● Disponível");
-                            badge.setStyle(
-                                "-fx-background-color: #d4edda; " +
-                                "-fx-text-fill: #155724; " +
-                                "-fx-font-weight: bold; " +
-                                "-fx-padding: 3 8 3 8; " +
-                                "-fx-background-radius: 10; " +
-                                "-fx-font-size: 11px;"
-                            );
-                        } else {
-                            badge.setText("● Indisponível");
-                            badge.setStyle(
-                                "-fx-background-color: #f8d7da; " +
-                                "-fx-text-fill: #721c24; " +
-                                "-fx-font-weight: bold; " +
-                                "-fx-padding: 3 8 3 8; " +
-                                "-fx-background-radius: 10; " +
-                                "-fx-font-size: 11px;"
-                            );
-                        }
-                        setAlignment(Pos.CENTER);
-                        setGraphic(badge);
-                        setText(null);
-                    }
-                }
-            });
+            colAtiva.setCellFactory(col -> criarCelulaAtiva());
         }
+    }
+
+    private TableCell<Categoria, Boolean> criarCelulaAtiva() {
+        return new TableCell<>() {
+            private final Label badge = new Label();
+
+            @Override
+            protected void updateItem(Boolean ativa, boolean empty) {
+                super.updateItem(ativa, empty);
+
+                if (empty || ativa == null) {
+                    setGraphic(null);
+                    setText(null);
+                    return;
+                }
+
+                boolean disponivel = Boolean.TRUE.equals(ativa);
+                badge.setText(disponivel ? "● Disponível" : "● Indisponível");
+                badge.setStyle(disponivel ? ESTILO_BADGE_DISPONIVEL : ESTILO_BADGE_INDISPONIVEL);
+
+                setAlignment(Pos.CENTER);
+                setGraphic(badge);
+                setText(null);
+            }
+        };
     }
 
     private void configurarFiltroPesquisa() {
