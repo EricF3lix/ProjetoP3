@@ -5,7 +5,12 @@ import java.util.Optional;
 
 import entidades.Categoria;
 import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.collections.transformation.FilteredList;
+import javafx.collections.transformation.SortedList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.geometry.Pos;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
@@ -23,7 +28,8 @@ public class MenuCategoriasController extends MenuController {
     @FXML private TableColumn<Categoria, String> colDescricao;
     @FXML private TableColumn<Categoria, Boolean> colAtiva;
 
-    private boolean listener = false;
+    private final ObservableList<Categoria> listaCategorias = FXCollections.observableArrayList();
+    private FilteredList<Categoria> listaFiltrada;
 
     @Override
     protected String getTitulo() {
@@ -32,60 +38,102 @@ public class MenuCategoriasController extends MenuController {
 
     @Override
     protected void aoExibir() {
-        tabela.setPlaceholder(new Label(""));
+        configurarColunas();
+        configurarFiltroPesquisa();
+        carregarTabela();
+    }
 
-        if (!listener) {
-            configurarColunas();
-            if (pesquisa != null) {
-                pesquisa.textProperty().addListener((obj, antigo, novo) -> fazPesquisa(novo));
+    private void carregarTabela() {
+        if (sistema != null && tabela != null) {
+            List<Categoria> categorias = sistema.listarCategorias();
+            if (categorias != null) {
+                listaCategorias.setAll(categorias);
             }
-            this.listener = true;
         }
-
-        listarCategorias();
     }
 
     private void configurarColunas() {
-    colID.setCellValueFactory(new PropertyValueFactory<>("id"));
-    colNome.setCellValueFactory(new PropertyValueFactory<>("nome"));
-    colDescricao.setCellValueFactory(new PropertyValueFactory<>("descricao"));
-    colAtiva.setCellValueFactory(new PropertyValueFactory<>("ativa"));
+        if (colID != null) colID.setCellValueFactory(new PropertyValueFactory<>("id"));
+        if (colNome != null) colNome.setCellValueFactory(new PropertyValueFactory<>("nome"));
+        if (colDescricao != null) colDescricao.setCellValueFactory(new PropertyValueFactory<>("descricao"));
+        
+        if (colAtiva != null) {
+            colAtiva.setCellValueFactory(new PropertyValueFactory<>("ativa"));
+            colAtiva.setCellFactory(col -> new TableCell<>() {
+                private final Label badge = new Label();
 
-    colAtiva.setCellFactory(col -> new TableCell<>() {
-        private final Label badge = new Label();
-
-        @Override
-        protected void updateItem(Boolean ativa, boolean empty) {
-            super.updateItem(ativa, empty);
-            if (empty || ativa == null) {
-                setGraphic(null);
-            } else {
-                if (ativa) {
-                    badge.setText("• Disponível");
-                    badge.setStyle("-fx-background-color: #E6F4EA; "
-                                 + "-fx-text-fill: #137333; "
-                                 + "-fx-background-radius: 12px; "
-                                 + "-fx-padding: 3px 10px; "
-                                 + "-fx-font-size: 12px; "
-                                 + "-fx-font-weight: bold;");
-                } else {
-                    badge.setText("• Indisponível");
-                    badge.setStyle("-fx-background-color: #FCE8E6; "
-                                 + "-fx-text-fill: #C5221F; "
-                                 + "-fx-background-radius: 12px; "
-                                 + "-fx-padding: 3px 10px; "
-                                 + "-fx-font-size: 12px; "
-                                 + "-fx-font-weight: bold;");
+                @Override
+                protected void updateItem(Boolean ativa, boolean empty) {
+                    super.updateItem(ativa, empty);
+                    if (empty || ativa == null) {
+                        setGraphic(null);
+                        setText(null);
+                    } else {
+                        if (ativa) {
+                            badge.setText("● Disponível");
+                            badge.setStyle(
+                                "-fx-background-color: #d4edda; " +
+                                "-fx-text-fill: #155724; " +
+                                "-fx-font-weight: bold; " +
+                                "-fx-padding: 3 8 3 8; " +
+                                "-fx-background-radius: 10; " +
+                                "-fx-font-size: 11px;"
+                            );
+                        } else {
+                            badge.setText("● Indisponível");
+                            badge.setStyle(
+                                "-fx-background-color: #f8d7da; " +
+                                "-fx-text-fill: #721c24; " +
+                                "-fx-font-weight: bold; " +
+                                "-fx-padding: 3 8 3 8; " +
+                                "-fx-background-radius: 10; " +
+                                "-fx-font-size: 11px;"
+                            );
+                        }
+                        setAlignment(Pos.CENTER);
+                        setGraphic(badge);
+                        setText(null);
+                    }
                 }
-                setGraphic(badge);
-                setAlignment(javafx.geometry.Pos.CENTER);
-            }
+            });
         }
-    });
-}
+    }
+
+    private void configurarFiltroPesquisa() {
+        listaFiltrada = new FilteredList<>(listaCategorias, p -> true);
+
+        if (pesquisa != null) {
+            pesquisa.textProperty().addListener((obs, antigo, novo) -> aplicarFiltro(novo));
+        }
+
+        SortedList<Categoria> listaOrdenada = new SortedList<>(listaFiltrada);
+        if (tabela != null) {
+            tabela.setPlaceholder(new Label(""));
+            listaOrdenada.comparatorProperty().bind(tabela.comparatorProperty());
+            tabela.setItems(listaOrdenada);
+        }
+    }
+
+    private void aplicarFiltro(String termo) {
+        if (listaFiltrada == null) return;
+
+        listaFiltrada.setPredicate(c -> {
+            if (c == null) return false;
+            if (termo == null || termo.trim().isEmpty()) {
+                return true;
+            }
+
+            String termoFormatado = termo.trim().toLowerCase();
+            boolean bateuId = String.valueOf(c.getId()).contains(termoFormatado);
+            boolean bateuNome = c.getNome() != null && c.getNome().toLowerCase().contains(termoFormatado);
+            boolean bateuDesc = c.getDescricao() != null && c.getDescricao().toLowerCase().contains(termoFormatado);
+
+            return bateuId || bateuNome || bateuDesc;
+        });
+    }
 
     @FXML
-    private void cadastrarCategoria() {
+    public void cadastrarCategoria(ActionEvent event) {
         Optional<String> nome = pedirTexto("Nome:");
         if (nome.isEmpty()) return;
 
@@ -97,53 +145,78 @@ public class MenuCategoriasController extends MenuController {
 
         if (sistema.cadastrarCategoria(categoria)) {
             info("Categoria cadastrada com sucesso! ID: " + id);
-            mostraCategoria(id);
+            carregarTabela();
         } else {
             erro("Já existe uma categoria com esse nome");
         }
     }
 
     @FXML
-    private void buscarCategoria() {
-        pedirInteiro(ID_CATEGORIA).ifPresent(this::mostraCategoria);
+    public void buscarCategoria(ActionEvent event) {
+        pedirInteiro(ID_CATEGORIA).ifPresent(id -> {
+            Categoria c = sistema.buscarCategoria(id);
+            if (c != null) {
+                if (pesquisa != null) pesquisa.setText(String.valueOf(id));
+            } else {
+                erro(NAO_ENCONTRADA);
+            }
+        });
     }
 
     @FXML
-    private void listarCategorias() {
-        List<Categoria> categorias = sistema.listarCategorias();
-        if (categorias.isEmpty()) {
-            tabela.getItems().clear();
+    public void listarCategorias(ActionEvent event) {
+        if (pesquisa != null) pesquisa.clear();
+        carregarTabela();
+    }
+
+    @FXML
+    public void atualizarCategoria(ActionEvent event) {
+        Categoria atual = tabela != null ? tabela.getSelectionModel().getSelectedItem() : null;
+
+        if (atual == null) {
+            Optional<Integer> id = pedirInteiro(ID_CATEGORIA);
+            if (id.isEmpty()) return;
+            atual = sistema.buscarCategoria(id.get());
+        }
+
+        if (atual == null) {
+            erro(NAO_ENCONTRADA);
             return;
         }
-        tabela.getItems().setAll(categorias);
-    }
 
-    @FXML
-    private void atualizarCategoria() {
-        Categoria atual = obterCategoriaAlvo();
-        if (atual == null) return;
-
-        Optional<String> nome = pedirTexto("Nome:", atual.getNome());
+        Optional<String> nome = pedirTexto("Novo nome:", atual.getNome());
         if (nome.isEmpty()) return;
 
-        Optional<String> descricao = pedirTexto("Descrição:", atual.getDescricao());
+        Optional<String> descricao = pedirTexto("Nova descrição:", atual.getDescricao());
         if (descricao.isEmpty()) return;
 
-        String novoNome = pegaNovo(nome.get(), atual.getNome());
-        String novaDescricao = pegaNovo(descricao.get(), atual.getDescricao());
+        String novoNome = nome.get().isBlank() ? atual.getNome() : nome.get().trim();
+        String novaDescricao = descricao.get().isBlank() ? atual.getDescricao() : descricao.get().trim();
 
-        if (sistema.atualizarCategoria(new Categoria(atual.getId(), novoNome, novaDescricao))) {
-            info("Categoria atualizada com sucesso.");
-            mostraCategoria(atual.getId());
+        Categoria categoriaAtualizada = new Categoria(atual.getId(), novoNome, novaDescricao);
+
+        if (sistema.atualizarCategoria(categoriaAtualizada)) {
+            info("Categoria atualizada com sucesso!");
+            carregarTabela();
         } else {
             erro("Erro ao atualizar categoria.");
         }
     }
 
     @FXML
-    private void desativarCategoria() {
-        Categoria categoria = obterCategoriaAlvo();
-        if (categoria == null) return;
+    public void desativarCategoria(ActionEvent event) {
+        Categoria categoria = tabela != null ? tabela.getSelectionModel().getSelectedItem() : null;
+
+        if (categoria == null) {
+            Optional<Integer> id = pedirInteiro(ID_CATEGORIA);
+            if (id.isEmpty()) return;
+            categoria = sistema.buscarCategoria(id.get());
+        }
+
+        if (categoria == null) {
+            erro(NAO_ENCONTRADA);
+            return;
+        }
 
         if (!confirmar("Tem certeza que deseja desativar \"" + categoria.getNome() + "\"?")) {
             return;
@@ -151,50 +224,9 @@ public class MenuCategoriasController extends MenuController {
 
         if (sistema.desativarCategoria(categoria.getId())) {
             info("Categoria desativada com sucesso.");
-            mostraCategoria(categoria.getId());
+            carregarTabela();
         } else {
             erro("Erro ao desativar categoria.");
         }
-    }
-
-    private void fazPesquisa(String pesquisado) {
-        String termo = pesquisado == null ? "" : pesquisado.trim().toLowerCase();
-
-        List<Categoria> filtradas = sistema.listarCategorias().stream()
-                .filter(c -> termo.isEmpty()
-                        || String.valueOf(c.getId()).contains(termo)
-                        || (c.getNome() != null && c.getNome().toLowerCase().contains(termo))
-                        || (c.getDescricao() != null && c.getDescricao().toLowerCase().contains(termo)))
-                .toList();
-
-        tabela.setItems(FXCollections.observableArrayList(filtradas));
-    }
-
-    private Categoria obterCategoriaAlvo() {
-        Categoria selecionada = tabela.getSelectionModel().getSelectedItem();
-        tabela.getSelectionModel().clearSelection();
-
-        if (selecionada != null) {
-            return selecionada;
-        }
-
-        Optional<Integer> id = pedirInteiro(ID_CATEGORIA);
-        if (id.isEmpty()) return null;
-
-        Categoria categoria = sistema.buscarCategoria(id.get());
-        if (categoria == null) {
-            erro(NAO_ENCONTRADA);
-        }
-        return categoria;
-    }
-
-    private void mostraCategoria(int id) {
-        Categoria categoria = sistema.buscarCategoria(id);
-        if (categoria == null) {
-            info(NAO_ENCONTRADA);
-            return;
-        }
-
-        tabela.getItems().setAll(categoria);
     }
 }
