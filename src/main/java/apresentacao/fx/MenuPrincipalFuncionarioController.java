@@ -1,9 +1,11 @@
 package apresentacao.fx;
 
+import org.kordamp.ikonli.javafx.FontIcon;
+
 import entidades.Funcionario;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
-import org.kordamp.ikonli.javafx.FontIcon;
 
 public class MenuPrincipalFuncionarioController extends MenuController {
 
@@ -20,6 +22,7 @@ public class MenuPrincipalFuncionarioController extends MenuController {
     private Label lblBemVindo;
 
     private Funcionario funcionario;
+    private boolean saudacaoExibida = false;
 
     public void setFuncionario(Funcionario funcionario) {
         this.funcionario = funcionario;
@@ -43,14 +46,22 @@ public class MenuPrincipalFuncionarioController extends MenuController {
             lblBemVindo.setText("Bem-vindo(a), " + nome);
         }
 
-        iconSair.setIconLiteral("fas-sign-out-alt");
-        iconUsuarios.setIconLiteral("fas-users");
-        iconItens.setIconLiteral("fas-box");
-        iconCategorias.setIconLiteral("fas-tag");
-        iconFornecedores.setIconLiteral("fas-truck");
-        iconContratos.setIconLiteral("fas-file-alt");
-        iconMultas.setIconLiteral("fas-exclamation-triangle");
-        iconRelatorios.setIconLiteral("fas-chart-bar");
+        if (iconSair != null) iconSair.setIconLiteral("fas-sign-out-alt");
+        if (iconUsuarios != null) iconUsuarios.setIconLiteral("fas-users");
+        if (iconItens != null) iconItens.setIconLiteral("fas-box");
+        if (iconCategorias != null) iconCategorias.setIconLiteral("fas-tag");
+        if (iconFornecedores != null) iconFornecedores.setIconLiteral("fas-truck");
+        if (iconContratos != null) iconContratos.setIconLiteral("fas-file-alt");
+        if (iconMultas != null) iconMultas.setIconLiteral("fas-exclamation-triangle");
+        if (iconRelatorios != null) iconRelatorios.setIconLiteral("fas-chart-bar");
+
+        // Dispara o pop-up animado na primeira exibição após o login
+        if (!saudacaoExibida) {
+            saudacaoExibida = true;
+            Platform.runLater(() -> {
+                notificarPopUp("Bem-vindo(a), " + nome + "!");
+            });
+        }
     }
 
     @FXML

@@ -26,13 +26,14 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 
 public class MenuUsuariosFuncionarioController extends MenuController {
 
     @FXML
-    protected AnchorPane painelConteudo;
+    protected StackPane painelConteudo;
 
     @FXML
     protected VBox painelTabela;
@@ -109,6 +110,7 @@ public class MenuUsuariosFuncionarioController extends MenuController {
     @FXML
     protected Button btnVoltar;
 
+    protected ComboBox<String> cbTipoCadastroForm;
     protected String tipoCadastroAtual = "Cliente";
     protected ObservableList<Usuario> listaUsuarios = FXCollections.observableArrayList();
     protected FilteredList<Usuario> listaFiltrada;
@@ -120,8 +122,11 @@ public class MenuUsuariosFuncionarioController extends MenuController {
 
     @FXML
     public void initialize() {
+        configurarResponsividade();
         configurarColunasTabela();
         configurarFiltroPesquisa();
+        removerRedundanciaBusca();
+        configurarFormularioUnificado();
 
         Platform.runLater(() -> {
             exibirPainel(painelTabela);
@@ -129,6 +134,64 @@ public class MenuUsuariosFuncionarioController extends MenuController {
                 carregarTabela();
             }
         });
+    }
+
+    private void configurarResponsividade() {
+        if (painelConteudo != null) {
+            painelConteudo.setMaxWidth(Double.MAX_VALUE);
+            painelConteudo.setMaxHeight(Double.MAX_VALUE);
+        }
+
+        if (painelTabela != null) {
+            VBox.setVgrow(painelTabela, Priority.ALWAYS);
+            painelTabela.setMaxWidth(Double.MAX_VALUE);
+            painelTabela.setMaxHeight(Double.MAX_VALUE);
+            painelTabela.setFillWidth(true);
+        }
+
+        if (tabelaUsuarios != null) {
+            VBox.setVgrow(tabelaUsuarios, Priority.ALWAYS);
+            tabelaUsuarios.setMaxWidth(Double.MAX_VALUE);
+            tabelaUsuarios.setMaxHeight(Double.MAX_VALUE);
+            tabelaUsuarios.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+        }
+    }
+
+    private void removerRedundanciaBusca() {
+        if (btnBuscarUsuario != null) {
+            btnBuscarUsuario.setVisible(false);
+            btnBuscarUsuario.setManaged(false);
+        }
+    }
+
+    protected void configurarFormularioUnificado() {
+        if (btnCadastrarCliente != null) {
+            btnCadastrarCliente.setText("Novo Usuário");
+        }
+
+        if (painelCadastro != null && cbTipoCadastroForm == null) {
+            cbTipoCadastroForm = new ComboBox<>(obterOpcoesCadastro());
+            cbTipoCadastroForm.setValue("Cliente");
+            cbTipoCadastroForm.setMaxWidth(Double.MAX_VALUE);
+
+            cbTipoCadastroForm.valueProperty().addListener((obs, antigo, novo) -> {
+                if (novo != null) {
+                    this.tipoCadastroAtual = novo;
+                    if (lblCadTitulo != null) lblCadTitulo.setText("Cadastrar " + novo);
+                    if (btnCadSalvar != null) btnCadSalvar.setText("Salvar " + novo);
+                }
+            });
+
+            int indice = 0;
+            if (lblCadTitulo != null && painelCadastro.getChildren().contains(lblCadTitulo)) {
+                indice = painelCadastro.getChildren().indexOf(lblCadTitulo) + 1;
+            }
+            painelCadastro.getChildren().add(indice, cbTipoCadastroForm);
+        }
+    }
+
+    protected ObservableList<String> obterOpcoesCadastro() {
+        return FXCollections.observableArrayList("Cliente");
     }
 
     private void configurarColunasTabela() {
@@ -180,7 +243,7 @@ public class MenuUsuariosFuncionarioController extends MenuController {
 
     private void configurarFiltroPesquisa() {
         if (cbFiltro != null) {
-            cbFiltro.setItems(FXCollections.observableArrayList("Todos", "Nome", "ID"));
+            cbFiltro.setItems(FXCollections.observableArrayList("Todos", "Nome", "ID", "E-mail", "CPF"));
             cbFiltro.setValue("Todos");
             cbFiltro.valueProperty().addListener((obs, antigo, novo) ->
                 aplicarFiltro(txtPesquisa != null ? txtPesquisa.getText() : "")
@@ -210,15 +273,22 @@ public class MenuUsuariosFuncionarioController extends MenuController {
             }
 
             String termoFormatado = termo.trim().toLowerCase();
-            String filtroSelecionado = cbFiltro != null && cbFiltro.getValue() != null ? cbFiltro.getValue() : "Todos";
+            String termoNumerico = termoFormatado.replaceAll("\\D", "");
+            String filtroSelecionado = (cbFiltro != null && cbFiltro.getValue() != null) ? cbFiltro.getValue() : "Todos";
 
             boolean bateuId = String.valueOf(usuario.getId()).contains(termoFormatado);
             boolean bateuNome = usuario.getNome() != null && usuario.getNome().toLowerCase().contains(termoFormatado);
+            boolean bateuEmail = usuario.getEmail() != null && usuario.getEmail().toLowerCase().contains(termoFormatado);
+            
+            String cpfUsuario = usuario.getCpf() != null ? usuario.getCpf().replaceAll("\\D", "") : "";
+            boolean bateuCpf = !termoNumerico.isEmpty() && cpfUsuario.contains(termoNumerico);
 
             return switch (filtroSelecionado) {
                 case "ID" -> bateuId;
                 case "Nome" -> bateuNome;
-                default -> bateuId || bateuNome;
+                case "E-mail" -> bateuEmail;
+                case "CPF" -> bateuCpf;
+                default -> bateuId || bateuNome || bateuEmail || bateuCpf;
             };
         });
     }
@@ -261,13 +331,16 @@ public class MenuUsuariosFuncionarioController extends MenuController {
 
     @FXML
     public void aoCadastrarCliente(ActionEvent event) {
-        prepararFormularioCadastro("Cliente");
+        prepararFormularioCadastro(tipoCadastroAtual);
     }
 
     protected void prepararFormularioCadastro(String tipo) {
         this.tipoCadastroAtual = tipo;
-        lblCadTitulo.setText("Cadastrar " + tipo);
-        btnCadSalvar.setText("Salvar " + tipo);
+        if (cbTipoCadastroForm != null) {
+            cbTipoCadastroForm.setValue(tipo);
+        }
+        if (lblCadTitulo != null) lblCadTitulo.setText("Cadastrar " + tipo);
+        if (btnCadSalvar != null) btnCadSalvar.setText("Salvar " + tipo);
         txtCadNome.clear();
         txtCadEmail.clear();
         txtCadCpf.clear();
