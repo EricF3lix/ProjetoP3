@@ -4,12 +4,39 @@ import java.util.List;
 import java.util.Optional;
 
 import entidades.Categoria;
+import javafx.application.Platform;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.collections.transformation.FilteredList;
+import javafx.collections.transformation.SortedList;
 import javafx.fxml.FXML;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
+import javafx.scene.control.ButtonBar.ButtonData;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.Dialog;
+import javafx.scene.control.Label;
+import javafx.scene.control.TableCell;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
+import javafx.scene.control.TextField;
+import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.VBox;
+import org.kordamp.ikonli.javafx.FontIcon;
 
 public class MenuCategoriasController extends MenuController {
 
-    private static final String ID_CATEGORIA = "ID da categoria:";
-    private static final String NAO_ENCONTRADA = "Categoria não encontrada";
+    @FXML private TextField txtPesquisa;
+    @FXML private TableView<Categoria> tabela;
+    @FXML private TableColumn<Categoria, Integer> colId;
+    @FXML private TableColumn<Categoria, String> colNome;
+    @FXML private TableColumn<Categoria, String> colDescricao;
+    @FXML private TableColumn<Categoria, Boolean> colStatus;
+
+    private final ObservableList<Categoria> listaCategorias = FXCollections.observableArrayList();
+    private FilteredList<Categoria> listaFiltrada;
 
     @Override
     protected String getTitulo() {
@@ -17,106 +44,271 @@ public class MenuCategoriasController extends MenuController {
     }
 
     @FXML
-    private void cadastrarCategoria() {
-        Optional<String> nome = pedirTexto("Nome:");
-        if (nome.isEmpty()) return;
+    public void initialize() {
+        configurarResponsividade();
+        configurarColunas();
+        configurarTabelaVazia();
+        configurarFiltroPesquisa();
+    }
 
-        Optional<String> descricao = pedirTexto("Descrição:");
-        if (descricao.isEmpty()) return;
+    @Override
+    protected void aoExibir() {
+        carregarTabela();
+    }
 
-        int id = sistema.gerarProximoIdCategoria();
-        Categoria categoria = new Categoria(id, nome.get(), descricao.get());
+    @SuppressWarnings("deprecation")
+    private void configurarResponsividade() {
+        if (tabela != null) {
+            VBox.setVgrow(tabela, Priority.ALWAYS);
+            tabela.setMaxWidth(Double.MAX_VALUE);
+            tabela.setMaxHeight(Double.MAX_VALUE);
+            tabela.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+        }
+    }
 
-        if (sistema.cadastrarCategoria(categoria)) {
-            info("Categoria cadastrada com sucesso. ID: " + id);
+    private void configurarColunas() {
+        if (colId != null) {
+            colId.setCellValueFactory(new PropertyValueFactory<>("id"));
+            colId.setStyle("-fx-alignment: CENTER;");
+        }
+        if (colNome != null) {
+            colNome.setCellValueFactory(new PropertyValueFactory<>("nome"));
+            colNome.setStyle("-fx-font-weight: bold;");
+        }
+        if (colDescricao != null) {
+            colDescricao.setCellValueFactory(new PropertyValueFactory<>("descricao"));
+        }
+        if (colStatus != null) {
+            colStatus.setCellValueFactory(new PropertyValueFactory<>("ativa"));
+            colStatus.setCellFactory(col -> new TableCell<>() {
+                private final Label badge = new Label();
+
+                @Override
+                protected void updateItem(Boolean ativa, boolean empty) {
+                    super.updateItem(ativa, empty);
+                    if (empty || ativa == null) {
+                        setGraphic(null);
+                        setText(null);
+                    } else {
+                        badge.getStyleClass().removeAll("badge-sucesso", "badge-perigo");
+                        if (ativa) {
+                            badge.setText("● Ativa");
+                            badge.getStyleClass().add("badge-sucesso");
+                        } else {
+                            badge.setText("● Inativa");
+                            badge.getStyleClass().add("badge-perigo");
+                        }
+                        setAlignment(Pos.CENTER);
+                        setGraphic(badge);
+                        setText(null);
+                    }
+                }
+            });
+        }
+    }
+
+    private void configurarTabelaVazia() {
+        if (tabela == null) return;
+
+        VBox estadoVazio = new VBox(8);
+        estadoVazio.setAlignment(Pos.CENTER);
+        estadoVazio.setStyle("-fx-padding: 30px;");
+
+        FontIcon icone = new FontIcon("fas-tags");
+        icone.setIconSize(34);
+        icone.setStyle("-fx-icon-color: #8e8e93;");
+
+        Label titulo = new Label("Nenhuma categoria encontrada");
+        titulo.setStyle("-fx-font-weight: bold; -fx-font-size: 15px;");
+
+        Label subtitulo = new Label("Utilize a barra de pesquisa ou cadastre uma nova categoria.");
+        subtitulo.getStyleClass().add("label-subtitulo");
+        subtitulo.setStyle("-fx-font-size: 13px;");
+
+        estadoVazio.getChildren().addAll(icone, titulo, subtitulo);
+        tabela.setPlaceholder(estadoVazio);
+    }
+
+    private void configurarFiltroPesquisa() {
+        listaFiltrada = new FilteredList<>(listaCategorias, p -> true);
+
+        if (txtPesquisa != null) {
+            txtPesquisa.textProperty().addListener((obs, antigo, novo) -> {
+                String termo = (novo == null) ? "" : novo.trim().toLowerCase();
+                listaFiltrada.setPredicate(cat -> {
+                    if (cat == null) return false;
+                    if (termo.isEmpty()) return true;
+
+                    boolean bateuId = String.valueOf(cat.getId()).contains(termo);
+                    boolean bateuNome = cat.getNome() != null && cat.getNome().toLowerCase().contains(termo);
+                    boolean bateuDesc = cat.getDescricao() != null && cat.getDescricao().toLowerCase().contains(termo);
+
+                    return bateuId || bateuNome || bateuDesc;
+                });
+            });
+        }
+
+        SortedList<Categoria> ordenada = new SortedList<>(listaFiltrada);
+        if (tabela != null) {
+            ordenada.comparatorProperty().bind(tabela.comparatorProperty());
+            tabela.setItems(ordenada);
+        }
+    }
+
+    private void carregarTabela() {
+        if (sistema == null) return;
+        List<Categoria> categorias = sistema.listarCategorias();
+        if (categorias != null) {
+            listaCategorias.setAll(categorias);
         } else {
-            erro("Já existe uma categoria com esse nome");
+            listaCategorias.clear();
         }
     }
 
     @FXML
-    private void buscarCategoria() {
-        Optional<Integer> id = pedirInteiro(ID_CATEGORIA);
-        if (id.isEmpty()) return;
-
-        Categoria categoria = sistema.buscarCategoria(id.get());
-        if (categoria == null) {
-            erro(NAO_ENCONTRADA);
-            return;
+    private void aoLimparPesquisa() {
+        if (txtPesquisa != null) {
+            txtPesquisa.clear();
         }
-
-        limpar();
-        escrever("===== DADOS DA CATEGORIA =====");
-        escrever("ID:        " + categoria.getId());
-        escrever("Nome:      " + categoria.getNome());
-        escrever("Descrição: " + categoria.getDescricao());
-        escrever("Ativa:     " + categoria.isAtiva());
     }
 
     @FXML
     private void listarCategorias() {
-        List<Categoria> categorias = sistema.listarCategorias();
+        aoLimparPesquisa();
+        carregarTabela();
+        notificarPopUp("Lista de categorias recarregada.", true);
+    }
 
-        limpar();
-        escrever("===== CATEGORIAS CADASTRADAS =====");
+    @FXML
+    private void cadastrarCategoria() {
+        if (sistema == null) return;
 
-        if (categorias.isEmpty()) {
-            escrever("Nenhuma categoria cadastrada");
+        Dialog<ButtonType> dialog = new Dialog<>();
+        dialog.setTitle("Cadastrar Categoria");
+        dialog.setHeaderText("Nova Categoria de Catálogo");
+
+        ButtonType btnSalvar = new ButtonType("Cadastrar", ButtonData.OK_DONE);
+        dialog.getDialogPane().getButtonTypes().addAll(btnSalvar, ButtonType.CANCEL);
+
+        GridPane grid = new GridPane();
+        grid.setHgap(12);
+        grid.setVgap(14);
+        grid.setPadding(new Insets(20, 24, 10, 24));
+
+        TextField txtNome = new TextField();
+        txtNome.setPromptText("Ex: Ferramentas Elétricas");
+
+        TextField txtDesc = new TextField();
+        txtDesc.setPromptText("Descrição da finalidade dos itens");
+
+        grid.add(new Label("Nome:"), 0, 0);
+        grid.add(txtNome, 1, 0);
+        grid.add(new Label("Descrição:"), 0, 1);
+        grid.add(txtDesc, 1, 1);
+
+        dialog.getDialogPane().setContent(grid);
+        Platform.runLater(txtNome::requestFocus);
+
+        Optional<ButtonType> res = dialog.showAndWait();
+        if (res.isEmpty() || res.get() != btnSalvar) return;
+
+        String nome = txtNome.getText().trim();
+        String descricao = txtDesc.getText().trim();
+
+        if (nome.isBlank() || descricao.isBlank()) {
+            animarErroShake(tabela);
+            notificarPopUp("Nome e descrição são campos obrigatórios!", false);
             return;
         }
 
-        escreverf("%-5s %-25s %-40s %-6s", "ID", "NOME", "DESCRIÇÃO", "ATIVA");
-        escrever("-".repeat(80));
-        for (Categoria c : categorias) {
-            escreverf("%-5d %-25s %-40s %-6s", c.getId(), c.getNome(), c.getDescricao(), c.isAtiva());
+        int id = sistema.gerarProximoIdCategoria();
+        Categoria categoria = new Categoria(id, nome, descricao);
+
+        if (sistema.cadastrarCategoria(categoria)) {
+            notificarPopUp("Categoria '" + nome + "' cadastrada com sucesso!", true);
+            carregarTabela();
+        } else {
+            animarErroShake(tabela);
+            notificarPopUp("Já existe uma categoria cadastrada com esse nome.", false);
         }
     }
 
     @FXML
     private void atualizarCategoria() {
-        Optional<Integer> id = pedirInteiro(ID_CATEGORIA);
-        if (id.isEmpty()) return;
+        if (tabela == null || sistema == null) return;
 
-        Categoria atual = sistema.buscarCategoria(id.get());
-        if (atual == null) {
-            erro(NAO_ENCONTRADA);
+        Categoria selecionada = tabela.getSelectionModel().getSelectedItem();
+        if (selecionada == null) {
+            animarErroShake(tabela);
+            notificarPopUp("Selecione uma categoria na tabela para editar.", false);
             return;
         }
 
-        Optional<String> nome = pedirTexto("Nome:", atual.getNome());
-        if (nome.isEmpty()) return;
-        Optional<String> descricao = pedirTexto("Descrição:", atual.getDescricao());
-        if (descricao.isEmpty()) return;
+        Dialog<ButtonType> dialog = new Dialog<>();
+        dialog.setTitle("Atualizar Categoria");
+        dialog.setHeaderText("Editar Categoria: " + selecionada.getNome() + " (ID: " + selecionada.getId() + ")");
 
-        String novoNome = nome.get().isEmpty() ? atual.getNome() : nome.get();
-        String novaDescricao = descricao.get().isEmpty() ? atual.getDescricao() : descricao.get();
+        ButtonType btnSalvar = new ButtonType("Salvar", ButtonData.OK_DONE);
+        dialog.getDialogPane().getButtonTypes().addAll(btnSalvar, ButtonType.CANCEL);
 
-        if (sistema.atualizarCategoria(new Categoria(id.get(), novoNome, novaDescricao))) {
-            info("Categoria atualizada com sucesso");
+        GridPane grid = new GridPane();
+        grid.setHgap(12);
+        grid.setVgap(14);
+        grid.setPadding(new Insets(20, 24, 10, 24));
+
+        TextField txtNome = new TextField(selecionada.getNome());
+        TextField txtDesc = new TextField(selecionada.getDescricao());
+
+        grid.add(new Label("Nome:"), 0, 0);
+        grid.add(txtNome, 1, 0);
+        grid.add(new Label("Descrição:"), 0, 1);
+        grid.add(txtDesc, 1, 1);
+
+        dialog.getDialogPane().setContent(grid);
+        Platform.runLater(txtNome::requestFocus);
+
+        Optional<ButtonType> res = dialog.showAndWait();
+        if (res.isEmpty() || res.get() != btnSalvar) return;
+
+        String novoNome = txtNome.getText().trim();
+        String novaDescricao = txtDesc.getText().trim();
+
+        if (novoNome.isBlank() || novaDescricao.isBlank()) {
+            animarErroShake(tabela);
+            notificarPopUp("Nome e descrição não podem ficar vazios!", false);
+            return;
+        }
+
+        if (sistema.atualizarCategoria(new Categoria(selecionada.getId(), novoNome, novaDescricao))) {
+            notificarPopUp("Categoria atualizada com sucesso!", true);
+            carregarTabela();
         } else {
-            erro("Erro ao atualizar categoria");
+            animarErroShake(tabela);
+            notificarPopUp("Erro ao atualizar categoria.", false);
         }
     }
 
     @FXML
     private void desativarCategoria() {
-        Optional<Integer> id = pedirInteiro(ID_CATEGORIA);
-        if (id.isEmpty()) return;
+        if (tabela == null || sistema == null) return;
 
-        Categoria categoria = sistema.buscarCategoria(id.get());
-        if (categoria == null) {
-            erro(NAO_ENCONTRADA);
+        Categoria selecionada = tabela.getSelectionModel().getSelectedItem();
+        if (selecionada == null) {
+            animarErroShake(tabela);
+            notificarPopUp("Selecione uma categoria na tabela para desativar.", false);
             return;
         }
 
-        if (!confirmar("Tem certeza que deseja desativar \"" + categoria.getNome() + "\"?")) {
+        if (!confirmar("Tem certeza que deseja desativar a categoria \"" + selecionada.getNome() + "\"?")) {
             return;
         }
 
-        if (sistema.desativarCategoria(id.get())) {
-            info("Categoria desativada com sucesso");
+        if (sistema.desativarCategoria(selecionada.getId())) {
+            notificarPopUp("Categoria desativada com sucesso.", true);
+            carregarTabela();
         } else {
-            erro("Erro ao desativar categoria");
+            animarErroShake(tabela);
+            notificarPopUp("Não foi possível desativar a categoria.", false);
         }
     }
 }

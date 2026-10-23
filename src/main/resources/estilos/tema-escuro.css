@@ -1,0 +1,181 @@
+/* ==========================================================================
+   TEMA ESCURO REAL (OLED PITCH BLACK - ALTO CONTRASTE)
+   ========================================================================== */
+
+.root {
+    -fx-base: #000000;
+    -fx-background-color: #000000 !important;
+    -fx-font-family: -apple-system, 'SF Pro Text', 'Segoe UI', sans-serif;
+}
+
+.root, .stack-pane, .vbox, .hbox, .anchor-pane, .border-pane, .pane {
+    -fx-background-color: #000000;
+}
+
+.card-superficie {
+    -fx-background-color: #0D0E12 !important;
+    -fx-background-radius: 16px !important;
+    -fx-border-color: #1F2229 !important;
+    -fx-border-radius: 16px !important;
+}
+
+.label, .text {
+    -fx-text-fill: #FFFFFF !important;
+    -fx-fill: #FFFFFF !important;
+}
+
+.label-subtitulo {
+    -fx-text-fill: #A1A1AA !important;
+}
+
+.menu-card, .button.menu-card {
+    -fx-background-color: #0D0E12 !important;
+    -fx-border-color: #1F2229 !important;
+    -fx-border-radius: 12px !important;
+    -fx-background-radius: 12px !important;
+}
+
+.menu-card:hover, .button.menu-card:hover {
+    -fx-background-color: #161821 !important;
+    -fx-border-color: #2F3442 !important;
+}
+
+.button {
+    -fx-background-color: #14161C !important;
+    -fx-text-fill: #FFFFFF !important;
+    -fx-border-color: #262933 !important;
+    -fx-border-radius: 10px !important;
+    -fx-background-radius: 10px !important;
+    -fx-font-weight: bold;
+}
+
+.button:hover {
+    -fx-background-color: #1E212B !important;
+}
+
+.text-field, .password-field, .combo-box, .date-picker, .campo-busca {
+    -fx-background-color: #14161C !important;
+    -fx-control-inner-background: #14161C !important;
+    -fx-text-fill: #FFFFFF !important;
+    -fx-prompt-text-fill: #6B7280 !important;
+    -fx-border-color: #262933 !important;
+    -fx-border-radius: 8px !important;
+    -fx-background-radius: 8px !important;
+}
+
+/* Tabelas */
+.table-view {
+    -fx-background-color: #0D0E12 !important;
+    -fx-border-color: #1F2229 !important;
+    -fx-background-radius: 10px !important;
+    -fx-border-radius: 10px !important;
+}
+
+.table-view .column-header-background {
+    -fx-background-color: #08090B !important;
+    -fx-border-color: transparent transparent #1F2229 transparent !important;
+}
+
+.table-view .column-header {
+    -fx-background-color: transparent !important;
+}
+
+.table-view .column-header .label {
+    -fx-text-fill: #A1A1AA !important;
+    -fx-font-weight: bold !important;
+}
+
+.table-view .table-row-cell {
+    -fx-background-color: #0D0E12 !important;
+    -fx-border-color: transparent transparent #161820 transparent !important;
+}
+
+.table-view .table-row-cell:odd {
+    -fx-background-color: #08090B !important;
+}
+
+.table-view .table-row-cell:selected {
+    -fx-background-color: #172554 !important;
+}
+
+.table-view .table-cell {
+    -fx-text-fill: #FFFFFF !important;
+}
+
+.table-view .table-cell .text {
+    -fx-fill: #FFFFFF !important;
+}
+
+.table-view .placeholder .label {
+    -fx-text-fill: #A1A1AA !important;
+}
+
+/* ==========================================================================
+   BADGES NEON VIBRANTES (ALTO CONTRASTE)
+   ========================================================================== */
+.badge-sucesso {
+    -fx-background-color: rgba(16, 185, 129, 0.20) !important;
+    -fx-text-fill: #34D399 !important;
+    -fx-border-color: rgba(52, 211, 153, 0.50) !important;
+    -fx-border-radius: 10px !important;
+    -fx-background-radius: 10px !important;
+    -fx-font-weight: bold !important;
+    -fx-font-size: 11px !important;
+    -fx-padding: 3 8 3 8 !important;
+}
+
+.badge-perigo {
+    -fx-background-color: rgba(239, 68, 68, 0.20) !important;
+    -fx-text-fill: #F87171 !important;
+    -fx-border-color: rgba(248, 113, 113, 0.50) !important;
+    -fx-border-radius: 10px !important;
+    -fx-background-radius: 10px !important;
+    -fx-font-weight: bold !important;
+    -fx-font-size: 11px !important;
+    -fx-padding: 3 8 3 8 !important;
+}
+
+.badge-aviso {
+    -fx-background-color: rgba(245, 158, 11, 0.20) !important;
+    -fx-text-fill: #FBBF24 !important;
+    -fx-border-color: rgba(251, 191, 36, 0.50) !important;
+    -fx-border-radius: 10px !important;
+    -fx-background-radius: 10px !important;
+    -fx-font-weight: bold !important;
+    -fx-font-size: 11px !important;
+    -fx-padding: 3 8 3 8 !important;
+}
+
+.badge-info {
+    -fx-background-color: rgba(59, 130, 246, 0.20) !important;
+    -fx-text-fill: #60A5FA !important;
+    -fx-border-color: rgba(96, 165, 250, 0.50) !important;
+    -fx-border-radius: 10px !important;
+    -fx-background-radius: 10px !important;
+    -fx-font-weight: bold !important;
+    -fx-font-size: 11px !important;
+    -fx-padding: 3 8 3 8 !important;
+}
+
+.badge-neutro {
+    -fx-background-color: rgba(156, 163, 175, 0.20) !important;
+    -fx-text-fill: #E5E7EB !important;
+    -fx-border-color: rgba(229, 231, 235, 0.40) !important;
+    -fx-border-radius: 10px !important;
+    -fx-background-radius: 10px !important;
+    -fx-font-weight: bold !important;
+    -fx-font-size: 11px !important;
+    -fx-padding: 3 8 3 8 !important;
+}
+
+/* Scrollbars */
+.scroll-bar { -fx-background-color: transparent !important; }
+.scroll-bar:vertical { -fx-pref-width: 8px !important; }
+.scroll-bar:horizontal { -fx-pref-height: 8px !important; }
+.scroll-bar .track { -fx-background-color: transparent !important; }
+.scroll-bar .thumb {
+    -fx-background-color: rgba(255, 255, 255, 0.25) !important;
+    -fx-background-radius: 10px !important;
+}
+.scroll-bar .thumb:hover { -fx-background-color: rgba(255, 255, 255, 0.45) !important; }
+.scroll-bar .increment-button, .scroll-bar .decrement-button { -fx-shape: "" !important; -fx-padding: 0 !important; }

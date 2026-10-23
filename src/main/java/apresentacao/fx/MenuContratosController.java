@@ -1,8 +1,11 @@
 package apresentacao.fx;
 
+import java.text.NumberFormat;
 import java.time.LocalDate;
+import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
 
 import entidades.Cliente;
@@ -10,28 +13,48 @@ import entidades.ContratoAluguel;
 import entidades.Item;
 import entidades.Usuario;
 import javafx.application.Platform;
+import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.collections.transformation.FilteredList;
+import javafx.collections.transformation.SortedList;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Dialog;
 import javafx.scene.control.Label;
+import javafx.scene.control.TableCell;
+import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
+import org.kordamp.ikonli.javafx.FontIcon;
 
 public class MenuContratosController extends MenuController {
 
     private static final String ID_CONTRATO = "Digite o ID do contrato: ";
     private static final String CONTRATO_NAO_ENCONTRADO = "Contrato não encontrado.";
+    private static final NumberFormat MOEDA = NumberFormat.getCurrencyInstance(Locale.forLanguageTag("pt-BR"));
 
-    @FXML 
-    private TableView<ContratoAluguel> tabela;
+    @FXML private TextField pesquisa;
+    @FXML private TableView<ContratoAluguel> tabela;
+    @FXML private TableColumn<ContratoAluguel, Integer> colId;
+    @FXML private TableColumn<ContratoAluguel, String> colCliente;
+    @FXML private TableColumn<ContratoAluguel, String> colItem;
+    @FXML private TableColumn<ContratoAluguel, String> colRetirada;
+    @FXML private TableColumn<ContratoAluguel, String> colDevolucao;
+    @FXML private TableColumn<ContratoAluguel, ContratoAluguel> colStatus;
+    @FXML private TableColumn<ContratoAluguel, Double> colValor;
+
+    private final ObservableList<ContratoAluguel> listaContratos = FXCollections.observableArrayList();
+    private FilteredList<ContratoAluguel> listaFiltrada;
 
     @Override
     protected String getTitulo() {
@@ -41,12 +64,13 @@ public class MenuContratosController extends MenuController {
     @FXML
     public void initialize() {
         configurarResponsividade();
+        configurarColunas();
+        configurarTabelaVazia();
+        configurarFiltroPesquisa();
     }
 
     @Override
     protected void aoExibir() {
-        configurarResponsividade();
-        configurarTabelaEPesquisa(tabela, this::fazPesquisa);
         listarContratos();
     }
 
@@ -60,21 +84,182 @@ public class MenuContratosController extends MenuController {
         }
     }
 
+    private void configurarTabelaVazia() {
+        if (tabela == null) return;
+
+        VBox estadoVazio = new VBox(8);
+        estadoVazio.setAlignment(Pos.CENTER);
+        estadoVazio.setStyle("-fx-padding: 30px;");
+
+        FontIcon icone = new FontIcon("fas-file-signature");
+        icone.setIconSize(34);
+        icone.setStyle("-fx-icon-color: #8e8e93;");
+
+        Label titulo = new Label("Nenhum contrato encontrado");
+        titulo.setStyle("-fx-font-weight: bold; -fx-font-size: 15px;");
+
+        Label subtitulo = new Label("Utilize o campo de busca acima ou registre uma nova locação.");
+        subtitulo.getStyleClass().add("label-subtitulo");
+        subtitulo.setStyle("-fx-font-size: 13px;");
+
+        estadoVazio.getChildren().addAll(icone, titulo, subtitulo);
+        tabela.setPlaceholder(estadoVazio);
+    }
+
+    private void configurarColunas() {
+        if (colId != null) {
+            colId.setCellValueFactory(d -> new SimpleObjectProperty<>(d.getValue().getId()));
+            colId.setStyle("-fx-alignment: CENTER;");
+        }
+
+        if (colCliente != null) {
+            colCliente.setCellValueFactory(d -> {
+                Cliente c = d.getValue().getCliente();
+                return new SimpleStringProperty(c != null ? c.getNome() : "N/D");
+            });
+            colCliente.setStyle("-fx-font-weight: bold;");
+        }
+
+        if (colItem != null) {
+            colItem.setCellValueFactory(d -> {
+                Item i = d.getValue().getItem();
+                return new SimpleStringProperty(i != null ? i.getNome() : "N/D");
+            });
+        }
+
+        if (colRetirada != null) {
+            colRetirada.setCellValueFactory(d -> new SimpleStringProperty(d.getValue().getDataRetirada()));
+            colRetirada.setStyle("-fx-alignment: CENTER;");
+        }
+
+        if (colDevolucao != null) {
+            colDevolucao.setCellValueFactory(d -> new SimpleStringProperty(d.getValue().getDataDevolucaoPrevista()));
+            colDevolucao.setStyle("-fx-alignment: CENTER;");
+        }
+
+        if (colValor != null) {
+            colValor.setCellValueFactory(d -> new SimpleObjectProperty<>(d.getValue().getValorTotal()));
+            colValor.setCellFactory(col -> new TableCell<>() {
+                @Override
+                protected void updateItem(Double valor, boolean empty) {
+                    super.updateItem(valor, empty);
+                    if (empty || valor == null) {
+                        setText(null);
+                        setGraphic(null);
+                    } else {
+                        setText(MOEDA.format(valor));
+                        setAlignment(Pos.CENTER_RIGHT);
+                        setStyle("-fx-font-weight: bold;");
+                    }
+                }
+            });
+        }
+
+        if (colStatus != null) {
+            colStatus.setCellValueFactory(d -> new SimpleObjectProperty<>(d.getValue()));
+            colStatus.setCellFactory(col -> new TableCell<>() {
+                private final Label badge = new Label();
+
+                @Override
+                protected void updateItem(ContratoAluguel contrato, boolean empty) {
+                    super.updateItem(contrato, empty);
+                    if (empty || contrato == null) {
+                        setGraphic(null);
+                        setText(null);
+                    } else {
+                        String st = contrato.getStatus() != null ? contrato.getStatus().toUpperCase() : "";
+                        LocalDate hoje = LocalDate.now(ZoneId.of("America/Recife"));
+                        LocalDate prevista = null;
+                        try {
+                            prevista = LocalDate.parse(contrato.getDataDevolucaoPrevista());
+                        } catch (Exception ignored) {}
+
+                        badge.getStyleClass().removeAll("badge-sucesso", "badge-perigo", "badge-aviso", "badge-info", "badge-neutro");
+                        badge.setStyle(""); // Limpa travas inline para a folha CSS atuar em claro/escuro
+
+                        if ("FINALIZADO".equals(st)) {
+                            badge.setText("● Concluído");
+                            badge.getStyleClass().add("badge-neutro");
+                        } else if ("CANCELADO".equals(st)) {
+                            badge.setText("● Cancelado");
+                            badge.getStyleClass().add("badge-perigo");
+                        } else if (prevista != null && hoje.isAfter(prevista)) {
+                            badge.setText("● Atrasado");
+                            badge.getStyleClass().add("badge-perigo");
+                        } else {
+                            badge.setText("● Em Dia");
+                            badge.getStyleClass().add("badge-sucesso");
+                        }
+
+                        setAlignment(Pos.CENTER);
+                        setGraphic(badge);
+                        setText(null);
+                    }
+                }
+            });
+        }
+    }
+
+    private void configurarFiltroPesquisa() {
+        listaFiltrada = new FilteredList<>(listaContratos, p -> true);
+
+        if (pesquisa != null) {
+            pesquisa.textProperty().addListener((obs, antigo, novo) -> {
+                String termo = (novo == null) ? "" : novo.trim().toLowerCase();
+                listaFiltrada.setPredicate(c -> {
+                    if (c == null) return false;
+                    if (termo.isEmpty()) return true;
+
+                    boolean bateuId = String.valueOf(c.getId()).contains(termo);
+                    boolean bateuCliente = c.getCliente() != null && c.getCliente().getNome().toLowerCase().contains(termo);
+                    boolean bateuItem = c.getItem() != null && c.getItem().getNome().toLowerCase().contains(termo);
+                    boolean bateuStatus = c.getStatus() != null && c.getStatus().toLowerCase().contains(termo);
+
+                    return bateuId || bateuCliente || bateuItem || bateuStatus;
+                });
+            });
+        }
+
+        SortedList<ContratoAluguel> ordenada = new SortedList<>(listaFiltrada);
+        if (tabela != null) {
+            ordenada.comparatorProperty().bind(tabela.comparatorProperty());
+            tabela.setItems(ordenada);
+        }
+    }
+
+    @FXML
+    private void aoLimparPesquisa() {
+        if (pesquisa != null) {
+            pesquisa.clear();
+        }
+    }
+
+    @FXML
+    private void listarContratos() {
+        if (sistema == null) return;
+        List<ContratoAluguel> contratos = sistema.listarContratos();
+        if (contratos != null) {
+            listaContratos.setAll(contratos);
+        } else {
+            listaContratos.clear();
+        }
+    }
+
     @FXML
     private void registrarAluguel() {
         if (sistema == null) return;
 
         Dialog<ButtonType> dialog = new Dialog<>();
         dialog.setTitle("Registrar Aluguel");
-        dialog.setHeaderText("Preencha os dados do novo contrato de aluguel");
+        dialog.setHeaderText("Novo Contrato de Locação");
 
         ButtonType btnConfirmar = new ButtonType("Registrar", ButtonData.OK_DONE);
         dialog.getDialogPane().getButtonTypes().addAll(btnConfirmar, ButtonType.CANCEL);
 
         GridPane grid = new GridPane();
-        grid.setHgap(10);
-        grid.setVgap(12);
-        grid.setPadding(new Insets(20, 20, 10, 10));
+        grid.setHgap(12);
+        grid.setVgap(14);
+        grid.setPadding(new Insets(20, 24, 10, 24));
 
         TextField txtIdCliente = new TextField();
         txtIdCliente.setPromptText("Ex: 1");
@@ -109,29 +294,34 @@ public class MenuContratosController extends MenuController {
             idCliente = Integer.parseInt(txtIdCliente.getText().trim());
             idItem = Integer.parseInt(txtIdItem.getText().trim());
         } catch (NumberFormatException e) {
-            erro("Os IDs do cliente e do item devem ser numéricos.");
+            animarErroShake(tabela);
+            notificarPopUp("IDs do cliente e item devem ser números válidos.", false);
             return;
         }
 
         Usuario usuario = sistema.buscarUsuario(idCliente);
         if (!(usuario instanceof Cliente cliente)) {
-            erro("Cliente não encontrado.");
+            animarErroShake(tabela);
+            notificarPopUp("Cliente não encontrado com o ID informado.", false);
             return;
         }
 
         if (sistema.clientePossuiMultaPendente(cliente.getId())) {
-            erro("Cliente possui multa pendente e não pode realizar novos aluguéis.");
+            animarErroShake(tabela);
+            notificarPopUp("Cliente possui multa(s) pendente(s). Locação bloqueada.", false);
             return;
         }
 
         Item item = sistema.buscarItem(idItem);
         if (item == null) {
-            erro("Item não encontrado.");
+            animarErroShake(tabela);
+            notificarPopUp("Item não encontrado com o ID informado.", false);
             return;
         }
 
         if (!item.estaDisponivel()) {
-            erro("Item indisponível para aluguel. Status atual: " + item.getStatus());
+            animarErroShake(tabela);
+            notificarPopUp("Item indisponível no momento. Status: " + item.getStatus(), false);
             return;
         }
 
@@ -139,13 +329,15 @@ public class MenuContratosController extends MenuController {
         LocalDate dataDev = dpDevolucao.getValue();
 
         if (dataRet == null || dataDev == null) {
-            erro("Por favor, selecione as duas datas no calendário.");
+            animarErroShake(tabela);
+            notificarPopUp("Defina as datas de retirada e devolução.", false);
             return;
         }
 
         long quantidadeDias = ChronoUnit.DAYS.between(dataRet, dataDev);
         if (quantidadeDias <= 0) {
-            erro("A data de devolução deve ser posterior à data de retirada.");
+            animarErroShake(tabela);
+            notificarPopUp("A data de devolução deve ser posterior à de retirada.", false);
             return;
         }
 
@@ -156,12 +348,13 @@ public class MenuContratosController extends MenuController {
                 idContrato, cliente, item, dataRet.toString(), dataDev.toString(), valorTotal);
 
         if (!sistema.cadastrarContrato(contrato)) {
-            erro("Erro ao registrar aluguel.");
+            animarErroShake(tabela);
+            notificarPopUp("Erro ao salvar contrato no sistema.", false);
             return;
         }
 
         item.alugar();
-        info("Aluguel registrado com sucesso! ID do Contrato: " + idContrato);
+        notificarPopUp("Aluguel registrado com sucesso! Contrato #" + idContrato, true);
         listarContratos();
     }
 
@@ -170,52 +363,33 @@ public class MenuContratosController extends MenuController {
         pedirInteiro(ID_CONTRATO).ifPresent(this::mostraContrato);
     }
 
-    private void fazPesquisa(String pesquisado) {
-        if (pesquisado == null || pesquisado.trim().isEmpty()) {
-            listarContratos();
-            return;
-        }
-        List<ContratoAluguel> filtrados = sistema.filtrarContratos(pesquisado);
-        if (filtrados != null) {
-            tabela.setItems(FXCollections.observableArrayList(filtrados));
-        }
-    }
-
-    @FXML
-    private void listarContratos() {
-        if (sistema == null || tabela == null) return;
-        List<ContratoAluguel> contratos = sistema.listarContratos();
-        if (contratos != null) {
-            tabela.setItems(FXCollections.observableArrayList(contratos));
-        }
-    }
-
     @FXML
     private void finalizarContrato() {
         ContratoAluguel contrato = obterContratoAlvo();
         if (contrato == null) return;
 
         if (!contrato.estaAtivo() || contrato.estaFinalizado()) {
-            erro("Este contrato não está ativo. Status: " + contrato.getStatus());
+            animarErroShake(tabela);
+            notificarPopUp("Este contrato já se encontra encerrado.", false);
             return;
         }
 
         Dialog<ButtonType> dialog = new Dialog<>();
         dialog.setTitle("Finalizar Contrato");
-        dialog.setHeaderText("Encerramento do Contrato ID: " + contrato.getId());
+        dialog.setHeaderText("Devolução do Item: " + contrato.getItem().getNome() + " (Contrato #" + contrato.getId() + ")");
 
-        ButtonType btnFinalizar = new ButtonType("Finalizar", ButtonData.OK_DONE);
+        ButtonType btnFinalizar = new ButtonType("Finalizar Devolução", ButtonData.OK_DONE);
         dialog.getDialogPane().getButtonTypes().addAll(btnFinalizar, ButtonType.CANCEL);
 
         GridPane grid = new GridPane();
-        grid.setHgap(10);
-        grid.setVgap(12);
-        grid.setPadding(new Insets(20, 20, 10, 10));
+        grid.setHgap(12);
+        grid.setVgap(14);
+        grid.setPadding(new Insets(20, 24, 10, 24));
 
         DatePicker dpReal = new DatePicker(LocalDate.now());
         dpReal.setDisable(true);
 
-        CheckBox chkHoje = new CheckBox("Data de hoje (" + LocalDate.now() + ")");
+        CheckBox chkHoje = new CheckBox("Devolvido hoje (" + LocalDate.now() + ")");
         chkHoje.setSelected(true);
 
         chkHoje.selectedProperty().addListener((obs, antigo, selecionado) -> {
@@ -226,7 +400,7 @@ public class MenuContratosController extends MenuController {
         });
 
         grid.add(chkHoje, 0, 0, 2, 1);
-        grid.add(new Label("Data real de devolução:"), 0, 1);
+        grid.add(new Label("Data real da devolução:"), 0, 1);
         grid.add(dpReal, 1, 1);
 
         dialog.getDialogPane().setContent(grid);
@@ -238,7 +412,8 @@ public class MenuContratosController extends MenuController {
 
         LocalDate real = dpReal.getValue();
         if (real == null) {
-            erro("Selecione uma data válida.");
+            animarErroShake(tabela);
+            notificarPopUp("Selecione uma data de devolução válida.", false);
             return;
         }
 
@@ -251,9 +426,9 @@ public class MenuContratosController extends MenuController {
             double multa = sistema.calcularMulta(diasAtraso, contrato.getItem().getTaxaDiaria());
             contrato.setValorMulta(multa);
             contrato.setMultaPaga(false);
-            info(String.format("Contrato finalizado com atraso de %d dia(s). Multa gerada: R$ %.2f", diasAtraso, multa));
+            notificarPopUp("Atraso de " + diasAtraso + " dia(s). Multa gerada: " + MOEDA.format(multa), false);
         } else {
-            info("Devolução realizada dentro do prazo.");
+            notificarPopUp("Devolução realizada dentro do prazo!", true);
         }
 
         contrato.getItem().devolver();
@@ -261,7 +436,8 @@ public class MenuContratosController extends MenuController {
         if (sistema.finalizarContrato(contrato.getId())) {
             listarContratos();
         } else {
-            erro("Erro ao finalizar contrato");
+            animarErroShake(tabela);
+            notificarPopUp("Erro ao atualizar encerramento do contrato.", false);
         }
     }
 
@@ -271,26 +447,27 @@ public class MenuContratosController extends MenuController {
         if (contrato == null) return;
 
         if ("FINALIZADO".equalsIgnoreCase(contrato.getStatus())) {
-            erro("Não é possível cancelar um contrato já finalizado");
+            animarErroShake(tabela);
+            notificarPopUp("Não é possível cancelar um contrato já finalizado.", false);
             return;
         }
 
-        if (!confirmar("Tem certeza que deseja cancelar o contrato ID " + contrato.getId() + "?")) {
+        if (!confirmar("Tem certeza que deseja cancelar o contrato #" + contrato.getId() + "?")) {
             return;
         }
 
         if (sistema.cancelarContrato(contrato.getId())) {
             contrato.getItem().devolver();
-            info("Contrato cancelado com sucesso. Item devolvido ao estoque.");
+            notificarPopUp("Contrato #" + contrato.getId() + " cancelado. Item retornado ao catálogo.", true);
             listarContratos();
         } else {
-            erro("Erro ao cancelar contrato.");
+            animarErroShake(tabela);
+            notificarPopUp("Erro ao cancelar o contrato.", false);
         }
     }
 
     private ContratoAluguel obterContratoAlvo() {
         ContratoAluguel selecionado = tabela.getSelectionModel().getSelectedItem();
-        tabela.getSelectionModel().clearSelection();
 
         if (selecionado != null) {
             return selecionado;
@@ -299,7 +476,10 @@ public class MenuContratosController extends MenuController {
         return pedirInteiro(ID_CONTRATO)
                 .map(id -> {
                     ContratoAluguel c = sistema.buscarContrato(id);
-                    if (c == null) erro(CONTRATO_NAO_ENCONTRADO);
+                    if (c == null) {
+                        animarErroShake(tabela);
+                        notificarPopUp(CONTRATO_NAO_ENCONTRADO, false);
+                    }
                     return c;
                 })
                 .orElse(null);
@@ -308,9 +488,11 @@ public class MenuContratosController extends MenuController {
     private void mostraContrato(int id) {
         ContratoAluguel contrato = sistema.buscarContrato(id);
         if (contrato == null) {
-            info(CONTRATO_NAO_ENCONTRADO);
+            animarErroShake(tabela);
+            notificarPopUp(CONTRATO_NAO_ENCONTRADO, false);
             return;
         }
-        tabela.getItems().setAll(contrato);
+        listaContratos.setAll(contrato);
+        notificarPopUp("Contrato #" + id + " localizado.", true);
     }
 }

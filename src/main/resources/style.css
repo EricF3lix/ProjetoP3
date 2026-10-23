@@ -2,6 +2,11 @@
    ESTILOS GLOBAIS - TEMA MODERNO (APPLE STYLE)
    ========================================================================== */
 
+.root {
+    -fx-font-family: -apple-system, "SF Pro Text", "Segoe UI", Helvetica, Arial, sans-serif;
+    -fx-background-color: #f5f5f7;
+}
+
 /* Tabelas (TableView) */
 .table-view {
     -fx-background-color: transparent;
@@ -19,7 +24,7 @@
 
 .table-view .column-header {
     -fx-background-color: transparent;
-    -fx-size: 38px;
+    -fx-size: 40px;
     -fx-border-color: transparent #e5e5ea transparent transparent;
     -fx-border-width: 1px;
 }
@@ -28,16 +33,14 @@
     -fx-text-fill: #1c1c1e;
     -fx-font-weight: bold;
     -fx-font-size: 13px;
-    -fx-font-family: -apple-system, "SF Pro Text", "Segoe UI", sans-serif;
     -fx-alignment: CENTER-LEFT;
 }
 
 .table-row-cell {
     -fx-background-color: #ffffff;
     -fx-border-color: transparent transparent #f2f2f7 transparent;
-    -fx-cell-size: 36px;
+    -fx-cell-size: 38px;
     -fx-font-size: 13px;
-    -fx-font-family: -apple-system, "SF Pro Text", "Segoe UI", sans-serif;
 }
 
 .table-row-cell:odd {
@@ -46,6 +49,7 @@
 
 .table-row-cell:hover {
     -fx-background-color: #f0f4ff;
+    -fx-cursor: hand;
 }
 
 .table-row-cell:selected {
@@ -57,7 +61,7 @@
     -fx-fill: white;
 }
 
-/* Barras de Deslocamento (ScrollBars) */
+/* ScrollBars */
 .table-view .scroll-bar:vertical,
 .table-view .scroll-bar:horizontal {
     -fx-background-color: transparent;
@@ -70,4 +74,70 @@
 
 .table-view .scroll-bar .thumb:hover {
     -fx-background-color: #8e8e93;
+}
+
+/* ==========================================================================
+   INTERAÇÕES TÁTEIS E BOTÕES GERAIS
+   ========================================================================== */
+
+.button {
+    -fx-cursor: hand;
+    -fx-focus-traversable: false;
+}
+
+.button:hover {
+    -fx-opacity: 0.94;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.12), 8, 0, 0, 2);
+}
+
+.button:pressed {
+    -fx-scale-x: 0.98;
+    -fx-scale-y: 0.98;
+    -fx-opacity: 0.85;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.05), 2, 0, 0, 1);
+}
+
+/* Inputs com foco estilo Apple */
+.text-field, .password-field, .combo-box {
+    -fx-background-radius: 8px;
+    -fx-border-radius: 8px;
+    -fx-border-color: #d1d1d6;
+    -fx-background-color: #ffffff;
+    -fx-padding: 8px 12px;
+}
+
+.text-field:focused,
+.password-field:focused,
+.combo-box:focused {
+    -fx-border-color: #007aff;
+    -fx-effect: dropshadow(gaussian, rgba(0, 122, 255, 0.28), 8, 0.1, 0, 0);
+}
+
+/* Feedback visual para campos com pendência ou erro de validação */
+.campo-invalido {
+    -fx-border-color: #ff3b30 !important;
+    -fx-effect: dropshadow(gaussian, rgba(255, 59, 48, 0.35), 8, 0.1, 0, 0) !important;
+}
+
+/* ==========================================================================
+   CARDS DE NAVEGAÇÃO DOS MENUS (ELEVAÇÃO SUAVE SEM QUEBRAR ÍCONES)
+   ========================================================================== */
+
+/* Mantém o alinhamento nativo do FXML e adiciona profundidade dinâmica */
+.menu-card {
+    -fx-cursor: hand;
+    -fx-background-radius: 16px;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.04), 8, 0, 0, 2);
+}
+
+.menu-card:hover {
+    -fx-translate-y: -2px;
+    -fx-effect: dropshadow(gaussian, rgba(0, 122, 255, 0.16), 14, 0.1, 0, 5);
+}
+
+.menu-card:pressed {
+    -fx-translate-y: 0px;
+    -fx-scale-x: 0.99;
+    -fx-scale-y: 0.99;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.04), 3, 0, 0, 1);
 }

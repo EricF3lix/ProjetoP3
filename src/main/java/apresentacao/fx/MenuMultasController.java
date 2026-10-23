@@ -29,6 +29,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
+import org.kordamp.ikonli.javafx.FontIcon;
 
 public class MenuMultasController extends MenuController {
 
@@ -59,6 +60,7 @@ public class MenuMultasController extends MenuController {
     public void initialize() {
         configurarResponsividade();
         configurarColunas();
+        configurarTabelaVazia();
     }
 
     @Override
@@ -78,6 +80,28 @@ public class MenuMultasController extends MenuController {
             tabela.setMaxHeight(Double.MAX_VALUE);
             tabela.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
         }
+    }
+
+    private void configurarTabelaVazia() {
+        if (tabela == null) return;
+
+        VBox estadoVazio = new VBox(8);
+        estadoVazio.setAlignment(Pos.CENTER);
+        estadoVazio.setStyle("-fx-padding: 30px;");
+
+        FontIcon icone = new FontIcon("fas-receipt");
+        icone.setIconSize(32);
+        icone.setStyle("-fx-icon-color: #8e8e93;");
+
+        Label titulo = new Label("Nenhuma multa encontrada");
+        titulo.setStyle("-fx-font-weight: bold; -fx-font-size: 15px;");
+
+        Label subtitulo = new Label("Não há registros correspondentes aos critérios de pesquisa.");
+        subtitulo.getStyleClass().add("label-subtitulo");
+        subtitulo.setStyle("-fx-font-size: 13px;");
+
+        estadoVazio.getChildren().addAll(icone, titulo, subtitulo);
+        tabela.setPlaceholder(estadoVazio);
     }
 
     private void configurarColunas() {
@@ -100,6 +124,7 @@ public class MenuMultasController extends MenuController {
                     } else {
                         setText(MOEDA.format(valor));
                         setAlignment(Pos.CENTER_RIGHT);
+                        setStyle("-fx-font-weight: bold;");
                     }
                 }
             });
@@ -116,20 +141,13 @@ public class MenuMultasController extends MenuController {
                         setGraphic(null);
                         setText(null);
                     } else {
+                        badge.getStyleClass().removeAll("badge-sucesso", "badge-aviso");
                         if (paga) {
                             badge.setText("● Paga");
-                            badge.setStyle(
-                                "-fx-background-color: #d4edda; -fx-text-fill: #155724; " +
-                                "-fx-font-weight: bold; -fx-padding: 3 8 3 8; " +
-                                "-fx-background-radius: 10; -fx-font-size: 11px;"
-                            );
+                            badge.getStyleClass().add("badge-sucesso");
                         } else {
                             badge.setText("● Pendente");
-                            badge.setStyle(
-                                "-fx-background-color: #fff3cd; -fx-text-fill: #856404; " +
-                                "-fx-font-weight: bold; -fx-padding: 3 8 3 8; " +
-                                "-fx-background-radius: 10; -fx-font-size: 11px;"
-                            );
+                            badge.getStyleClass().add("badge-aviso");
                         }
                         setAlignment(Pos.CENTER);
                         setGraphic(badge);
@@ -233,7 +251,8 @@ public class MenuMultasController extends MenuController {
             double valor = Double.parseDouble(txtValor.getText().trim());
 
             if (descricao.isEmpty()) {
-                erro("Preencha a descrição da ocorrência.");
+                animarErroShake(tabela);
+                notificarPopUp("Preencha a descrição da ocorrência.", false);
                 return;
             }
 
@@ -243,13 +262,15 @@ public class MenuMultasController extends MenuController {
             Multa multa = new Multa(id, idContrato, tipo, descricao, valor, data);
 
             if (sistema.registrarMulta(multa)) {
-                info("Multa cadastrada com sucesso! ID: " + id);
+                notificarPopUp("Multa registrada com sucesso! ID: " + id, true);
                 listarMultas();
             } else {
-                erro("Erro ao cadastrar multa.");
+                animarErroShake(tabela);
+                notificarPopUp("Erro ao cadastrar multa no sistema.", false);
             }
         } catch (NumberFormatException e) {
-            erro("ID do contrato e Valor devem ser números válidos.");
+            animarErroShake(tabela);
+            notificarPopUp("ID do contrato e Valor devem ser números válidos.", false);
         }
     }
 
@@ -279,11 +300,12 @@ public class MenuMultasController extends MenuController {
         List<Multa> multas = sistema.listarMultasPorContrato(id.get());
         if (multas == null || multas.isEmpty()) {
             listaMultas.clear();
-            info("Nenhuma multa encontrada para esse contrato.");
+            notificarPopUp("Nenhuma multa encontrada para esse contrato.", false);
             return;
         }
 
         listaMultas.setAll(multas);
+        notificarPopUp("Multas do contrato #" + id.get() + " carregadas.", true);
     }
 
     @FXML
@@ -292,11 +314,12 @@ public class MenuMultasController extends MenuController {
         List<Multa> multas = sistema.listarMultasPendentes();
         if (multas == null || multas.isEmpty()) {
             listaMultas.clear();
-            info("Nenhuma multa pendente.");
+            notificarPopUp("Nenhuma multa pendente no momento.", true);
             return;
         }
 
         listaMultas.setAll(multas);
+        notificarPopUp(multas.size() + " multa(s) pendente(s) listada(s).", true);
     }
 
     @FXML
@@ -305,19 +328,20 @@ public class MenuMultasController extends MenuController {
         if (multa == null) return;
 
         if (multa.isPaga()) {
-            info("Essa multa já está paga.");
+            notificarPopUp("Essa multa já está quitada.", false);
             return;
         }
 
-        if (!confirmar("Tem certeza que deseja quitar a multa " + multa.getId() + "?")) {
+        if (!confirmar("Tem certeza que deseja quitar a multa #" + multa.getId() + "?")) {
             return;
         }
 
         if (sistema.quitarMulta(multa.getId())) {
-            info("Multa quitada com sucesso.");
+            notificarPopUp("Multa #" + multa.getId() + " quitada com sucesso!", true);
             listarMultas();
         } else {
-            erro("Erro ao quitar multa.");
+            animarErroShake(tabela);
+            notificarPopUp("Não foi possível quitar a multa.", false);
         }
     }
 
@@ -330,7 +354,8 @@ public class MenuMultasController extends MenuController {
             if (id.isEmpty()) return null;
             atual = sistema.buscarMulta(id.get());
             if (atual == null) {
-                erro(NAO_ENCONTRADA);
+                animarErroShake(tabela);
+                notificarPopUp(NAO_ENCONTRADA, false);
             }
         }
         return atual;
@@ -339,9 +364,11 @@ public class MenuMultasController extends MenuController {
     private void mostraMulta(int id) {
         Multa multa = sistema.buscarMulta(id);
         if (multa == null) {
-            info("Multa não cadastrada.");
+            animarErroShake(tabela);
+            notificarPopUp("Multa não encontrada.", false);
             return;
         }
         listaMultas.setAll(multa);
+        notificarPopUp("Multa #" + id + " localizada.", true);
     }
 }

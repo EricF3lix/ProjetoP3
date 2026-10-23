@@ -1,0 +1,154 @@
+/* ==========================================================================
+   TEMA CLARO (APPLE LIGHT - MANTIDO 100% LIMPO)
+   ========================================================================== */
+
+.root {
+    -fx-base: #F5F5F7;
+    -fx-background-color: #F5F5F7 !important;
+    -fx-font-family: -apple-system, 'SF Pro Text', 'Segoe UI', sans-serif;
+}
+
+.card-superficie {
+    -fx-background-color: #FFFFFF !important;
+    -fx-background-radius: 16px !important;
+    -fx-border-color: #E5E7EB !important;
+    -fx-border-radius: 16px !important;
+}
+
+.label, .text {
+    -fx-text-fill: #1D1D1F;
+}
+
+.label-subtitulo {
+    -fx-text-fill: #636366;
+}
+
+.button {
+    -fx-background-color: #FFFFFF;
+    -fx-text-fill: #1D1D1F;
+    -fx-border-color: #D9DDE5;
+    -fx-border-radius: 10px;
+    -fx-background-radius: 10px;
+    -fx-font-weight: bold;
+}
+
+.menu-card, .button.menu-card {
+    -fx-background-color: #F8F9FB;
+    -fx-border-color: #E5E7EB;
+    -fx-border-radius: 12px;
+    -fx-background-radius: 12px;
+}
+
+.menu-card:hover, .button.menu-card:hover {
+    -fx-background-color: #EEF2F6;
+}
+
+.table-view {
+    -fx-background-color: #FFFFFF !important;
+    -fx-background-radius: 10px !important;
+    -fx-border-color: #E5E7EB !important;
+    -fx-border-radius: 10px !important;
+}
+
+.table-view .column-header-background {
+    -fx-background-color: #F8F9FA !important;
+    -fx-border-color: transparent transparent #E5E7EB transparent !important;
+}
+
+.table-view .column-header {
+    -fx-background-color: transparent !important;
+}
+
+.table-view .column-header .label {
+    -fx-text-fill: #636366 !important;
+    -fx-font-weight: bold !important;
+}
+
+.table-view .table-row-cell {
+    -fx-background-color: #FFFFFF !important;
+    -fx-border-color: transparent transparent #F2F2F7 transparent !important;
+}
+
+.table-view .table-row-cell:odd {
+    -fx-background-color: #FAFAFC !important;
+}
+
+.table-view .table-row-cell:selected {
+    -fx-background-color: #EBF5FF !important;
+}
+
+.table-view .table-cell {
+    -fx-text-fill: #1D1D1F !important;
+}
+
+.table-view .table-cell .text {
+    -fx-fill: #1D1D1F !important;
+}
+
+/* Badges Modo Claro */
+.badge-sucesso {
+    -fx-background-color: #D1FAE5 !important;
+    -fx-text-fill: #065F46 !important;
+    -fx-border-color: #A7F3D0 !important;
+    -fx-border-radius: 10px !important;
+    -fx-background-radius: 10px !important;
+    -fx-font-weight: bold !important;
+    -fx-font-size: 11px !important;
+    -fx-padding: 3 8 3 8 !important;
+}
+
+.badge-perigo {
+    -fx-background-color: #FEE2E2 !important;
+    -fx-text-fill: #991B1B !important;
+    -fx-border-color: #FECACA !important;
+    -fx-border-radius: 10px !important;
+    -fx-background-radius: 10px !important;
+    -fx-font-weight: bold !important;
+    -fx-font-size: 11px !important;
+    -fx-padding: 3 8 3 8 !important;
+}
+
+.badge-aviso {
+    -fx-background-color: #FEF3C7 !important;
+    -fx-text-fill: #92400E !important;
+    -fx-border-color: #FDE68A !important;
+    -fx-border-radius: 10px !important;
+    -fx-background-radius: 10px !important;
+    -fx-font-weight: bold !important;
+    -fx-font-size: 11px !important;
+    -fx-padding: 3 8 3 8 !important;
+}
+
+.badge-info {
+    -fx-background-color: #EEF2FF !important;
+    -fx-text-fill: #4F46E5 !important;
+    -fx-border-color: #C7D2FE !important;
+    -fx-border-radius: 10px !important;
+    -fx-background-radius: 10px !important;
+    -fx-font-weight: bold !important;
+    -fx-font-size: 11px !important;
+    -fx-padding: 3 8 3 8 !important;
+}
+
+.badge-neutro {
+    -fx-background-color: #F3F4F6 !important;
+    -fx-text-fill: #4B5563 !important;
+    -fx-border-color: #E5E7EB !important;
+    -fx-border-radius: 10px !important;
+    -fx-background-radius: 10px !important;
+    -fx-font-weight: bold !important;
+    -fx-font-size: 11px !important;
+    -fx-padding: 3 8 3 8 !important;
+}
+
+/* Scrollbars */
+.scroll-bar { -fx-background-color: transparent !important; }
+.scroll-bar:vertical { -fx-pref-width: 8px !important; }
+.scroll-bar:horizontal { -fx-pref-height: 8px !important; }
+.scroll-bar .track { -fx-background-color: transparent !important; }
+.scroll-bar .thumb {
+    -fx-background-color: rgba(60, 60, 67, 0.25) !important;
+    -fx-background-radius: 10px !important;
+}
+.scroll-bar .thumb:hover { -fx-background-color: rgba(60, 60, 67, 0.45) !important; }
+.scroll-bar .increment-button, .scroll-bar .decrement-button { -fx-shape: "" !important; -fx-padding: 0 !important; }

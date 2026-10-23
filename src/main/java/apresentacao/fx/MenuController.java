@@ -10,12 +10,16 @@ import java.util.function.Function;
 import facade.SistemaFacade;
 import javafx.animation.FadeTransition;
 import javafx.animation.Interpolator;
+import javafx.animation.KeyFrame;
+import javafx.animation.KeyValue;
 import javafx.animation.ParallelTransition;
 import javafx.animation.PauseTransition;
 import javafx.animation.ScaleTransition;
+import javafx.animation.Timeline;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.ChoiceDialog;
@@ -39,7 +43,7 @@ public abstract class MenuController {
     protected TextArea saida;
 
     protected boolean listenerConfigurado = false;
-    
+
     @FXML
     protected TextField pesquisa;
 
@@ -70,6 +74,31 @@ public abstract class MenuController {
 
     protected void escreverf(String formato, Object... args) {
         escrever(String.format(formato, args));
+    }
+
+    // ==========================================
+    // ANIMAÇÕES TÁTEIS E MICROINTERAÇÕES
+    // ==========================================
+
+    /**
+     * Efeito Shake estilo macOS para alertas visuais de recusa/erro em formulários e contêineres.
+     */
+    public static void animarErroShake(Node node) {
+        if (node == null) return;
+
+        Timeline shake = new Timeline(
+            new KeyFrame(Duration.millis(0),   new KeyValue(node.translateXProperty(), 0)),
+            new KeyFrame(Duration.millis(40),  new KeyValue(node.translateXProperty(), -8)),
+            new KeyFrame(Duration.millis(80),  new KeyValue(node.translateXProperty(), 8)),
+            new KeyFrame(Duration.millis(120), new KeyValue(node.translateXProperty(), -6)),
+            new KeyFrame(Duration.millis(160), new KeyValue(node.translateXProperty(), 6)),
+            new KeyFrame(Duration.millis(200), new KeyValue(node.translateXProperty(), -4)),
+            new KeyFrame(Duration.millis(240), new KeyValue(node.translateXProperty(), 4)),
+            new KeyFrame(Duration.millis(280), new KeyValue(node.translateXProperty(), -1)),
+            new KeyFrame(Duration.millis(320), new KeyValue(node.translateXProperty(), 1)),
+            new KeyFrame(Duration.millis(360), new KeyValue(node.translateXProperty(), 0))
+        );
+        shake.play();
     }
 
     // ==========================================
@@ -119,7 +148,7 @@ public abstract class MenuController {
             new ParallelTransition(zoom, fade).play();
         });
     }
-    
+
     public void notificarPopUp(String mensagem) {
         notificarPopUp(mensagem, true);
     }
@@ -135,25 +164,41 @@ public abstract class MenuController {
 
         HBox card = new HBox(10);
         card.setAlignment(Pos.CENTER);
-        card.setPadding(new Insets(12, 22, 12, 22));
+        card.setPadding(new Insets(10, 20, 10, 18));
 
-        String corDestaque = sucesso ? "#34C759" : "#FF3B30";
+        boolean escuro = GerenciadorTema.isModoEscuro();
+
+        String corDestaque = sucesso
+                ? (escuro ? "#34D399" : "#059669")
+                : (escuro ? "#F87171" : "#DC2626");
         String iconeSimbolo = sucesso ? "✓" : "!";
 
-        card.setStyle(
-            "-fx-background-color: #1D1D1F; " +
-            "-fx-background-radius: 25px; " +
-            "-fx-border-color: " + corDestaque + "; " +
-            "-fx-border-width: 1.5px; " +
-            "-fx-border-radius: 25px; " +
-            "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.30), 16, 0, 0, 4);"
-        );
+        if (escuro) {
+            card.setStyle(
+                "-fx-background-color: #121318; " +
+                "-fx-background-radius: 20px; " +
+                "-fx-border-color: " + corDestaque + "; " +
+                "-fx-border-width: 1.5px; " +
+                "-fx-border-radius: 20px; " +
+                "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.7), 16, 0, 0, 4);"
+            );
+        } else {
+            card.setStyle(
+                "-fx-background-color: #FFFFFF; " +
+                "-fx-background-radius: 20px; " +
+                "-fx-border-color: " + corDestaque + "; " +
+                "-fx-border-width: 1.5px; " +
+                "-fx-border-radius: 20px; " +
+                "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.18), 14, 0, 0, 4);"
+            );
+        }
 
         Label lblIcone = new Label(iconeSimbolo);
         lblIcone.setStyle("-fx-text-fill: " + corDestaque + "; -fx-font-weight: bold; -fx-font-size: 14px;");
 
         Label lblTexto = new Label(mensagem);
-        lblTexto.setStyle("-fx-text-fill: #FFFFFF; -fx-font-size: 13px; -fx-font-weight: 600; -fx-font-family: -apple-system, 'SF Pro Text', sans-serif;");
+        String corTexto = escuro ? "#FFFFFF" : "#1D1D1F";
+        lblTexto.setStyle("-fx-text-fill: " + corTexto + "; -fx-font-size: 13px; -fx-font-weight: 600; -fx-font-family: -apple-system, 'SF Pro Text', sans-serif;");
 
         card.getChildren().addAll(lblIcone, lblTexto);
         popup.getContent().add(card);
@@ -237,7 +282,7 @@ public abstract class MenuController {
     protected <T> Optional<T> pedir(String mensagem, Function<String, T> conversor, String msgErro) {
         return pedir(mensagem, "", conversor, msgErro);
     }
-    
+
     protected <T> Optional<T> pedir(String mensagem, String textoInicial, Function<String, T> conversor, String msgErro) {
         String texto = textoInicial;
         while (true) {

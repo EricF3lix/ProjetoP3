@@ -48,14 +48,13 @@ import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import org.kordamp.ikonli.javafx.FontIcon;
 
 public class MenuRelatoriosController extends MenuController {
 
     private enum Parametro {
         CLIENTE, PERIODO
     }
-
-    private static final ZoneId FUSO_HORARIO = ZoneId.of("America/Recife");
 
     private static final String ESTILO_BASE = "-fx-background-color: #ffffff; -fx-background-radius: 10px; "
             + "-fx-border-color: #d1d1d6; -fx-border-radius: 10px; -fx-text-fill: #1d1d1f; "
@@ -117,24 +116,46 @@ public class MenuRelatoriosController extends MenuController {
 
     @Override
     protected String getTitulo() {
-        return "Menu Relatorios";
+        return "Menu Relatórios";
     }
 
     @FXML
     private void initialize() {
-        tabela.setPlaceholder(new Label("Escolha um relatório no menu ao lado."));
+        configurarTabelaVazia("Escolha uma opção ao lado para visualizar os dados");
 
         configurarDatePicker(dpInicial);
         configurarDatePicker(dpFinal);
 
-        LocalDate hoje = LocalDate.now(FUSO_HORARIO);
+        LocalDate hoje = LocalDate.now(ZoneId.of("America/Recife"));
         dpInicial.setValue(hoje.withDayOfMonth(1));
         dpFinal.setValue(hoje);
 
         mostrarParametros(null);
     }
 
+    private void configurarTabelaVazia(String mensagem) {
+        if (tabela == null) return;
+
+        VBox estadoVazio = new VBox(8);
+        estadoVazio.setAlignment(Pos.CENTER);
+        estadoVazio.setStyle("-fx-padding: 30px;");
+
+        FontIcon icone = new FontIcon("fas-chart-bar");
+        icone.setIconSize(34);
+        icone.setStyle("-fx-icon-color: #8e8e93;");
+
+        Label titulo = new Label("Painel de Consultas & Relatórios");
+        titulo.setStyle("-fx-font-weight: bold; -fx-font-size: 15px; -fx-text-fill: #1c1c1e;");
+
+        Label subtitulo = new Label(mensagem);
+        subtitulo.setStyle("-fx-font-size: 13px; -fx-text-fill: #8e8e93;");
+
+        estadoVazio.getChildren().addAll(icone, titulo, subtitulo);
+        tabela.setPlaceholder(estadoVazio);
+    }
+
     private void configurarDatePicker(DatePicker datePicker) {
+        if (datePicker == null) return;
         datePicker.setEditable(false);
         datePicker.setPromptText("Selecione a data");
         datePicker.getEditor().setStyle("-fx-background-color: transparent;");
@@ -154,25 +175,29 @@ public class MenuRelatoriosController extends MenuController {
     }
 
     private void exibir(Node no, boolean visivel) {
-        no.setVisible(visivel);
-        no.setManaged(visivel);
+        if (no != null) {
+            no.setVisible(visivel);
+            no.setManaged(visivel);
+        }
     }
 
     private void marcarAtivo(Button ativo) {
-        btnCategoria.setStyle(ESTILO_BASE);
-        btnHistorico.setStyle(ESTILO_BASE);
-        btnAlugados.setStyle(ESTILO_BASE);
-        btnPeriodo.setStyle(ESTILO_BASE);
-        ativo.setStyle(ESTILO_ATIVO);
+        if (btnCategoria != null) btnCategoria.setStyle(ESTILO_BASE);
+        if (btnHistorico != null) btnHistorico.setStyle(ESTILO_BASE);
+        if (btnAlugados != null) btnAlugados.setStyle(ESTILO_BASE);
+        if (btnPeriodo != null) btnPeriodo.setStyle(ESTILO_BASE);
+        if (ativo != null) ativo.setStyle(ESTILO_ATIVO);
     }
 
     private void limparTabela(String titulo, String aviso) {
         nomeRelatorioAtual = titulo;
         ultimosCabecalhos = new String[0];
-        lblTituloRelatorio.setText(titulo);
+        if (lblTituloRelatorio != null) {
+            lblTituloRelatorio.setText(titulo);
+        }
         tabela.getColumns().clear();
         tabela.getItems().clear();
-        tabela.setPlaceholder(new Label(aviso));
+        configurarTabelaVazia(aviso);
     }
 
     private void montarTabela(String titulo, String[] cabecalhos, List<List<String>> linhas) {
@@ -192,12 +217,14 @@ public class MenuRelatoriosController extends MenuController {
             coluna.setCellValueFactory(c ->
                     new SimpleStringProperty(c.getValue().get(indice)));
 
-            coluna.setMinWidth(90);
+            coluna.setMinWidth(95);
             tabela.getColumns().add(coluna);
         }
         for (List<String> linha : linhas) {
             tabela.getItems().add(FXCollections.observableArrayList(linha));
         }
+
+        notificarPopUp("Relatório carregado (" + linhas.size() + " registros)", true);
     }
 
     @FXML
@@ -206,8 +233,9 @@ public class MenuRelatoriosController extends MenuController {
         mostrarParametros(null);
 
         List<Item> itens = sistema.gerarRelatorioItensDisponiveis();
-        if (itens.isEmpty()) {
-            erro("Erro ao encontrar relatorios");
+        if (itens == null || itens.isEmpty()) {
+            limparTabela("Itens por Categoria", "Nenhum item disponível registrado no sistema.");
+            notificarPopUp("Nenhum item disponível encontrado.", false);
             return;
         }
         List<List<String>> linhas = itens.stream()
@@ -218,7 +246,7 @@ public class MenuRelatoriosController extends MenuController {
                         String.format("%.2f", i.getTaxaDiaria())))
                 .toList();
 
-        montarTabela("Itens por Categoria", new String[]{"CATEGORIA", "ID", "NOME", "TAXA"}, linhas);
+        montarTabela("Itens por Categoria", new String[]{"CATEGORIA", "ID", "NOME", "TAXA DIÁRIA"}, linhas);
     }
 
     @FXML
@@ -226,7 +254,7 @@ public class MenuRelatoriosController extends MenuController {
         marcarAtivo(btnHistorico);
         mostrarParametros(Parametro.CLIENTE);
         carregarClientes();
-        limparTabela("Histórico de Aluguéis", "Selecione o cliente e clique em Gerar relatório.");
+        limparTabela("Histórico de Aluguéis", "Selecione o cliente acima e clique em 'Gerar Relatório'.");
     }
 
     @FXML
@@ -236,12 +264,13 @@ public class MenuRelatoriosController extends MenuController {
 
         List<ContratoAluguel> contratosAtivos = sistema.gerarRelatorioItensAlugados();
 
-        if (contratosAtivos.isEmpty()) {
-            erro("Não existem contratos ativos.");
+        if (contratosAtivos == null || contratosAtivos.isEmpty()) {
+            limparTabela("Itens Alugados Agora", "Não há contratos ou itens em locação ativa no momento.");
+            notificarPopUp("Não existem contratos em locação ativa.", true);
             return;
         }
 
-        LocalDate hoje = LocalDate.now(FUSO_HORARIO);
+        LocalDate hoje = LocalDate.now(ZoneId.of("America/Recife"));
         List<List<String>> linhas = new ArrayList<>();
 
         for (ContratoAluguel c : contratosAtivos) {
@@ -250,22 +279,22 @@ public class MenuRelatoriosController extends MenuController {
 
             linhas.add(Arrays.asList(
                     String.valueOf(c.getId()),
-                    c.getCliente().getNome(),
-                    c.getItem().getNome(),
+                    c.getCliente() != null ? c.getCliente().getNome() : "N/D",
+                    c.getItem() != null ? c.getItem().getNome() : "N/D",
                     c.getDataDevolucaoPrevista(),
                     situacao
             ));
         }
 
         montarTabela("Itens Alugados Agora",
-                new String[]{"ID", "CLIENTE", "ITEM", "DEVOLUÇÃO", "SITUAÇÃO"}, linhas);
+                new String[]{"ID", "CLIENTE", "ITEM", "DEVOLUÇÃO PREVISTA", "SITUAÇÃO"}, linhas);
     }
 
     @FXML
     private void relatorioPeriodo() {
         marcarAtivo(btnPeriodo);
         mostrarParametros(Parametro.PERIODO);
-        limparTabela("Faturamento por Período", "Escolha o período e clique em Gerar relatório.");
+        limparTabela("Faturamento por Período", "Defina o período acima e clique em 'Gerar Relatório'.");
     }
 
     @FXML
@@ -276,6 +305,7 @@ public class MenuRelatoriosController extends MenuController {
             gerarPeriodo();
         }
     }
+
     private void carregarClientes() {
         clientes = sistema.listarUsuarios().stream()
                 .filter(Cliente.class::isInstance)
@@ -294,22 +324,24 @@ public class MenuRelatoriosController extends MenuController {
     private void gerarHistorico() {
         int posicao = cbCliente.getSelectionModel().getSelectedIndex();
         if (posicao < 0) {
-            erro("Selecione um cliente.");
+            animarErroShake(cbCliente);
+            notificarPopUp("Por favor, selecione um cliente da lista.", false);
             return;
         }
 
         Cliente cliente = clientes.get(posicao);
         List<ContratoAluguel> historico = sistema.gerarHistoricoCliente(cliente.getId());
 
-        if (historico.isEmpty()) {
-            info("Cliente sem histórico de aluguéis.");
+        if (historico == null || historico.isEmpty()) {
+            limparTabela("Histórico do Cliente: " + cliente.getNome(), "Este cliente não possui histórico de aluguéis.");
+            notificarPopUp("Cliente sem histórico de aluguéis registrado.", true);
             return;
         }
 
         List<List<String>> linhas = historico.stream()
                 .map(c -> Arrays.asList(
                         String.valueOf(c.getId()),
-                        c.getItem().getNome(),
+                        c.getItem() != null ? c.getItem().getNome() : "N/D",
                         String.valueOf(c.getDataRetirada()),
                         String.valueOf(c.getDataDevolucaoPrevista()),
                         String.valueOf(c.getStatus()),
@@ -318,7 +350,7 @@ public class MenuRelatoriosController extends MenuController {
                 .toList();
 
         montarTabela("Histórico do Cliente: " + cliente.getNome(),
-                new String[]{"ID", "ITEM", "RETIRADA", "PREVISTA", "STATUS", "VALOR", "MULTA"}, linhas);
+                new String[]{"ID", "ITEM", "RETIRADA", "PREVISTA", "STATUS", "VALOR (R$)", "MULTA (R$)"}, linhas);
     }
 
     private void gerarPeriodo() {
@@ -326,40 +358,44 @@ public class MenuRelatoriosController extends MenuController {
         LocalDate fim = dpFinal.getValue();
 
         if (inicial == null || fim == null) {
-            erro("Selecione a data inicial e a data final.");
+            animarErroShake(barraParametros);
+            notificarPopUp("Selecione a data inicial e a data final.", false);
             return;
         }
 
         if (inicial.isAfter(fim)) {
-            erro("A data inicial não pode ser posterior à data final.");
+            animarErroShake(barraParametros);
+            notificarPopUp("A data inicial não pode ser posterior à final.", false);
             return;
         }
 
         List<ContratoAluguel> contratosPeriodo =
                 sistema.gerarRelatorioFaturamento(inicial.toString(), fim.toString());
 
-        if (contratosPeriodo.isEmpty()) {
-            info("Nenhum contrato encontrado no período.");
+        if (contratosPeriodo == null || contratosPeriodo.isEmpty()) {
+            limparTabela("Faturamento por Período", "Nenhum contrato encontrado no intervalo selecionado.");
+            notificarPopUp("Nenhum contrato no período especificado.", true);
             return;
         }
 
         List<List<String>> linhas = contratosPeriodo.stream()
                 .map(c -> Arrays.asList(
                         String.valueOf(c.getId()),
-                        c.getCliente().getNome(),
+                        c.getCliente() != null ? c.getCliente().getNome() : "N/D",
                         String.format("%.2f", c.getValorTotal()),
                         String.format("%.2f", c.getValorMulta()),
                         c.isAtivo() ? "Sim" : "Não"))
                 .toList();
 
         montarTabela("Faturamento (" + inicial.format(FORMATO_DATA) + " até " + fim.format(FORMATO_DATA) + ")",
-                new String[]{"ID", "CLIENTE", "ALUGUEL", "MULTA", "ATIVO"}, linhas);
+                new String[]{"ID", "CLIENTE", "ALUGUEL (R$)", "MULTA (R$)", "ATIVO"}, linhas);
     }
 
     @FXML
     private void abrirPreviaExportacao() {
         if (tabela.getItems().isEmpty()) {
-            erro("Selecione e gere um relatório antes de exportar.");
+            animarErroShake(tabela);
+            notificarPopUp("Gere um relatório antes de realizar a exportação.", false);
             return;
         }
 
@@ -380,7 +416,7 @@ public class MenuRelatoriosController extends MenuController {
         Label lblTitulo = new Label(nomeRelatorioAtual);
         lblTitulo.setStyle("-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: #1D1D1F;");
 
-        String dataHoje = LocalDate.now(FUSO_HORARIO).format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+        String dataHoje = LocalDate.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
         Label lblData = new Label("Emitido em: " + dataHoje + " • Total de registros: " + tabela.getItems().size());
         lblData.setStyle("-fx-font-size: 12px; -fx-text-fill: #86868B;");
 
@@ -440,15 +476,15 @@ public class MenuRelatoriosController extends MenuController {
 
     private void gerarArquivoPDF(File arquivoDestino) {
         Document document = new Document();
-        try (FileOutputStream fos = new FileOutputStream(arquivoDestino)) {
-            PdfWriter.getInstance(document, fos);
+        try {
+            PdfWriter.getInstance(document, new FileOutputStream(arquivoDestino));
             document.open();
 
             Font fontTitulo = FontFactory.getFont(FontFactory.HELVETICA_BOLD, 18, Color.BLACK);
             document.add(new Paragraph(nomeRelatorioAtual, fontTitulo));
 
             Font fontSub = FontFactory.getFont(FontFactory.HELVETICA, 10, Color.DARK_GRAY);
-            String dataHoje = LocalDate.now(FUSO_HORARIO).format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+            String dataHoje = LocalDate.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
             document.add(new Paragraph("Gerado em: " + dataHoje + " | Total de registros: " + tabela.getItems().size() + "\n\n", fontSub));
 
             PdfPTable tabelaPdf = new PdfPTable(ultimosCabecalhos.length);
@@ -472,20 +508,20 @@ public class MenuRelatoriosController extends MenuController {
             }
 
             document.add(tabelaPdf);
-        } catch (Exception e) {
-            erro("Falha ao gerar o arquivo PDF: " + e.getMessage());
-            
-        } finally {
-            if (document.isOpen()) {
-                document.close();
-            }
-        }
+            document.close();
 
-        exibirSucessoExportacao(arquivoDestino);
+            exibirSucessoExportacao(arquivoDestino);
+
+        } catch (Exception e) {
+            animarErroShake(tabela);
+            notificarPopUp("Falha ao gerar o arquivo PDF.", false);
+        }
     }
 
     private void exibirSucessoExportacao(File arquivoSalvo) {
         if (arquivoSalvo == null) return;
+
+        notificarPopUp("PDF exportado com sucesso!", true);
 
         Alert alerta = new Alert(Alert.AlertType.INFORMATION);
         alerta.setTitle("Exportação Concluída");
@@ -510,7 +546,7 @@ public class MenuRelatoriosController extends MenuController {
                     new ProcessBuilder("open", caminhoPasta).start();
                 }
             } catch (Exception e) {
-                erro("Não foi possível abrir a pasta do relatório: " + e.getMessage());
+                notificarPopUp("Não foi possível abrir a pasta do relatório.", false);
             }
         }
     }

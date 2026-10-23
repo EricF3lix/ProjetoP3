@@ -4,49 +4,64 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Separator?>
-<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.VBox?>
 
-<AnchorPane prefHeight="660.0" prefWidth="950.0" style="-fx-background-color: #F5F5F7;" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml" fx:controller="apresentacao.fx.MenuCategoriasController">
+<AnchorPane prefHeight="660.0" prefWidth="950.0" style="-fx-background-color: #F5F5F7; -fx-font-family: -apple-system, 'SF Pro Text', 'Segoe UI', sans-serif;" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="apresentacao.fx.MenuCategoriasController">
    <children>
-      <!-- Cabecalho Moderno -->
-      <Label layoutX="40.0" layoutY="25.0" style="-fx-font-family: -apple-system, 'SF Pro Display', 'Segoe UI', sans-serif; -fx-font-weight: 900; -fx-font-size: 26px; -fx-text-fill: #1d1d1f;" text="Gerenciar Categorias" />
-      <Label layoutX="40.0" layoutY="58.0" style="-fx-font-family: -apple-system, 'SF Pro Text', 'Segoe UI', sans-serif; -fx-font-size: 14px; -fx-text-fill: #86868b;" text="Painel de Categorias" />
-
-      <!-- Menu Lateral Estilo Apple -->
-      <VBox layoutX="40.0" layoutY="100.0" prefWidth="250.0" spacing="12.0">
+      <!-- Cabeçalho -->
+      <VBox layoutX="40.0" layoutY="24.0" spacing="2.0">
          <children>
-            <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#cadastrarCategoria" prefHeight="38.0" style="-fx-background-color: #ffffff; -fx-background-radius: 10px; -fx-border-color: #d1d1d6; -fx-border-radius: 10px; -fx-text-fill: #007AFF; -fx-font-weight: bold; -fx-cursor: hand; -fx-font-size: 13px;" text="Cadastrar Categoria" />
-            
-            <Separator style="-fx-padding: 5 0 5 0;" />
-            
-            <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#buscarCategoria" prefHeight="38.0" style="-fx-background-color: #ffffff; -fx-background-radius: 10px; -fx-border-color: #d1d1d6; -fx-border-radius: 10px; -fx-text-fill: #1d1d1f; -fx-font-weight: bold; -fx-cursor: hand; -fx-font-size: 13px;" text="Buscar Categoria por ID" />
-            <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#listarCategorias" prefHeight="38.0" style="-fx-background-color: #ffffff; -fx-background-radius: 10px; -fx-border-color: #d1d1d6; -fx-border-radius: 10px; -fx-text-fill: #1d1d1f; -fx-font-weight: bold; -fx-cursor: hand; -fx-font-size: 13px;" text="Listar todas as Categorias" />
-            <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#atualizarCategoria" prefHeight="38.0" style="-fx-background-color: #ffffff; -fx-background-radius: 10px; -fx-border-color: #d1d1d6; -fx-border-radius: 10px; -fx-text-fill: #1d1d1f; -fx-font-weight: bold; -fx-cursor: hand; -fx-font-size: 13px;" text="Atualizar Categoria" />
-            <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#desativarCategoria" prefHeight="38.0" style="-fx-background-color: #fff0f0; -fx-background-radius: 10px; -fx-border-color: #ffcccc; -fx-border-radius: 10px; -fx-text-fill: #ff3b30; -fx-font-weight: bold; -fx-cursor: hand; -fx-font-size: 13px;" text="Desativar Categoria" />
-            
-            <Pane prefHeight="5.0" />
-            <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#voltar" prefHeight="38.0" style="-fx-background-color: #e5e5ea; -fx-background-radius: 10px; -fx-text-fill: #1d1d1f; -fx-font-weight: bold; -fx-cursor: hand; -fx-font-size: 13px;" text="Voltar" />
+            <Label style="-fx-font-size: 24px; -fx-font-weight: 800; -fx-text-fill: #1d1d1f;" text="Gerenciar Categorias" />
+            <Label style="-fx-font-size: 13px; -fx-text-fill: #86868b;" text="Organização do catálogo de itens e equipamentos" />
          </children>
       </VBox>
 
-      <!-- Cartão Dinâmico de Conteúdo -->
-      <AnchorPane layoutX="320.0" layoutY="100.0" prefHeight="520.0" prefWidth="590.0" style="-fx-background-color: #ffffff; -fx-background-radius: 16px; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 12, 0, 2, 6);">
+      <!-- Menu Lateral de Ações -->
+      <VBox layoutX="40.0" layoutY="95.0" prefWidth="240.0" spacing="10.0">
          <children>
-            <VBox spacing="10.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-               <padding>
-                  <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
-               </padding>
-               <children>
-                  <Label style="-fx-font-family: -apple-system, 'SF Pro Display', 'Segoe UI', sans-serif; -fx-font-weight: bold; -fx-font-size: 18px; -fx-text-fill: #1d1d1f;" text="Resultados e Relatórios" />
-                  
-                  <!-- Área de Texto estilizada -->
-                  <TextArea fx:id="saida" editable="false" style="-fx-control-inner-background: #F2F2F7; -fx-background-color: #F2F2F7; -fx-background-radius: 8px; -fx-border-color: transparent; -fx-font-family: 'SF Mono', Consolas, monospace; -fx-font-size: 14px; -fx-padding: 8px;" VBox.vgrow="ALWAYS" />
-               </children>
-            </VBox>
+            <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#cadastrarCategoria" prefHeight="40.0" style="-fx-background-color: #007AFF; -fx-background-radius: 10px; -fx-text-fill: white; -fx-font-weight: bold; -fx-cursor: hand; -fx-font-size: 13px;" text="+ Nova Categoria" />
+            
+            <Separator style="-fx-padding: 4 0 4 0;" />
+            
+            <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#atualizarCategoria" prefHeight="38.0" style="-fx-background-color: #ffffff; -fx-background-radius: 10px; -fx-border-color: #d1d1d6; -fx-border-radius: 10px; -fx-text-fill: #1d1d1f; -fx-font-weight: bold; -fx-cursor: hand; -fx-font-size: 13px;" text="Editar Selecionada" />
+            <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#desativarCategoria" prefHeight="38.0" style="-fx-background-color: #fee2e2; -fx-background-radius: 10px; -fx-border-color: #fecaca; -fx-border-radius: 10px; -fx-text-fill: #991b1b; -fx-font-weight: bold; -fx-cursor: hand; -fx-font-size: 13px;" text="Desativar Categoria" />
+            <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#listarCategorias" prefHeight="38.0" style="-fx-background-color: #ffffff; -fx-background-radius: 10px; -fx-border-color: #d1d1d6; -fx-border-radius: 10px; -fx-text-fill: #1d1d1f; -fx-font-weight: bold; -fx-cursor: hand; -fx-font-size: 13px;" text="Recarregar Lista" />
+            
+            <Region prefHeight="10.0" />
+            <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#voltar" prefHeight="38.0" style="-fx-background-color: #e5e5ea; -fx-background-radius: 10px; -fx-text-fill: #1d1d1f; -fx-font-weight: bold; -fx-cursor: hand; -fx-font-size: 13px;" text="← Voltar" />
          </children>
-      </AnchorPane>
+      </VBox>
+
+      <!-- Cartão com Barra de Pesquisa e Tabela -->
+      <VBox layoutX="300.0" layoutY="95.0" prefHeight="530.0" prefWidth="610.0" spacing="14.0" style="-fx-background-color: #ffffff; -fx-background-radius: 16px; -fx-border-color: #e5e7eb; -fx-border-radius: 16px; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.06), 16, 0, 0, 4);" AnchorPane.bottomAnchor="35.0" AnchorPane.leftAnchor="300.0" AnchorPane.rightAnchor="40.0" AnchorPane.topAnchor="95.0">
+         <padding>
+            <Insets bottom="18.0" left="20.0" right="20.0" top="18.0" />
+         </padding>
+         <children>
+            <!-- Barra Superior de Busca -->
+            <HBox alignment="CENTER_LEFT" spacing="12.0">
+               <children>
+                  <TextField fx:id="txtPesquisa" prefHeight="38.0" promptText="🔍 Pesquisar por ID, nome ou descrição..." style="-fx-background-color: #F2F2F7; -fx-background-radius: 10px; -fx-padding: 8 14; -fx-font-size: 13px;" HBox.hgrow="ALWAYS" />
+                  <Button fx:id="btnLimpar" mnemonicParsing="false" onAction="#aoLimparPesquisa" prefHeight="38.0" style="-fx-background-color: #F2F2F7; -fx-background-radius: 10px; -fx-text-fill: #636366; -fx-font-weight: bold; -fx-cursor: hand; -fx-font-size: 12px; -fx-padding: 0 14;" text="Limpar" />
+               </children>
+            </HBox>
+
+            <!-- Tabela Moderna -->
+            <TableView fx:id="tabela" style="-fx-background-radius: 10px; -fx-border-color: #e5e7eb; -fx-border-radius: 10px;" VBox.vgrow="ALWAYS">
+               <columns>
+                  <TableColumn fx:id="colId" maxWidth="80.0" minWidth="60.0" prefWidth="70.0" text="ID" />
+                  <TableColumn fx:id="colNome" minWidth="150.0" prefWidth="180.0" text="Nome" />
+                  <TableColumn fx:id="colDescricao" minWidth="200.0" prefWidth="240.0" text="Descrição" />
+                  <TableColumn fx:id="colStatus" maxWidth="120.0" minWidth="100.0" prefWidth="110.0" text="Status" />
+               </columns>
+            </TableView>
+         </children>
+      </VBox>
    </children>
 </AnchorPane>
