@@ -276,7 +276,6 @@ public class MenuRelatoriosController extends MenuController {
             gerarPeriodo();
         }
     }
-
     private void carregarClientes() {
         clientes = sistema.listarUsuarios().stream()
                 .filter(Cliente.class::isInstance)
