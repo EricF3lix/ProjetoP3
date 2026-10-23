@@ -316,9 +316,12 @@ public class MenuItensController extends MenuController {
         Optional<String> nome = pedirTexto("Novo nome (atual: " + atual.getNome() + "):");
         if (nome.isEmpty()) return;
 
-        String listaCats = sistema.listarCategorias().stream()
-                .map(c -> c.getId() + "-" + c.getNome())
-                .reduce((a, b) -> a + ", " + b).orElse("Nenhuma");
+        StringBuilder sbCats = new StringBuilder();
+        for (Categoria c : sistema.listarCategorias()) {
+            if (sbCats.length() > 0) sbCats.append(", ");
+            sbCats.append(c.getId()).append("-").append(c.getNome());
+        }
+        String listaCats = sbCats.length() > 0 ? sbCats.toString() : "Nenhuma";
 
         Optional<String> catInput = pedirTexto("Categoria (Atual: " + catAtualNome + " | Opções: " + listaCats + ")\n[Enter mantém | Digite 'nenhum' para remover]:");
         if (catInput.isEmpty()) return;
@@ -329,10 +332,13 @@ public class MenuItensController extends MenuController {
             if (termo.equalsIgnoreCase("nenhum")) {
                 novaCategoria = null;
             } else {
-                Categoria encontrada = sistema.listarCategorias().stream()
-                        .filter(c -> String.valueOf(c.getId()).equals(termo) || c.getNome().equalsIgnoreCase(termo))
-                        .findFirst()
-                        .orElse(null);
+                Categoria encontrada = null;
+                for (Categoria c : sistema.listarCategorias()) {
+                    if (String.valueOf(c.getId()).equals(termo) || (c.getNome() != null && c.getNome().equalsIgnoreCase(termo))) {
+                        encontrada = c;
+                        break;
+                    }
+                }
 
                 if (encontrada == null) {
                     erro("Categoria '" + termo + "' não encontrada.");
@@ -342,9 +348,12 @@ public class MenuItensController extends MenuController {
             }
         }
 
-        String listaForns = sistema.listarFornecedores().stream()
-                .map(f -> f.getId() + "-" + f.getRazaoSocial())
-                .reduce((a, b) -> a + ", " + b).orElse("Nenhum");
+        StringBuilder sbForns = new StringBuilder();
+        for (Fornecedor f : sistema.listarFornecedores()) {
+            if (sbForns.length() > 0) sbForns.append(", ");
+            sbForns.append(f.getId()).append("-").append(f.getRazaoSocial());
+        }
+        String listaForns = sbForns.length() > 0 ? sbForns.toString() : "Nenhum";
 
         Optional<String> fornInput = pedirTexto("Fornecedor (Atual: " + fornAtualNome + " | Opções: " + listaForns + ")\n[Enter mantém | Digite 'nenhum' para remover]:");
         if (fornInput.isEmpty()) return;
@@ -355,10 +364,13 @@ public class MenuItensController extends MenuController {
             if (termo.equalsIgnoreCase("nenhum")) {
                 novoFornecedor = null;
             } else {
-                Fornecedor encontrado = sistema.listarFornecedores().stream()
-                        .filter(f -> String.valueOf(f.getId()).equals(termo) || f.getRazaoSocial().equalsIgnoreCase(termo))
-                        .findFirst()
-                        .orElse(null);
+                Fornecedor encontrado = null;
+                for (Fornecedor f : sistema.listarFornecedores()) {
+                    if (String.valueOf(f.getId()).equals(termo) || (f.getRazaoSocial() != null && f.getRazaoSocial().equalsIgnoreCase(termo))) {
+                        encontrado = f;
+                        break;
+                    }
+                }
 
                 if (encontrado == null) {
                     erro("Fornecedor '" + termo + "' não encontrado.");
@@ -390,8 +402,12 @@ public class MenuItensController extends MenuController {
                     novoFornecedor
             );
 
-            itemAtualizado.setStatus(atual.getStatus());
             itemAtualizado.setAtivo(atual.isAtivo());
+            if (!atual.isAtivo()) {
+                itemAtualizado.setStatus("INDISPONIVEL");
+            } else {
+                itemAtualizado.setStatus(atual.getStatus());
+            }
 
             if (sistema != null && sistema.atualizarItem(itemAtualizado)) {
                 info("Item atualizado com sucesso!");
