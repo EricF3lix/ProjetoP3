@@ -4,7 +4,6 @@ import entidades.Administrador;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
-import javafx.scene.layout.Pane;
 
 public class MenuPrincipalAdministradorController extends MenuController {
 
@@ -12,6 +11,7 @@ public class MenuPrincipalAdministradorController extends MenuController {
     private Label lblBemVindo;
 
     private Administrador administrador;
+    private boolean saudacaoExibida = false;
 
     public void setAdministrador(Administrador administrador) {
         this.administrador = administrador;
@@ -30,30 +30,15 @@ public class MenuPrincipalAdministradorController extends MenuController {
 
         if (lblBemVindo != null) {
             lblBemVindo.setText("Bem-vindo(a), " + nome);
+        }
 
-            // Dispara a saudação uma única vez na sessão
+        // Dispara o pop-up animado na primeira exibição após o login
+        if (!saudacaoExibida) {
+            saudacaoExibida = true;
             Platform.runLater(() -> {
-                Pane container = encontrarContainerRaiz();
-                if (container != null) {
-                    SaudacaoHelper.exibir(
-                        container,
-                        "Bem-vindo, Administrador!",
-                        "Painel de controle e administração pronto para utilização.",
-                        "🛡️"
-                    );
-                }
+                notificarPopUp("Bem-vindo(a), " + nome + "! Painel administrativo pronto.");
             });
         }
-    }
-
-    private Pane encontrarContainerRaiz() {
-        if (lblBemVindo == null || lblBemVindo.getScene() == null) {
-            return null;
-        }
-        if (lblBemVindo.getScene().getRoot() instanceof Pane raiz) {
-            return raiz;
-        }
-        return (lblBemVindo.getParent() instanceof Pane p) ? p : null;
     }
 
     @FXML
