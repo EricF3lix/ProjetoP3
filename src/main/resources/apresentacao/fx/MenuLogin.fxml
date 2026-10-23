@@ -37,7 +37,7 @@
 
             <VBox spacing="12.0">
                <children>
-                  <TextField fx:id="txtEmail" prefHeight="45.0" promptText="👤 Email" style="-fx-background-color: #F2F2F7; -fx-background-radius: 10px; -fx-padding: 12px; -fx-font-size: 14px; -fx-text-fill: #1d1d1f;" />
+                  <TextField fx:id="txtEmail" prefHeight="45.0" promptText= "👤 Email" style="-fx-background-color: #F2F2F7; -fx-background-radius: 10px; -fx-padding: 12px; -fx-font-size: 14px; -fx-text-fill: #1d1d1f;" />
                   <PasswordField fx:id="txtSenha" onAction="#entrar" prefHeight="45.0" promptText="🔒 Senha" style="-fx-background-color: #F2F2F7; -fx-background-radius: 10px; -fx-padding: 12px; -fx-font-size: 14px; -fx-text-fill: #1d1d1f;" />
                </children>
             </VBox>

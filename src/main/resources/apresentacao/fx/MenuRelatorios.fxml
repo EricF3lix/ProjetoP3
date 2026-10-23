@@ -2,10 +2,13 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.DatePicker?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Separator?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.FlowPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.VBox?>
@@ -14,7 +17,6 @@
    <padding>
       <Insets bottom="40.0" left="40.0" right="40.0" top="25.0" />
    </padding>
-
 
    <top>
       <VBox spacing="5.0" BorderPane.alignment="CENTER_LEFT">
@@ -28,20 +30,21 @@
       </VBox>
    </top>
 
-   
    <left>
       <VBox minWidth="200.0" prefWidth="250.0" spacing="12.0" BorderPane.alignment="TOP_LEFT">
          <BorderPane.margin>
             <Insets right="30.0" />
          </BorderPane.margin>
          <children>
-            <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#itensPorCategoria" prefHeight="42.0" style="-fx-background-color: #ffffff; -fx-background-radius: 10px; -fx-border-color: #d1d1d6; -fx-border-radius: 10px; -fx-text-fill: #007AFF; -fx-font-weight: bold; -fx-cursor: hand; -fx-font-size: 13px;" text="Itens por Categoria" textAlignment="CENTER" wrapText="true" />
+            <Label style="-fx-font-size: 12px; -fx-font-weight: bold; -fx-text-fill: #6e6e73;" text="Escolha o relatório:" />
 
-            <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#historicoAlugueisCliente" prefHeight="42.0" style="-fx-background-color: #ffffff; -fx-background-radius: 10px; -fx-border-color: #d1d1d6; -fx-border-radius: 10px; -fx-text-fill: #1d1d1f; -fx-font-weight: bold; -fx-cursor: hand; -fx-font-size: 13px;" text="Histórico de Aluguéis" textAlignment="CENTER" wrapText="true" />
+            <Button fx:id="btnCategoria" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#itensPorCategoria" prefHeight="42.0" style="-fx-background-color: #ffffff; -fx-background-radius: 10px; -fx-border-color: #d1d1d6; -fx-border-radius: 10px; -fx-text-fill: #1d1d1f; -fx-font-weight: bold; -fx-cursor: hand; -fx-font-size: 13px;" text="Itens por Categoria" textAlignment="CENTER" wrapText="true" />
 
-            <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#alugados" prefHeight="42.0" style="-fx-background-color: #ffffff; -fx-background-radius: 10px; -fx-border-color: #d1d1d6; -fx-border-radius: 10px; -fx-text-fill: #1d1d1f; -fx-font-weight: bold; -fx-cursor: hand; -fx-font-size: 13px;" text="Itens Alugados Agora" textAlignment="CENTER" wrapText="true" />
+            <Button fx:id="btnHistorico" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#historicoAlugueisCliente" prefHeight="42.0" style="-fx-background-color: #ffffff; -fx-background-radius: 10px; -fx-border-color: #d1d1d6; -fx-border-radius: 10px; -fx-text-fill: #1d1d1f; -fx-font-weight: bold; -fx-cursor: hand; -fx-font-size: 13px;" text="Histórico de Aluguéis" textAlignment="CENTER" wrapText="true" />
 
-            <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#relatorioPeriodo" prefHeight="42.0" style="-fx-background-color: #ffffff; -fx-background-radius: 10px; -fx-border-color: #d1d1d6; -fx-border-radius: 10px; -fx-text-fill: #1d1d1f; -fx-font-weight: bold; -fx-cursor: hand; -fx-font-size: 13px;" text="Faturamento por Período" textAlignment="CENTER" wrapText="true" />
+            <Button fx:id="btnAlugados" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#alugados" prefHeight="42.0" style="-fx-background-color: #ffffff; -fx-background-radius: 10px; -fx-border-color: #d1d1d6; -fx-border-radius: 10px; -fx-text-fill: #1d1d1f; -fx-font-weight: bold; -fx-cursor: hand; -fx-font-size: 13px;" text="Itens Alugados Agora" textAlignment="CENTER" wrapText="true" />
+
+            <Button fx:id="btnPeriodo" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#relatorioPeriodo" prefHeight="42.0" style="-fx-background-color: #ffffff; -fx-background-radius: 10px; -fx-border-color: #d1d1d6; -fx-border-radius: 10px; -fx-text-fill: #1d1d1f; -fx-font-weight: bold; -fx-cursor: hand; -fx-font-size: 13px;" text="Faturamento por Período" textAlignment="CENTER" wrapText="true" />
 
             <Separator style="-fx-padding: 5 0 5 0;" />
 
@@ -65,6 +68,37 @@
                   <Button mnemonicParsing="false" onAction="#abrirPreviaExportacao" style="-fx-background-color: #007AFF; -fx-background-radius: 8px; -fx-text-fill: #ffffff; -fx-font-weight: bold; -fx-cursor: hand; -fx-font-size: 13px; -fx-padding: 7 14;" text="Exportar PDF" />
                </children>
             </HBox>
+
+
+            <FlowPane fx:id="barraParametros" hgap="15.0" managed="false" rowValignment="BOTTOM" style="-fx-background-color: #F5F5F7; -fx-background-radius: 12px;" vgap="10.0" visible="false">
+               <padding>
+                  <Insets bottom="14.0" left="14.0" right="14.0" top="14.0" />
+               </padding>
+               <children>
+                  <VBox fx:id="grupoCliente" spacing="6.0">
+                     <children>
+                        <Label style="-fx-font-size: 12px; -fx-font-weight: bold; -fx-text-fill: #6e6e73;" text="Cliente" />
+                        <ComboBox fx:id="cbCliente" prefHeight="38.0" prefWidth="320.0" promptText="Selecione o cliente" style="-fx-background-color: #E5E5EA; -fx-background-radius: 10px; -fx-font-size: 13px;" />
+                     </children>
+                  </VBox>
+
+                  <VBox fx:id="grupoInicial" spacing="6.0">
+                     <children>
+                        <Label style="-fx-font-size: 12px; -fx-font-weight: bold; -fx-text-fill: #6e6e73;" text="Data inicial" />
+                        <DatePicker fx:id="dpInicial" prefHeight="38.0" prefWidth="170.0" style="-fx-background-color: #E5E5EA; -fx-background-radius: 10px; -fx-font-size: 13px;" />
+                     </children>
+                  </VBox>
+
+                  <VBox fx:id="grupoFinal" spacing="6.0">
+                     <children>
+                        <Label style="-fx-font-size: 12px; -fx-font-weight: bold; -fx-text-fill: #6e6e73;" text="Data final" />
+                        <DatePicker fx:id="dpFinal" prefHeight="38.0" prefWidth="170.0" style="-fx-background-color: #E5E5EA; -fx-background-radius: 10px; -fx-font-size: 13px;" />
+                     </children>
+                  </VBox>
+
+                  <Button mnemonicParsing="false" onAction="#gerarRelatorio" prefHeight="38.0" style="-fx-background-color: #007AFF; -fx-background-radius: 10px; -fx-text-fill: #ffffff; -fx-font-weight: bold; -fx-cursor: hand; -fx-font-size: 13px; -fx-padding: 9 18;" text="Gerar relatório" />
+               </children>
+            </FlowPane>
 
             <TableView fx:id="tabela" style="-fx-border-color: #e5e5ea; -fx-border-radius: 8px; -fx-background-radius: 8px;" VBox.vgrow="ALWAYS">
                <columnResizePolicy>

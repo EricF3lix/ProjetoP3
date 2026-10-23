@@ -37,6 +37,8 @@ public class Navegador {
         }
 
         stage.setScene(scene);
+        stage.setMinWidth(800);
+        stage.setMinHeight(500);
     }
 
     public void abrir(String fxml) {
