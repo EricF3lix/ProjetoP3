@@ -1,5 +1,7 @@
 package apresentacao.fx;
 
+import java.lang.reflect.Method;
+
 import entidades.Usuario;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -13,6 +15,10 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
 
 public class MenuUsuariosAdminController extends MenuUsuariosFuncionarioController {
+
+    private static final String STYLE_TEXT_RED = "-fx-text-fill: red;";
+    private static final String STYLE_TEXT_GREEN = "-fx-text-fill: green;";
+    private static final String MSG_USUARIO_NAO_ENCONTRADO = "Usuário não encontrado.";
 
     @FXML
     private VBox painelAtualizar;
@@ -153,12 +159,12 @@ public class MenuUsuariosAdminController extends MenuUsuariosFuncionarioControll
                 lblAtualizarStatus.setText("Usuário carregado. Edite e salve.");
                 lblAtualizarStatus.setStyle("-fx-text-fill: black;");
             } else {
-                lblAtualizarStatus.setText("Usuário não encontrado.");
-                lblAtualizarStatus.setStyle("-fx-text-fill: red;");
+                lblAtualizarStatus.setText(MSG_USUARIO_NAO_ENCONTRADO);
+                lblAtualizarStatus.setStyle(STYLE_TEXT_RED);
             }
         } catch (NumberFormatException ex) {
             lblAtualizarStatus.setText("ID inválido.");
-            lblAtualizarStatus.setStyle("-fx-text-fill: red;");
+            lblAtualizarStatus.setStyle(STYLE_TEXT_RED);
         }
     }
 
@@ -170,8 +176,8 @@ public class MenuUsuariosAdminController extends MenuUsuariosFuncionarioControll
             Usuario atual = sistema.buscarUsuario(id);
 
             if (atual == null) {
-                lblAtualizarStatus.setText("Usuário não encontrado.");
-                lblAtualizarStatus.setStyle("-fx-text-fill: red;");
+                lblAtualizarStatus.setText(MSG_USUARIO_NAO_ENCONTRADO);
+                lblAtualizarStatus.setStyle(STYLE_TEXT_RED);
                 return;
             }
 
@@ -181,15 +187,15 @@ public class MenuUsuariosAdminController extends MenuUsuariosFuncionarioControll
 
             if (sistema.atualizarUsuario(id, novoNome, novoEmail, novaSenha)) {
                 lblAtualizarStatus.setText("Usuário atualizado com sucesso!");
-                lblAtualizarStatus.setStyle("-fx-text-fill: green;");
+                lblAtualizarStatus.setStyle(STYLE_TEXT_GREEN);
                 carregarTabela();
             } else {
                 lblAtualizarStatus.setText("Erro ao atualizar usuário.");
-                lblAtualizarStatus.setStyle("-fx-text-fill: red;");
+                lblAtualizarStatus.setStyle(STYLE_TEXT_RED);
             }
         } catch (NumberFormatException ex) {
             lblAtualizarStatus.setText("ID inválido.");
-            lblAtualizarStatus.setStyle("-fx-text-fill: red;");
+            lblAtualizarStatus.setStyle(STYLE_TEXT_RED);
         }
     }
 
@@ -217,29 +223,29 @@ public class MenuUsuariosAdminController extends MenuUsuariosFuncionarioControll
             Usuario usuario = sistema.buscarUsuario(id);
 
             if (usuario == null) {
-                lblDesativarStatus.setText("Usuário não encontrado.");
-                lblDesativarStatus.setStyle("-fx-text-fill: red;");
+                lblDesativarStatus.setText(MSG_USUARIO_NAO_ENCONTRADO);
+                lblDesativarStatus.setStyle(STYLE_TEXT_RED);
                 return;
             }
 
             if (usuario.isAtivo()) {
                 if (sistema.desativaUsuario(id)) {
                     lblDesativarStatus.setText("Usuário desativado com sucesso!");
-                    lblDesativarStatus.setStyle("-fx-text-fill: green;");
+                    lblDesativarStatus.setStyle(STYLE_TEXT_GREEN);
                     txtDesativarId.clear();
                     carregarTabela();
                 } else {
                     lblDesativarStatus.setText("Não foi possível desativar (verifique pendências/multas).");
-                    lblDesativarStatus.setStyle("-fx-text-fill: red;");
+                    lblDesativarStatus.setStyle(STYLE_TEXT_RED);
                 }
             } else {
                 boolean reativado = false;
                 try {
-                    var metodoAtivar = sistema.getClass().getMethod("ativaUsuario", int.class);
+                    Method metodoAtivar = sistema.getClass().getMethod("ativaUsuario", int.class);
                     reativado = (boolean) metodoAtivar.invoke(sistema, id);
                 } catch (NoSuchMethodException ignored) {
                     try {
-                        var metodoAtivar2 = sistema.getClass().getMethod("ativarUsuario", int.class);
+                        Method metodoAtivar2 = sistema.getClass().getMethod("ativarUsuario", int.class);
                         reativado = (boolean) metodoAtivar2.invoke(sistema, id);
                     } catch (Exception ex2) {
                         reativado = false;
@@ -250,7 +256,7 @@ public class MenuUsuariosAdminController extends MenuUsuariosFuncionarioControll
 
                 if (reativado) {
                     lblDesativarStatus.setText("Usuário reativado com sucesso!");
-                    lblDesativarStatus.setStyle("-fx-text-fill: green;");
+                    lblDesativarStatus.setStyle(STYLE_TEXT_GREEN);
                     txtDesativarId.clear();
                     carregarTabela();
                 } else {
@@ -260,7 +266,7 @@ public class MenuUsuariosAdminController extends MenuUsuariosFuncionarioControll
             }
         } catch (NumberFormatException ex) {
             lblDesativarStatus.setText("Digite um ID numérico válido.");
-            lblDesativarStatus.setStyle("-fx-text-fill: red;");
+            lblDesativarStatus.setStyle(STYLE_TEXT_RED);
         }
     }
 }

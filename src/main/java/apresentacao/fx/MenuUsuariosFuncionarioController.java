@@ -31,6 +31,8 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 
 public class MenuUsuariosFuncionarioController extends MenuController {
+    private static final String STYLE_TEXT_RED = "-fx-text-fill: red;";
+    private static final String OPCAO_TODOS = "Todos";
 
     @FXML
     protected StackPane painelConteudo;
@@ -206,45 +208,53 @@ public class MenuUsuariosFuncionarioController extends MenuController {
         if (colAtivo != null) {
             colAtivo.setCellValueFactory(dado ->
                 new SimpleStringProperty(dado.getValue().isAtivo() ? "Sim" : "Não"));
-            colAtivo.setCellFactory(col -> new TableCell<Usuario, String>() {
-                private final Label badge = new Label();
+            colAtivo.setCellFactory(col -> criarCelulaStatus());
+        }
+    }
 
-                @Override
-                protected void updateItem(String item, boolean empty) {
-                    super.updateItem(item, empty);
-                    if (empty || item == null) {
-                        setGraphic(null);
-                        setText(null);
-                    } else {
-                        boolean ativo = "Sim".equalsIgnoreCase(item) || "true".equalsIgnoreCase(item);
-                        if (ativo) {
-                            badge.setText("● Ativo");
-                            badge.setStyle(
-                                "-fx-background-color: #d4edda; -fx-text-fill: #155724; " +
-                                "-fx-font-weight: bold; -fx-padding: 3 8 3 8; " +
-                                "-fx-background-radius: 10; -fx-font-size: 11px;"
-                            );
-                        } else {
-                            badge.setText("● Inativo");
-                            badge.setStyle(
-                                "-fx-background-color: #f8d7da; -fx-text-fill: #721c24; " +
-                                "-fx-font-weight: bold; -fx-padding: 3 8 3 8; " +
-                                "-fx-background-radius: 10; -fx-font-size: 11px;"
-                            );
-                        }
-                        setAlignment(Pos.CENTER);
-                        setGraphic(badge);
-                        setText(null);
-                    }
+    private TableCell<Usuario, String> criarCelulaStatus() {
+        return new TableCell<>() {
+            private final Label badge = new Label();
+
+            @Override
+            protected void updateItem(String item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || item == null) {
+                    setGraphic(null);
+                    setText(null);
+                    return;
                 }
-            });
+                formatarBadgeStatus(badge, item);
+                setAlignment(Pos.CENTER);
+                setGraphic(badge);
+                setText(null);
+            }
+        };
+    }
+
+    private void formatarBadgeStatus(Label badge, String item) {
+        boolean ativo = "Sim".equalsIgnoreCase(item) || "true".equalsIgnoreCase(item);
+        if (ativo) {
+            badge.setText("● Ativo");
+            badge.setStyle(
+                "-fx-background-color: #d4edda; -fx-text-fill: #155724; " +
+                "-fx-font-weight: bold; -fx-padding: 3 8 3 8; " +
+                "-fx-background-radius: 10; -fx-font-size: 11px;"
+            );
+        } else {
+            badge.setText("● Inativo");
+            badge.setStyle(
+                "-fx-background-color: #f8d7da; -fx-text-fill: #721c24; " +
+                "-fx-font-weight: bold; -fx-padding: 3 8 3 8; " +
+                "-fx-background-radius: 10; -fx-font-size: 11px;"
+            );
         }
     }
 
     private void configurarFiltroPesquisa() {
         if (cbFiltro != null) {
-            cbFiltro.setItems(FXCollections.observableArrayList("Todos", "Nome", "ID", "E-mail", "CPF"));
-            cbFiltro.setValue("Todos");
+            cbFiltro.setItems(FXCollections.observableArrayList(OPCAO_TODOS, "Nome", "ID", "E-mail", "CPF"));
+            cbFiltro.setValue(OPCAO_TODOS);
             cbFiltro.valueProperty().addListener((obs, antigo, novo) ->
                 aplicarFiltro(txtPesquisa != null ? txtPesquisa.getText() : "")
             );
@@ -266,37 +276,54 @@ public class MenuUsuariosFuncionarioController extends MenuController {
     private void aplicarFiltro(String termo) {
         if (listaFiltrada == null) return;
 
-        listaFiltrada.setPredicate(usuario -> {
-            if (usuario == null) return false;
-            if (termo == null || termo.trim().isEmpty()) {
-                return true;
-            }
+        String filtroSelecionado = (cbFiltro != null && cbFiltro.getValue() != null) ? cbFiltro.getValue() : OPCAO_TODOS;
 
-            String termoFormatado = termo.trim().toLowerCase();
-            String termoNumerico = termoFormatado.replaceAll("\\D", "");
-            String filtroSelecionado = (cbFiltro != null && cbFiltro.getValue() != null) ? cbFiltro.getValue() : "Todos";
+        listaFiltrada.setPredicate(usuario -> usuarioAtendeFiltro(usuario, termo, filtroSelecionado));
+    }
 
-            boolean bateuId = String.valueOf(usuario.getId()).contains(termoFormatado);
-            boolean bateuNome = usuario.getNome() != null && usuario.getNome().toLowerCase().contains(termoFormatado);
-            boolean bateuEmail = usuario.getEmail() != null && usuario.getEmail().toLowerCase().contains(termoFormatado);
-            
-            String cpfUsuario = usuario.getCpf() != null ? usuario.getCpf().replaceAll("\\D", "") : "";
-            boolean bateuCpf = !termoNumerico.isEmpty() && cpfUsuario.contains(termoNumerico);
+    private boolean usuarioAtendeFiltro(Usuario usuario, String termo, String filtro) {
+        if (usuario == null) return false;
+        if (termo == null || termo.trim().isEmpty()) return true;
 
-            return switch (filtroSelecionado) {
-                case "ID" -> bateuId;
-                case "Nome" -> bateuNome;
-                case "E-mail" -> bateuEmail;
-                case "CPF" -> bateuCpf;
-                default -> bateuId || bateuNome || bateuEmail || bateuCpf;
-            };
-        });
+        String termoFormatado = termo.trim().toLowerCase();
+
+        return switch (filtro) {
+            case "ID" -> bateuId(usuario, termoFormatado);
+            case "Nome" -> bateuNome(usuario, termoFormatado);
+            case "E-mail" -> bateuEmail(usuario, termoFormatado);
+            case "CPF" -> bateuCpf(usuario, termoFormatado);
+            default -> bateuAlgumCampo(usuario, termoFormatado);
+        };
+    }
+
+    private boolean bateuId(Usuario u, String termo) {
+        return String.valueOf(u.getId()).contains(termo);
+    }
+
+    private boolean bateuNome(Usuario u, String termo) {
+        return u.getNome() != null && u.getNome().toLowerCase().contains(termo);
+    }
+
+    private boolean bateuEmail(Usuario u, String termo) {
+        return u.getEmail() != null && u.getEmail().toLowerCase().contains(termo);
+    }
+
+    private boolean bateuCpf(Usuario u, String termo) {
+        if (u.getCpf() == null) return false;
+        String termoNumerico = termo.replaceAll("\\D", "");
+        if (termoNumerico.isEmpty()) return false;
+        String cpfUsuario = u.getCpf().replaceAll("\\D", "");
+        return cpfUsuario.contains(termoNumerico);
+    }
+
+    private boolean bateuAlgumCampo(Usuario u, String termo) {
+        return bateuId(u, termo) || bateuNome(u, termo) || bateuEmail(u, termo) || bateuCpf(u, termo);
     }
 
     @FXML
     public void aoLimparPesquisa(ActionEvent event) {
         if (txtPesquisa != null) txtPesquisa.clear();
-        if (cbFiltro != null) cbFiltro.setValue("Todos");
+        if (cbFiltro != null) cbFiltro.setValue(OPCAO_TODOS);
     }
 
     public void setSistema(SistemaFacade sistema) {
@@ -360,7 +387,7 @@ public class MenuUsuariosFuncionarioController extends MenuController {
 
         if (nome.isEmpty() || email.isEmpty() || cpf.isEmpty() || senha.isEmpty()) {
             lblCadMensagem.setText("Por favor, preencha todos os campos.");
-            lblCadMensagem.setStyle("-fx-text-fill: red;");
+            lblCadMensagem.setStyle(STYLE_TEXT_RED);
             return;
         }
 
@@ -381,7 +408,7 @@ public class MenuUsuariosFuncionarioController extends MenuController {
             carregarTabela();
         } else {
             lblCadMensagem.setText("Erro: CPF ou e-mail já cadastrado.");
-            lblCadMensagem.setStyle("-fx-text-fill: red;");
+            lblCadMensagem.setStyle(STYLE_TEXT_RED);
         }
     }
 
@@ -412,11 +439,11 @@ public class MenuUsuariosFuncionarioController extends MenuController {
                 lblBuscaResultado.setStyle("-fx-text-fill: black;");
             } else {
                 lblBuscaResultado.setText("Usuário não encontrado.");
-                lblBuscaResultado.setStyle("-fx-text-fill: red;");
+                lblBuscaResultado.setStyle(STYLE_TEXT_RED);
             }
         } catch (NumberFormatException ex) {
             lblBuscaResultado.setText("Digite um ID numérico válido.");
-            lblBuscaResultado.setStyle("-fx-text-fill: red;");
+            lblBuscaResultado.setStyle(STYLE_TEXT_RED);
         }
     }
 }

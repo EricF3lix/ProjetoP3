@@ -55,6 +55,8 @@ public class MenuRelatoriosController extends MenuController {
         CLIENTE, PERIODO
     }
 
+    private static final ZoneId FUSO_HORARIO = ZoneId.of("America/Recife");
+
     private static final String ESTILO_BASE = "-fx-background-color: #ffffff; -fx-background-radius: 10px; "
             + "-fx-border-color: #d1d1d6; -fx-border-radius: 10px; -fx-text-fill: #1d1d1f; "
             + "-fx-font-weight: bold; -fx-cursor: hand; -fx-font-size: 13px;";
@@ -125,7 +127,7 @@ public class MenuRelatoriosController extends MenuController {
         configurarDatePicker(dpInicial);
         configurarDatePicker(dpFinal);
 
-        LocalDate hoje = LocalDate.now(ZoneId.of("America/Recife"));
+        LocalDate hoje = LocalDate.now(FUSO_HORARIO);
         dpInicial.setValue(hoje.withDayOfMonth(1));
         dpFinal.setValue(hoje);
 
@@ -239,7 +241,7 @@ public class MenuRelatoriosController extends MenuController {
             return;
         }
 
-        LocalDate hoje = LocalDate.now(ZoneId.of("America/Recife"));
+        LocalDate hoje = LocalDate.now(FUSO_HORARIO);
         List<List<String>> linhas = new ArrayList<>();
 
         for (ContratoAluguel c : contratosAtivos) {
@@ -274,7 +276,6 @@ public class MenuRelatoriosController extends MenuController {
             gerarPeriodo();
         }
     }
-
     private void carregarClientes() {
         clientes = sistema.listarUsuarios().stream()
                 .filter(Cliente.class::isInstance)
@@ -379,7 +380,7 @@ public class MenuRelatoriosController extends MenuController {
         Label lblTitulo = new Label(nomeRelatorioAtual);
         lblTitulo.setStyle("-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: #1D1D1F;");
 
-        String dataHoje = LocalDate.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+        String dataHoje = LocalDate.now(FUSO_HORARIO).format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
         Label lblData = new Label("Emitido em: " + dataHoje + " • Total de registros: " + tabela.getItems().size());
         lblData.setStyle("-fx-font-size: 12px; -fx-text-fill: #86868B;");
 
@@ -439,15 +440,15 @@ public class MenuRelatoriosController extends MenuController {
 
     private void gerarArquivoPDF(File arquivoDestino) {
         Document document = new Document();
-        try {
-            PdfWriter.getInstance(document, new FileOutputStream(arquivoDestino));
+        try (FileOutputStream fos = new FileOutputStream(arquivoDestino)) {
+            PdfWriter.getInstance(document, fos);
             document.open();
 
             Font fontTitulo = FontFactory.getFont(FontFactory.HELVETICA_BOLD, 18, Color.BLACK);
             document.add(new Paragraph(nomeRelatorioAtual, fontTitulo));
 
             Font fontSub = FontFactory.getFont(FontFactory.HELVETICA, 10, Color.DARK_GRAY);
-            String dataHoje = LocalDate.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+            String dataHoje = LocalDate.now(FUSO_HORARIO).format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
             document.add(new Paragraph("Gerado em: " + dataHoje + " | Total de registros: " + tabela.getItems().size() + "\n\n", fontSub));
 
             PdfPTable tabelaPdf = new PdfPTable(ultimosCabecalhos.length);
@@ -471,13 +472,16 @@ public class MenuRelatoriosController extends MenuController {
             }
 
             document.add(tabelaPdf);
-            document.close();
-
-            exibirSucessoExportacao(arquivoDestino);
-
         } catch (Exception e) {
             erro("Falha ao gerar o arquivo PDF: " + e.getMessage());
+            
+        } finally {
+            if (document.isOpen()) {
+                document.close();
+            }
         }
+
+        exibirSucessoExportacao(arquivoDestino);
     }
 
     private void exibirSucessoExportacao(File arquivoSalvo) {
