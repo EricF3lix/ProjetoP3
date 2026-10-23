@@ -9,12 +9,12 @@ import entidades.Item;
 
 public class ItemRepositorio implements IItemRepositorio {
 
-    private String arquivo = "dados/itens.csv";
+    private final String arquivo = "dados/itens.csv";
 
-    private List<Item> itens;
-    private ICategoriaRepositorio categoriaRepositorio;
-    private IFornecedorRepositorio fornecedorRepositorio;
-    private ManipulaArquivo manipulaArquivo;
+    private final List<Item> itens;
+    private final ICategoriaRepositorio categoriaRepositorio;
+    private final IFornecedorRepositorio fornecedorRepositorio;
+    private final ManipulaArquivo manipulaArquivo;
 
     public ItemRepositorio(ICategoriaRepositorio categoriaRepositorio, IFornecedorRepositorio fornecedorRepositorio) {
 
