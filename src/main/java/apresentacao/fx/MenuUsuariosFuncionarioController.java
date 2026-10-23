@@ -31,7 +31,6 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 
 public class MenuUsuariosFuncionarioController extends MenuController {
-
     private static final String STYLE_TEXT_RED = "-fx-text-fill: red;";
     private static final String OPCAO_TODOS = "Todos";
 
