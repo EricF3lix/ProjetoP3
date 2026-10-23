@@ -7,80 +7,67 @@
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextField?>
-<?import javafx.scene.control.cell.PropertyValueFactory?>
 <?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.VBox?>
 
-<AnchorPane prefHeight="660.0" prefWidth="950.0" style="-fx-background-color: #F5F5F7;" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml" fx:controller="apresentacao.fx.MenuContratosController">
+<AnchorPane prefHeight="660.0" prefWidth="1024.0" style="-fx-background-color: #F5F5F7; -fx-font-family: -apple-system, 'SF Pro Text', 'Segoe UI', sans-serif;" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="apresentacao.fx.MenuContratosController">
    <children>
-      <!-- Cabecalho Moderno -->
-      <Label layoutX="40.0" layoutY="25.0" style="-fx-font-family: -apple-system, 'SF Pro Display', 'Segoe UI', sans-serif; -fx-font-weight: 900; -fx-font-size: 26px; -fx-text-fill: #1d1d1f;" text="Gerenciar Contratos" />
-      <Label layoutX="40.0" layoutY="58.0" style="-fx-font-family: -apple-system, 'SF Pro Text', 'Segoe UI', sans-serif; -fx-font-size: 14px; -fx-text-fill: #86868b;" text="Painel de Contratos e Aluguéis" />
-
-      <!-- Menu Lateral Estilo Apple -->
-      <VBox layoutX="40.0" layoutY="100.0" prefWidth="250.0" spacing="12.0">
+      <!-- Cabecalho -->
+      <VBox layoutX="32.0" layoutY="22.0" spacing="2.0">
          <children>
-            <!-- Barra de Pesquisa Integrada -->
-            <TextField fx:id="pesquisa" promptText="Busque por ID/Cliente/Status" style="-fx-background-color: #e5e5ea; -fx-background-radius: 10px; -fx-padding: 10px; -fx-font-size: 13px;" />
-            
-            <Pane prefHeight="2.0" />
-
-            <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#registrarAluguel" prefHeight="38.0" style="-fx-background-color: #ffffff; -fx-background-radius: 10px; -fx-border-color: #d1d1d6; -fx-border-radius: 10px; -fx-text-fill: #007AFF; -fx-font-weight: bold; -fx-cursor: hand; -fx-font-size: 13px;" text="Registrar Aluguel" />
-            
-            <Separator style="-fx-padding: 5 0 5 0;" />
-            
-            <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#buscarContrato" prefHeight="38.0" style="-fx-background-color: #ffffff; -fx-background-radius: 10px; -fx-border-color: #d1d1d6; -fx-border-radius: 10px; -fx-text-fill: #1d1d1f; -fx-font-weight: bold; -fx-cursor: hand; -fx-font-size: 13px;" text="Buscar Contrato por ID" />
-            <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#listarContratos" prefHeight="38.0" style="-fx-background-color: #ffffff; -fx-background-radius: 10px; -fx-border-color: #d1d1d6; -fx-border-radius: 10px; -fx-text-fill: #1d1d1f; -fx-font-weight: bold; -fx-cursor: hand; -fx-font-size: 13px;" text="Listar todos os Contratos" />
-            <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#finalizarContrato" prefHeight="38.0" style="-fx-background-color: #ffffff; -fx-background-radius: 10px; -fx-border-color: #d1d1d6; -fx-border-radius: 10px; -fx-text-fill: #34c759; -fx-font-weight: bold; -fx-cursor: hand; -fx-font-size: 13px;" text="Finalizar Contrato (devolução)" />
-            <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#cancelarContrato" prefHeight="38.0" style="-fx-background-color: #fff0f0; -fx-background-radius: 10px; -fx-border-color: #ffcccc; -fx-border-radius: 10px; -fx-text-fill: #ff3b30; -fx-font-weight: bold; -fx-cursor: hand; -fx-font-size: 13px;" text="Cancelar Contrato" />
-            
-            <Pane prefHeight="5.0" />
-            <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#voltar" prefHeight="38.0" style="-fx-background-color: #e5e5ea; -fx-background-radius: 10px; -fx-text-fill: #1d1d1f; -fx-font-weight: bold; -fx-cursor: hand; -fx-font-size: 13px;" text="Voltar" />
+            <Label style="-fx-font-size: 24px; -fx-font-weight: 800; -fx-text-fill: #1d1d1f;" text="Gerenciar Contratos" />
+            <Label style="-fx-font-size: 13px; -fx-text-fill: #86868b;" text="Controlo de locações, devoluções e prazos operacionais" />
          </children>
       </VBox>
 
-      <!-- Cartão Dinâmico de Conteúdo -->
-      <AnchorPane layoutX="320.0" layoutY="100.0" prefHeight="520.0" prefWidth="590.0" style="-fx-background-color: #ffffff; -fx-background-radius: 16px; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 12, 0, 2, 6);">
+      <!-- Menu Lateral de Acoes -->
+      <VBox layoutX="32.0" layoutY="90.0" prefWidth="210.0" spacing="10.0">
          <children>
-            <VBox spacing="15.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-               <padding>
-                  <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
-               </padding>
-               <children>
-                  <Label style="-fx-font-family: -apple-system, 'SF Pro Display', 'Segoe UI', sans-serif; -fx-font-weight: bold; -fx-font-size: 18px; -fx-text-fill: #1d1d1f;" text="Lista de Contratos" />
-                  
-                  <TableView fx:id="tabela" style="-fx-border-color: #e5e5ea; -fx-border-radius: 8px; -fx-background-radius: 8px;" VBox.vgrow="ALWAYS">
-                    <columnResizePolicy>
-                        <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
-                    </columnResizePolicy>
-                    <columns>
-                      <TableColumn prefWidth="45.0" text="ID">
-                         <cellValueFactory><PropertyValueFactory property="id" /></cellValueFactory>
-                      </TableColumn>
-                      <TableColumn prefWidth="130.0" text="Cliente">
-                         <cellValueFactory><PropertyValueFactory property="cliente" /></cellValueFactory>
-                      </TableColumn>
-                      <TableColumn prefWidth="130.0" text="Item">
-                         <cellValueFactory><PropertyValueFactory property="item" /></cellValueFactory>
-                      </TableColumn>
-                      <TableColumn prefWidth="85.0" text="Início">
-                        <cellValueFactory><PropertyValueFactory property="dataRetirada" /></cellValueFactory>
-                     </TableColumn>
-                     <TableColumn prefWidth="85.0" text="Fim">
-                        <cellValueFactory><PropertyValueFactory property="dataDevolucaoPrevista" /></cellValueFactory>
-                     </TableColumn>
-                      <TableColumn prefWidth="75.0" text="Status">
-                         <cellValueFactory><PropertyValueFactory property="status" /></cellValueFactory>
-                      </TableColumn>
-                      <TableColumn prefWidth="80.0" text="Valor">
-                         <cellValueFactory><PropertyValueFactory property="valorTotal" /></cellValueFactory>
-                      </TableColumn>
-                    </columns>
-                  </TableView>
-               </children>
-            </VBox>
+            <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#registrarAluguel" prefHeight="40.0" style="-fx-background-color: #007AFF; -fx-background-radius: 10px; -fx-text-fill: white; -fx-font-weight: bold; -fx-cursor: hand; -fx-font-size: 13px;" text="+ Registrar Aluguel" />
+            
+            <Separator style="-fx-padding: 4 0 4 0;" />
+            
+            <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#finalizarContrato" prefHeight="38.0" style="-fx-background-color: #d1fae5; -fx-background-radius: 10px; -fx-border-color: #a7f3d0; -fx-border-radius: 10px; -fx-text-fill: #065f46; -fx-font-weight: bold; -fx-cursor: hand; -fx-font-size: 13px;" text="Finalizar (Devolução)" />
+            <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#cancelarContrato" prefHeight="38.0" style="-fx-background-color: #fee2e2; -fx-background-radius: 10px; -fx-border-color: #fecaca; -fx-border-radius: 10px; -fx-text-fill: #991b1b; -fx-font-weight: bold; -fx-cursor: hand; -fx-font-size: 13px;" text="Cancelar Contrato" />
+            <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#listarContratos" prefHeight="38.0" style="-fx-background-color: #ffffff; -fx-background-radius: 10px; -fx-border-color: #d1d1d6; -fx-border-radius: 10px; -fx-text-fill: #1d1d1f; -fx-font-weight: bold; -fx-cursor: hand; -fx-font-size: 13px;" text="Recarregar Lista" />
+            
+            <Region prefHeight="10.0" />
+            <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#voltar" prefHeight="38.0" style="-fx-background-color: #e5e5ea; -fx-background-radius: 10px; -fx-text-fill: #1d1d1f; -fx-font-weight: bold; -fx-cursor: hand; -fx-font-size: 13px;" text="← Voltar" />
          </children>
-      </AnchorPane>
+      </VBox>
+
+      <!-- Cartao Principal da Tabela -->
+      <VBox layoutX="260.0" layoutY="90.0" spacing="12.0" style="-fx-background-color: #ffffff; -fx-background-radius: 16px; -fx-border-color: #e5e7eb; -fx-border-radius: 16px; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.06), 16, 0, 0, 4);" AnchorPane.bottomAnchor="30.0" AnchorPane.leftAnchor="260.0" AnchorPane.rightAnchor="32.0" AnchorPane.topAnchor="90.0">
+         <padding>
+            <Insets bottom="16.0" left="16.0" right="16.0" top="16.0" />
+         </padding>
+         <children>
+            <!-- Barra Superior de Pesquisa -->
+            <HBox alignment="CENTER_LEFT" spacing="10.0">
+               <children>
+                  <TextField fx:id="pesquisa" prefHeight="38.0" promptText="🔍 Pesquisar por ID, cliente, item ou status..." style="-fx-background-color: #F2F2F7; -fx-background-radius: 10px; -fx-padding: 8 14; -fx-font-size: 13px;" HBox.hgrow="ALWAYS" />
+                  <Button fx:id="btnLimpar" mnemonicParsing="false" onAction="#aoLimparPesquisa" prefHeight="38.0" style="-fx-background-color: #F2F2F7; -fx-background-radius: 10px; -fx-text-fill: #636366; -fx-font-weight: bold; -fx-cursor: hand; -fx-font-size: 12px; -fx-padding: 0 14;" text="Limpar" />
+               </children>
+            </HBox>
+
+            <!-- Tabela com Politica de Ajuste Automatico -->
+            <TableView fx:id="tabela" style="-fx-background-radius: 10px; -fx-border-color: #e5e7eb; -fx-border-radius: 10px;" VBox.vgrow="ALWAYS">
+               <columnResizePolicy>
+                  <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+               </columnResizePolicy>
+               <columns>
+                  <TableColumn fx:id="colId" minWidth="45.0" prefWidth="50.0" text="ID" />
+                  <TableColumn fx:id="colCliente" minWidth="110.0" prefWidth="130.0" text="Cliente" />
+                  <TableColumn fx:id="colItem" minWidth="130.0" prefWidth="160.0" text="Item Alugado" />
+                  <TableColumn fx:id="colRetirada" minWidth="85.0" prefWidth="95.0" text="Retirada" />
+                  <TableColumn fx:id="colDevolucao" minWidth="85.0" prefWidth="95.0" text="Previsão" />
+                  <TableColumn fx:id="colStatus" minWidth="95.0" prefWidth="110.0" text="Situação" />
+                  <TableColumn fx:id="colValor" minWidth="80.0" prefWidth="90.0" text="Total" />
+               </columns>
+            </TableView>
+         </children>
+      </VBox>
    </children>
 </AnchorPane>
