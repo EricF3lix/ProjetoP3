@@ -3,7 +3,7 @@ package entidades;
 @SuppressWarnings("java:S107")
 public class Item {
 
-    private int id;
+    private final int id;
     private String nome;
     private String descricao;
     private double taxaDiaria;
