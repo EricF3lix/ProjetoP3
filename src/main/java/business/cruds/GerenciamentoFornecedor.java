@@ -21,7 +21,7 @@ public class GerenciamentoFornecedor implements IGerenciamentoFornecedor {
             return false;
         }
 
-        if (buscarPorCnpj(fornecedor.getCnpj()) != null) {
+        if (repositorio.buscarPorCnpj(fornecedor.getCnpj()) != null) {
             return false;
         }
 

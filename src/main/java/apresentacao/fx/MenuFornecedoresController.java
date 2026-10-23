@@ -24,7 +24,10 @@ public class MenuFornecedoresController extends MenuController{
 	@FXML private TableColumn<Fornecedor, String> colunaStatus;
 	
 	@FXML private VBox dadosFornecedor;
+	@FXML private VBox tabelaFornecedor;
+	
 	@FXML private Label tituloFornecedor;
+	@FXML private Label tituloTabela;
 	
 	@FXML private TextField txtNome;
 	@FXML private TextField txtCNPJ;
@@ -66,25 +69,82 @@ public class MenuFornecedoresController extends MenuController{
 		listarFornecedores();
 	}
 	
+	private void tiraTabela() {
+		
+		tabelaFornecedor.setVisible(false);
+		tabelaFornecedor.setManaged(false);
+		
+		dadosFornecedor.setVisible(true);
+		dadosFornecedor.setManaged(true);
+	}
+	
+	private void colocaTabela() {
+		tabelaFornecedor.setVisible(true);
+		tabelaFornecedor.setManaged(true);
+		
+		dadosFornecedor.setVisible(false);
+		dadosFornecedor.setManaged(false);
+	}
+	
+	@FXML private void trocaCadastro() {
+		tiraTabela();
+		
+		tituloFornecedor.setText("Cadastrar Fornecedor");
+		
+		btnCadastrar.setVisible(true);
+		btnCadastrar.setManaged(true);
+		
+		btnAtualizar.setVisible(false);
+		btnAtualizar.setManaged(false);
+		
+		txtNome.clear();
+		txtCNPJ.clear();
+		txtEmail.clear();
+		txtTelefone.clear();
+	}
+	
+	@FXML private void trocaAtualizar() {
+		Fornecedor alvo = obterFornecedorAlvo(); 
+		if (alvo == null) return;    
+
+		tiraTabela();
+		tituloFornecedor.setText("Atualizar Fornecedor");
+
+		btnCadastrar.setVisible(false);
+		btnCadastrar.setManaged(false);
+		btnAtualizar.setVisible(true);
+		btnAtualizar.setManaged(true);
+		btnAtualizar.setUserData(alvo);
+
+		txtNome.setText(alvo.getRazaoSocial());
+		txtCNPJ.setText(alvo.getCnpj());
+		txtEmail.setText(alvo.getEmail());
+		txtTelefone.setText(alvo.getTelefone());
+	}
+	
 	@FXML
 	private void cadastrarFornecedor() {
-		Optional<String> nomeFornecedor = pedirTexto("Razão Social (Nome): ");
-		if (nomeFornecedor.isEmpty()) {return;}
-		
-		Optional<String> cnpjFornecedor = pedirTexto("CNPJ: ");
-		if (cnpjFornecedor.isEmpty()) {return;}
-		
-		Optional<String> emailFornecedor = pedirTexto("Email: ");
-		if (emailFornecedor.isEmpty()) {return;}
-		
-		Optional<String> telefoneFornecedor = pedirTexto("Telefone: ");
-		if (telefoneFornecedor.isEmpty()) {return;}
+		String nomeFornecedor = txtNome.getText().trim();
+		String cnpjFornecedor = txtCNPJ.getText().trim();
+		String emailFornecedor = txtEmail.getText().trim();
+		String telefoneFornecedor = txtTelefone.getText().trim();
+
+		if (nomeFornecedor.isEmpty() || cnpjFornecedor.isEmpty() || emailFornecedor.isEmpty() || telefoneFornecedor.isEmpty()) {
+			erro("Preencha todos os campos!");
+			return;
+		}
 		
 		int id = sistema.gerarProximoIdFornecedor();
-		Fornecedor fornecedor = new Fornecedor(id, nomeFornecedor.get(), cnpjFornecedor.get(), emailFornecedor.get(), telefoneFornecedor.get());
+		Fornecedor fornecedor = new Fornecedor(id, nomeFornecedor, cnpjFornecedor, emailFornecedor, telefoneFornecedor);
 		
 		if(sistema.cadastrarFornecedor(fornecedor)) {
 			info("Fornecedor cadastrado com sucesso! ID: " + id);
+			
+			txtNome.clear();
+			txtCNPJ.clear();
+			txtEmail.clear();
+			txtTelefone.clear();
+			
 			mostraFornecedor(id);
 		}
 		else {
@@ -93,17 +153,10 @@ public class MenuFornecedoresController extends MenuController{
 		
 	}
 	
-	@FXML
-	private void buscarFornecedor() {
-		Optional<Integer> idFornecedor = pedirInteiro(ID);
-		if(idFornecedor.isEmpty()) { return;
-		}
-		
-		mostraFornecedor(idFornecedor.get());
-		
-	}
 	
 	private void fazPesquisa(String pesquisado) {
+		colocaTabela();
+		
 		switch(filtro.getValue()) {
 		case "Todos" -> tabela.setItems(FXCollections.observableArrayList(sistema.buscarPorTodos(pesquisado)));
 		case "ID" -> tabela.setItems(FXCollections.observableArrayList(sistema.buscarPorId(pesquisado)));
@@ -117,42 +170,41 @@ public class MenuFornecedoresController extends MenuController{
 	
 	@FXML
 	private void listarFornecedores() {
+		colocaTabela();
 		tabela.setItems(FXCollections.observableArrayList(sistema.listarFornecedores()));
 		
 	}
 	
 	@FXML
 	private void atualizarFornecedor() {
-		Fornecedor atual = obterFornecedorAlvo();
+		Fornecedor atual = (Fornecedor) btnAtualizar.getUserData();
 		if (atual == null) return;
-		
-		Optional<Integer> id = Optional.of(atual.getId());
 
-	    Optional<String> nome = pedirTexto("Razão Social (Nome):", atual.getRazaoSocial());
-	    if (nome.isEmpty()) return;
-	    
-	    Optional<String> cnpj = pedirTexto("CNPJ:", atual.getCnpj());
-	    if (cnpj.isEmpty()) return;
-	    
-	    Optional<String> email = pedirTexto("Email:", atual.getEmail());
-	    if (email.isEmpty()) return;
-	    
-	    Optional<String> telefone = pedirTexto("Telefone:", atual.getTelefone());
-	    if (telefone.isEmpty()) return;
+		String nome = txtNome.getText().trim();
+		String cnpj = txtCNPJ.getText().trim();
+		String email = txtEmail.getText().trim();
+		String telefone = txtTelefone.getText().trim();
 
-	    String novoNome = pegaNovo(nome.get(), atual.getRazaoSocial());
-	    String novoCnpj = pegaNovo(cnpj.get(), atual.getCnpj());
-	    String novoEmail = pegaNovo(email.get(), atual.getEmail());
-	    String novoTelefone = pegaNovo(telefone.get(), atual.getTelefone());
+		if (nome.isEmpty() || cnpj.isEmpty() || email.isEmpty() || telefone.isEmpty()) {
+			erro("Preencha todos os campos!");
+			return;
+		}
 
-	    if (sistema.atualizarFornecedor(new Fornecedor(id.get(), novoNome, novoCnpj, novoEmail, novoTelefone))) {
-	        info("Fornecedor atualizado com sucesso.");
-	        mostraFornecedor(id.get());
-	    } else {
-	        erro("Erro ao atualizar fornecedor.");
-	    }
+		int id = atual.getId();
+
+		if (sistema.atualizarFornecedor(new Fornecedor(id, nome, cnpj, email, telefone))) {
+			info("Fornecedor atualizado com sucesso.");
+			btnAtualizar.setUserData(null);
+			txtNome.clear();
+			txtCNPJ.clear();
+			txtEmail.clear();
+			txtTelefone.clear();
+			mostraFornecedor(id);
+		} else {
+			erro("Erro ao atualizar fornecedor.");
+		}
 	}
-
+	
 	@FXML
 	private void desativarFornecedor() {
 		Fornecedor fornecedor = obterFornecedorAlvo();
@@ -171,7 +223,7 @@ public class MenuFornecedoresController extends MenuController{
 	        erro("Erro ao desativar fornecedor");
 	    }
 	}
-
+	
 	private Fornecedor obterFornecedorAlvo() {
 		Fornecedor atual = tabela.getSelectionModel().getSelectedItem();
 		tabela.getSelectionModel().clearSelection();
@@ -188,19 +240,20 @@ public class MenuFornecedoresController extends MenuController{
 	}
 	
 	private void mostraFornecedor(int id) {
-	
 		Fornecedor fornecedor = sistema.buscarFornecedor(id);
 		if (fornecedor == null) {
 			info("Fornecedor não cadastrado.");
 			return;
 		}
 		
+		colocaTabela();
 		tabela.getItems().setAll(fornecedor);
 		
 	}
 	
 	@FXML
 	private void aoLimparPesquisa() {
+		colocaTabela();
 		pesquisa.clear();
 		filtro.getSelectionModel().clearSelection();
 	}

@@ -46,12 +46,12 @@
 
             <Pane prefHeight="2.0" />
 
-            <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#cadastrarFornecedor" prefHeight="38.0" style="-fx-background-color: #ffffff; -fx-background-radius: 10px; -fx-border-color: #d1d1d6; -fx-border-radius: 10px; -fx-text-fill: #007AFF; -fx-font-weight: bold; -fx-cursor: hand; -fx-font-size: 13px;" text="Cadastrar Fornecedor" />
+            <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#trocaCadastro" prefHeight="38.0" style="-fx-background-color: #ffffff; -fx-background-radius: 10px; -fx-border-color: #d1d1d6; -fx-border-radius: 10px; -fx-text-fill: #007AFF; -fx-font-weight: bold; -fx-cursor: hand; -fx-font-size: 13px;" text="Cadastrar Fornecedor" />
             
             <Separator style="-fx-padding: 5 0 5 0;" />
             
             <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#listarFornecedores" prefHeight="38.0" style="-fx-background-color: #ffffff; -fx-background-radius: 10px; -fx-border-color: #d1d1d6; -fx-border-radius: 10px; -fx-text-fill: #1d1d1f; -fx-font-weight: bold; -fx-cursor: hand; -fx-font-size: 13px;" text="Listar todos os Fornecedores" />
-            <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#atualizarFornecedor" prefHeight="38.0" style="-fx-background-color: #ffffff; -fx-background-radius: 10px; -fx-border-color: #d1d1d6; -fx-border-radius: 10px; -fx-text-fill: #1d1d1f; -fx-font-weight: bold; -fx-cursor: hand; -fx-font-size: 13px;" text="Atualizar Fornecedor" />
+            <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#trocaAtualizar" prefHeight="38.0" style="-fx-background-color: #ffffff; -fx-background-radius: 10px; -fx-border-color: #d1d1d6; -fx-border-radius: 10px; -fx-text-fill: #1d1d1f; -fx-font-weight: bold; -fx-cursor: hand; -fx-font-size: 13px;" text="Atualizar Fornecedor" />
             <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#desativarFornecedor" prefHeight="38.0" style="-fx-background-color: #fff0f0; -fx-background-radius: 10px; -fx-border-color: #ffcccc; -fx-border-radius: 10px; -fx-text-fill: #ff3b30; -fx-font-weight: bold; -fx-cursor: hand; -fx-font-size: 13px;" text="Desativar Fornecedor" />
             
             <Pane prefHeight="5.0" />
@@ -83,17 +83,17 @@
                 
                <Pane prefHeight="10.0" />
                     
-               <Button fx:id="btnAtualizar" mnemonicParsing="false" onAction="#cadastrarFornecedor" style="-fx-background-color: #007AFF; -fx-text-fill: white; -fx-background-radius: 8px; -fx-font-weight: bold; -fx-padding: 8 20 8 20; -fx-cursor: hand;" text="Atualizar Fornecedor" />    
+               <Button fx:id="btnAtualizar" mnemonicParsing="false" onAction="#atualizarFornecedor" style="-fx-background-color: #007AFF; -fx-text-fill: white; -fx-background-radius: 8px; -fx-font-weight: bold; -fx-padding: 8 20 8 20; -fx-cursor: hand;" text="Atualizar Fornecedor" />    
                <Button fx:id="btnCadastrar" mnemonicParsing="false" onAction="#cadastrarFornecedor" style="-fx-background-color: #007AFF; -fx-text-fill: white; -fx-background-radius: 8px; -fx-font-weight: bold; -fx-padding: 8 20 8 20; -fx-cursor: hand;" text="Cadastrar Fornecedor" />
                <Label style="-fx-font-weight: bold;" />
                </children>
           </VBox>
-            <VBox spacing="15.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+            <VBox fx:id="tabelaFornecedor" spacing="15.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                <padding>
                   <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
                </padding>
                <children>
-                  <Label style="-fx-font-family: -apple-system, 'SF Pro Display', 'Segoe UI', sans-serif; -fx-font-weight: bold; -fx-font-size: 18px; -fx-text-fill: #1d1d1f;" text="Lista de Fornecedores" />
+                  <Label fx:id="tituloTabela" style="-fx-font-family: -apple-system, 'SF Pro Display', 'Segoe UI', sans-serif; -fx-font-weight: bold; -fx-font-size: 18px; -fx-text-fill: #1d1d1f;" text="Lista de Fornecedores" />
                   
                   <TableView fx:id="tabela" style="-fx-border-color: #e5e5ea; -fx-border-radius: 8px; -fx-background-radius: 8px;" VBox.vgrow="ALWAYS">
                      <columnResizePolicy>
