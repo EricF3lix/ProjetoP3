@@ -8,14 +8,14 @@ import entidades.Fornecedor;
 
 public class FornecedorRepositorio implements IFornecedorRepositorio {
 
-    private String arquivo = "dados/fornecedores.csv";
+    private static final String ARQUIVO = "dados/fornecedores.csv";
 
-    private List<Fornecedor> fornecedores;
-    private ManipulaArquivo manipulaArquivo;
+    private final List<Fornecedor> fornecedores;
+    private final ManipulaArquivo manipulaArquivo;
 
     public FornecedorRepositorio() {
 
-        manipulaArquivo = new ManipulaArquivo(arquivo);
+        manipulaArquivo = new ManipulaArquivo(ARQUIVO);
         fornecedores = carregar();
 
     }
@@ -103,7 +103,7 @@ public class FornecedorRepositorio implements IFornecedorRepositorio {
 
             if (fornecedor.getCnpj().trim().equals(cnpj.trim())) {
 
-                return fornecedor;
+                return fornecedor;    
 
             }
 
@@ -113,16 +113,6 @@ public class FornecedorRepositorio implements IFornecedorRepositorio {
 
     }
     
-    @Override
-    public List<Fornecedor> buscaNomeECNPJ(String filtro) {
-    	
-    	return fornecedores.stream().filter(fornecedor -> 
-    	fornecedor.getRazaoSocial().trim().toLowerCase().startsWith(filtro.trim().toLowerCase()) || 
-    	fornecedor.getCnpj().trim().toLowerCase().startsWith(filtro.trim()) || 
-    	String.valueOf(fornecedor.getId()).trim().equals(filtro.trim())).toList();
-    	
-    	
-    }
 
     @Override
     public Fornecedor buscarPorId(int id) {

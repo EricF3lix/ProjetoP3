@@ -4,7 +4,7 @@ public class Fornecedor {
  
     private int id;
     private String razaoSocial;
-    private String cnpj;
+    private final String cnpj;
     private String email;
     private String telefone;
     private boolean ativo;
@@ -57,6 +57,10 @@ public class Fornecedor {
 
     public boolean isAtivo() {
         return ativo;
+    }
+    
+    public String getStatus() {
+    	return (ativo ? "ATIVO" : "INATIVO");
     }
 
     public void setAtivo(boolean ativo) {
