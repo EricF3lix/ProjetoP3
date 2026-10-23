@@ -11,9 +11,22 @@ public class MenuCategoriasController extends MenuController {
     private static final String ID_CATEGORIA = "ID da categoria:";
     private static final String NAO_ENCONTRADA = "Categoria não encontrada";
 
+    private boolean listener = false;
+
     @Override
     protected String getTitulo() {
         return "Gerenciar Categorias";
+    }
+
+
+    @Override
+    protected void aoExibir() {
+        if (!listener) {
+            if (pesquisa != null) {
+                pesquisa.textProperty().addListener((obj, antigo, novo) -> fazPesquisa(novo));
+            }
+            this.listener = true;
+        }
     }
 
     @FXML
@@ -118,5 +131,15 @@ public class MenuCategoriasController extends MenuController {
         } else {
             erro("Erro ao desativar categoria");
         }
+    }
+    private void fazPesquisa(String pesquisado) {
+        String termo = pesquisado == null ? "" : pesquisado.trim().toLowerCase();
+
+        List<Categoria> filtradas = sistema.listarCategorias().stream()
+                .filter(c -> termo.isEmpty()
+                        || String.valueOf(c.getId()).contains(termo)
+                        || (c.getNome() != null && c.getNome().toLowerCase().contains(termo))
+                        || (c.getDescricao() != null && c.getDescricao().toLowerCase().contains(termo)))
+                .toList();
     }
 }
