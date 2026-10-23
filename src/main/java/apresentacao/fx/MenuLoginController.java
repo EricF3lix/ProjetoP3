@@ -1,13 +1,19 @@
 package apresentacao.fx;
 
+import java.net.URL;
+
 import entidades.Administrador;
 import entidades.Cliente;
 import entidades.Funcionario;
 import entidades.Usuario;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
+import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.StackPane;
 
 public class MenuLoginController extends MenuController {
 
@@ -17,6 +23,14 @@ public class MenuLoginController extends MenuController {
     @FXML
     private PasswordField txtSenha;
 
+    @FXML
+    private StackPane areaLogo;
+
+    @FXML
+    private Label lblLogoPadrao;
+
+    @FXML
+    private ImageView imgLogo;
     @Override
     protected String getTitulo() {
         return "Loja que aluga de um tudo";
@@ -64,5 +78,20 @@ public class MenuLoginController extends MenuController {
     @Override
     public void voltar() {
         Platform.exit();
+    }
+    @FXML
+    private void initialize() {
+        carregarLogo();
+    }
+
+    private void carregarLogo() {
+        URL url = MenuLoginController.class.getResource("/imagens/logo.jpg");
+        if (url == null) {
+            return; 
+        }
+
+        imgLogo.setImage(new Image(url.toExternalForm()));
+        lblLogoPadrao.setVisible(false);
+        areaLogo.setStyle("-fx-border-color: transparent;");
     }
 }

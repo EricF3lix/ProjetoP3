@@ -1,1 +1,6 @@
+<<<<<<< HEAD
 IdContrato,Cliente,Item,DataRetirada,DataPrevista,Status,ValorTotal,Multa
+4;test;Cafeteira;2026-05-10;2027-01-01;ATIVO;2360.0;0.0
+=======
+IdContrato,Cliente,Item,DataRetirada,DataPrevista,Status,ValorTotal,Multa
+>>>>>>> aea9414124a8959ebe550f389b63e45f2e10bdba
