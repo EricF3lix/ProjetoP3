@@ -4,5 +4,5 @@ id;nome;descricao;taxaDiaria;estadoConservacao;valorReposicao;status;ativo;idCat
 3;Teclado gamer;grande;2000.0;NOVO;20.0;INDISPONIVEL;false;1;1
 4;celular;azul;100.0;NOVO;20.0;INDISPONIVEL;false;1;0
 5;moises gamer;tem fortinete nele;10.0;NOVO;5.0;DISPONIVEL;true;5;2
-6;Cama;de dormir;100.0;NOVO;40.0;DISPONIVEL;true;1;1
+6;Cama;de dormir;100.0;NOVO;40.0;INDISPONIVEL;true;1;1
 7;sofa;de dormir;20000.0;USADO;120.0;DISPONIVEL;true;1;3

@@ -386,6 +386,23 @@ public class MenuItensController extends MenuController {
         Optional<String> estado = pedirTexto("Novo estado (atual: " + atual.getEstadoConservacao() + "):");
         if (estado.isEmpty()) return;
 
+        String novoStatus = atual.getStatus();
+        if (atual.isAtivo()) {
+            Optional<String> statusInput = pedirTexto("Novo status (Atual: " + atual.getStatus() + " | Opções: DISPONIVEL, MANUTENCAO, ALUGADO, INDISPONIVEL)\n[Enter mantém]:");
+            if (statusInput.isEmpty()) return;
+
+            if (!statusInput.get().isBlank()) {
+                String statusDigitado = statusInput.get().trim().toUpperCase();
+                if (statusDigitado.equals("DISPONIVEL") || statusDigitado.equals("MANUTENCAO")
+                        || statusDigitado.equals("ALUGADO") || statusDigitado.equals("INDISPONIVEL")) {
+                    novoStatus = statusDigitado;
+                } else {
+                    erro("Status inválido. Digite: DISPONIVEL, MANUTENCAO, ALUGADO ou INDISPONIVEL.");
+                    return;
+                }
+            }
+        }
+
         try {
             String novoNome = nome.get().isBlank() ? atual.getNome() : nome.get().trim();
             double novaTaxa = taxaStr.get().isBlank() ? atual.getTaxaDiaria() : Double.parseDouble(taxaStr.get().replace(",", ".").trim());
@@ -406,7 +423,7 @@ public class MenuItensController extends MenuController {
             if (!atual.isAtivo()) {
                 itemAtualizado.setStatus("INDISPONIVEL");
             } else {
-                itemAtualizado.setStatus(atual.getStatus());
+                itemAtualizado.setStatus(novoStatus);
             }
 
             if (sistema != null && sistema.atualizarItem(itemAtualizado)) {
