@@ -3,6 +3,8 @@ package apresentacao.fx;
 import entidades.Funcionario;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
+import javafx.scene.Node;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import org.kordamp.ikonli.javafx.FontIcon;
 
@@ -17,17 +19,16 @@ public class MenuPrincipalFuncionarioController extends MenuController {
     @FXML private FontIcon iconMultas;
     @FXML private FontIcon iconRelatorios;
 
-    @FXML
-    private Label lblBemVindo;
+    @FXML private Label lblBemVindo;
+    @FXML private Label lblPerfil;
+    @FXML private Label lblIniciais;
 
     private Funcionario funcionario;
     private boolean saudacaoExibida = false;
 
     public void setFuncionario(Funcionario funcionario) {
         this.funcionario = funcionario;
-        if (funcionario != null && lblBemVindo != null) {
-            lblBemVindo.setText("Bem-vindo(a), " + funcionario.getNome());
-        }
+        atualizarIdentificacaoUsuario();
     }
 
     @Override
@@ -37,14 +38,23 @@ public class MenuPrincipalFuncionarioController extends MenuController {
 
     @Override
     protected void aoExibir() {
+        carregarIcones();
+        Platform.runLater(this::aplicarEfeitoCardsNosBotoes);
+        atualizarIdentificacaoUsuario();
+
         String nome = (funcionario != null && funcionario.getNome() != null)
                 ? funcionario.getNome()
                 : "Funcionário";
 
-        if (lblBemVindo != null) {
-            lblBemVindo.setText("Bem-vindo(a), " + nome);
+        if (!saudacaoExibida) {
+            saudacaoExibida = true;
+            Platform.runLater(() -> {
+                notificarPopUp("Bem-vindo(a), " + nome + "! Painel operacional pronto.", true);
+            });
         }
+    }
 
+    private void carregarIcones() {
         if (iconSair != null) iconSair.setIconLiteral("fas-sign-out-alt");
         if (iconUsuarios != null) iconUsuarios.setIconLiteral("fas-users");
         if (iconItens != null) iconItens.setIconLiteral("fas-box");
@@ -53,14 +63,50 @@ public class MenuPrincipalFuncionarioController extends MenuController {
         if (iconContratos != null) iconContratos.setIconLiteral("fas-file-alt");
         if (iconMultas != null) iconMultas.setIconLiteral("fas-exclamation-triangle");
         if (iconRelatorios != null) iconRelatorios.setIconLiteral("fas-chart-bar");
+    }
 
-        // Dispara o pop-up animado na primeira exibição após o login
-        if (!saudacaoExibida) {
-            saudacaoExibida = true;
-            Platform.runLater(() -> {
-                notificarPopUp("Bem-vindo(a), " + nome + "! Painel operacional pronto.");
-            });
+    private void aplicarEfeitoCardsNosBotoes() {
+        FontIcon[] icones = {
+            iconUsuarios, iconItens, iconCategorias,
+            iconFornecedores, iconContratos, iconMultas, iconRelatorios
+        };
+
+        for (FontIcon icone : icones) {
+            if (icone != null) {
+                Node atual = icone.getParent();
+                while (atual != null && !(atual instanceof Button)) {
+                    atual = atual.getParent();
+                }
+                if (atual instanceof Button btn && !btn.getStyleClass().contains("menu-card")) {
+                    btn.getStyleClass().add("menu-card");
+                }
+            }
         }
+    }
+
+    private void atualizarIdentificacaoUsuario() {
+        String nome = (funcionario != null && funcionario.getNome() != null && !funcionario.getNome().isBlank())
+                ? funcionario.getNome()
+                : "Funcionário";
+
+        if (lblBemVindo != null) {
+            lblBemVindo.setText("Olá, " + nome);
+        }
+        if (lblPerfil != null) {
+            lblPerfil.setText("Operador · Painel Operacional");
+        }
+        if (lblIniciais != null) {
+            lblIniciais.setText(extrairIniciais(nome));
+        }
+    }
+
+    private String extrairIniciais(String nome) {
+        if (nome == null || nome.isBlank()) return "OP";
+        String[] partes = nome.trim().split("\\s+");
+        if (partes.length == 1) {
+            return partes[0].substring(0, Math.min(2, partes[0].length())).toUpperCase();
+        }
+        return ("" + partes[0].charAt(0) + partes[partes.length - 1].charAt(0)).toUpperCase();
     }
 
     @FXML

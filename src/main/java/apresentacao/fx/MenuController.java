@@ -10,12 +10,16 @@ import java.util.function.Function;
 import facade.SistemaFacade;
 import javafx.animation.FadeTransition;
 import javafx.animation.Interpolator;
+import javafx.animation.KeyFrame;
+import javafx.animation.KeyValue;
 import javafx.animation.ParallelTransition;
 import javafx.animation.PauseTransition;
 import javafx.animation.ScaleTransition;
+import javafx.animation.Timeline;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.ChoiceDialog;
@@ -70,6 +74,31 @@ public abstract class MenuController {
 
     protected void escreverf(String formato, Object... args) {
         escrever(String.format(formato, args));
+    }
+
+    // ==========================================
+    // ANIMAÇÕES TÁTEIS E MICROINTERAÇÕES
+    // ==========================================
+
+    /**
+     * Efeito Shake estilo macOS para alertas visuais de recusa/erro em formulários e contêineres.
+     */
+    public static void animarErroShake(Node node) {
+        if (node == null) return;
+
+        Timeline shake = new Timeline(
+            new KeyFrame(Duration.millis(0),   new KeyValue(node.translateXProperty(), 0)),
+            new KeyFrame(Duration.millis(40),  new KeyValue(node.translateXProperty(), -8)),
+            new KeyFrame(Duration.millis(80),  new KeyValue(node.translateXProperty(), 8)),
+            new KeyFrame(Duration.millis(120), new KeyValue(node.translateXProperty(), -6)),
+            new KeyFrame(Duration.millis(160), new KeyValue(node.translateXProperty(), 6)),
+            new KeyFrame(Duration.millis(200), new KeyValue(node.translateXProperty(), -4)),
+            new KeyFrame(Duration.millis(240), new KeyValue(node.translateXProperty(), 4)),
+            new KeyFrame(Duration.millis(280), new KeyValue(node.translateXProperty(), -1)),
+            new KeyFrame(Duration.millis(320), new KeyValue(node.translateXProperty(), 1)),
+            new KeyFrame(Duration.millis(360), new KeyValue(node.translateXProperty(), 0))
+        );
+        shake.play();
     }
 
     // ==========================================
