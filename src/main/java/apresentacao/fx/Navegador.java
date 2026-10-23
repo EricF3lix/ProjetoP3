@@ -59,8 +59,11 @@ public class Navegador {
             FXMLLoader loader = new FXMLLoader(url);
             Parent raiz = loader.load();
             T controller = loader.getController();
-            controller.inicializar(sistema, this);
-            configurador.accept(controller);
+
+            if (controller != null) {
+                controller.inicializar(sistema, this);
+                configurador.accept(controller);
+            }
 
             Tela novaTela = new Tela(raiz, controller);
             Tela telaAnterior = pilha.peek();
@@ -92,8 +95,11 @@ public class Navegador {
             FXMLLoader loader = new FXMLLoader(url);
             Parent raiz = loader.load();
             T controller = loader.getController();
-            controller.inicializar(sistema, this);
-            configurador.accept(controller);
+
+            if (controller != null) {
+                controller.inicializar(sistema, this);
+                configurador.accept(controller);
+            }
 
             Tela telaAnterior = pilha.peek();
             pilha.clear();
@@ -112,9 +118,18 @@ public class Navegador {
     }
 
     private void transicionarFade(Parent raizAntiga, Tela destino) {
+        if (destino == null) return;
         animando = true;
-        stage.setTitle(destino.controller().getTitulo());
+
+        if (destino.controller() != null) {
+            stage.setTitle(destino.controller().getTitulo());
+        }
+
         Parent raizNova = destino.raiz();
+        if (raizNova == null) {
+            animando = false;
+            return;
+        }
 
         if (raizAntiga == null) {
             scene.setRoot(raizNova);
@@ -124,7 +139,9 @@ public class Navegador {
             fade.setToValue(1.0);
             fade.setOnFinished(e -> {
                 animando = false;
-                destino.controller().aoExibir();
+                if (destino.controller() != null) {
+                    destino.controller().aoExibir();
+                }
             });
             fade.play();
             return;
@@ -151,7 +168,9 @@ public class Navegador {
             raizNova.setOpacity(1.0);
             raizAntiga.setOpacity(1.0);
             animando = false;
-            destino.controller().aoExibir();
+            if (destino.controller() != null) {
+                destino.controller().aoExibir();
+            }
         });
         animacao.play();
     }
@@ -162,8 +181,13 @@ public class Navegador {
             return;
         }
 
+        if (destino == null) return;
+
         animando = true;
-        stage.setTitle(destino.controller().getTitulo());
+
+        if (destino.controller() != null) {
+            stage.setTitle(destino.controller().getTitulo());
+        }
 
         Parent raizOrigem = origem.raiz();
         Parent raizDestino = destino.raiz();
@@ -239,13 +263,15 @@ public class Navegador {
 
             raizOrigem.setCache(false);
             raizDestino.setCache(false);
-            raizDestino.setTranslateX(0);
-            raizDestino.setOpacity(1.0);
             raizOrigem.setTranslateX(0);
             raizOrigem.setOpacity(1.0);
+            raizDestino.setTranslateX(0);
+            raizDestino.setOpacity(1.0);
 
             animando = false;
-            destino.controller().aoExibir();
+            if (destino.controller() != null) {
+                destino.controller().aoExibir();
+            }
         });
 
         animacao.play();
