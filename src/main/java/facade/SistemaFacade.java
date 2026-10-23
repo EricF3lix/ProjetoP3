@@ -20,13 +20,13 @@ public class SistemaFacade {
 
     private Usuario usuarioLogado;
 
-    private IGerenciamentoUsuarios   gerenciamentoUsuarios;
-    private IGerenciamentoContratos  gerenciamentoContratos;
-    private IGerenciamentoItens      gerenciamentoItens;
-    private IGerenciamentoCategoria  gerenciamentoCategoria;
-    private IGerenciamentoFornecedor gerenciamentoFornecedor;
-    private IGerenciamentoMultas     gerenciamentoMultas;
-    private IRelatorios              geradorRelatorios;
+    private final IGerenciamentoUsuarios   gerenciamentoUsuarios;
+    private final IGerenciamentoContratos  gerenciamentoContratos;
+    private final IGerenciamentoItens      gerenciamentoItens;
+    private final IGerenciamentoCategoria  gerenciamentoCategoria;
+    private final IGerenciamentoFornecedor gerenciamentoFornecedor;
+    private final IGerenciamentoMultas     gerenciamentoMultas;
+    private final IRelatorios              geradorRelatorios;
 
     public SistemaFacade(
             IGerenciamentoUsuarios   gerenciamentoUsuarios,
