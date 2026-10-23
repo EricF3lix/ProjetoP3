@@ -1,6 +1,7 @@
 package apresentacao.fx;
 
 import java.time.LocalDate;
+import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Optional;
@@ -29,6 +30,7 @@ public class MenuContratosController extends MenuController {
 
     private static final String ID_CONTRATO = "Digite o ID do contrato: ";
     private static final String CONTRATO_NAO_ENCONTRADO = "Contrato não encontrado.";
+    private static final ZoneId FUSO_HORARIO = ZoneId.of("America/Recife");
 
     @FXML 
     private TableView<ContratoAluguel> tabela;
@@ -82,8 +84,8 @@ public class MenuContratosController extends MenuController {
         TextField txtIdItem = new TextField();
         txtIdItem.setPromptText("Ex: 10");
 
-        DatePicker dpRetirada = new DatePicker(LocalDate.now());
-        DatePicker dpDevolucao = new DatePicker(LocalDate.now().plusDays(1));
+        DatePicker dpRetirada = new DatePicker(LocalDate.now(FUSO_HORARIO));
+        DatePicker dpDevolucao = new DatePicker(LocalDate.now(FUSO_HORARIO).plusDays(1));
 
         grid.add(new Label("ID do Cliente:"), 0, 0);
         grid.add(txtIdCliente, 1, 0);
@@ -212,16 +214,17 @@ public class MenuContratosController extends MenuController {
         grid.setVgap(12);
         grid.setPadding(new Insets(20, 20, 10, 10));
 
-        DatePicker dpReal = new DatePicker(LocalDate.now());
+        DatePicker dpReal = new DatePicker(LocalDate.now(FUSO_HORARIO));
         dpReal.setDisable(true);
 
-        CheckBox chkHoje = new CheckBox("Data de hoje (" + LocalDate.now() + ")");
+        CheckBox chkHoje = new CheckBox("Data de hoje (" + LocalDate.now(FUSO_HORARIO) + ")");
         chkHoje.setSelected(true);
 
         chkHoje.selectedProperty().addListener((obs, antigo, selecionado) -> {
-            dpReal.setDisable(selecionado);
-            if (selecionado) {
-                dpReal.setValue(LocalDate.now());
+            boolean estaSelecionado = Boolean.TRUE.equals(selecionado);
+            dpReal.setDisable(estaSelecionado);
+            if (estaSelecionado) {
+                dpReal.setValue(LocalDate.now(FUSO_HORARIO));
             }
         });
 
