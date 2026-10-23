@@ -474,7 +474,7 @@ public class MenuRelatoriosController extends MenuController {
             document.add(tabelaPdf);
         } catch (Exception e) {
             erro("Falha ao gerar o arquivo PDF: " + e.getMessage());
-            return;
+            
         } finally {
             if (document.isOpen()) {
                 document.close();
