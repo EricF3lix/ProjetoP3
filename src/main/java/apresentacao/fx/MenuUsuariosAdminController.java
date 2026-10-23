@@ -123,14 +123,14 @@ public class MenuUsuariosAdminController extends MenuUsuariosFuncionarioControll
             txtAtualizarSenha.setDisable(false);
             btnAtualizarSalvar.setDisable(false);
             lblAtualizarStatus.setText("Editando dados de: " + selecionado.getNome());
-            lblAtualizarStatus.setStyle("-fx-text-fill: #007AFF;");
+            lblAtualizarStatus.setStyle("-fx-text-fill: #007AFF; -fx-font-weight: bold;");
         } else {
             txtAtualizarNome.setDisable(true);
             txtAtualizarEmail.setDisable(true);
             txtAtualizarSenha.setDisable(true);
             btnAtualizarSalvar.setDisable(true);
             lblAtualizarStatus.setText("Selecione um usuário na tabela ou informe o ID.");
-            lblAtualizarStatus.setStyle("-fx-text-fill: #6e6e73;");
+            lblAtualizarStatus.setStyle("-fx-text-fill: #8e8e93;");
         }
 
         exibirPainel(painelAtualizar);
@@ -151,14 +151,18 @@ public class MenuUsuariosAdminController extends MenuUsuariosFuncionarioControll
                 txtAtualizarSenha.setDisable(false);
                 btnAtualizarSalvar.setDisable(false);
                 lblAtualizarStatus.setText("Usuário carregado. Edite e salve.");
-                lblAtualizarStatus.setStyle("-fx-text-fill: black;");
+                lblAtualizarStatus.setStyle("-fx-text-fill: #1c1c1e;");
+                notificarPopUp("Dados do usuário #" + id + " carregados.", true);
             } else {
+                animarErroShake(painelAtualizar);
                 lblAtualizarStatus.setText("Usuário não encontrado.");
-                lblAtualizarStatus.setStyle("-fx-text-fill: red;");
+                lblAtualizarStatus.setStyle("-fx-text-fill: #ff3b30; -fx-font-weight: bold;");
+                notificarPopUp("Nenhum usuário encontrado com o ID " + id, false);
             }
         } catch (NumberFormatException ex) {
-            lblAtualizarStatus.setText("ID inválido.");
-            lblAtualizarStatus.setStyle("-fx-text-fill: red;");
+            animarErroShake(painelAtualizar);
+            lblAtualizarStatus.setText("ID inválido. Digite apenas números.");
+            lblAtualizarStatus.setStyle("-fx-text-fill: #ff3b30; -fx-font-weight: bold;");
         }
     }
 
@@ -170,8 +174,9 @@ public class MenuUsuariosAdminController extends MenuUsuariosFuncionarioControll
             Usuario atual = sistema.buscarUsuario(id);
 
             if (atual == null) {
+                animarErroShake(painelAtualizar);
                 lblAtualizarStatus.setText("Usuário não encontrado.");
-                lblAtualizarStatus.setStyle("-fx-text-fill: red;");
+                lblAtualizarStatus.setStyle("-fx-text-fill: #ff3b30; -fx-font-weight: bold;");
                 return;
             }
 
@@ -181,15 +186,19 @@ public class MenuUsuariosAdminController extends MenuUsuariosFuncionarioControll
 
             if (sistema.atualizarUsuario(id, novoNome, novoEmail, novaSenha)) {
                 lblAtualizarStatus.setText("Usuário atualizado com sucesso!");
-                lblAtualizarStatus.setStyle("-fx-text-fill: green;");
+                lblAtualizarStatus.setStyle("-fx-text-fill: #34c759; -fx-font-weight: bold;");
+                notificarPopUp("Usuário #" + id + " atualizado com sucesso!", true);
                 carregarTabela();
             } else {
-                lblAtualizarStatus.setText("Erro ao atualizar usuário.");
-                lblAtualizarStatus.setStyle("-fx-text-fill: red;");
+                animarErroShake(painelAtualizar);
+                lblAtualizarStatus.setText("Erro ao atualizar usuário no banco de dados.");
+                lblAtualizarStatus.setStyle("-fx-text-fill: #ff3b30; -fx-font-weight: bold;");
+                notificarPopUp("Falha ao atualizar dados do usuário.", false);
             }
         } catch (NumberFormatException ex) {
+            animarErroShake(painelAtualizar);
             lblAtualizarStatus.setText("ID inválido.");
-            lblAtualizarStatus.setStyle("-fx-text-fill: red;");
+            lblAtualizarStatus.setStyle("-fx-text-fill: #ff3b30; -fx-font-weight: bold;");
         }
     }
 
@@ -203,7 +212,7 @@ public class MenuUsuariosAdminController extends MenuUsuariosFuncionarioControll
         if (selecionado != null) {
             txtDesativarId.setText(String.valueOf(selecionado.getId()));
             lblDesativarStatus.setText("Selecionado: " + selecionado.getNome() + (selecionado.isAtivo() ? " (Ativo)" : " (Inativo)"));
-            lblDesativarStatus.setStyle("-fx-text-fill: #007AFF;");
+            lblDesativarStatus.setStyle("-fx-text-fill: #007AFF; -fx-font-weight: bold;");
         }
 
         exibirPainel(painelDesativar);
@@ -217,20 +226,25 @@ public class MenuUsuariosAdminController extends MenuUsuariosFuncionarioControll
             Usuario usuario = sistema.buscarUsuario(id);
 
             if (usuario == null) {
+                animarErroShake(painelDesativar);
                 lblDesativarStatus.setText("Usuário não encontrado.");
-                lblDesativarStatus.setStyle("-fx-text-fill: red;");
+                lblDesativarStatus.setStyle("-fx-text-fill: #ff3b30; -fx-font-weight: bold;");
+                notificarPopUp("Usuário não encontrado.", false);
                 return;
             }
 
             if (usuario.isAtivo()) {
                 if (sistema.desativaUsuario(id)) {
                     lblDesativarStatus.setText("Usuário desativado com sucesso!");
-                    lblDesativarStatus.setStyle("-fx-text-fill: green;");
+                    lblDesativarStatus.setStyle("-fx-text-fill: #34c759; -fx-font-weight: bold;");
                     txtDesativarId.clear();
+                    notificarPopUp("Usuário #" + id + " desativado.", true);
                     carregarTabela();
                 } else {
+                    animarErroShake(painelDesativar);
                     lblDesativarStatus.setText("Não foi possível desativar (verifique pendências/multas).");
-                    lblDesativarStatus.setStyle("-fx-text-fill: red;");
+                    lblDesativarStatus.setStyle("-fx-text-fill: #ff3b30; -fx-font-weight: bold;");
+                    notificarPopUp("Impossível desativar: pendências ativas.", false);
                 }
             } else {
                 boolean reativado = false;
@@ -250,17 +264,20 @@ public class MenuUsuariosAdminController extends MenuUsuariosFuncionarioControll
 
                 if (reativado) {
                     lblDesativarStatus.setText("Usuário reativado com sucesso!");
-                    lblDesativarStatus.setStyle("-fx-text-fill: green;");
+                    lblDesativarStatus.setStyle("-fx-text-fill: #34c759; -fx-font-weight: bold;");
                     txtDesativarId.clear();
+                    notificarPopUp("Usuário #" + id + " reativado com sucesso!", true);
                     carregarTabela();
                 } else {
+                    animarErroShake(painelDesativar);
                     lblDesativarStatus.setText("Este usuário já se encontra inativo.");
-                    lblDesativarStatus.setStyle("-fx-text-fill: orange;");
+                    lblDesativarStatus.setStyle("-fx-text-fill: #ff9500; -fx-font-weight: bold;");
                 }
             }
         } catch (NumberFormatException ex) {
+            animarErroShake(painelDesativar);
             lblDesativarStatus.setText("Digite um ID numérico válido.");
-            lblDesativarStatus.setStyle("-fx-text-fill: red;");
+            lblDesativarStatus.setStyle("-fx-text-fill: #ff3b30; -fx-font-weight: bold;");
         }
     }
 }
