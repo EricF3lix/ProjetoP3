@@ -31,6 +31,7 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 
 public class MenuUsuariosFuncionarioController extends MenuController {
+    private static final String STYLE_TEXT_RED = "-fx-text-fill: red;";
 
     @FXML
     protected StackPane painelConteudo;
@@ -360,7 +361,7 @@ public class MenuUsuariosFuncionarioController extends MenuController {
 
         if (nome.isEmpty() || email.isEmpty() || cpf.isEmpty() || senha.isEmpty()) {
             lblCadMensagem.setText("Por favor, preencha todos os campos.");
-            lblCadMensagem.setStyle("-fx-text-fill: red;");
+            lblCadMensagem.setStyle(STYLE_TEXT_RED);
             return;
         }
 
@@ -381,7 +382,7 @@ public class MenuUsuariosFuncionarioController extends MenuController {
             carregarTabela();
         } else {
             lblCadMensagem.setText("Erro: CPF ou e-mail já cadastrado.");
-            lblCadMensagem.setStyle("-fx-text-fill: red;");
+            lblCadMensagem.setStyle(STYLE_TEXT_RED);
         }
     }
 
@@ -412,11 +413,11 @@ public class MenuUsuariosFuncionarioController extends MenuController {
                 lblBuscaResultado.setStyle("-fx-text-fill: black;");
             } else {
                 lblBuscaResultado.setText("Usuário não encontrado.");
-                lblBuscaResultado.setStyle("-fx-text-fill: red;");
+                lblBuscaResultado.setStyle(STYLE_TEXT_RED);
             }
         } catch (NumberFormatException ex) {
             lblBuscaResultado.setText("Digite um ID numérico válido.");
-            lblBuscaResultado.setStyle("-fx-text-fill: red;");
+            lblBuscaResultado.setStyle(STYLE_TEXT_RED);
         }
     }
 }
