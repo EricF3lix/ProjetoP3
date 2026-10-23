@@ -175,42 +175,28 @@ public class MenuItensController extends MenuController {
     @FXML
     public void buscarItem(ActionEvent event) {
         String texto = pesquisa != null ? pesquisa.getText().trim() : "";
+        
         if (texto.isEmpty()) {
-            TextInputDialog dialog = new TextInputDialog();
-            dialog.setTitle("Buscar Item");
-            dialog.setHeaderText("Buscar Item por ID");
-            dialog.setContentText("Digite o ID do item:");
-            Optional<String> resultado = dialog.showAndWait();
-            if (resultado.isPresent()) {
-                texto = resultado.get().trim();
-            } else {
-                return;
-            }
+            Optional<Integer> idOpt = pedirInteiro("Digite o ID do item:");
+            if (idOpt.isEmpty()) return;
+            texto = String.valueOf(idOpt.get());
         }
 
         try {
             int id = Integer.parseInt(texto);
             Item item = sistema != null ? sistema.buscarItem(id) : null;
+            
             if (item != null) {
                 if (cbFiltro != null) cbFiltro.setValue("ID");
                 if (pesquisa != null) pesquisa.setText(String.valueOf(id));
-                mostrarAlerta(AlertType.INFORMATION, "Item Encontrado",
-                    "ID: " + item.getId() + "\n" +
-                    "Nome: " + item.getNome() + "\n" +
-                    "Categoria: " + item.getCategoria() + "\n" +
-                    "Taxa Diária: R$ " + item.getTaxaDiaria() + "\n" +
-                    "Estado: " + item.getEstadoConservacao() + "\n" +
-                    "Status: " + item.getStatus() + "\n" +
-                    "Ativo: " + (item.isAtivo() ? "Sim" : "Não")
-                );
+                // O item passa a ser exibido e filtrado diretamente na TableView
             } else {
-                mostrarAlerta(AlertType.WARNING, "Não Encontrado", "Nenhum item encontrado com o ID " + id);
+                erro("Nenhum item encontrado com o ID " + id);
             }
         } catch (NumberFormatException e) {
-            mostrarAlerta(AlertType.ERROR, "Erro", "Por favor, informe um ID numérico válido.");
+            erro("Por favor, informe um ID numérico válido.");
         }
     }
-
     @FXML
     public void cadastrarItem(ActionEvent event) {
         carregarTabela();
