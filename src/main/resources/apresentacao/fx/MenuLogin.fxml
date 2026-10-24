@@ -20,8 +20,8 @@
          </padding>
          <children>
 
-            
-            <StackPane fx:id="areaLogo" maxHeight="100.0" maxWidth="100.0" minHeight="100.0" minWidth="100.0" prefHeight="100.0" prefWidth="100.0" style="-fx-border-color: #c7c7cc; -fx-border-style: segments(6, 6); -fx-border-radius: 12px;">
+
+            <StackPane fx:id="areaLogo" maxHeight="100.0" maxWidth="100.0" minHeight="100.0" minWidth="100.0" prefHeight="100.0" prefWidth="100.0" scaleX="2.0" scaleY="2.0" style="-fx-border-color: #c7c7cc; -fx-border-style: segments(6, 6); -fx-border-radius: 12px;">
                <children>
                   <Label fx:id="lblLogoPadrao" style="-fx-font-size: 14px; -fx-text-fill: #c7c7cc;" text="LOGO" />
                   <ImageView fx:id="imgLogo" fitHeight="100.0" fitWidth="100.0" pickOnBounds="true" preserveRatio="true" />
@@ -45,7 +45,7 @@
                </children>
             </VBox>
 
-            
+
             <VBox spacing="12.0">
                <VBox.margin>
                   <Insets top="10.0" />
