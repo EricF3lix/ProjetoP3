@@ -106,7 +106,7 @@ public class MenuItensController extends MenuController {
                 }
 
                 boolean disponivel = Boolean.TRUE.equals(ativo);
-                badge.setText(disponivel ? "● Disponível" : "● Indisponível");
+                badge.setText(disponivel ? "● Ativo" : "● Inativo");
                 badge.setStyle(disponivel ? ESTILO_BADGE_DISPONIVEL : ESTILO_BADGE_INDISPONIVEL);
 
                 setAlignment(Pos.CENTER);
