@@ -21,7 +21,6 @@ public class MenuFornecedoresController extends MenuController{
 	@FXML private VBox tabelaFornecedor;
 	
 	@FXML private Label tituloFornecedor;
-	@FXML private Label tituloTabela;
 	
 	@FXML private TextField txtNome;
 	@FXML private TextField txtCNPJ;

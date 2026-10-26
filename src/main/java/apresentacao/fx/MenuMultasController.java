@@ -39,6 +39,15 @@ public class MenuMultasController extends MenuController {
     @FXML private TableColumn<Multa, Boolean> colStatus;
     @FXML private TableColumn<Multa, String> colData;
 
+    @FXML private TextField idContrato;
+    @FXML private TextField descricaoMulta;
+    @FXML private TextField valorMulta;
+
+    @FXML private ComboBox<String> tipoMulta;
+
+    @FXML private VBox tabelaMulta;
+    @FXML private VBox dadosMulta;
+
     private final ObservableList<Multa> listaMultas = FXCollections.observableArrayList();
     private FilteredList<Multa> listaFiltrada;
     private boolean inicializado = false;
@@ -48,19 +57,18 @@ public class MenuMultasController extends MenuController {
         return "Gerenciar Multas";
     }
 
-    @FXML
-    public void initialize() {
-        configurarResponsividade();
-        configurarColunas();
-    }
-
     @Override
     protected void aoExibir() {
         if (!inicializado) {
             configurarFiltroPesquisa();
             this.inicializado = true;
         }
-        listarMultas();
+        configurarResponsividade();
+        configurarColunas();
+        mostrarTabela();
+        dadosMulta.setOpacity(1.0);
+        tipoMulta.getItems().addAll("Atraso na Devolução","Dano Material","Extravio de Item","Mau Uso","Outro");
+
     }
 
     @SuppressWarnings("deprecation")
@@ -197,81 +205,54 @@ public class MenuMultasController extends MenuController {
     }
 
     @FXML
+    private void mostrarTabela(){
+        listarMultas();
+        tabelaMulta.setVisible(true);
+        dadosMulta.setVisible(false);
+    }
+
+    @FXML
+    private void esconderTabela(){
+        tabelaMulta.setVisible(false);
+        dadosMulta.setVisible(true);
+    }
+
+    @FXML
     private void cadastrarMulta() {
-        if (sistema == null) return;
 
-        Dialog<ButtonType> dialog = new Dialog<>();
-        dialog.setTitle("Cadastrar Multa");
-        dialog.setHeaderText("Registro de infração / penalidade");
+        idContrato.clear();
+        descricaoMulta.clear();
+        valorMulta.clear();
 
-        ButtonType btnSalvar = new ButtonType("Registrar", ButtonData.OK_DONE);
-        dialog.getDialogPane().getButtonTypes().addAll(btnSalvar, ButtonType.CANCEL);
+        esconderTabela();
 
-        GridPane grid = new GridPane();
-        grid.setHgap(10);
-        grid.setVgap(12);
-        grid.setPadding(new Insets(20, 20, 10, 10));
+    }
+    @FXML
+    private void registrarMulta() {
+        String idcontratotxt = idContrato.getText().trim();
+        String desccricaomulta = descricaoMulta.getText().trim();
+        String txtvalor = valorMulta.getText().trim();
+        String tipo = tipoMulta.getValue();
 
-        TextField txtIdContrato = new TextField();
-        txtIdContrato.setPromptText("Ex: 1");
-
-        ComboBox<String> cbTipo = new ComboBox<>(FXCollections.observableArrayList(
-            "Atraso na Devolução",
-            "Dano Material",
-            "Extravio de Item",
-            "Mau Uso",
-            "Outro"
-        ));
-        cbTipo.setValue("Atraso na Devolução");
-        cbTipo.setMaxWidth(Double.MAX_VALUE);
-
-        TextField txtDescricao = new TextField();
-        txtDescricao.setPromptText("Descrição da ocorrência");
-
-        TextField txtValor = new TextField();
-        txtValor.setPromptText("Ex: 50.00");
-
-        grid.add(new Label("ID do Contrato:"), 0, 0);
-        grid.add(txtIdContrato, 1, 0);
-        grid.add(new Label("Tipo de Multa:"), 0, 1);
-        grid.add(cbTipo, 1, 1);
-        grid.add(new Label("Descrição:"), 0, 2);
-        grid.add(txtDescricao, 1, 2);
-        grid.add(new Label("Valor (R$):"), 0, 3);
-        grid.add(txtValor, 1, 3);
-
-        dialog.getDialogPane().setContent(grid);
-        Platform.runLater(txtIdContrato::requestFocus);
-
-        Optional<ButtonType> res = dialog.showAndWait();
-        if (res.isEmpty() || res.get() != btnSalvar) {
+        if (idcontratotxt.isEmpty() || desccricaomulta.isEmpty() || txtvalor.isEmpty() || tipo == null) {
+            erro("Preencha todos os campos!");
             return;
         }
 
-        try {
-            int idContrato = Integer.parseInt(txtIdContrato.getText().trim());
-            String tipo = cbTipo.getValue();
-            String descricao = txtDescricao.getText().trim();
-            double valor = Double.parseDouble(txtValor.getText().trim());
+        float valor = Float.parseFloat(txtvalor.replace(",", "."));
+        int idcontrato = Integer.parseInt(idcontratotxt);
+        int id = sistema.gerarProximoIdMulta();
+        String data = LocalDate.now(ZoneId.of("America/Recife")).toString();
 
-            if (descricao.isEmpty()) {
-                erro("Preencha a descrição da ocorrência.");
-                return;
-            }
+        Multa multa = new Multa(id, idcontrato, tipo, desccricaomulta, valor, data);
 
-            String data = LocalDate.now(ZoneId.of("America/Recife")).toString();
-            int id = sistema.gerarProximoIdMulta();
+        if (sistema.registrarMulta(multa)) {
+            info("Multa cadastrada com sucesso! ID: " + id);
+            mostrarTabela();
+        } else {
+            erro("Erro ao cadastrar multa.");
 
-            Multa multa = new Multa(id, idContrato, tipo, descricao, valor, data);
 
-            if (sistema.registrarMulta(multa)) {
-                info("Multa cadastrada com sucesso! ID: " + id);
-                listarMultas();
-            } else {
-                erro("Erro ao cadastrar multa.");
-            }
-        } catch (NumberFormatException e) {
-            erro("ID do contrato e Valor devem ser números válidos.");
         }
     }
 
