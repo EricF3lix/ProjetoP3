@@ -34,7 +34,7 @@
             <Separator style="-fx-padding: 5 0 5 0;" />
             
             <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#buscarMultas" prefHeight="38.0" style="-fx-background-color: #ffffff; -fx-background-radius: 10px; -fx-border-color: #d1d1d6; -fx-border-radius: 10px; -fx-text-fill: #1d1d1f; -fx-font-weight: bold; -fx-cursor: hand; -fx-font-size: 13px;" text="Buscar multa por ID" />
-            <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#listarMultas" prefHeight="38.0" style="-fx-background-color: #ffffff; -fx-background-radius: 10px; -fx-border-color: #d1d1d6; -fx-border-radius: 10px; -fx-text-fill: #1d1d1f; -fx-font-weight: bold; -fx-cursor: hand; -fx-font-size: 13px;" text="Listar todas as multas" />
+            <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#mostrarTabela" prefHeight="38.0" style="-fx-background-color: #ffffff; -fx-background-radius: 10px; -fx-border-color: #d1d1d6; -fx-border-radius: 10px; -fx-text-fill: #1d1d1f; -fx-font-weight: bold; -fx-cursor: hand; -fx-font-size: 13px;" text="Listar todas as multas" />
             <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#buscarContrato" prefHeight="38.0" style="-fx-background-color: #ffffff; -fx-background-radius: 10px; -fx-border-color: #d1d1d6; -fx-border-radius: 10px; -fx-text-fill: #1d1d1f; -fx-font-weight: bold; -fx-cursor: hand; -fx-font-size: 13px;" text="Listar Multas de um Contrato" />
             
             <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#multasPedentens" prefHeight="38.0" style="-fx-background-color: #ffffff; -fx-background-radius: 10px; -fx-border-color: #d1d1d6; -fx-border-radius: 10px; -fx-text-fill: #FF9500; -fx-font-weight: bold; -fx-cursor: hand; -fx-font-size: 13px;" text="Listar Multas Pendentes" />
@@ -49,7 +49,7 @@
       
       <AnchorPane layoutX="320.0" layoutY="100.0" prefHeight="520.0" prefWidth="590.0" style="-fx-background-color: #ffffff; -fx-background-radius: 16px; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 12, 0, 2, 6);">
          <children>
-            <VBox fx:id="dadosMulta" layoutX="7.0" layoutY="7.0" minHeight="0.0" opacity="0.0" prefHeight="513.0" prefWidth="583.0" AnchorPane.rightAnchor="19.0">
+            <VBox fx:id="dadosMulta" layoutX="7.0" layoutY="7.0" minHeight="0.0" opacity="1.0" prefHeight="513.0" prefWidth="583.0" AnchorPane.rightAnchor="19.0">
                <children>
                   <Label text="Registar Multa">
                      <font>

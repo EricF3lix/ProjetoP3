@@ -65,9 +65,7 @@ public class MenuMultasController extends MenuController {
         }
         configurarResponsividade();
         configurarColunas();
-        mostrarTabela();
-        dadosMulta.setOpacity(1.0);
-        tipoMulta.getItems().addAll("Atraso na Devolução","Dano Material","Extravio de Item","Mau Uso","Outro");
+        tipoMulta.getItems().setAll("Atraso na Devolução","Dano Material","Extravio de Item","Mau Uso","Outro");
 
     }
 
@@ -205,7 +203,7 @@ public class MenuMultasController extends MenuController {
     }
 
     @FXML
-    private void mostrarTabela(){
+    private void mostrarTabela() {
         listarMultas();
         tabelaMulta.setVisible(true);
         dadosMulta.setVisible(false);
@@ -261,6 +259,7 @@ public class MenuMultasController extends MenuController {
         Optional<Integer> id = pedirInteiro(ID);
         if (id.isEmpty()) return;
         mostraMulta(id.get());
+        mostrarTabela();
     }
 
     @FXML
@@ -287,10 +286,12 @@ public class MenuMultasController extends MenuController {
         }
 
         listaMultas.setAll(multas);
+        mostrarTabela();
     }
 
     @FXML
     private void multasPedentens() {
+        mostrarTabela();
         if (sistema == null) return;
         List<Multa> multas = sistema.listarMultasPendentes();
         if (multas == null || multas.isEmpty()) {
@@ -304,6 +305,7 @@ public class MenuMultasController extends MenuController {
 
     @FXML
     private void quitarMulta() {
+        mostrarTabela();
         Multa multa = obterMultaAlvo();
         if (multa == null) return;
 
@@ -340,6 +342,7 @@ public class MenuMultasController extends MenuController {
     }
 
     private void mostraMulta(int id) {
+        mostrarTabela();
         Multa multa = sistema.buscarMulta(id);
         if (multa == null) {
             info("Multa não cadastrada.");
