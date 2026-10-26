@@ -16,11 +16,11 @@
       <HBox alignment="CENTER_LEFT" spacing="16">
          <StackPane>
             <Circle fill="#1d4ed8" radius="26" />
-            <Label style="-fx-text-fill: white; -fx-font-size: 16px; -fx-font-weight: bold;" text="VI" />
+            <Label fx:id="lblPerfil" style="-fx-text-fill: white; -fx-font-size: 16px; -fx-font-weight: bold;" text="VI" />
          </StackPane>
          <VBox spacing="2">
             <Label fx:id="lblBemVindo" style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #0f1b3d;" text="Olá, " />
-            <Label fx:id="lblPerfil" style="-fx-font-size: 13px; -fx-text-fill: #4b5563;" text="Administrador · Menu principal" />
+            <Label style="-fx-font-size: 13px; -fx-text-fill: #4b5563;" text="Administrador · Menu principal" />
          </VBox>
          <Region HBox.hgrow="ALWAYS" />
          <Button graphicTextGap="8" onAction="#voltar" prefHeight="44" prefWidth="166" style="-fx-background-color: white; -fx-border-color: #d9dde5; -fx-border-radius: 10; -fx-background-radius: 10; -fx-text-fill: #b91c1c; -fx-font-size: 14px; -fx-font-weight: bold; -fx-cursor: hand;" text="Encerrar sessão">

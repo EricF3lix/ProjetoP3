@@ -10,6 +10,9 @@ public class MenuPrincipalFuncionarioController extends MenuController {
 
     @FXML
     private Label lblBemVindo;
+    
+    @FXML
+    private Label lblPerfil;
 
     private Funcionario funcionario;
 
@@ -34,7 +37,7 @@ public class MenuPrincipalFuncionarioController extends MenuController {
         if (lblBemVindo != null) {
             lblBemVindo.setText(PREFIXO_BEM_VINDO + nome);
         }
-
+        lblPerfil.setText(funcionario.getNome().substring(0,2).toUpperCase());
         configurarIcones();
     }
 
