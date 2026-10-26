@@ -1,33 +1,55 @@
 package apresentacao.fx;
 
-import entidades.Cliente;
-import entidades.ContratoAluguel;
-import entidades.Item;
-import entidades.Usuario;
-import javafx.application.Platform;
-import javafx.collections.FXCollections;
-import javafx.fxml.FXML;
-import javafx.geometry.Insets;
-import javafx.scene.control.ButtonBar.ButtonData;
-import javafx.scene.control.*;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.Priority;
-import javafx.scene.layout.VBox;
-
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Optional;
 
+import entidades.Cliente;
+import entidades.ContratoAluguel;
+import entidades.Item;
+import entidades.Usuario;
+import javafx.application.Platform;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.collections.transformation.FilteredList;
+import javafx.collections.transformation.SortedList;
+import javafx.event.ActionEvent;
+import javafx.fxml.FXML;
+import javafx.geometry.Insets;
+import javafx.scene.control.Button;
+import javafx.scene.control.ButtonBar.ButtonData;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.CheckBox;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.DatePicker;
+import javafx.scene.control.Dialog;
+import javafx.scene.control.Label;
+import javafx.scene.control.TableView;
+import javafx.scene.control.TextField;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.VBox;
+
 public class MenuContratosController extends MenuController {
 
     private static final String ID_CONTRATO = "Digite o ID do contrato: ";
     private static final String CONTRATO_NAO_ENCONTRADO = "Contrato não encontrado.";
+    private static final String FILTRO_TODOS = "Todos";
     private static final ZoneId FUSO_HORARIO = ZoneId.of("America/Recife");
+
+    @FXML
+    private ComboBox<String> cbFiltro;
+
+    @FXML
+    private Button btnLimparPesquisa;
 
     @FXML 
     private TableView<ContratoAluguel> tabela;
+
+    private final ObservableList<ContratoAluguel> listaContratos = FXCollections.observableArrayList();
+    private FilteredList<ContratoAluguel> listaFiltrada;
 
     private record DadosAluguelForm(String idClienteStr, String idItemStr, LocalDate dataRet, LocalDate dataDev) {}
 
@@ -39,13 +61,12 @@ public class MenuContratosController extends MenuController {
     @FXML
     public void initialize() {
         configurarResponsividade();
+        configurarFiltroPesquisa();
     }
 
     @Override
     protected void aoExibir() {
-        configurarResponsividade();
-        configurarTabelaEPesquisa(tabela, this::fazPesquisa);
-        listarContratos();
+        carregarTabela();
     }
 
     @SuppressWarnings("deprecation")
@@ -58,8 +79,114 @@ public class MenuContratosController extends MenuController {
         }
     }
 
+    private void configurarFiltroPesquisa() {
+        if (cbFiltro != null) {
+            cbFiltro.setItems(FXCollections.observableArrayList(FILTRO_TODOS, "ID", "Cliente", "Item", "Status"));
+            cbFiltro.setValue(FILTRO_TODOS);
+            cbFiltro.valueProperty().addListener((obs, antigo, novo) ->
+                aplicarFiltro(pesquisa != null ? pesquisa.getText() : "")
+            );
+        }
+
+        listaFiltrada = new FilteredList<>(listaContratos, p -> true);
+
+        if (pesquisa != null) {
+            pesquisa.textProperty().addListener((obs, antigo, novo) -> aplicarFiltro(novo));
+        }
+
+        SortedList<ContratoAluguel> listaOrdenada = new SortedList<>(listaFiltrada);
+        if (tabela != null) {
+            listaOrdenada.comparatorProperty().bind(tabela.comparatorProperty());
+            tabela.setItems(listaOrdenada);
+        }
+    }
+
+    private void aplicarFiltro(String termo) {
+        if (listaFiltrada == null) return;
+
+        listaFiltrada.setPredicate(contrato -> {
+            if (contrato == null) return false;
+            if (termo == null || termo.trim().isEmpty()) {
+                return true;
+            }
+
+            String termoFormatado = termo.trim().toLowerCase();
+            String filtroSelecionado = cbFiltro != null && cbFiltro.getValue() != null ? cbFiltro.getValue() : FILTRO_TODOS;
+
+            boolean bateuId = String.valueOf(contrato.getId()).contains(termoFormatado);
+            boolean bateuCliente = contrato.getCliente() != null && contrato.getCliente().getNome() != null 
+                    && contrato.getCliente().getNome().toLowerCase().contains(termoFormatado);
+            boolean bateuItem = contrato.getItem() != null && contrato.getItem().getNome() != null 
+                    && contrato.getItem().getNome().toLowerCase().contains(termoFormatado);
+            boolean bateuStatus = contrato.getStatus() != null && contrato.getStatus().toLowerCase().contains(termoFormatado);
+
+            return switch (filtroSelecionado) {
+                case "ID" -> bateuId;
+                case "Cliente" -> bateuCliente;
+                case "Item" -> bateuItem;
+                case "Status" -> bateuStatus;
+                default -> bateuId || bateuCliente || bateuItem || bateuStatus;
+            };
+        });
+    }
+
     @FXML
-    private void registrarAluguel() {
+    public void aoLimparPesquisa(ActionEvent event) {
+        if (pesquisa != null) {
+            pesquisa.clear();
+        }
+        if (cbFiltro != null) {
+            cbFiltro.setValue(FILTRO_TODOS);
+        }
+    }
+
+    private void carregarTabela() {
+        if (sistema != null && tabela != null) {
+            List<ContratoAluguel> contratos = sistema.listarContratos();
+            if (contratos != null) {
+                listaContratos.setAll(contratos);
+            }
+        }
+    }
+
+    @FXML
+    public void listarContratos(ActionEvent event) {
+        aoLimparPesquisa(event);
+        carregarTabela();
+    }
+
+    @FXML
+    public void listarContratos() {
+        carregarTabela();
+    }
+
+    @FXML
+    public void buscarContrato(ActionEvent event) {
+        String texto = pesquisa != null ? pesquisa.getText().trim() : "";
+
+        if (texto.isEmpty()) {
+            Optional<Integer> idOpt = pedirInteiro(ID_CONTRATO);
+            if (idOpt.isEmpty()) return;
+            texto = String.valueOf(idOpt.get());
+        }
+
+        try {
+            int id = Integer.parseInt(texto);
+            ContratoAluguel contrato = sistema != null ? sistema.buscarContrato(id) : null;
+
+            if (contrato != null) {
+                if (cbFiltro != null) cbFiltro.setValue("ID");
+                if (pesquisa != null) pesquisa.setText(String.valueOf(id));
+            } else {
+                erro(CONTRATO_NAO_ENCONTRADO);
+            }
+        } catch (NumberFormatException e) {
+            erro("Por favor, informe um ID numérico válido.");
+        }
+    }
+
+    @FXML
+    private void registrarAluguel(ActionEvent event) {
         if (sistema == null) return;
 
         DadosAluguelForm form = exibirDialogoAluguel();
@@ -196,36 +323,11 @@ public class MenuContratosController extends MenuController {
 
         item.alugar();
         info("Aluguel registrado com sucesso! ID do Contrato: " + idContrato);
-        listarContratos();
+        carregarTabela();
     }
 
     @FXML
-    private void buscarContrato() {
-        pedirInteiro(ID_CONTRATO).ifPresent(this::mostraContrato);
-    }
-
-    private void fazPesquisa(String pesquisado) {
-        if (pesquisado == null || pesquisado.trim().isEmpty()) {
-            listarContratos();
-            return;
-        }
-        List<ContratoAluguel> filtrados = sistema.filtrarContratos(pesquisado);
-        if (filtrados != null) {
-            tabela.setItems(FXCollections.observableArrayList(filtrados));
-        }
-    }
-
-    @FXML
-    private void listarContratos() {
-        if (sistema == null || tabela == null) return;
-        List<ContratoAluguel> contratos = sistema.listarContratos();
-        if (contratos != null) {
-            tabela.setItems(FXCollections.observableArrayList(contratos));
-        }
-    }
-
-    @FXML
-    private void finalizarContrato() {
+    private void finalizarContrato(ActionEvent event) {
         ContratoAluguel contrato = obterContratoAlvo();
         if (contrato == null) return;
 
@@ -299,14 +401,14 @@ public class MenuContratosController extends MenuController {
         contrato.getItem().devolver();
 
         if (sistema.finalizarContrato(contrato.getId())) {
-            listarContratos();
+            carregarTabela();
         } else {
             erro("Erro ao finalizar contrato");
         }
     }
 
     @FXML
-    private void cancelarContrato() {
+    private void cancelarContrato(ActionEvent event) {
         ContratoAluguel contrato = obterContratoAlvo();
         if (contrato == null) return;
 
@@ -322,13 +424,14 @@ public class MenuContratosController extends MenuController {
         if (sistema.cancelarContrato(contrato.getId())) {
             contrato.getItem().devolver();
             info("Contrato cancelado com sucesso. Item devolvido ao estoque.");
-            listarContratos();
+            carregarTabela();
         } else {
             erro("Erro ao cancelar contrato.");
         }
     }
 
     private ContratoAluguel obterContratoAlvo() {
+        if (tabela == null) return null;
         ContratoAluguel selecionado = tabela.getSelectionModel().getSelectedItem();
         tabela.getSelectionModel().clearSelection();
 
@@ -343,14 +446,5 @@ public class MenuContratosController extends MenuController {
                     return c;
                 })
                 .orElse(null);
-    }
-
-    private void mostraContrato(int id) {
-        ContratoAluguel contrato = sistema.buscarContrato(id);
-        if (contrato == null) {
-            info(CONTRATO_NAO_ENCONTRADO);
-            return;
-        }
-        tabela.getItems().setAll(contrato);
     }
 }
