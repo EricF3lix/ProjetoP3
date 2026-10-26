@@ -1,8 +1,9 @@
 package business.interfaces;
 
-import java.util.List;
 import entidades.Categoria;
- 
+
+import java.util.List;
+
 public interface IGerenciamentoCategoria {
  
     public abstract boolean cadastrarCategoria(Categoria categoria);

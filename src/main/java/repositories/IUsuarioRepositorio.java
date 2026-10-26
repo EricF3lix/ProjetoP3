@@ -1,7 +1,9 @@
 package repositories;
-import java.util.List;
 
 import entidades.Usuario;
+
+import java.util.List;
+
 public interface IUsuarioRepositorio {
 
     public abstract void adicionar(Usuario usuario);

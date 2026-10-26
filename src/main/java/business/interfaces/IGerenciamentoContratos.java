@@ -1,7 +1,8 @@
 package business.interfaces;
-import java.util.List;
 
 import entidades.ContratoAluguel;
+
+import java.util.List;
 
 public interface IGerenciamentoContratos {
 

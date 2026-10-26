@@ -1,7 +1,5 @@
 package apresentacao.fx;
 
-import java.util.List;
-
 import entidades.Administrador;
 import entidades.Cliente;
 import entidades.Funcionario;
@@ -17,16 +15,13 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
-import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.Label;
-import javafx.scene.control.PasswordField;
-import javafx.scene.control.TableCell;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.layout.*;
+import javafx.scene.layout.Pane;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.VBox;
+
+import java.util.Listgi;
 
 public class MenuUsuariosFuncionarioController extends MenuController {
     private static final String STYLE_TEXT_RED = "-fx-text-fill: red;";

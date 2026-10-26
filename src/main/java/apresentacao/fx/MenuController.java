@@ -1,35 +1,23 @@
 package apresentacao.fx;
 
+import facade.SistemaFacade;
+import javafx.animation.*;
+import javafx.fxml.FXML;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
+import javafx.scene.control.*;
+import javafx.scene.layout.HBox;
+import javafx.stage.Popup;
+import javafx.stage.Stage;
+import javafx.util.Duration;
+import org.kordamp.ikonli.javafx.FontIcon;
+
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
-
-import facade.SistemaFacade;
-import javafx.animation.FadeTransition;
-import javafx.animation.Interpolator;
-import javafx.animation.ParallelTransition;
-import javafx.animation.PauseTransition;
-import javafx.animation.ScaleTransition;
-import javafx.fxml.FXML;
-import javafx.geometry.Insets;
-import javafx.geometry.Pos;
-import javafx.scene.control.Alert;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.ChoiceDialog;
-import javafx.scene.control.Dialog;
-import javafx.scene.control.DialogPane;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
-import javafx.scene.control.TextInputDialog;
-import javafx.scene.layout.HBox;
-import javafx.stage.Popup;
-import javafx.stage.Stage;
-import javafx.util.Duration;
-import org.kordamp.ikonli.javafx.FontIcon;
 
 public abstract class MenuController {
 

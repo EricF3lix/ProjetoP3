@@ -1,9 +1,9 @@
 package repositories;
 
+import entidades.Multa;
+
 import java.util.ArrayList;
 import java.util.List;
-
-import entidades.Multa;
 
 
 public class MultaRepositorio implements IMultaRepositorio {

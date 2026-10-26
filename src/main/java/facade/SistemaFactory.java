@@ -1,25 +1,11 @@
 package facade;
-import business.cruds.GerenciamentoCategoria;
-import business.cruds.GerenciamentoContratos;
-import business.cruds.GerenciamentoFornecedor;
-import business.cruds.GerenciamentoItens;
-import business.cruds.GerenciamentoMultas;
-import business.cruds.GerenciamentoUsuarios;
-import business.interfaces.IGerenciamentoCategoria;
-import business.interfaces.IGerenciamentoContratos;
-import business.interfaces.IGerenciamentoFornecedor;
-import business.interfaces.IGerenciamentoItens;
-import business.interfaces.IGerenciamentoMultas;
-import business.interfaces.IGerenciamentoUsuarios;
+
+import business.cruds.*;
+import business.interfaces.*;
 import business.relatorios.GeradorRelatorios;
 import business.relatorios.IRelatorios;
 import entidades.Administrador;
-import repositories.CategoriaRepositorio;
-import repositories.ContratoRepositorio;
-import repositories.FornecedorRepositorio;
-import repositories.ItemRepositorio;
-import repositories.MultaRepositorio;
-import repositories.UsuarioRepositorio;
+import repositories.*;
 
 
 public final class SistemaFactory {

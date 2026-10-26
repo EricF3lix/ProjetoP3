@@ -1,9 +1,9 @@
 package repositories;
 
+import entidades.Categoria;
+
 import java.util.ArrayList;
 import java.util.List;
-
-import entidades.Categoria;
 
 public class CategoriaRepositorio implements ICategoriaRepositorio {
 

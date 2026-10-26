@@ -1,10 +1,10 @@
 package business.cruds;
 
-import java.util.List;
-
 import business.interfaces.IGerenciamentoContratos;
 import entidades.ContratoAluguel;
 import repositories.IContratoRepositorio;
+
+import java.util.List;
 
 public class GerenciamentoContratos implements IGerenciamentoContratos {
 

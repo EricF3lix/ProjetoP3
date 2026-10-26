@@ -1,10 +1,10 @@
 package business.cruds;
 
-import java.util.List;
-
 import business.interfaces.IGerenciamentoMultas;
 import entidades.Multa;
 import repositories.IMultaRepositorio;
+
+import java.util.List;
 
 public class GerenciamentoMultas implements IGerenciamentoMultas {
 

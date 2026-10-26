@@ -1,10 +1,8 @@
 package apresentacao.fx;
 
 import entidades.Administrador;
-import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
-import org.kordamp.ikonli.javafx.FontIcon;
 
 public class MenuPrincipalAdministradorController extends MenuController {
 

@@ -1,10 +1,9 @@
 package repositories;
 
-import java.util.ArrayList;
-
-import java.util.List;
-
 import entidades.Fornecedor;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class FornecedorRepositorio implements IFornecedorRepositorio {
 

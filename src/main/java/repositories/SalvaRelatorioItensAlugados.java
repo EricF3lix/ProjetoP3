@@ -1,5 +1,7 @@
 package repositories;
 
+import entidades.ContratoAluguel;
+
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
@@ -7,8 +9,6 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.List;
-
-import entidades.ContratoAluguel;
 
 @SuppressWarnings("java:S106")
 public class SalvaRelatorioItensAlugados {

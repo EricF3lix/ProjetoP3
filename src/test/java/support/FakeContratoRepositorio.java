@@ -1,10 +1,10 @@
 package support;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import entidades.ContratoAluguel;
 import repositories.IContratoRepositorio;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class FakeContratoRepositorio implements IContratoRepositorio {

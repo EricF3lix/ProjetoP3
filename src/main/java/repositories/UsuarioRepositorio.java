@@ -1,14 +1,12 @@
 package repositories;
 
-import java.util.ArrayList;
-
-
-import java.util.List;
-
 import entidades.Administrador;
 import entidades.Cliente;
 import entidades.Funcionario;
 import entidades.Usuario;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class UsuarioRepositorio implements IUsuarioRepositorio {
 

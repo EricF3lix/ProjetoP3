@@ -1,9 +1,5 @@
 package apresentacao.fx;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
 import entidades.Categoria;
 import entidades.Fornecedor;
 import entidades.Item;
@@ -14,16 +10,12 @@ import javafx.collections.transformation.SortedList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.Pos;
-import javafx.scene.control.Alert;
+import javafx.scene.control.*;
 import javafx.scene.control.Alert.AlertType;
-import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.Label;
-import javafx.scene.control.TableCell;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
-import javafx.scene.control.TextInputDialog;
+
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class MenuItensController extends MenuController {
 

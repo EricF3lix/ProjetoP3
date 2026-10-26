@@ -1,7 +1,8 @@
 package repositories;
-import java.util.List;
 
 import entidades.Multa;
+
+import java.util.List;
 
 public interface IMultaRepositorio {
 

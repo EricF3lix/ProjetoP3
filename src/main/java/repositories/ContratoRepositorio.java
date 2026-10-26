@@ -1,12 +1,12 @@
 package repositories;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import entidades.Cliente;
 import entidades.ContratoAluguel;
 import entidades.Item;
 import entidades.Usuario;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class ContratoRepositorio implements IContratoRepositorio {
 

@@ -1,9 +1,5 @@
 package business.relatorios;
 
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-
 import business.interfaces.IGerenciamentoContratos;
 import business.interfaces.IGerenciamentoItens;
 import business.interfaces.IGerenciamentoUsuarios;
@@ -13,6 +9,10 @@ import entidades.Usuario;
 import repositories.SalvaRelatorioFaturamento;
 import repositories.SalvaRelatorioHistoricoCliente;
 import repositories.SalvaRelatorioItensAlugados;
+
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 @SuppressWarnings("java:S106")
 public class GeradorRelatorios implements IRelatorios {
