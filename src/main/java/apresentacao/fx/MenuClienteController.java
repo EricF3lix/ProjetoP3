@@ -14,7 +14,10 @@ import javafx.scene.control.TableView;
 import java.util.List;
 
 public class MenuClienteController extends MenuController {
-
+	
+	private static final String ITENS = "Itens";
+	private static final String DATA_RETIRADA = "Data de Retirada";
+	private static final String DATA_DEVOLUCAO = "Data de Devolução";
 
 	@FXML private TableView<Item> tabelaItens;
 	@FXML private TableView<ContratoAluguel> tabelaContratos;
@@ -39,16 +42,17 @@ public class MenuClienteController extends MenuController {
 		tabelaContratos.setPlaceholder(new Label ("Você não tem aluguéis ativos"));
 		
 		filtroTipo.valueProperty().addListener((obs, old, novo) -> {
-		    if (novo.equals("Itens")) { trocaPesquisa(true); filtroCampo.getItems().setAll("ID", "Nome", "Categoria", "Taxa"); listarItensDisponiveis(); }
-		    else if (novo.equals("Aluguéis")) { filtroCampo.getItems().setAll("ID", "Item", "Data de Retirada", "Data de Devolução", "Status", "Valor total", "Valor multa"); historicoAlugueis(); }	    
+		    if (novo.equals(ITENS)) { trocaPesquisa(true); filtroCampo.getItems().setAll("ID", "Nome", "Categoria", "Taxa"); listarItensDisponiveis(); }
+		    else if (novo.equals("Aluguéis")) { filtroCampo.getItems().setAll("ID", "Item", DATA_RETIRADA, DATA_DEVOLUCAO, "Status", "Valor total", "Valor multa"); historicoAlugueis(); }	    
 		    filtroCampo.getSelectionModel().clearSelection();
 		});
 		
-		filtroCampo.valueProperty().addListener((obs, old, novo) -> {if (novo == null) {return;} if (novo.equals("Data de Retirada") || novo.equals("Data de Devolução")) {
+		filtroCampo.valueProperty().addListener((obs, old, novo) -> {if (novo == null) {return;} 
+		if (novo.equals(DATA_RETIRADA) || novo.equals(DATA_DEVOLUCAO)) {
 	    	trocaPesquisa(false);} else { trocaPesquisa(true);}});
 		
-		pesquisa.textProperty().addListener((obs, old, novo) -> {if (filtroTipo.getValue().equals("Itens") ) {pesquisaItens();} 
-		else if (filtroTipo.getValue().equals("Aluguéis")) {pesquisaContratos();}
+		pesquisa.textProperty().addListener((obs, old, novo) -> {if (filtroTipo.getValue().equals(ITENS) ) {pesquisaItens();} 
+		else if (filtroTipo.getValue().equals("Aluguéis")) pesquisaContratos();
 		});
 		
 		dtPesquisa.valueProperty().addListener((obs, old, novo) -> {pesquisaContratos();});
@@ -57,7 +61,7 @@ public class MenuClienteController extends MenuController {
 		dtPesquisa.setVisible(false);
 		dtPesquisa.setManaged(false);
 		
-		filtroTipo.setValue("Itens");
+		filtroTipo.setValue(ITENS);
 	}
 
 	public void setCliente(Cliente cliente) {
@@ -103,7 +107,7 @@ public class MenuClienteController extends MenuController {
 	        return;
 	    }
 	    
-	    else if (campo.equals("Data de Devolução") || campo.equals("Data de Retirada")) {
+	    else if (campo.equals(DATA_DEVOLUCAO) || campo.equals(DATA_RETIRADA)) {
 	    	pesquisado = String.valueOf(dtPesquisa.getValue());
 	    }
 	    
@@ -114,8 +118,8 @@ public class MenuClienteController extends MenuController {
 	    switch (campo) {
 	        case "ID" -> tabelaContratos.getItems().setAll(sistema.filtraIDContrato(pesquisado));
 	        case "Item" -> tabelaContratos.getItems().setAll(sistema.filtraItemContrato(pesquisado));
-	        case "Data de Retirada" -> tabelaContratos.getItems().setAll(sistema.filtraDataRetiradaContrato(pesquisado));
-	        case "Data de Devolução" -> tabelaContratos.getItems().setAll(sistema.filtraDataDevolucaoContrato(pesquisado));
+	        case DATA_RETIRADA -> tabelaContratos.getItems().setAll(sistema.filtraDataRetiradaContrato(pesquisado));
+	        case DATA_DEVOLUCAO -> tabelaContratos.getItems().setAll(sistema.filtraDataDevolucaoContrato(pesquisado));
 	        case "Status" -> tabelaContratos.getItems().setAll(sistema.filtraStatusContrato(pesquisado));
 	        case "Valor total" -> tabelaContratos.getItems().setAll(sistema.filtraValorTotalContrato(pesquisado));
 	        case "Valor multa" -> tabelaContratos.getItems().setAll(sistema.filtraValorMultaContrato(pesquisado));
