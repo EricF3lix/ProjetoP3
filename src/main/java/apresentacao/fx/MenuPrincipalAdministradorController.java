@@ -10,7 +10,6 @@ public class MenuPrincipalAdministradorController extends MenuController {
     private Label lblBemVindo;
 
     private Administrador administrador;
-    private boolean saudacaoExibida = false;
 
     public void setAdministrador(Administrador administrador) {
         this.administrador = administrador;

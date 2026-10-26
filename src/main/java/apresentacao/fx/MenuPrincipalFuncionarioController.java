@@ -12,7 +12,6 @@ public class MenuPrincipalFuncionarioController extends MenuController {
     private Label lblBemVindo;
 
     private Funcionario funcionario;
-    private boolean saudacaoExibida = false;
 
     public void setFuncionario(Funcionario funcionario) {
         this.funcionario = funcionario;
