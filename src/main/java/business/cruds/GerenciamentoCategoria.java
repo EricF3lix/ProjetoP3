@@ -4,6 +4,7 @@ import business.interfaces.IGerenciamentoCategoria;
 import entidades.Categoria;
 import repositories.ICategoriaRepositorio;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class GerenciamentoCategoria implements IGerenciamentoCategoria {
@@ -25,7 +26,7 @@ public class GerenciamentoCategoria implements IGerenciamentoCategoria {
             return false;
         }
 
-        repositorio.adicionar(categoria); 
+        repositorio.adicionar(categoria);
 
         return true;
     }
@@ -75,5 +76,52 @@ public class GerenciamentoCategoria implements IGerenciamentoCategoria {
     @Override
     public int gerarProximoId() {
         return repositorio.gerarProximoId();
+    }
+
+    @Override
+    public List<Categoria> buscarPorId(String id) {
+        List<Categoria> resultado = new ArrayList<>();
+        for (Categoria c : repositorio.listarTodos()) {
+            if (String.valueOf(c.getId()).contains(id)) {
+                resultado.add(c);
+            }
+        }
+        return resultado;
+    }
+
+    @Override
+    public List<Categoria> buscarPorNome(String nome) {
+        List<Categoria> resultado = new ArrayList<>();
+        for (Categoria c : repositorio.listarTodos()) {
+            if (c.getNome() != null && c.getNome().toLowerCase().contains(nome.toLowerCase())) {
+                resultado.add(c);
+            }
+        }
+        return resultado;
+    }
+
+    @Override
+    public List<Categoria> buscarPorDescricao(String descricao) {
+        List<Categoria> resultado = new ArrayList<>();
+        for (Categoria c : repositorio.listarTodos()) {
+            if (c.getDescricao() != null && c.getDescricao().toLowerCase().contains(descricao.toLowerCase())) {
+                resultado.add(c);
+            }
+        }
+        return resultado;
+    }
+
+    @Override
+    public List<Categoria> buscarPorTodos(String texto) {
+        List<Categoria> resultado = new ArrayList<>();
+        String t = texto == null ? "" : texto.toLowerCase();
+        for (Categoria c : repositorio.listarTodos()) {
+            if (String.valueOf(c.getId()).contains(t)
+                    || (c.getNome() != null && c.getNome().toLowerCase().contains(t))
+                    || (c.getDescricao() != null && c.getDescricao().toLowerCase().contains(t))) {
+                resultado.add(c);
+            }
+        }
+        return resultado;
     }
 }
