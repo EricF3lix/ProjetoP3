@@ -78,13 +78,14 @@ public class MenuCategoriasController extends MenuController {
             private final Label badge = new Label();
 
             @Override
-            protected void updateItem(Boolean ativa, boolean vazio) {
-                super.updateItem(ativa, vazio);
-                if (vazio || ativa == null) {
+            protected void updateItem(Boolean item, boolean vazio) {
+                super.updateItem(item, vazio);
+                if (vazio || item == null) {
                     setGraphic(null);
                     setText(null);
                     return;
                 }
+                boolean ativa = item;
                 badge.setText(ativa ? "● Ativo" : "● Inativo");
                 badge.setStyle(ativa ? ESTILO_BADGE_DISPONIVEL : ESTILO_BADGE_INDISPONIVEL);
                 setAlignment(Pos.CENTER);
