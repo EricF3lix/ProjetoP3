@@ -6,7 +6,7 @@
 <?import javafx.scene.control.cell.*?>
 <?import javafx.scene.layout.*?>
 <?import java.lang.*?>
-<AnchorPane prefHeight="660.0" prefWidth="950.0" style="-fx-background-color: #F5F5F7;" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml" fx:controller="apresentacao.fx.MenuFornecedoresController">
+<AnchorPane minHeight="0.0" prefHeight="660.0" prefWidth="950.0" style="-fx-background-color: #F5F5F7;" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml" fx:controller="apresentacao.fx.MenuFornecedoresController">
    <children>
       
       <Label layoutX="40.0" layoutY="25.0" style="-fx-font-family: -apple-system, 'SF Pro Display', 'Segoe UI', sans-serif; -fx-font-weight: 900; -fx-font-size: 26px; -fx-text-fill: #1d1d1f;" text="Gerenciar Fornecedores" />
@@ -15,6 +15,7 @@
       
       <VBox layoutX="40.0" layoutY="100.0" prefWidth="250.0" spacing="12.0">
          <children>
+         	<Label style="-fx-text-fill: #6e6e73; -fx-font-size: 12px; -fx-font-weight: bold;" text="Filtrar Fornecedores:" />
             <ComboBox fx:id="filtro" maxWidth="Infinity" prefHeight="35.0" style="-fx-background-color: #e5e5ea; -fx-background-radius: 8px;">
               <items>
                 <FXCollections fx:factory="observableArrayList">
@@ -50,9 +51,9 @@
       </VBox>
 
       
-      <AnchorPane AnchorPane.topAnchor="100.0" AnchorPane.leftAnchor="320.0" AnchorPane.rightAnchor="40.0" AnchorPane.bottomAnchor="40.0" prefHeight="520.0" prefWidth="590.0" style="-fx-background-color: #ffffff; -fx-background-radius: 16px; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 12, 0, 2, 6);">
+      <AnchorPane minHeight="0.0" AnchorPane.topAnchor="100.0" AnchorPane.leftAnchor="320.0" AnchorPane.rightAnchor="40.0" AnchorPane.bottomAnchor="40.0" prefHeight="520.0" prefWidth="590.0" style="-fx-background-color: #ffffff; -fx-background-radius: 16px; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 12, 0, 2, 6);">
          <children>
-          <VBox fx:id="dadosFornecedor" spacing="15.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+          <VBox fx:id="dadosFornecedor" managed="false" minHeight="0.0" spacing="8.0" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                <padding>
                   <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
                </padding>
@@ -70,12 +71,9 @@
                         
                <Label style="-fx-text-fill: #6e6e73;" text="Telefone:" />
                <TextField fx:id="txtTelefone" promptText="Número de telefone" style="-fx-background-color: #F2F2F7; -fx-background-radius: 8px; -fx-padding: 8px;" />
-                
-               <Pane prefHeight="10.0" />
                     
                <Button fx:id="btnAtualizar" mnemonicParsing="false" onAction="#atualizarFornecedor" style="-fx-background-color: #007AFF; -fx-text-fill: white; -fx-background-radius: 8px; -fx-font-weight: bold; -fx-padding: 8 20 8 20; -fx-cursor: hand;" text="Atualizar Fornecedor" />    
                <Button fx:id="btnCadastrar" mnemonicParsing="false" onAction="#cadastrarFornecedor" style="-fx-background-color: #007AFF; -fx-text-fill: white; -fx-background-radius: 8px; -fx-font-weight: bold; -fx-padding: 8 20 8 20; -fx-cursor: hand;" text="Cadastrar Fornecedor" />
-               <Label style="-fx-font-weight: bold;" />
                </children>
           </VBox>
             <VBox fx:id="tabelaFornecedor" spacing="15.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
