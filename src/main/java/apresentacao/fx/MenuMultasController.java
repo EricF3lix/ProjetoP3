@@ -1,18 +1,14 @@
 package apresentacao.fx;
 
 import entidades.Multa;
-import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.collections.transformation.SortedList;
 import javafx.fxml.FXML;
-import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 
@@ -65,8 +61,8 @@ public class MenuMultasController extends MenuController {
         }
         configurarResponsividade();
         configurarColunas();
-        tipoMulta.getItems().setAll("Atraso na Devolução","Dano Material","Extravio de Item","Mau Uso","Outro");
-
+        tipoMulta.getItems().setAll("Atraso na Devolução", "Dano Material", "Extravio de Item", "Mau Uso", "Outro");
+        atualizarTabela();
     }
 
     @SuppressWarnings("deprecation")
@@ -80,7 +76,7 @@ public class MenuMultasController extends MenuController {
     }
 
     private void configurarColunas() {
-    	configurarValueFactory();
+        configurarValueFactory();
 
         if (colValor != null) {
             colValor.setCellFactory(col -> new TableCell<>() {
@@ -105,25 +101,21 @@ public class MenuMultasController extends MenuController {
                 @Override
                 protected void updateItem(Boolean paga, boolean empty) {
                     super.updateItem(paga, empty);
-                    
+
                     if (empty || paga == null) {
-                    	setGraphic(null);
-                    	setText(null);
-                    } 
-                    else {
-                    	configurarBadge(badge, paga);
-                    	
-                    	setAlignment(Pos.CENTER);
-                    	setGraphic(badge);
-                    	setText(null);
-                        }       
-                    	
+                        setGraphic(null);
+                        setText(null);
+                    } else {
+                        configurarBadge(badge, paga);
+                        setAlignment(Pos.CENTER);
+                        setGraphic(badge);
+                        setText(null);
                     }
-                });
-            }
-        
+                }
+            });
+        }
     }
-        
+
     private void configurarValueFactory() {
         if (colID != null) {
             colID.setCellValueFactory(new PropertyValueFactory<>("id"));
@@ -147,27 +139,25 @@ public class MenuMultasController extends MenuController {
             colData.setCellValueFactory(new PropertyValueFactory<>("dataCriacao"));
         }
     }
-    
+
     private void configurarBadge(Label badge, boolean paga) {
-    	
-    	if (paga) {
+        if (paga) {
             badge.setText("● Paga");
             badge.setStyle(
-                "-fx-background-color: #d4edda; -fx-text-fill: #155724; " +
-                "-fx-font-weight: bold; -fx-padding: 3 8 3 8; " +
-                "-fx-background-radius: 10; -fx-font-size: 11px;"
-            );}
-            
-            else {
-                badge.setText("● Pendente");
-                badge.setStyle(
+                    "-fx-background-color: #d4edda; -fx-text-fill: #155724; " +
+                            "-fx-font-weight: bold; -fx-padding: 3 8 3 8; " +
+                            "-fx-background-radius: 10; -fx-font-size: 11px;"
+            );
+        } else {
+            badge.setText("● Pendente");
+            badge.setStyle(
                     "-fx-background-color: #fff3cd; -fx-text-fill: #856404; " +
-                    "-fx-font-weight: bold; -fx-padding: 3 8 3 8; " +
-                    "-fx-background-radius: 10; -fx-font-size: 11px;"
-                );}
-    	
+                            "-fx-font-weight: bold; -fx-padding: 3 8 3 8; " +
+                            "-fx-background-radius: 10; -fx-font-size: 11px;"
+            );
+        }
     }
-    
+
     private void configurarFiltroPesquisa() {
         listaFiltrada = new FilteredList<>(listaMultas, p -> true);
 
@@ -204,62 +194,78 @@ public class MenuMultasController extends MenuController {
 
     @FXML
     private void mostrarTabela() {
-        listarMultas();
         tabelaMulta.setVisible(true);
         dadosMulta.setVisible(false);
     }
 
     @FXML
-    private void esconderTabela(){
+    private void atualizarTabela() {
+        listarMultas();
+        mostrarTabela();
+    }
+
+    @FXML
+    private void esconderTabela() {
         tabelaMulta.setVisible(false);
         dadosMulta.setVisible(true);
     }
 
     @FXML
     private void cadastrarMulta() {
-
         idContrato.clear();
         descricaoMulta.clear();
         valorMulta.clear();
+        tipoMulta.setValue(null);
 
         esconderTabela();
-
     }
+
     @FXML
     private void registrarMulta() {
         String idcontratotxt = idContrato.getText().trim();
-        String desccricaomulta = descricaoMulta.getText().trim();
+        String descricaomulta = descricaoMulta.getText().trim();
         String txtvalor = valorMulta.getText().trim();
         String tipo = tipoMulta.getValue();
 
-        if (idcontratotxt.isEmpty() || desccricaomulta.isEmpty() || txtvalor.isEmpty() || tipo == null) {
+        if (idcontratotxt.isEmpty() || descricaomulta.isEmpty() || txtvalor.isEmpty() || tipo == null) {
             erro("Preencha todos os campos!");
             return;
         }
 
-        float valor = Float.parseFloat(txtvalor.replace(",", "."));
-        int idcontrato = Integer.parseInt(idcontratotxt);
+        float valor;
+        int idcontrato;
+        try {
+            valor = Float.parseFloat(txtvalor.replace(",", "."));
+            idcontrato = Integer.parseInt(idcontratotxt);
+        } catch (NumberFormatException e) {
+            erro("ID do contrato ou valor inválido.");
+            return;
+        }
+
+        if (Float.isNaN(valor) || Float.isInfinite(valor) || valor <= 0) {
+            erro("Valor inválido.");
+            return;
+        }
+
         int id = sistema.gerarProximoIdMulta();
         String data = LocalDate.now(ZoneId.of("America/Recife")).toString();
 
-        Multa multa = new Multa(id, idcontrato, tipo, desccricaomulta, valor, data);
+        Multa multa = new Multa(id, idcontrato, tipo, descricaomulta, valor, data);
 
         if (sistema.registrarMulta(multa)) {
             info("Multa cadastrada com sucesso! ID: " + id);
-            mostrarTabela();
+            atualizarTabela();
         } else {
             erro("Erro ao cadastrar multa.");
-
-
         }
     }
 
     @FXML
     private void buscarMultas() {
+        mostrarTabela();
         Optional<Integer> id = pedirInteiro(ID);
         if (id.isEmpty()) return;
         mostraMulta(id.get());
-        mostrarTabela();
     }
 
     @FXML
@@ -275,6 +281,7 @@ public class MenuMultasController extends MenuController {
 
     @FXML
     private void buscarContrato() {
+        mostrarTabela();
         Optional<Integer> id = pedirInteiro(ID_CONTRATO);
         if (id.isEmpty()) return;
 
@@ -286,7 +293,6 @@ public class MenuMultasController extends MenuController {
         }
 
         listaMultas.setAll(multas);
-        mostrarTabela();
     }
 
     @FXML
@@ -342,10 +348,9 @@ public class MenuMultasController extends MenuController {
     }
 
     private void mostraMulta(int id) {
-        mostrarTabela();
         Multa multa = sistema.buscarMulta(id);
         if (multa == null) {
-            info("Multa não cadastrada.");
+            info("Não cadastrada.");
             return;
         }
         listaMultas.setAll(multa);
