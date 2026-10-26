@@ -7,10 +7,10 @@ import java.util.List;
 
 public class CategoriaRepositorio implements ICategoriaRepositorio {
 
-    private String arquivo = "dados/categorias.csv";
+    private final String arquivo = "dados/categorias.csv";
 
-    private List<Categoria> categorias;
-    private ManipulaArquivo manipulaArquivo;
+    private final List<Categoria> categorias;
+    private final ManipulaArquivo manipulaArquivo;
 
     public CategoriaRepositorio() {
 

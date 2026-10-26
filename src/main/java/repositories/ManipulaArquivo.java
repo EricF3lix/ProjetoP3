@@ -4,10 +4,9 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
-@SuppressWarnings("java:S106")
 public class ManipulaArquivo {
 
-    private String caminhoArquivo;
+    private final String caminhoArquivo;
 
     public ManipulaArquivo(String caminhoArquivo) {
 
@@ -36,11 +35,7 @@ public class ManipulaArquivo {
 
             }
 
-        } catch (IOException e) {
-
-            System.out.println("Erro ao salvar arquivo " + caminhoArquivo + ": " + e.getMessage());
-
-        }
+        } catch (IOException e) {}
 
     }
 
@@ -66,11 +61,7 @@ public class ManipulaArquivo {
         }
     }
 
-} catch (IOException e) {
-
-    System.out.println("Erro ao carregar arquivo " + caminhoArquivo + ": " + e.getMessage());
-
-}
+} catch (IOException e) {}
 
         return linhas;
 

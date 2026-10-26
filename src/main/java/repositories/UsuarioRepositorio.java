@@ -10,10 +10,10 @@ import java.util.List;
 
 public class UsuarioRepositorio implements IUsuarioRepositorio {
 
-    private String arquivo = "dados/usuarios.csv";
+    private final String arquivo = "dados/usuarios.csv";
 
-    private List<Usuario> usuarios;
-    private ManipulaArquivo manipulaArquivo;
+    private final List<Usuario> usuarios;
+    private final ManipulaArquivo manipulaArquivo;
 
     public UsuarioRepositorio() {
 
