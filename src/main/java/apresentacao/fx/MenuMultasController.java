@@ -15,12 +15,7 @@ import javafx.collections.transformation.SortedList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.Pos;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.Label;
-import javafx.scene.control.TableCell;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
@@ -32,15 +27,13 @@ public class MenuMultasController extends MenuController {
     private static final String NAO_ENCONTRADA = "Multa não encontrada.";
     private static final String FILTRO_TODOS = "Todos";
     private static final String FILTRO_ID_MULTA = "ID Multa";
-    private static final String ESTILO_BADGE_COMUM =
-            "-fx-font-weight: bold; -fx-padding: 3 8 3 8; -fx-background-radius: 10; -fx-font-size: 11px;";
+    private static final String ESTILO_BADGE_COMUM = "-fx-font-weight: bold; -fx-padding: 3 8 3 8; -fx-background-radius: 10; -fx-font-size: 11px;";
     private static final NumberFormat MOEDA = NumberFormat.getCurrencyInstance(Locale.forLanguageTag("pt-BR"));
 
     @FXML
     private ComboBox<String> cbFiltro;
 
-    @FXML
-    private Button btnLimparPesquisa;
+    @FXML private Button btnLimparPesquisa;
 
     @FXML private TableView<Multa> tabela;
     @FXML private TableColumn<Multa, Integer> colID;
