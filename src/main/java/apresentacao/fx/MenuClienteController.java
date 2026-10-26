@@ -48,9 +48,12 @@ public class MenuClienteController extends MenuController {
 		    filtroCampo.getSelectionModel().clearSelection();
 		});
 		
-		filtroCampo.valueProperty().addListener((obs, old, novo) -> {if (novo == null) {return;} 
-		if (Set.of(DATA_DEVOLUCAO, DATA_RETIRADA).contains(novo)) {
-	    	trocaPesquisa(false);} else { trocaPesquisa(true);}});
+		filtroCampo.valueProperty().addListener((obs, old, novo) -> {
+			if (novo == null) {
+				return;
+			}
+			trocaPesquisa(!Set.of(DATA_DEVOLUCAO, DATA_RETIRADA).contains(novo));
+		});
 		
 		pesquisa.textProperty().addListener((obs, old, novo) -> {if (filtroTipo.getValue().equals(ITENS) ) {pesquisaItens();} 
 		else if (filtroTipo.getValue().equals("Aluguéis")) pesquisaContratos();
