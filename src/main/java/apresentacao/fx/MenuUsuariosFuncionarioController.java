@@ -340,7 +340,7 @@ public class MenuUsuariosFuncionarioController extends MenuController {
 
     protected void carregarTabela() {
         if (sistema != null) {
-            List<Usuario> usuarios = sistema.listarUsuarios();
+                List<Usuario> usuarios = sistema.listarUsuarios();
             if (usuarios != null) {
                 listaUsuarios.setAll(usuarios);
             }
