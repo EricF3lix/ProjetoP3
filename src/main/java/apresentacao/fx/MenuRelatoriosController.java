@@ -21,6 +21,7 @@ import com.lowagie.text.pdf.PdfPCell;
 import com.lowagie.text.pdf.PdfPTable;
 import com.lowagie.text.pdf.PdfWriter;
 
+import entidades.Administrador;
 import entidades.Cliente;
 import entidades.ContratoAluguel;
 import entidades.Item;
@@ -120,6 +121,12 @@ public class MenuRelatoriosController extends MenuController {
     @Override
     protected String getTitulo() {
         return "Menu Relatorios";
+    }
+
+    @Override
+    protected void aoExibir(){
+        btnPeriodo.setVisible(sistema.getTipoUsuarioLogado() instanceof Administrador);
+        btnPeriodo.setManaged(sistema.getTipoUsuarioLogado() instanceof Administrador);
     }
 
     @FXML
