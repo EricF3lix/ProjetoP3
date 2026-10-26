@@ -10,9 +10,9 @@
 <?import javafx.scene.shape.Circle?>
 <?import org.kordamp.ikonli.javafx.FontIcon?>
 
-<StackPane prefHeight="640" prefWidth="1027" style="-fx-background-color: #f3f4f6; -fx-font-family: 'Inter', 'Segoe UI', 'System';" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="apresentacao.fx.MenuPrincipalFuncionarioController">
+<StackPane prefHeight="640" prefWidth="1027" style="-fx-background-color: #f3f4f6; -fx-font-family: 'Inter', 'Segoe UI', 'System';" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="apresentacao.fx.MenuPrincipalFuncionarioController">
 
-   <VBox maxWidth="900" spacing="24" StackPane.alignment="TOP_CENTER">
+   <VBox maxWidth="900" spacing="24" StackPane.alignment="CENTER">
       <padding>
          <Insets bottom="36" left="40" right="40" top="36" />
       </padding>
