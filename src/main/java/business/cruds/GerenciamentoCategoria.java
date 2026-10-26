@@ -8,7 +8,7 @@ import java.util.List;
 
 public class GerenciamentoCategoria implements IGerenciamentoCategoria {
 
-    private ICategoriaRepositorio repositorio;
+    private final ICategoriaRepositorio repositorio;
 
     public GerenciamentoCategoria(ICategoriaRepositorio repositorio) {
         this.repositorio = repositorio;

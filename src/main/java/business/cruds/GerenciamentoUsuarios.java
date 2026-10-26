@@ -10,8 +10,8 @@ import java.util.List;
 @SuppressWarnings("java:S106")
 public class GerenciamentoUsuarios implements IGerenciamentoUsuarios {
 
-    private IUsuarioRepositorio repositorio;
-    private IGerenciamentoContratos gerenciamentoContratos;
+    private final IUsuarioRepositorio repositorio;
+    private final IGerenciamentoContratos gerenciamentoContratos;
 
     public GerenciamentoUsuarios(IUsuarioRepositorio repositorio,
                                   IGerenciamentoContratos gerenciamentoContratos) {

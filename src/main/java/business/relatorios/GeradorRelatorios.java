@@ -17,9 +17,9 @@ import java.util.List;
 @SuppressWarnings("java:S106")
 public class GeradorRelatorios implements IRelatorios {
 
-    private IGerenciamentoItens gerenciamentoItens;
-    private IGerenciamentoContratos gerenciamentoContratos;
-    private IGerenciamentoUsuarios gerenciamentoUsuarios;
+    private final IGerenciamentoItens gerenciamentoItens;
+    private final IGerenciamentoContratos gerenciamentoContratos;
+    private final IGerenciamentoUsuarios gerenciamentoUsuarios;
 
     public GeradorRelatorios(IGerenciamentoItens gerenciamentoItens, IGerenciamentoContratos gerenciamentoContratos, IGerenciamentoUsuarios gerenciamentoUsuarios) {
         this.gerenciamentoItens = gerenciamentoItens;
