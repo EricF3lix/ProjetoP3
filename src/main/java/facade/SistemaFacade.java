@@ -232,7 +232,23 @@ public class SistemaFacade {
     }
 
     public int gerarProximoIdCategoria() {
-        return gerenciamentoCategoria.gerarProximoId();
+        return gerenciamentoCategoria.gerarProximoId(); 
+    }
+    
+    public List<Categoria> buscarCategoriaPorId(String id) {
+        return gerenciamentoCategoria.buscarPorId(id);
+    }
+
+    public List<Categoria> buscarCategoriaPorNome(String nome) {
+        return gerenciamentoCategoria.buscarPorNome(nome);
+    }
+
+    public List<Categoria> buscarCategoriaPorDescricao(String descricao) {
+        return gerenciamentoCategoria.buscarPorDescricao(descricao);
+    }
+
+    public List<Categoria> buscarCategoriaPorTodos(String texto) {
+        return gerenciamentoCategoria.buscarPorTodos(texto);
     }
 
     // =========================================================================

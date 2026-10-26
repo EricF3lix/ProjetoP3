@@ -17,4 +17,12 @@ public interface IGerenciamentoCategoria {
     public abstract boolean desativarCategoria(int id);
  
     public abstract int gerarProximoId();
+    
+    public abstract List<Categoria> buscarPorId(String id);
+    
+    public abstract List<Categoria> buscarPorNome(String nome);
+    
+    public abstract List<Categoria> buscarPorDescricao(String descricao);
+    
+    public abstract List<Categoria> buscarPorTodos(String texto);
 }
