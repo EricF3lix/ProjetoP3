@@ -29,6 +29,7 @@ import javafx.scene.layout.HBox;
 import javafx.stage.Popup;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import org.kordamp.ikonli.javafx.FontIcon;
 
 public abstract class MenuController {
 
@@ -42,6 +43,33 @@ public abstract class MenuController {
     
     @FXML
     protected TextField pesquisa;
+
+    @FXML protected FontIcon iconSair;
+    @FXML protected FontIcon iconUsuarios;
+    @FXML protected FontIcon iconItens;
+    @FXML protected FontIcon iconCategorias;
+    @FXML protected FontIcon iconFornecedores;
+    @FXML protected FontIcon iconContratos;
+    @FXML protected FontIcon iconMultas;
+    @FXML protected FontIcon iconRelatorios;
+
+    protected void configurarIcones() {
+        definirIcone(iconSair, "fas-sign-out-alt");
+        definirIcone(iconUsuarios, "fas-users");
+        definirIcone(iconItens, "fas-box");
+        definirIcone(iconCategorias, "fas-tag");
+        definirIcone(iconFornecedores, "fas-truck");
+        definirIcone(iconContratos, "fas-file-alt");
+        definirIcone(iconMultas, "fas-exclamation-triangle");
+        definirIcone(iconRelatorios, "fas-chart-bar");
+    }
+
+    private void definirIcone(FontIcon icone, String literal) {
+        if (icone != null) {
+            icone.setIconLiteral(literal);
+        }
+    }
+
 
     protected abstract String getTitulo();
 

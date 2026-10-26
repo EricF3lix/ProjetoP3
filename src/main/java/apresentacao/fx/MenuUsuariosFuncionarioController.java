@@ -26,9 +26,7 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.layout.Priority;
-import javafx.scene.layout.StackPane;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
 
 public class MenuUsuariosFuncionarioController extends MenuController {
     private static final String STYLE_TEXT_RED = "-fx-text-fill: red;";
@@ -36,7 +34,7 @@ public class MenuUsuariosFuncionarioController extends MenuController {
     protected static final String TIPO_CLIENTE = "Cliente";
 
     @FXML
-    protected StackPane painelConteudo;
+    protected Pane painelConteudo;
 
     @FXML
     protected VBox painelTabela;

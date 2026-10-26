@@ -11,15 +11,6 @@ public class MenuPrincipalAdministradorController extends MenuController {
     @FXML
     private Label lblBemVindo;
 
-    @FXML private FontIcon iconSair;
-    @FXML private FontIcon iconUsuarios;
-    @FXML private FontIcon iconItens;
-    @FXML private FontIcon iconCategorias;
-    @FXML private FontIcon iconFornecedores;
-    @FXML private FontIcon iconContratos;
-    @FXML private FontIcon iconMultas;
-    @FXML private FontIcon iconRelatorios;
-
     private Administrador administrador;
     private boolean saudacaoExibida = false;
 
@@ -42,21 +33,7 @@ public class MenuPrincipalAdministradorController extends MenuController {
             lblBemVindo.setText("Bem-vindo(a), " + nome);
         }
 
-        if (iconSair != null) iconSair.setIconLiteral("fas-sign-out-alt");
-        if (iconUsuarios != null) iconUsuarios.setIconLiteral("fas-users");
-        if (iconItens != null) iconItens.setIconLiteral("fas-box");
-        if (iconCategorias != null) iconCategorias.setIconLiteral("fas-tag");
-        if (iconFornecedores != null) iconFornecedores.setIconLiteral("fas-truck");
-        if (iconContratos != null) iconContratos.setIconLiteral("fas-file-alt");
-        if (iconMultas != null) iconMultas.setIconLiteral("fas-exclamation-triangle");
-        if (iconRelatorios != null) iconRelatorios.setIconLiteral("fas-chart-bar");
-
-        if (!saudacaoExibida) {
-            saudacaoExibida = true;
-            Platform.runLater(() -> {
-                notificarPopUp("Bem-vindo(a), " + nome + "!");
-            });
-        }
+        configurarIcones();
     }
 
     @FXML
