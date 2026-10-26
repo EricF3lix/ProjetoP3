@@ -8,7 +8,7 @@ import java.util.List;
 
 public class MultaRepositorio implements IMultaRepositorio {
 
-    private final String arquivo = "dados/multas.csv";
+    private final static String arquivo = "dados/multas.csv";
 
     private final List<Multa> multas;
     private final ManipulaArquivo manipulaArquivo;

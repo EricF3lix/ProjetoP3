@@ -10,7 +10,7 @@ import java.util.List;
 
 public class ContratoRepositorio implements IContratoRepositorio {
 
-    private final String arquivo = "dados/contratos.csv";
+    private final static String arquivo = "dados/contratos.csv";
 
     private final List<ContratoAluguel> contratos;
     private final IUsuarioRepositorio usuarioRepositorio;

@@ -35,8 +35,8 @@ public class ManipulaArquivo {
 
             }
 
-        } catch (IOException e) {}
-
+        } catch (IOException e) {//ta vazio
+        }
     }
 
     public List<String[]> carregar() {
@@ -58,10 +58,11 @@ public class ManipulaArquivo {
                 String linha;
                 while ((linha = reader.readLine()) != null) {
                     linhas.add(linha.split(";", -1));
-        }
-    }
+                }
+            }
 
-} catch (IOException e) {}
+        } catch (IOException e) {//ta vazio
+        }
 
         return linhas;
 
