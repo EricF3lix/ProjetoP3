@@ -38,15 +38,13 @@ public class MenuMultasController extends MenuController {
     private static final String ID_CONTRATO = "Digite o ID do contrato:";
     private static final String NAO_ENCONTRADA = "Multa não encontrada.";
     private static final String FILTRO_TODOS = "Todos";
+    private static final String FILTRO_ID_MULTA = "ID Multa";
     private static final String ESTILO_BADGE_COMUM =
             "-fx-font-weight: bold; -fx-padding: 3 8 3 8; -fx-background-radius: 10; -fx-font-size: 11px;";
     private static final NumberFormat MOEDA = NumberFormat.getCurrencyInstance(Locale.forLanguageTag("pt-BR"));
 
     @FXML
     private ComboBox<String> cbFiltro;
-
-    @FXML
-    private TextField pesquisa;
 
     @FXML
     private Button btnLimparPesquisa;
@@ -154,7 +152,7 @@ public class MenuMultasController extends MenuController {
 
     private void configurarFiltroPesquisa() {
         if (cbFiltro != null) {
-            cbFiltro.setItems(FXCollections.observableArrayList(FILTRO_TODOS, "ID Multa", "ID Contrato", "Tipo", "Status"));
+            cbFiltro.setItems(FXCollections.observableArrayList(FILTRO_TODOS, FILTRO_ID_MULTA, "ID Contrato", "Tipo", "Status"));
             cbFiltro.setValue(FILTRO_TODOS);
             cbFiltro.valueProperty().addListener((obs, antigo, novo) ->
                 aplicarFiltro(pesquisa != null ? pesquisa.getText() : "")
@@ -193,7 +191,7 @@ public class MenuMultasController extends MenuController {
             boolean bateuStatus = (multa.isPaga() ? "paga" : "pendente").contains(termoFormatado);
 
             return switch (filtroSelecionado) {
-                case "ID Multa" -> bateuId;
+                case FILTRO_ID_MULTA -> bateuId;
                 case "ID Contrato" -> bateuContrato;
                 case "Tipo" -> bateuTipo;
                 case "Status" -> bateuStatus;
@@ -247,7 +245,7 @@ public class MenuMultasController extends MenuController {
             Multa multa = sistema != null ? sistema.buscarMulta(id) : null;
 
             if (multa != null) {
-                if (cbFiltro != null) cbFiltro.setValue("ID Multa");
+                if (cbFiltro != null) cbFiltro.setValue(FILTRO_ID_MULTA);
                 if (pesquisa != null) pesquisa.setText(String.valueOf(id));
             } else {
                 erro(NAO_ENCONTRADA);
@@ -387,8 +385,10 @@ public class MenuMultasController extends MenuController {
     }
 
     private Multa obterMultaAlvo() {
-        Multa atual = (tabela != null) ? tabela.getSelectionModel().getSelectedItem() : null;
-        if (tabela != null) tabela.getSelectionModel().clearSelection();
+        if (tabela == null) return null;
+
+        Multa atual = tabela.getSelectionModel().getSelectedItem();
+        tabela.getSelectionModel().clearSelection();
 
         if (atual == null) {
             Optional<Integer> id = pedirInteiro(ID_MULTA);

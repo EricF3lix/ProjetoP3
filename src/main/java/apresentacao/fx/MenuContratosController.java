@@ -43,9 +43,6 @@ public class MenuContratosController extends MenuController {
     private ComboBox<String> cbFiltro;
 
     @FXML
-    private TextField pesquisa;
-
-    @FXML
     private Button btnLimparPesquisa;
 
     @FXML 
@@ -434,8 +431,9 @@ public class MenuContratosController extends MenuController {
     }
 
     private ContratoAluguel obterContratoAlvo() {
+        if (tabela == null) return null;
         ContratoAluguel selecionado = tabela.getSelectionModel().getSelectedItem();
-        if (tabela != null) tabela.getSelectionModel().clearSelection();
+        tabela.getSelectionModel().clearSelection();
 
         if (selecionado != null) {
             return selecionado;
