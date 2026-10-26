@@ -1,3 +1,6 @@
 id;idContrato;tipo;descricao;valor;paga;dataCriacao
 5;1;1;algo;10.0;true;2026-10-03
 6;1;AVARIA;a;2.0;true;2026-10-04
+7;1;Dano Material;aaa;10.0;true;2026-10-26
+8;1;Extravio de Item;2;22.0;true;2026-10-26
+9;1;Mau Uso;ed;2.0;true;2026-10-26
