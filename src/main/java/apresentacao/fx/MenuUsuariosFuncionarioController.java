@@ -21,7 +21,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 
-import java.util.Listgi;
+import java.util.List;
 
 public class MenuUsuariosFuncionarioController extends MenuController {
     private static final String STYLE_TEXT_RED = "-fx-text-fill: red;";
