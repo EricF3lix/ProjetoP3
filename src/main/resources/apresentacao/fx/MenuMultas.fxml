@@ -5,16 +5,20 @@
 <?import javafx.scene.layout.*?>
 <AnchorPane prefHeight="660.0" prefWidth="950.0" style="-fx-background-color: #F5F5F7;" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="apresentacao.fx.MenuMultasController">
    <children>
-      
       <Label layoutX="40.0" layoutY="25.0" style="-fx-font-family: -apple-system, 'SF Pro Display', 'Segoe UI', sans-serif; -fx-font-weight: 900; -fx-font-size: 26px; -fx-text-fill: #1d1d1f;" text="Gerenciar Multas" />
       <Label layoutX="40.0" layoutY="58.0" style="-fx-font-family: -apple-system, 'SF Pro Text', 'Segoe UI', sans-serif; -fx-font-size: 14px; -fx-text-fill: #86868b;" text="Painel de Penalidades e Cobranças" />
 
-      
       <VBox layoutX="40.0" layoutY="100.0" prefWidth="250.0" spacing="12.0">
          <children>
-            
-            <TextField fx:id="pesquisa" promptText="Busque por ID Multa/Contrato" style="-fx-background-color: #e5e5ea; -fx-background-radius: 10px; -fx-padding: 10px; -fx-font-size: 13px;" />
-            
+            <Label style="-fx-text-fill: #6e6e73; -fx-font-size: 12px; -fx-font-weight: bold;" text="Filtrar Multas:" />
+            <ComboBox fx:id="cbFiltro" prefHeight="35.0" prefWidth="250.0" style="-fx-background-color: #e5e5ea; -fx-background-radius: 8px;" />
+            <HBox spacing="8.0">
+               <children>
+                  <TextField fx:id="pesquisa" promptText="Digite para buscar..." style="-fx-background-color: #e5e5ea; -fx-background-radius: 8px; -fx-padding: 8px;" HBox.hgrow="ALWAYS" />
+                  <Button fx:id="btnLimparPesquisa" mnemonicParsing="false" onAction="#aoLimparPesquisa" style="-fx-background-color: #d1d1d6; -fx-text-fill: #1d1d1f; -fx-background-radius: 8px; -fx-cursor: hand;" text="Limpar" />
+               </children>
+            </HBox>
+
             <Pane prefHeight="2.0" />
 
             <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#cadastrarMulta" prefHeight="38.0" style="-fx-background-color: #ffffff; -fx-background-radius: 10px; -fx-border-color: #d1d1d6; -fx-border-radius: 10px; -fx-text-fill: #007AFF; -fx-font-weight: bold; -fx-cursor: hand; -fx-font-size: 13px;" text="Registrar Multa" />
@@ -34,8 +38,7 @@
          </children>
       </VBox>
 
-      
-      <AnchorPane layoutX="320.0" layoutY="100.0" prefHeight="520.0" prefWidth="590.0" style="-fx-background-color: #ffffff; -fx-background-radius: 16px; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 12, 0, 2, 6);">
+      <AnchorPane AnchorPane.bottomAnchor="40.0" AnchorPane.leftAnchor="320.0" AnchorPane.rightAnchor="40.0" AnchorPane.topAnchor="100.0" prefHeight="520.0" prefWidth="590.0" style="-fx-background-color: #ffffff; -fx-background-radius: 16px; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 12, 0, 2, 6);">
          <children>
             <VBox spacing="15.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                <padding>
