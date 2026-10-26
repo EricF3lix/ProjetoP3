@@ -10,7 +10,7 @@ import java.util.List;
 
 public class ContratoRepositorio implements IContratoRepositorio {
 
-    private final static String arquivo = "dados/contratos.csv";
+    private static final String ARQUIVO = "dados/contratos.csv";
 
     private final List<ContratoAluguel> contratos;
     private final IUsuarioRepositorio usuarioRepositorio;
@@ -22,7 +22,7 @@ public class ContratoRepositorio implements IContratoRepositorio {
         this.usuarioRepositorio = usuarioRepositorio;
         this.itemRepositorio = itemRepositorio;
 
-        manipulaArquivo = new ManipulaArquivo(arquivo);
+        manipulaArquivo = new ManipulaArquivo(ARQUIVO);
 
         contratos = carregar();
 
