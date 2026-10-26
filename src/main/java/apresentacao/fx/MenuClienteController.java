@@ -12,6 +12,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TableView;
 
 import java.util.List;
+import java.util.Set;
 
 public class MenuClienteController extends MenuController {
 	
@@ -48,14 +49,14 @@ public class MenuClienteController extends MenuController {
 		});
 		
 		filtroCampo.valueProperty().addListener((obs, old, novo) -> {if (novo == null) {return;} 
-		if (novo.equals(DATA_RETIRADA) || novo.equals(DATA_DEVOLUCAO)) {
+		if (Set.of(DATA_DEVOLUCAO, DATA_RETIRADA).contains(novo)) {
 	    	trocaPesquisa(false);} else { trocaPesquisa(true);}});
 		
 		pesquisa.textProperty().addListener((obs, old, novo) -> {if (filtroTipo.getValue().equals(ITENS) ) {pesquisaItens();} 
 		else if (filtroTipo.getValue().equals("Aluguéis")) pesquisaContratos();
 		});
 		
-		dtPesquisa.valueProperty().addListener((obs, old, novo) -> {pesquisaContratos();});
+		dtPesquisa.valueProperty().addListener((obs, old, novo) -> pesquisaContratos());
 		
 		dtPesquisa.getEditor().setStyle("-fx-background-color: transparent; -fx-padding: 8px;");
 		dtPesquisa.setVisible(false);
