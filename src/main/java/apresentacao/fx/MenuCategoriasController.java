@@ -1,5 +1,8 @@
 package apresentacao.fx;
 
+import java.util.List;
+import java.util.Optional;
+
 import entidades.Categoria;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -13,9 +16,6 @@ import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
-
-import java.util.List;
-import java.util.Optional;
 
 public class MenuCategoriasController extends MenuController {
 
@@ -84,7 +84,7 @@ public class MenuCategoriasController extends MenuController {
                 }
  
                 boolean disponivel = ativa;
-                badge.setText(disponivel ? "● Disponível" : "● Indisponível");
+                badge.setText(disponivel ? "● Ativo" : "● Inativo");
                 badge.setStyle(disponivel ? ESTILO_BADGE_DISPONIVEL : ESTILO_BADGE_INDISPONIVEL);
 
                 setAlignment(Pos.CENTER);
