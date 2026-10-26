@@ -82,8 +82,7 @@ public class MenuCategoriasController extends MenuController {
                     setText(null);
                     return;
                 }
-
-                // Correção Sonar #1302: Uso do booleano primitivo direto após verificação de nulo
+ 
                 boolean disponivel = ativa;
                 badge.setText(disponivel ? "● Disponível" : "● Indisponível");
                 badge.setStyle(disponivel ? ESTILO_BADGE_DISPONIVEL : ESTILO_BADGE_INDISPONIVEL);
