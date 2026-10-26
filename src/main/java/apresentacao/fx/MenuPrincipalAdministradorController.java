@@ -8,6 +8,9 @@ public class MenuPrincipalAdministradorController extends MenuController {
 
     @FXML
     private Label lblBemVindo;
+    
+    @FXML
+    private Label lblPerfil;
 
     private Administrador administrador;
 
@@ -29,6 +32,8 @@ public class MenuPrincipalAdministradorController extends MenuController {
         if (lblBemVindo != null) {
             lblBemVindo.setText("Bem-vindo(a), " + nome);
         }
+        
+        lblPerfil.setText(administrador.getNome().substring(0,2).toUpperCase());
 
         configurarIcones();
     }

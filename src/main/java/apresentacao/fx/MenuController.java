@@ -90,10 +90,8 @@ public abstract class MenuController {
         escrever(String.format(formato, args));
     }
 
-    // ==========================================
-    // ALERTAS E CONFIRMAÇÕES COM POP-UP ANIMADO
-    // ==========================================
-
+    
+    
     protected void info(String mensagem) {
         Alert alerta = new Alert(Alert.AlertType.INFORMATION, mensagem);
         animarDialogo(alerta);
@@ -309,7 +307,7 @@ public abstract class MenuController {
         }
         return antigo;
     }
-
+    
     protected <T> void configurarTabelaEPesquisa(
         javafx.scene.control.TableView<T> tabela, 
         java.util.function.Consumer<String> metodoPesquisa) {
