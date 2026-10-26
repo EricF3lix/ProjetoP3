@@ -1,10 +1,26 @@
 package apresentacao.fx;
 
-import com.lowagie.text.*;
+import java.awt.Color;
+import java.awt.Desktop;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
+
+import com.lowagie.text.Document;
 import com.lowagie.text.Font;
+import com.lowagie.text.FontFactory;
+import com.lowagie.text.Paragraph;
+import com.lowagie.text.Phrase;
 import com.lowagie.text.pdf.PdfPCell;
 import com.lowagie.text.pdf.PdfPTable;
 import com.lowagie.text.pdf.PdfWriter;
+
 import entidades.Administrador;
 import entidades.Cliente;
 import entidades.ContratoAluguel;
@@ -17,27 +33,22 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Scene;
-import javafx.scene.control.*;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonBar.ButtonData;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
+import javafx.scene.control.Separator;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-
-import java.awt.*;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.time.LocalDate;
-import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
 
 public class MenuRelatoriosController extends MenuController {
 
@@ -448,37 +459,40 @@ public class MenuRelatoriosController extends MenuController {
             String dataHoje = LocalDate.now(FUSO_HORARIO).format(DateTimeFormatter.ofPattern(PADRAO_DATA));
             document.add(new Paragraph("Gerado em: " + dataHoje + " | Total de registros: " + tabela.getItems().size() + "\n\n", fontSub));
 
-            PdfPTable tabelaPdf = new PdfPTable(ultimosCabecalhos.length);
-            tabelaPdf.setWidthPercentage(100);
+            if (ultimosCabecalhos != null && ultimosCabecalhos.length > 0) {
+                PdfPTable tabelaPdf = new PdfPTable(ultimosCabecalhos.length);
+                tabelaPdf.setWidthPercentage(100);
 
-            Font fontCabecalho = FontFactory.getFont(FontFactory.HELVETICA_BOLD, 10, Color.WHITE);
-            for (String col : ultimosCabecalhos) {
-                PdfPCell cell = new PdfPCell(new Phrase(col, fontCabecalho));
-                cell.setBackgroundColor(new Color(0, 122, 255));
-                cell.setPadding(6);
-                tabelaPdf.addCell(cell);
-            }
-
-            Font fontCorpo = FontFactory.getFont(FontFactory.HELVETICA, 9, Color.BLACK);
-            for (ObservableList<String> linha : tabela.getItems()) {
-                for (String valor : linha) {
-                    PdfPCell cell = new PdfPCell(new Phrase(valor != null ? valor : "", fontCorpo));
-                    cell.setPadding(5);
+                Font fontCabecalho = FontFactory.getFont(FontFactory.HELVETICA_BOLD, 10, Color.WHITE);
+                for (String col : ultimosCabecalhos) {
+                    PdfPCell cell = new PdfPCell(new Phrase(col, fontCabecalho));
+                    cell.setBackgroundColor(new Color(0, 122, 255));
+                    cell.setPadding(6);
                     tabelaPdf.addCell(cell);
                 }
+
+                Font fontCorpo = FontFactory.getFont(FontFactory.HELVETICA, 9, Color.BLACK);
+                for (ObservableList<String> linha : tabela.getItems()) {
+                    for (String valor : linha) {
+                        PdfPCell cell = new PdfPCell(new Phrase(valor != null ? valor : "", fontCorpo));
+                        cell.setPadding(5);
+                        tabelaPdf.addCell(cell);
+                    }
+                }
+
+                document.add(tabelaPdf);
             }
 
-            document.add(tabelaPdf);
+            document.close();
+
+            exibirSucessoExportacao(arquivoDestino);
         } catch (Exception e) {
             erro("Falha ao gerar o arquivo PDF: " + e.getMessage());
-            
         } finally {
             if (document.isOpen()) {
                 document.close();
             }
         }
-
-        exibirSucessoExportacao(arquivoDestino);
     }
 
     private void exibirSucessoExportacao(File arquivoSalvo) {
