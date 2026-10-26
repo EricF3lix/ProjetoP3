@@ -218,6 +218,7 @@ public class MenuCategoriasController extends MenuController {
     @FXML private void listarCategorias() {
         colocaTabela();
         tabela.setItems(FXCollections.observableArrayList(sistema.listarCategorias()));
+        tabela.refresh();
     }
 
     private void fazPesquisa(String pesquisado) {

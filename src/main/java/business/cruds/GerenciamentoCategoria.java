@@ -93,7 +93,7 @@ public class GerenciamentoCategoria implements IGerenciamentoCategoria {
     public List<Categoria> buscarPorNome(String nome) {
         List<Categoria> resultado = new ArrayList<>();
         for (Categoria c : repositorio.listarTodos()) {
-            if (c.getNome() != null && c.getNome().toLowerCase().contains(nome.toLowerCase())) {
+            if (c.getNome() != null && c.getNome().toLowerCase().startsWith(nome.toLowerCase())) {
                 resultado.add(c);
             }
         }
