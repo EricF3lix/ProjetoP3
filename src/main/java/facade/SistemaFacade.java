@@ -1,20 +1,10 @@
 package facade;
 
-import java.util.List;
-
-import business.interfaces.IGerenciamentoCategoria;
-import business.interfaces.IGerenciamentoContratos;
-import business.interfaces.IGerenciamentoFornecedor;
-import business.interfaces.IGerenciamentoItens;
-import business.interfaces.IGerenciamentoMultas;
-import business.interfaces.IGerenciamentoUsuarios;
+import business.interfaces.*;
 import business.relatorios.IRelatorios;
-import entidades.Categoria;
-import entidades.ContratoAluguel;
-import entidades.Fornecedor;
-import entidades.Item;
-import entidades.Multa;
-import entidades.Usuario;
+import entidades.*;
+
+import java.util.List;
 
 public class SistemaFacade {
 

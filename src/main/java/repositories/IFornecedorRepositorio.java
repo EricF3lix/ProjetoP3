@@ -1,7 +1,8 @@
 package repositories;
-import java.util.List;
 
 import entidades.Fornecedor;
+
+import java.util.List;
 
 public interface IFornecedorRepositorio {
 

@@ -1,11 +1,11 @@
 package repositories;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import entidades.Categoria;
 import entidades.Fornecedor;
 import entidades.Item;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class ItemRepositorio implements IItemRepositorio {
 

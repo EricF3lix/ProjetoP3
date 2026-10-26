@@ -1,7 +1,5 @@
 package apresentacao.fx;
 
-import java.net.URL;
-
 import entidades.Administrador;
 import entidades.Cliente;
 import entidades.Funcionario;
@@ -14,6 +12,8 @@ import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.StackPane;
+
+import java.net.URL;
 
 public class MenuLoginController extends MenuController {
 

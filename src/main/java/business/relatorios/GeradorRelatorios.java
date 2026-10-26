@@ -1,9 +1,5 @@
 package business.relatorios;
 
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-
 import business.interfaces.IGerenciamentoContratos;
 import business.interfaces.IGerenciamentoItens;
 import business.interfaces.IGerenciamentoUsuarios;
@@ -14,12 +10,16 @@ import repositories.SalvaRelatorioFaturamento;
 import repositories.SalvaRelatorioHistoricoCliente;
 import repositories.SalvaRelatorioItensAlugados;
 
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+
 @SuppressWarnings("java:S106")
 public class GeradorRelatorios implements IRelatorios {
 
-    private IGerenciamentoItens gerenciamentoItens;
-    private IGerenciamentoContratos gerenciamentoContratos;
-    private IGerenciamentoUsuarios gerenciamentoUsuarios;
+    private final IGerenciamentoItens gerenciamentoItens;
+    private final IGerenciamentoContratos gerenciamentoContratos;
+    private final IGerenciamentoUsuarios gerenciamentoUsuarios;
 
     public GeradorRelatorios(IGerenciamentoItens gerenciamentoItens, IGerenciamentoContratos gerenciamentoContratos, IGerenciamentoUsuarios gerenciamentoUsuarios) {
         this.gerenciamentoItens = gerenciamentoItens;

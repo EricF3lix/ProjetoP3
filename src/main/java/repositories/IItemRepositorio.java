@@ -1,8 +1,8 @@
 package repositories;
 
-import java.util.List;
-
 import entidades.Item;
+
+import java.util.List;
 
 public interface IItemRepositorio {
 

@@ -1,7 +1,6 @@
 package apresentacao.fx;
 
 import entidades.Administrador;
-import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 
@@ -11,7 +10,6 @@ public class MenuPrincipalAdministradorController extends MenuController {
     private Label lblBemVindo;
 
     private Administrador administrador;
-    private boolean saudacaoExibida = false;
 
     public void setAdministrador(Administrador administrador) {
         this.administrador = administrador;
@@ -32,12 +30,7 @@ public class MenuPrincipalAdministradorController extends MenuController {
             lblBemVindo.setText("Bem-vindo(a), " + nome);
         }
 
-        if (!saudacaoExibida) {
-            saudacaoExibida = true;
-            Platform.runLater(() -> {
-                notificarPopUp("Bem-vindo(a), " + nome + "!");
-            });
-        }
+        configurarIcones();
     }
 
     @FXML

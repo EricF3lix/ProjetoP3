@@ -1,13 +1,5 @@
 package apresentacao.fx;
 
-import java.io.IOException;
-import java.io.UncheckedIOException;
-import java.net.URL;
-import java.util.ArrayDeque;
-import java.util.Deque;
-import java.util.Objects;
-import java.util.function.Consumer;
-
 import facade.SistemaFacade;
 import javafx.animation.FadeTransition;
 import javafx.animation.Interpolator;
@@ -20,6 +12,14 @@ import javafx.scene.Scene;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+
+import java.io.IOException;
+import java.io.UncheckedIOException;
+import java.net.URL;
+import java.util.ArrayDeque;
+import java.util.Deque;
+import java.util.Objects;
+import java.util.function.Consumer;
 
 public class Navegador {
 

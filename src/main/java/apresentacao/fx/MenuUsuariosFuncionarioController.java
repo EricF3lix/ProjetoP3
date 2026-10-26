@@ -1,7 +1,5 @@
 package apresentacao.fx;
 
-import java.util.List;
-
 import entidades.Administrador;
 import entidades.Cliente;
 import entidades.Funcionario;
@@ -17,18 +15,13 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
-import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.Label;
-import javafx.scene.control.PasswordField;
-import javafx.scene.control.TableCell;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
-import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+
+import java.util.List;
 
 public class MenuUsuariosFuncionarioController extends MenuController {
     private static final String STYLE_TEXT_RED = "-fx-text-fill: red;";
@@ -36,7 +29,7 @@ public class MenuUsuariosFuncionarioController extends MenuController {
     protected static final String TIPO_CLIENTE = "Cliente";
 
     @FXML
-    protected StackPane painelConteudo;
+    protected Pane painelConteudo;
 
     @FXML
     protected VBox painelTabela;
@@ -347,7 +340,7 @@ public class MenuUsuariosFuncionarioController extends MenuController {
 
     protected void carregarTabela() {
         if (sistema != null) {
-            List<Usuario> usuarios = sistema.listarUsuarios();
+                List<Usuario> usuarios = sistema.listarUsuarios();
             if (usuarios != null) {
                 listaUsuarios.setAll(usuarios);
             }

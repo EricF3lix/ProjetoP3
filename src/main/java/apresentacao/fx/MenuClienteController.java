@@ -1,8 +1,6 @@
 package apresentacao.fx;
 
 
-import java.util.List;
-
 import entidades.Cliente;
 import entidades.ContratoAluguel;
 import entidades.Item;
@@ -11,6 +9,8 @@ import javafx.fxml.FXML;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableView;
+
+import java.util.List;
 
 public class MenuClienteController extends MenuController {
 

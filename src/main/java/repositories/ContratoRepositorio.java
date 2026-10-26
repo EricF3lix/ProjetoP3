@@ -1,28 +1,28 @@
 package repositories;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import entidades.Cliente;
 import entidades.ContratoAluguel;
 import entidades.Item;
 import entidades.Usuario;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class ContratoRepositorio implements IContratoRepositorio {
 
-    private String arquivo = "dados/contratos.csv";
+    private static final String ARQUIVO = "dados/contratos.csv";
 
-    private List<ContratoAluguel> contratos;
-    private IUsuarioRepositorio usuarioRepositorio;
-    private IItemRepositorio itemRepositorio;
-    private ManipulaArquivo manipulaArquivo;
+    private final List<ContratoAluguel> contratos;
+    private final IUsuarioRepositorio usuarioRepositorio;
+    private final IItemRepositorio itemRepositorio;
+    private final ManipulaArquivo manipulaArquivo;
 
     public ContratoRepositorio(IUsuarioRepositorio usuarioRepositorio, IItemRepositorio itemRepositorio) {
 
         this.usuarioRepositorio = usuarioRepositorio;
         this.itemRepositorio = itemRepositorio;
 
-        manipulaArquivo = new ManipulaArquivo(arquivo);
+        manipulaArquivo = new ManipulaArquivo(ARQUIVO);
 
         contratos = carregar();
 

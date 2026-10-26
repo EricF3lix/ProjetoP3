@@ -1,18 +1,12 @@
 package repositories;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
-@SuppressWarnings("java:S106")
 public class ManipulaArquivo {
 
-    private String caminhoArquivo;
+    private final String caminhoArquivo;
 
     public ManipulaArquivo(String caminhoArquivo) {
 
@@ -41,12 +35,8 @@ public class ManipulaArquivo {
 
             }
 
-        } catch (IOException e) {
-
-            System.out.println("Erro ao salvar arquivo " + caminhoArquivo + ": " + e.getMessage());
-
+        } catch (IOException e) {//ta vazio
         }
-
     }
 
     public List<String[]> carregar() {
@@ -68,14 +58,11 @@ public class ManipulaArquivo {
                 String linha;
                 while ((linha = reader.readLine()) != null) {
                     linhas.add(linha.split(";", -1));
+                }
+            }
+
+        } catch (IOException e) {//ta vazio
         }
-    }
-
-} catch (IOException e) {
-
-    System.out.println("Erro ao carregar arquivo " + caminhoArquivo + ": " + e.getMessage());
-
-}
 
         return linhas;
 

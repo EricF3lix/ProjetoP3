@@ -1,26 +1,11 @@
 package apresentacao.fx;
 
-import java.awt.Color;
-import java.awt.Desktop;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.time.LocalDate;
-import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
-
-import com.lowagie.text.Document;
+import com.lowagie.text.*;
 import com.lowagie.text.Font;
-import com.lowagie.text.FontFactory;
-import com.lowagie.text.Paragraph;
-import com.lowagie.text.Phrase;
 import com.lowagie.text.pdf.PdfPCell;
 import com.lowagie.text.pdf.PdfPTable;
 import com.lowagie.text.pdf.PdfWriter;
-
+import entidades.Administrador;
 import entidades.Cliente;
 import entidades.ContratoAluguel;
 import entidades.Item;
@@ -32,22 +17,27 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
+import javafx.scene.control.*;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonBar.ButtonData;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
-import javafx.scene.control.Separator;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+
+import java.awt.*;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
 
 public class MenuRelatoriosController extends MenuController {
 
@@ -120,6 +110,12 @@ public class MenuRelatoriosController extends MenuController {
     @Override
     protected String getTitulo() {
         return "Menu Relatorios";
+    }
+
+    @Override
+    protected void aoExibir(){
+        btnPeriodo.setVisible(sistema.getTipoUsuarioLogado() instanceof Administrador);
+        btnPeriodo.setManaged(sistema.getTipoUsuarioLogado() instanceof Administrador);
     }
 
     @FXML
