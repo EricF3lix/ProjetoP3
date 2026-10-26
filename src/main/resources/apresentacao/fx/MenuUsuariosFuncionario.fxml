@@ -17,11 +17,11 @@
 
 <AnchorPane fx:id="painelConteudo" prefHeight="660.0" prefWidth="950.0" style="-fx-background-color: #F5F5F7;" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml" fx:controller="apresentacao.fx.MenuUsuariosFuncionarioController">
    <children>
-      <!-- Cabecalho Moderno -->
+     
       <Label layoutX="40.0" layoutY="25.0" style="-fx-font-family: -apple-system, 'SF Pro Display', 'Segoe UI', sans-serif; -fx-font-weight: 900; -fx-font-size: 26px; -fx-text-fill: #1d1d1f;" text="Gestão de Usuários" />
       <Label layoutX="40.0" layoutY="58.0" style="-fx-font-family: -apple-system, 'SF Pro Text', 'Segoe UI', sans-serif; -fx-font-size: 14px; -fx-text-fill: #86868b;" text="Painel do Funcionário" />
 
-      <!-- Menu Lateral Estilo Apple -->
+    
       <VBox layoutX="40.0" layoutY="100.0" prefWidth="250.0" spacing="12.0">
          <children>
             <Button fx:id="btnCadastrarCliente" mnemonicParsing="false" onAction="#aoCadastrarCliente" prefHeight="38.0" prefWidth="250.0" style="-fx-background-color: #ffffff; -fx-background-radius: 10px; -fx-border-color: #d1d1d6; -fx-border-radius: 10px; -fx-text-fill: #007AFF; -fx-font-weight: bold; -fx-cursor: hand; -fx-font-size: 13px;" text="Cadastrar Cliente" />
@@ -36,12 +36,12 @@
          </children>
       </VBox>
 
-      <!-- Cartão Dinâmico de Conteúdo -->
+     
       <AnchorPane layoutX="320.0" layoutY="100.0" prefHeight="520.0" prefWidth="590.0" style="-fx-background-color: #ffffff; -fx-background-radius: 16px; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 12, 0, 2, 6);">
          <children>
             <StackPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                <children>
-                  <!-- Painel da Tabela -->
+                 
                   <VBox fx:id="painelTabela" spacing="12.0">
                      <padding>
                         <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
@@ -68,7 +68,7 @@
                      </children>
                   </VBox>
 
-                  <!-- Painel de Cadastro -->
+                 
                   <VBox fx:id="painelCadastro" spacing="10.0" visible="false">
                      <padding>
                         <Insets bottom="25.0" left="25.0" right="25.0" top="25.0" />
@@ -89,7 +89,6 @@
                      </children>
                   </VBox>
 
-                  <!-- Painel de Busca Direta -->
                   <VBox fx:id="painelBusca" spacing="12.0" visible="false">
                      <padding>
                         <Insets bottom="25.0" left="25.0" right="25.0" top="25.0" />
