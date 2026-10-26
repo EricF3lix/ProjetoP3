@@ -7,6 +7,7 @@ import entidades.Item;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableView;
 
@@ -17,6 +18,8 @@ public class MenuClienteController extends MenuController {
 
 	@FXML private TableView<Item> tabelaItens;
 	@FXML private TableView<ContratoAluguel> tabelaContratos;
+	
+	@FXML private DatePicker dtPesquisa;
 	
 	@FXML private ComboBox<String> filtroTipo; 
 	@FXML private ComboBox<String> filtroCampo;
@@ -36,16 +39,25 @@ public class MenuClienteController extends MenuController {
 		tabelaContratos.setPlaceholder(new Label ("Você não tem aluguéis ativos"));
 		
 		filtroTipo.valueProperty().addListener((obs, old, novo) -> {
-		    if (novo.equals("Itens")) { filtroCampo.getItems().setAll("ID", "Nome", "Categoria", "Taxa"); listarItensDisponiveis(); }
+		    if (novo.equals("Itens")) { trocaPesquisa(true); filtroCampo.getItems().setAll("ID", "Nome", "Categoria", "Taxa"); listarItensDisponiveis(); }
 		    else if (novo.equals("Aluguéis")) { filtroCampo.getItems().setAll("ID", "Item", "Data de Retirada", "Data de Devolução", "Status", "Valor total", "Valor multa"); historicoAlugueis(); }	    
 		    filtroCampo.getSelectionModel().clearSelection();
 		});
+		
+		filtroCampo.valueProperty().addListener((obs, old, novo) -> {if (novo == null) {return;} if (novo.equals("Data de Retirada") || novo.equals("Data de Devolução")) {
+	    	trocaPesquisa(false);} else { trocaPesquisa(true);}});
 		
 		pesquisa.textProperty().addListener((obs, old, novo) -> {if (filtroTipo.getValue().equals("Itens") ) {pesquisaItens();} 
 		else if (filtroTipo.getValue().equals("Aluguéis")) {pesquisaContratos();}
 		});
 		
-		listarItensDisponiveis();
+		dtPesquisa.valueProperty().addListener((obs, old, novo) -> {pesquisaContratos();});
+		
+		dtPesquisa.getEditor().setStyle("-fx-background-color: transparent; -fx-padding: 8px;");
+		dtPesquisa.setVisible(false);
+		dtPesquisa.setManaged(false);
+		
+		filtroTipo.setValue("Itens");
 	}
 
 	public void setCliente(Cliente cliente) {
@@ -66,7 +78,7 @@ public class MenuClienteController extends MenuController {
 	    String campo = filtroCampo.getValue();
 
 	    if (campo == null) {
-	        tabelaItens.getItems().setAll(sistema.listarItens());
+	        listarItensDisponiveis();
 	        return;
 	    }
 
@@ -81,14 +93,24 @@ public class MenuClienteController extends MenuController {
 	
 	private void pesquisaContratos() {
 		mostrarTabelas(true);
-	    String pesquisado = pesquisa.getText();
+	    String pesquisado;
+	    
 	    String campo = filtroCampo.getValue();
-
+	    
+	    
 	    if (campo == null) {
-	        tabelaContratos.getItems().setAll(sistema.listarContratos());
+	    	historicoAlugueis();
 	        return;
 	    }
-
+	    
+	    else if (campo.equals("Data de Devolução") || campo.equals("Data de Retirada")) {
+	    	pesquisado = String.valueOf(dtPesquisa.getValue());
+	    }
+	    
+	    else {
+	    	pesquisado = pesquisa.getText();
+	    }
+	    
 	    switch (campo) {
 	        case "ID" -> tabelaContratos.getItems().setAll(sistema.filtraIDContrato(pesquisado));
 	        case "Item" -> tabelaContratos.getItems().setAll(sistema.filtraItemContrato(pesquisado));
@@ -99,6 +121,14 @@ public class MenuClienteController extends MenuController {
 	        case "Valor multa" -> tabelaContratos.getItems().setAll(sistema.filtraValorMultaContrato(pesquisado));
 	        default -> info("Seleção inválida");
 	    }
+	}
+	
+	private void trocaPesquisa(Boolean tipo) {
+		dtPesquisa.setVisible(!tipo);
+		dtPesquisa.setManaged(!tipo);
+		
+		pesquisa.setVisible(tipo);
+		pesquisa.setManaged(tipo);
 	}
 	
 	private void exibirContratos(List<ContratoAluguel> lista) {
@@ -149,9 +179,13 @@ public class MenuClienteController extends MenuController {
 	
 	@FXML
 	private void aoLimparPesquisa() {
-	    pesquisa.clear();
+		
+	    if (pesquisa.isVisible()) {pesquisa.clear();}
+	    else if (dtPesquisa.isVisible()) {dtPesquisa.setValue(null);}
+	    
 	    filtroCampo.getSelectionModel().clearSelection();
-	    tabelaItens.getItems().clear();
-	    tabelaContratos.getItems().clear();
+	    
+	    if (tabelaContratos.isVisible()) {historicoAlugueis();}
+	    else {listarItensDisponiveis();}
 	}
 }

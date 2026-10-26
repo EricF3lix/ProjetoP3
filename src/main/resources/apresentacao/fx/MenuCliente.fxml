@@ -6,6 +6,8 @@
 <?import javafx.scene.control.cell.*?>
 <?import javafx.scene.layout.*?>
 <?import java.lang.String?>
+<?import javafx.scene.control.DatePicker?>
+
 <AnchorPane prefHeight="660.0" prefWidth="950.0" style="-fx-background-color: #F5F5F7;" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml" fx:controller="apresentacao.fx.MenuClienteController">
    <children>
       
@@ -32,6 +34,7 @@
             </HBox>
             <HBox spacing="8.0">
                <children>
+               	  <DatePicker fx:id="dtPesquisa" promptText="Digite para buscar..." maxWidth="Infinity" style="-fx-background-color: #e5e5ea; -fx-background-radius: 8px; -fx-background-insets: 0;" HBox.hgrow="ALWAYS" />
                   <TextField fx:id="pesquisa" promptText="Digite para buscar..." style="-fx-background-color: #e5e5ea; -fx-background-radius: 8px; -fx-padding: 8px;" HBox.hgrow="ALWAYS" />
                   <Button fx:id="btnLimparPesquisa" mnemonicParsing="false" onAction="#aoLimparPesquisa" prefWidth="82.0" style="-fx-background-color: #d1d1d6; -fx-text-fill: #1d1d1f; -fx-background-radius: 8px; -fx-cursor: hand;" text="Limpar" />
                </children>
