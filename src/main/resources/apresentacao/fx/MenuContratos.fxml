@@ -24,7 +24,7 @@
             
             <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#buscarContrato" prefHeight="38.0" style="-fx-background-color: #ffffff; -fx-background-radius: 10px; -fx-border-color: #d1d1d6; -fx-border-radius: 10px; -fx-text-fill: #1d1d1f; -fx-font-weight: bold; -fx-cursor: hand; -fx-font-size: 13px;" text="Buscar Contrato por ID" />
             <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#listarContratos" prefHeight="38.0" style="-fx-background-color: #ffffff; -fx-background-radius: 10px; -fx-border-color: #d1d1d6; -fx-border-radius: 10px; -fx-text-fill: #1d1d1f; -fx-font-weight: bold; -fx-cursor: hand; -fx-font-size: 13px;" text="Listar todos os Contratos" />
-            <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#finalizarContrato" prefHeight="38.0" style="-fx-background-color: #ffffff; -fx-background-radius: 10px; -fx-border-color: #d1d1d6; -fx-border-radius: 10px; -fx-text-fill: #34c759; -fx-font-weight: bold; -fx-cursor: hand; -fx-font-size: 13px;" text="Finalizar Contrato (devolução)" />
+            <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#finalizarContrato" prefHeight="38.0" style="-fx-background-color: #ffffff; -fx-background-radius: 10px; -fx-border-color: #d1d1d6; -fx-border-radius: 10px; -fx-text-fill: #34c759; -fx-font-weight: bold; -fx-cursor: hand; -fx-font-size: 13px;" text="Finalizar Contrato" />
             <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#cancelarContrato" prefHeight="38.0" style="-fx-background-color: #fff0f0; -fx-background-radius: 10px; -fx-border-color: #ffcccc; -fx-border-radius: 10px; -fx-text-fill: #ff3b30; -fx-font-weight: bold; -fx-cursor: hand; -fx-font-size: 13px;" text="Cancelar Contrato" />
             
             <Pane prefHeight="5.0" />
@@ -66,7 +66,7 @@
                          <cellValueFactory><PropertyValueFactory property="status" /></cellValueFactory>
                       </TableColumn>
                       <TableColumn prefWidth="80.0" text="Valor">
-                         <cellValueFactory><PropertyValueFactory property="valorTotal" /></cellValueFactory>
+                         <cellValueFactory><PropertyValueFactory property="valorMultaFormatado" /></cellValueFactory>
                       </TableColumn>
                     </columns>
                   </TableView>
