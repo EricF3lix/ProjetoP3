@@ -96,7 +96,11 @@ public class MenuContratosController extends MenuController {
     private void carregarOpcoesFormulario() {
         if (sistema == null) return;
 
-       
+        carregarClientesFormulario();
+        carregarItensFormulario();
+    }
+
+    private void carregarClientesFormulario() {
         List<Usuario> usuarios = sistema.listarUsuarios();
         if (usuarios != null) {
             listaClientes = usuarios.stream()
@@ -112,33 +116,27 @@ public class MenuContratosController extends MenuController {
                     .map(c -> c.getId() + " - " + c.getNome())
                     .toList());
             cbCliente.getSelectionModel().clearSelection();
-
-            if (listaClientes.isEmpty()) {
-                cbCliente.setPromptText("Nenhum cliente cadastrado");
-            } else {
-                cbCliente.setPromptText("Selecione o cliente");
-            }
+            cbCliente.setPromptText(listaClientes.isEmpty() ? "Nenhum cliente cadastrado" : "Selecione o cliente");
         }
+    }
 
-        
+    private void carregarItensFormulario() {
         List<ContratoAluguel> contratos = sistema.listarContratos();
-        List<Integer> idsItensAlugados;
+        List<Integer> idsItensAlugados = List.of();
         if (contratos != null) {
             idsItensAlugados = contratos.stream()
                     .filter(c -> c != null && c.estaAtivo() && c.getItem() != null)
                     .map(c -> c.getItem().getId())
                     .toList();
-        } else {
-            idsItensAlugados = List.of();
         }
 
-       
         List<Item> todosItens = sistema.listarItens();
         if (todosItens != null) {
+            final List<Integer> indisponiveis = idsItensAlugados;
             listaItensDisponiveis = todosItens.stream()
                     .filter(i -> i != null)
-                    .filter(i -> !idsItensAlugados.contains(i.getId()))
-                    .filter(i -> i.estaDisponivel() || "DISPONIVEL".equalsIgnoreCase(i.getStatus()) || "DISPONÍVEL".equalsIgnoreCase(i.getStatus()))
+                    .filter(i -> !indisponiveis.contains(i.getId()))
+                    .filter(Item::estaDisponivel)
                     .toList();
         } else {
             listaItensDisponiveis = List.of();
@@ -149,12 +147,7 @@ public class MenuContratosController extends MenuController {
                     .map(i -> i.getId() + " - " + i.getNome() + " (R$ " + String.format("%.2f", i.getTaxaDiaria()) + "/dia)")
                     .toList());
             cbItem.getSelectionModel().clearSelection();
-
-            if (listaItensDisponiveis.isEmpty()) {
-                cbItem.setPromptText("Nenhum item disponível");
-            } else {
-                cbItem.setPromptText("Selecione o item");
-            }
+            cbItem.setPromptText(listaItensDisponiveis.isEmpty() ? "Nenhum item disponível" : "Selecione o item");
         }
     }
 
