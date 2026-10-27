@@ -145,7 +145,7 @@ public class MenuFornecedoresController extends MenuController{
 		Fornecedor fornecedor = new Fornecedor(id, nomeFornecedor, cnpjFornecedor, emailFornecedor, telefoneFornecedor);
 		
 		if(sistema.cadastrarFornecedor(fornecedor)) {
-			info("Fornecedor cadastrado com sucesso! ID: " + id);
+			notificarPopUp("Fornecedor cadastrado com sucesso! ID: " + id);
 			
 			txtNome.clear();
 			txtCNPJ.clear();
@@ -204,7 +204,7 @@ public class MenuFornecedoresController extends MenuController{
 		int id = atual.getId();
 
 		if (sistema.atualizarFornecedor(new Fornecedor(id, nome, cnpj, email, telefone))) {
-			info("Fornecedor atualizado com sucesso.");
+			notificarPopUp("Fornecedor atualizado com sucesso.");
 			btnAtualizar.setUserData(null);
 			txtNome.clear();
 			txtCNPJ.clear();
@@ -228,7 +228,7 @@ public class MenuFornecedoresController extends MenuController{
 	    }
 
 	    if (sistema.desativarFornecedor(id.get())) {
-	        info("Fornecedor desativado com sucesso");
+	    	notificarPopUp("Fornecedor desativado com sucesso");
 	        mostraFornecedor(id.get());
 	    } else {
 	        erro("Erro ao desativar fornecedor");
