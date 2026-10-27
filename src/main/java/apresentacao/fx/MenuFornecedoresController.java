@@ -137,7 +137,7 @@ public class MenuFornecedoresController extends MenuController{
 		String telefoneFornecedor = txtTelefone.getText().trim();
 
 		if (nomeFornecedor.isEmpty() || cnpjFornecedor.isEmpty() || emailFornecedor.isEmpty() || telefoneFornecedor.isEmpty()) {
-			erro("Preencha todos os campos!");
+			notificarPopUpErro("Preencha todos os campos!");
 			return;
 		}
 		
@@ -155,7 +155,7 @@ public class MenuFornecedoresController extends MenuController{
 			mostraFornecedor(id);
 		}
 		else {
-			erro("Fornecedor já cadastrado!");
+			notificarPopUpErro("Fornecedor já cadastrado!");
 		}
 		
 	}
@@ -197,7 +197,7 @@ public class MenuFornecedoresController extends MenuController{
 		String telefone = txtTelefone.getText().trim();
 
 		if (nome.isEmpty() || cnpj.isEmpty() || email.isEmpty() || telefone.isEmpty()) {
-			erro("Preencha todos os campos!");
+			notificarPopUpErro("Preencha todos os campos!");
 			return;
 		}
 
@@ -212,7 +212,7 @@ public class MenuFornecedoresController extends MenuController{
 			txtTelefone.clear();
 			mostraFornecedor(id);
 		} else {
-			erro("Erro ao atualizar fornecedor.");
+			notificarPopUpErro("Erro ao atualizar fornecedor.");
 		}
 	}
 	
@@ -244,7 +244,7 @@ public class MenuFornecedoresController extends MenuController{
 			if (id.isEmpty()) return null;
 			atual = sistema.buscarFornecedor(id.get());
 			if (atual == null) {
-				erro(NAO_ENCONTRADO);
+				notificarPopUpErro(NAO_ENCONTRADO);
 			}
 		}
 		return atual;

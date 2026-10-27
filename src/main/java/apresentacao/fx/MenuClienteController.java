@@ -95,7 +95,7 @@ public class MenuClienteController extends MenuController {
 	        case "Nome" -> tabelaItens.getItems().setAll(sistema.filtraNome(pesquisado));
 	        case "Categoria" -> tabelaItens.getItems().setAll(sistema.filtraCategoria(pesquisado));
 	        case "Taxa" -> tabelaItens.getItems().setAll(sistema.filtraTaxa(pesquisado));
-	        default -> info("Seleção inválida");
+	        default -> erro("Seleção inválida");
 	    }
 	}
 	
@@ -127,7 +127,7 @@ public class MenuClienteController extends MenuController {
 	        case "Status" -> tabelaContratos.getItems().setAll(sistema.filtraStatusContrato(pesquisado));
 	        case "Valor total" -> tabelaContratos.getItems().setAll(sistema.filtraValorTotalContrato(pesquisado));
 	        case "Valor multa" -> tabelaContratos.getItems().setAll(sistema.filtraValorMultaContrato(pesquisado));
-	        default -> info("Seleção inválida");
+	        default -> erro("Seleção inválida");
 	    }
 	}
 	

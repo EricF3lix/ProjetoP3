@@ -137,10 +137,22 @@ public abstract class MenuController {
     }
     
     public void notificarPopUp(String mensagem) {
-        notificarPopUp(mensagem, true);
+        notificarPopUpSucesso(mensagem);
+    }
+
+    public void notificarPopUpSucesso(String mensagem) {
+        exibirPopUp(mensagem, true);
+    }
+
+    public void notificarPopUpErro(String mensagem) {
+        exibirPopUp(mensagem, false);
     }
 
     public void notificarPopUp(String mensagem, boolean sucesso) {
+        exibirPopUp(mensagem, sucesso);
+    }
+
+    private void exibirPopUp(String mensagem, boolean sucesso) {
         if (navegador == null || navegador.getStage() == null) {
             info(mensagem);
             return;
@@ -153,20 +165,33 @@ public abstract class MenuController {
         card.setAlignment(Pos.CENTER);
         card.setPadding(new Insets(12, 22, 12, 22));
 
-        String corDestaque = sucesso ? "#34C759" : "#FF3B30";
-        String iconeSimbolo = sucesso ? "✓" : "!";
+        String iconeSimbolo;
+        String estiloCard;
 
-        card.setStyle(
-            "-fx-background-color: #1D1D1F; " +
-            "-fx-background-radius: 25px; " +
-            "-fx-border-color: " + corDestaque + "; " +
-            "-fx-border-width: 1.5px; " +
-            "-fx-border-radius: 25px; " +
-            "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.30), 16, 0, 0, 4);"
-        );
+        if (sucesso) {
+            iconeSimbolo = "✓";
+            estiloCard =
+                "-fx-background-color: linear-gradient(to bottom right, #34D058, #248A3D); " +
+                "-fx-background-radius: 25px; " +
+                "-fx-border-color: #5BE87B; " +
+                "-fx-border-width: 1.5px; " +
+                "-fx-border-radius: 25px; " +
+                "-fx-effect: dropshadow(gaussian, rgba(52,208,88,0.55), 18, 0, 0, 4);";
+        } else {
+            iconeSimbolo = "✕";
+            estiloCard =
+                "-fx-background-color: linear-gradient(to bottom right, #FF5B52, #C0271E); " +
+                "-fx-background-radius: 25px; " +
+                "-fx-border-color: #FF8A80; " +
+                "-fx-border-width: 1.5px; " +
+                "-fx-border-radius: 25px; " +
+                "-fx-effect: dropshadow(gaussian, rgba(255,69,58,0.55), 18, 0, 0, 4);";
+        }
+
+        card.setStyle(estiloCard);
 
         Label lblIcone = new Label(iconeSimbolo);
-        lblIcone.setStyle("-fx-text-fill: " + corDestaque + "; -fx-font-weight: bold; -fx-font-size: 14px;");
+        lblIcone.setStyle("-fx-text-fill: #FFFFFF; -fx-font-weight: bold; -fx-font-size: 14px;");
 
         Label lblTexto = new Label(mensagem);
         lblTexto.setStyle("-fx-text-fill: #FFFFFF; -fx-font-size: 13px; -fx-font-weight: 600; -fx-font-family: -apple-system, 'SF Pro Text', sans-serif;");
