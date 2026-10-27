@@ -1,14 +1,14 @@
 package business.cruds;
 
-import java.util.List;
-
 import business.interfaces.IGerenciamentoItens;
 import entidades.Item;
 import repositories.IItemRepositorio;
 
+import java.util.List;
+
 public class GerenciamentoItens implements IGerenciamentoItens {
 
-    private IItemRepositorio repositorio;
+    private final IItemRepositorio repositorio;
 
     public GerenciamentoItens(IItemRepositorio repositorio) {
         this.repositorio = repositorio;
@@ -86,5 +86,39 @@ public class GerenciamentoItens implements IGerenciamentoItens {
     @Override
     public int gerarProximoId() {
         return repositorio.gerarProximoId();
+    }
+    
+    @Override
+    public List<Item> filtrarPorId(String pesquisado) {
+        String termo = pesquisado.toLowerCase();
+        return repositorio.listarTodos().stream()
+                .filter(item -> String.valueOf(item.getId()).toLowerCase().startsWith(termo))
+                .toList();
+    }
+
+    @Override
+    public List<Item> filtrarPorNome(String pesquisado) {
+        String termo = pesquisado.toLowerCase();
+        return repositorio.listarTodos().stream()
+                .filter(item -> item.getNome() != null && item.getNome().toLowerCase().startsWith(termo))
+                .toList();
+    }
+
+    @Override
+    public List<Item> filtrarPorCategoria(String pesquisado) {
+        String termo = pesquisado.toLowerCase();
+        return repositorio.listarTodos().stream()
+                .filter(item -> item.getCategoria() != null
+                        && item.getCategoria().getNome() != null
+                        && item.getCategoria().getNome().toLowerCase().startsWith(termo))
+                .toList();
+    }
+
+    @Override
+    public List<Item> filtrarPorTaxa(String pesquisado) {
+        String termo = pesquisado.toLowerCase();
+        return repositorio.listarTodos().stream()
+                .filter(item -> String.valueOf(item.getTaxaDiaria()).toLowerCase().startsWith(termo))
+                .toList();
     }
 }

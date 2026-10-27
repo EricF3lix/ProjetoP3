@@ -1,181 +1,145 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.Insets?>
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.ComboBox?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.control.PasswordField?>
-<?import javafx.scene.control.Separator?>
-<?import javafx.scene.control.TableColumn?>
-<?import javafx.scene.control.TableView?>
-<?import javafx.scene.control.TextField?>
-<?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.Pane?>
-<?import javafx.scene.layout.StackPane?>
-<?import javafx.scene.layout.VBox?>
-<?import javafx.scene.text.Font?>
-
-<AnchorPane prefHeight="640.0" prefWidth="920.0" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml" fx:controller="apresentacao.fx.MenuUsuariosAdminController">
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<AnchorPane fx:id="rootPane" prefHeight="660.0" prefWidth="950.0" style="-fx-background-color: #F5F5F7;" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml" fx:controller="apresentacao.fx.MenuUsuariosAdminController">
    <children>
-      <Label layoutX="35.0" layoutY="20.0" text="Gerenciar Usuários (Administrador)">
-         <font>
-            <Font name="System Bold" size="22.0" />
-         </font>
-      </Label>
+      
+      <Label layoutX="40.0" layoutY="25.0" style="-fx-font-family: -apple-system, 'SF Pro Display', 'Segoe UI', sans-serif; -fx-font-weight: 900; -fx-font-size: 26px; -fx-text-fill: #1d1d1f;" text="Gestão de Usuários" />
+      <Label layoutX="40.0" layoutY="58.0" style="-fx-font-family: -apple-system, 'SF Pro Text', 'Segoe UI', sans-serif; -fx-font-size: 14px; -fx-text-fill: #86868b;" text="Painel do Administrador" />
 
-      <!-- Menu Lateral de Botoes -->
-      <VBox layoutX="35.0" layoutY="65.0" prefWidth="250.0" spacing="10.0">
+     
+      <VBox layoutX="40.0" layoutY="100.0" prefWidth="250.0" spacing="12.0">
+      	<Label style="-fx-text-fill: #6e6e73; -fx-font-size: 12px; -fx-font-weight: bold;" text="Filtrar Usuários:" />
+		<ComboBox fx:id="cbFiltro" prefHeight="35.0" prefWidth="250.0" style="-fx-background-color: #e5e5ea; -fx-background-radius: 8px;" />
+		<HBox spacing="8.0">
+   			<children>
+      			<TextField fx:id="txtPesquisa" promptText="Digite para buscar..." style="-fx-background-color: #e5e5ea; -fx-background-radius: 8px; -fx-padding: 8px;" HBox.hgrow="ALWAYS" />
+      			<Button fx:id="btnLimparPesquisa" mnemonicParsing="false" onAction="#aoLimparPesquisa" style="-fx-background-color: #d1d1d6; -fx-text-fill: #1d1d1f; -fx-background-radius: 8px; -fx-cursor: hand;" text="Limpar" />
+   			</children>
+		</HBox>
+
+		<Pane prefHeight="2.0" />
+      
          <children>
-            <Button fx:id="btnCadastrarCliente" mnemonicParsing="false" onAction="#aoCadastrarCliente" prefHeight="32.0" prefWidth="250.0" text="Cadastrar Cliente" />
-            <Button fx:id="btnCadastrarFuncionario" mnemonicParsing="false" onAction="#aoCadastrarFuncionario" prefHeight="32.0" prefWidth="250.0" text="Cadastrar Funcionário" />
-            <Button fx:id="btnCadastrarAdmin" mnemonicParsing="false" onAction="#aoCadastrarAdmin" prefHeight="32.0" prefWidth="250.0" text="Cadastrar Administrador" />
-            <Separator />
-            <Button fx:id="btnBuscarUsuario" mnemonicParsing="false" onAction="#aoBuscarUsuario" prefHeight="32.0" prefWidth="250.0" text="Buscar Usuário por ID" />
-            <Button fx:id="btnListarUsuarios" mnemonicParsing="false" onAction="#aoListarUsuarios" prefHeight="32.0" prefWidth="250.0" text="Listar todos os Usuários" />
-            <Button fx:id="btnAtualizarUsuario" mnemonicParsing="false" onAction="#aoAtualizarUsuario" prefHeight="32.0" prefWidth="250.0" text="Atualizar Usuário" />
-            <Button fx:id="btnDesativarUsuario" mnemonicParsing="false" onAction="#aoDesativarUsuario" prefHeight="32.0" prefWidth="250.0" text="Desativar Usuário" />
-            <Pane prefHeight="10.0" />
-            <Button fx:id="btnVoltar" mnemonicParsing="false" onAction="#voltar" prefHeight="32.0" prefWidth="250.0" text="Voltar" />
+            <Button fx:id="btnCadastrarCliente" mnemonicParsing="false" onAction="#aoCadastrarCliente" prefHeight="38.0" prefWidth="250.0" style="-fx-background-color: #ffffff; -fx-background-radius: 10px; -fx-border-color: #d1d1d6; -fx-border-radius: 10px; -fx-text-fill: #007AFF; -fx-font-weight: bold; -fx-cursor: hand; -fx-font-size: 13px;" text="Cadastrar Cliente" />
+            <Button fx:id="btnCadastrarFuncionario" mnemonicParsing="false" onAction="#aoCadastrarFuncionario" prefHeight="38.0" prefWidth="250.0" style="-fx-background-color: #ffffff; -fx-background-radius: 10px; -fx-border-color: #d1d1d6; -fx-border-radius: 10px; -fx-text-fill: #007AFF; -fx-font-weight: bold; -fx-cursor: hand; -fx-font-size: 13px;" text="Cadastrar Funcionário" />
+            <Button fx:id="btnCadastrarAdmin" mnemonicParsing="false" onAction="#aoCadastrarAdmin" prefHeight="38.0" prefWidth="250.0" style="-fx-background-color: #ffffff; -fx-background-radius: 10px; -fx-border-color: #d1d1d6; -fx-border-radius: 10px; -fx-text-fill: #007AFF; -fx-font-weight: bold; -fx-cursor: hand; -fx-font-size: 13px;" text="Cadastrar Administrador" />
+            
+            <Separator style="-fx-padding: 5 0 5 0;" />
+            
+            <Button fx:id="btnBuscarUsuario" mnemonicParsing="false" onAction="#aoBuscarUsuario" prefHeight="38.0" prefWidth="250.0" style="-fx-background-color: #ffffff; -fx-background-radius: 10px; -fx-border-color: #d1d1d6; -fx-border-radius: 10px; -fx-text-fill: #1d1d1f; -fx-font-weight: bold; -fx-cursor: hand; -fx-font-size: 13px;" text="Buscar Usuário por ID" />
+            <Button fx:id="btnListarUsuarios" mnemonicParsing="false" onAction="#aoListarUsuarios" prefHeight="38.0" prefWidth="250.0" style="-fx-background-color: #ffffff; -fx-background-radius: 10px; -fx-border-color: #d1d1d6; -fx-border-radius: 10px; -fx-text-fill: #1d1d1f; -fx-font-weight: bold; -fx-cursor: hand; -fx-font-size: 13px;" text="Listar todos os Usuários" />
+            <Button fx:id="btnAtualizarUsuario" mnemonicParsing="false" onAction="#aoAtualizarUsuario" prefHeight="38.0" prefWidth="250.0" style="-fx-background-color: #ffffff; -fx-background-radius: 10px; -fx-border-color: #d1d1d6; -fx-border-radius: 10px; -fx-text-fill: #1d1d1f; -fx-font-weight: bold; -fx-cursor: hand; -fx-font-size: 13px;" text="Atualizar Usuário" />
+            <Button fx:id="btnDesativarUsuario" mnemonicParsing="false" onAction="#aoDesativarUsuario" prefHeight="38.0" prefWidth="250.0" style="-fx-background-color: #fff0f0; -fx-background-radius: 10px; -fx-border-color: #ffcccc; -fx-border-radius: 10px; -fx-text-fill: #ff3b30; -fx-font-weight: bold; -fx-cursor: hand; -fx-font-size: 13px;" text="Desativar Usuário" />
+            
+            <Pane prefHeight="5.0" />
+            <Button fx:id="btnVoltar" mnemonicParsing="false" onAction="#voltar" prefHeight="38.0" prefWidth="250.0" style="-fx-background-color: #e5e5ea; -fx-background-radius: 10px; -fx-text-fill: #1d1d1f; -fx-font-weight: bold; -fx-cursor: hand; -fx-font-size: 13px;" text="Voltar" />
          </children>
       </VBox>
 
-      <!-- Painel Dinamico de Conteudo -->
-      <AnchorPane layoutX="310.0" layoutY="65.0" prefHeight="550.0" prefWidth="575.0" style="-fx-border-color: #cccccc; -fx-background-color: #ffffff;">
+      
+      <AnchorPane layoutX="320.0" layoutY="100.0" prefHeight="520.0" prefWidth="590.0" style="-fx-background-color: #ffffff; -fx-background-radius: 16px; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 12, 0, 2, 6);">
          <children>
             <StackPane fx:id="painelConteudo" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                <children>
-                  <!-- Painel da Tabela com Barra de Pesquisa e Filtros -->
-                  <VBox fx:id="painelTabela" spacing="10.0">
+                  
+                  <VBox fx:id="painelTabela" spacing="12.0">
                      <padding>
-                        <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
+                        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
                      </padding>
                      <children>
-                        <Label text="Usuários Cadastrados">
-                           <font>
-                              <Font name="System Bold" size="16.0" />
-                           </font>
-                        </Label>
-
-                        <!-- Barra de Busca Dinamica -->
-                        <HBox alignment="CENTER_LEFT" spacing="8.0">
-                           <children>
-                              <Label text="Filtrar por:" />
-                              <ComboBox fx:id="cbFiltro" prefWidth="110.0" />
-                              <TextField fx:id="txtPesquisa" promptText="Digite para pesquisar..." HBox.hgrow="ALWAYS" />
-                              <Button fx:id="btnLimparPesquisa" mnemonicParsing="false" onAction="#aoLimparPesquisa" text="Limpar" />
-                           </children>
-                        </HBox>
-
-                        <TableView fx:id="tabelaUsuarios" prefHeight="440.0" prefWidth="545.0" VBox.vgrow="ALWAYS">
+                        <Label style="-fx-font-family: -apple-system, 'SF Pro Display', 'Segoe UI', sans-serif; -fx-font-weight: bold; -fx-font-size: 18px; -fx-text-fill: #1d1d1f;" text="Usuários Cadastrados" /> 
+                        <TableView fx:id="tabelaUsuarios" prefHeight="400.0" prefWidth="545.0" style="-fx-border-color: #e5e5ea; -fx-border-radius: 8px; -fx-background-radius: 8px;" VBox.vgrow="ALWAYS">
                            <columns>
                               <TableColumn fx:id="colId" prefWidth="50.0" text="ID" />
                               <TableColumn fx:id="colNome" prefWidth="130.0" text="Nome" />
                               <TableColumn fx:id="colEmail" prefWidth="150.0" text="E-mail" />
-                              <TableColumn fx:id="colPerfil" prefWidth="100.0" text="Perfil" />
+                              <TableColumn fx:id="colPerfil" prefWidth="95.0" text="Perfil" />
                               <TableColumn fx:id="colAtivo" prefWidth="100.0" text="Status" />
                            </columns>
                         </TableView>
                      </children>
                   </VBox>
 
-                  <!-- Painel de Cadastro (Cliente / Funcionario / Admin) -->
-                  <VBox fx:id="painelCadastro" spacing="8.0" visible="false">
+                 
+                  <VBox fx:id="painelCadastro" spacing="10.0" visible="false">
                      <padding>
-                        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+                        <Insets bottom="25.0" left="25.0" right="25.0" top="25.0" />
                      </padding>
                      <children>
-                        <Label fx:id="lblCadTitulo" text="Cadastrar Usuário">
-                           <font>
-                              <Font name="System Bold" size="16.0" />
-                           </font>
-                        </Label>
-                        <Label text="Nome:" />
-                        <TextField fx:id="txtCadNome" promptText="Nome completo" />
-                        <Label text="E-mail:" />
-                        <TextField fx:id="txtCadEmail" promptText="E-mail" />
-                        <Label text="CPF:" />
-                        <TextField fx:id="txtCadCpf" promptText="CPF" />
-                        <Label text="Senha:" />
-                        <PasswordField fx:id="txtCadSenha" promptText="Senha" />
-                        <Pane prefHeight="5.0" />
-                        <Button fx:id="btnCadSalvar" mnemonicParsing="false" onAction="#aoSalvarCadastro" text="Salvar" />
-                        <Label fx:id="lblCadMensagem" />
+                        <Label fx:id="lblCadTitulo" style="-fx-font-family: -apple-system, 'SF Pro Display', 'Segoe UI', sans-serif; -fx-font-weight: bold; -fx-font-size: 18px; -fx-text-fill: #1d1d1f;" text="Cadastrar Usuário" />
+                        <Label style="-fx-text-fill: #6e6e73;" text="Nome:" />
+                        <TextField fx:id="txtCadNome" promptText="Nome completo" style="-fx-background-color: #F2F2F7; -fx-background-radius: 8px; -fx-padding: 8px;" />
+                        <Label style="-fx-text-fill: #6e6e73;" text="E-mail:" />
+                        <TextField fx:id="txtCadEmail" promptText="E-mail" style="-fx-background-color: #F2F2F7; -fx-background-radius: 8px; -fx-padding: 8px;" />
+                        <Label style="-fx-text-fill: #6e6e73;" text="CPF:" />
+                        <TextField fx:id="txtCadCpf" promptText="CPF" style="-fx-background-color: #F2F2F7; -fx-background-radius: 8px; -fx-padding: 8px;" />
+                        <Label style="-fx-text-fill: #6e6e73;" text="Senha:" />
+                        <PasswordField fx:id="txtCadSenha" promptText="Senha" style="-fx-background-color: #F2F2F7; -fx-background-radius: 8px; -fx-padding: 8px;" />
+                        <Pane prefHeight="10.0" />
+                        <Button fx:id="btnCadSalvar" mnemonicParsing="false" onAction="#aoSalvarCadastro" style="-fx-background-color: #007AFF; -fx-text-fill: white; -fx-background-radius: 8px; -fx-font-weight: bold; -fx-padding: 8 20 8 20; -fx-cursor: hand;" text="Salvar" />
+                        <Label fx:id="lblCadMensagem" style="-fx-font-weight: bold;" />
                      </children>
                   </VBox>
 
-                  <!-- Painel de Busca Direta por ID -->
+                  
                   <VBox fx:id="painelBusca" spacing="12.0" visible="false">
                      <padding>
-                        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+                        <Insets bottom="25.0" left="25.0" right="25.0" top="25.0" />
                      </padding>
                      <children>
-                        <Label text="Buscar Usuário por ID">
-                           <font>
-                              <Font name="System Bold" size="16.0" />
-                           </font>
-                        </Label>
-                        <HBox spacing="8.0">
+                        <Label style="-fx-font-family: -apple-system, 'SF Pro Display', 'Segoe UI', sans-serif; -fx-font-weight: bold; -fx-font-size: 18px; -fx-text-fill: #1d1d1f;" text="Buscar Usuário por ID" />
+                        <HBox spacing="10.0">
                            <children>
-                              <TextField fx:id="txtBuscaId" promptText="ID do usuário" />
-                              <Button mnemonicParsing="false" onAction="#aoConfirmarBusca" text="Buscar" />
+                              <TextField fx:id="txtBuscaId" promptText="ID do usuário" style="-fx-background-color: #F2F2F7; -fx-background-radius: 8px; -fx-padding: 8px;" />
+                              <Button mnemonicParsing="false" onAction="#aoConfirmarBusca" style="-fx-background-color: #e5e5ea; -fx-text-fill: #1d1d1f; -fx-background-radius: 8px; -fx-font-weight: bold; -fx-cursor: hand;" text="Buscar" />
                            </children>
                         </HBox>
-                        <Label fx:id="lblBuscaResultado" wrapText="true">
-                           <font>
-                              <Font size="13.0" />
-                           </font>
-                        </Label>
+                        <Label fx:id="lblBuscaResultado" style="-fx-font-size: 14px;" wrapText="true" />
                      </children>
                   </VBox>
 
-                  <!-- Painel de Atualizar Usuario -->
-                  <VBox fx:id="painelAtualizar" spacing="8.0" visible="false">
+                 
+                  <VBox fx:id="painelAtualizar" spacing="10.0" visible="false">
                      <padding>
-                        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+                        <Insets bottom="25.0" left="25.0" right="25.0" top="25.0" />
                      </padding>
                      <children>
-                        <Label text="Atualizar Usuário">
-                           <font>
-                              <Font name="System Bold" size="16.0" />
-                           </font>
-                        </Label>
-                        <HBox spacing="8.0">
+                        <Label style="-fx-font-family: -apple-system, 'SF Pro Display', 'Segoe UI', sans-serif; -fx-font-weight: bold; -fx-font-size: 18px; -fx-text-fill: #1d1d1f;" text="Atualizar Usuário" />
+                        <HBox spacing="10.0">
                            <children>
-                              <TextField fx:id="txtAtualizarId" promptText="ID do usuário" />
-                              <Button mnemonicParsing="false" onAction="#aoCarregarUsuarioParaAtualizar" text="Carregar" />
+                              <TextField fx:id="txtAtualizarId" promptText="ID do usuário" style="-fx-background-color: #F2F2F7; -fx-background-radius: 8px; -fx-padding: 8px;" />
+                              <Button mnemonicParsing="false" onAction="#aoCarregarUsuarioParaAtualizar" style="-fx-background-color: #e5e5ea; -fx-text-fill: #1d1d1f; -fx-background-radius: 8px; -fx-font-weight: bold; -fx-cursor: hand;" text="Carregar" />
                            </children>
                         </HBox>
-                        <Label text="Nome:" />
-                        <TextField fx:id="txtAtualizarNome" promptText="Novo nome" />
-                        <Label text="E-mail:" />
-                        <TextField fx:id="txtAtualizarEmail" promptText="Novo e-mail" />
-                        <Label text="Senha:" />
-                        <PasswordField fx:id="txtAtualizarSenha" promptText="Nova senha (opcional)" />
+                        <Label style="-fx-text-fill: #6e6e73;" text="Nome:" />
+                        <TextField fx:id="txtAtualizarNome" promptText="Novo nome" style="-fx-background-color: #F2F2F7; -fx-background-radius: 8px; -fx-padding: 8px;" />
+                        <Label style="-fx-text-fill: #6e6e73;" text="E-mail:" />
+                        <TextField fx:id="txtAtualizarEmail" promptText="Novo e-mail" style="-fx-background-color: #F2F2F7; -fx-background-radius: 8px; -fx-padding: 8px;" />
+                        <Label style="-fx-text-fill: #6e6e73;" text="Senha:" />
+                        <PasswordField fx:id="txtAtualizarSenha" promptText="Nova senha (opcional)" style="-fx-background-color: #F2F2F7; -fx-background-radius: 8px; -fx-padding: 8px;" />
                         <Pane prefHeight="5.0" />
-                        <Button fx:id="btnAtualizarSalvar" mnemonicParsing="false" onAction="#aoConfirmarAtualizar" text="Salvar Alterações" />
-                        <Label fx:id="lblAtualizarStatus" />
+                        <Button fx:id="btnAtualizarSalvar" mnemonicParsing="false" onAction="#aoConfirmarAtualizar" style="-fx-background-color: #007AFF; -fx-text-fill: white; -fx-background-radius: 8px; -fx-font-weight: bold; -fx-padding: 8 20 8 20; -fx-cursor: hand;" text="Salvar Alterações" />
+                        <Label fx:id="lblAtualizarStatus" style="-fx-font-weight: bold;" />
                      </children>
                   </VBox>
 
-                  <!-- Painel de Desativar Usuario -->
+                  
                   <VBox fx:id="painelDesativar" spacing="12.0" visible="false">
                      <padding>
-                        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+                        <Insets bottom="25.0" left="25.0" right="25.0" top="25.0" />
                      </padding>
                      <children>
-                        <Label text="Desativar Usuário">
-                           <font>
-                              <Font name="System Bold" size="16.0" />
-                           </font>
-                        </Label>
-                        <HBox spacing="8.0">
+                        <Label style="-fx-font-family: -apple-system, 'SF Pro Display', 'Segoe UI', sans-serif; -fx-font-weight: bold; -fx-font-size: 18px; -fx-text-fill: #1d1d1f;" text="Desativar Usuário" />
+                        <HBox spacing="10.0">
                            <children>
-                              <TextField fx:id="txtDesativarId" promptText="ID do usuário" />
-                              <Button mnemonicParsing="false" onAction="#aoConfirmarDesativar" text="Desativar" />
+                              <TextField fx:id="txtDesativarId" promptText="ID do usuário" style="-fx-background-color: #F2F2F7; -fx-background-radius: 8px; -fx-padding: 8px;" />
+                              <Button mnemonicParsing="false" onAction="#aoConfirmarDesativar" style="-fx-background-color: #ffcccc; -fx-text-fill: #ff3b30; -fx-background-radius: 8px; -fx-font-weight: bold; -fx-cursor: hand;" text="Desativar" />
                            </children>
                         </HBox>
-                        <Label fx:id="lblDesativarStatus" />
+                        <Label fx:id="lblDesativarStatus" style="-fx-font-weight: bold;" />
                      </children>
                   </VBox>
                </children>

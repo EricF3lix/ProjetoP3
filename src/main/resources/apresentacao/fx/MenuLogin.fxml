@@ -1,26 +1,57 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.control.PasswordField?>
-<?import javafx.scene.control.TextField?>
-<?import javafx.scene.layout.VBox?>
-
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.*?>
 <VBox alignment="CENTER" prefHeight="600.0" prefWidth="900.0" spacing="12.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="apresentacao.fx.MenuLoginController">
    <padding>
       <Insets bottom="24.0" left="24.0" right="24.0" top="24.0" />
    </padding>
    <children>
-      <Label style="-fx-font-size: 26px; -fx-font-weight: bold;" text="LOJA QUE ALUGA DE UM TUDO" />
-      <Label alignment="CENTER" contentDisplay="CENTER" prefHeight="24.0" prefWidth="125.0" text="Entrar no sistema">
-         <VBox.margin>
-            <Insets bottom="12.0" />
-         </VBox.margin>
-      </Label>
-      <TextField fx:id="txtEmail" maxWidth="320.0" promptText="Email" />
-      <PasswordField fx:id="txtSenha" maxWidth="320.0" onAction="#entrar" promptText="Senha" />
-      <Button defaultButton="true" maxWidth="320.0" mnemonicParsing="false" onAction="#entrar" text="Entrar" />
-      <Button maxWidth="320.0" mnemonicParsing="false" onAction="#voltar" text="Encerrar" />
+      <VBox alignment="CENTER" maxHeight="560.0" maxWidth="400.0" spacing="20.0" style="-fx-background-color: #ffffff; -fx-background-radius: 20px; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 25, 0, 0, 8);">
+         <padding>
+            <Insets bottom="45.0" left="40.0" right="40.0" top="45.0" />
+         </padding>
+         <children>
+
+
+            <StackPane fx:id="areaLogo" maxHeight="100.0" maxWidth="100.0" minHeight="100.0" minWidth="100.0" prefHeight="100.0" prefWidth="100.0" scaleX="2.0" scaleY="2.0" style="-fx-border-color: #c7c7cc; -fx-border-style: segments(6, 6); -fx-border-radius: 12px;">
+               <children>
+                  <Label fx:id="lblLogoPadrao" style="-fx-font-size: 14px; -fx-text-fill: #c7c7cc;" text="LOGO" />
+                  <ImageView fx:id="imgLogo" fitHeight="100.0" fitWidth="100.0" pickOnBounds="true" preserveRatio="true" />
+               </children>
+            </StackPane>
+
+            <VBox alignment="CENTER" spacing="5.0">
+               <children>
+                  <Label alignment="CENTER" style="-fx-font-family: -apple-system, 'SF Pro Display', 'Segoe UI', sans-serif; -fx-font-size: 22px; -fx-font-weight: 900; -fx-text-fill: #1d1d1f;" text="LOJA QUE ALUGA TUDO" textAlignment="CENTER" wrapText="true" />
+                  <Label alignment="CENTER" style="-fx-font-family: -apple-system, 'SF Pro Text', 'Segoe UI', sans-serif; -fx-font-size: 15px; -fx-text-fill: #86868b;" text="Entrar" />
+               </children>
+               <VBox.margin>
+                  <Insets bottom="15.0" />
+               </VBox.margin>
+            </VBox>
+
+            <VBox spacing="12.0">
+               <children>
+                  <TextField fx:id="txtEmail" prefHeight="45.0" promptText= "👤 Email" style="-fx-background-color: #F2F2F7; -fx-background-radius: 10px; -fx-padding: 12px; -fx-font-size: 14px; -fx-text-fill: #1d1d1f;" />
+                  <PasswordField fx:id="txtSenha" onAction="#entrar" prefHeight="45.0" promptText="🔒 Senha" style="-fx-background-color: #F2F2F7; -fx-background-radius: 10px; -fx-padding: 12px; -fx-font-size: 14px; -fx-text-fill: #1d1d1f;" />
+               </children>
+            </VBox>
+
+
+            <VBox spacing="12.0">
+               <VBox.margin>
+                  <Insets top="10.0" />
+               </VBox.margin>
+               <children>
+                  <Button defaultButton="true" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#entrar" prefHeight="45.0" style="-fx-background-color: #007AFF; -fx-text-fill: white; -fx-background-radius: 10px; -fx-font-weight: bold; -fx-font-size: 15px; -fx-cursor: hand;" text="Entrar" />
+                  <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#voltar" prefHeight="45.0" style="-fx-background-color: #e5e5ea; -fx-text-fill: #1d1d1f; -fx-background-radius: 10px; -fx-font-weight: bold; -fx-font-size: 15px; -fx-cursor: hand;" text="Encerrar" />
+               </children>
+            </VBox>
+
+         </children>
+      </VBox>
    </children>
 </VBox>

@@ -1,13 +1,13 @@
 package entidades;
 public class ContratoAluguel {
 
-    private int id;
-    private Cliente cliente;
-    private Item item;
-    private String dataRetirada;
+    private final int id;
+    private final Cliente cliente;
+    private final Item item;
+    private final String dataRetirada;
     private String dataDevolucaoPrevista;
     private String dataDevolucaoReal;
-    private double valorTotal;
+    private final double valorTotal;
     private String status;
     private boolean ativo;
     private double valorMulta;
@@ -65,6 +65,10 @@ public class ContratoAluguel {
         return valorTotal;
     }
 
+    public String getValorTotalFormatado() {
+    	return ("R$ " + String.format("%.2f", valorTotal).replace('.', ','));
+    }
+    
     public String getStatus() {
         return status;
     }
@@ -79,6 +83,10 @@ public class ContratoAluguel {
 
     public double getValorMulta() {
         return valorMulta;
+    }
+    
+    public String getValorMultaFormatado() {
+    	return ("R$ " + String.format("%.2f", valorMulta).replace('.', ','));
     }
 
     public void setValorMulta(double valorMulta) {

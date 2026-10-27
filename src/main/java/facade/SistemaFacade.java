@@ -1,30 +1,22 @@
 package facade;
 
-import java.util.List;
-
-import business.interfaces.IGerenciamentoCategoria;
-import business.interfaces.IGerenciamentoContratos;
-import business.interfaces.IGerenciamentoFornecedor;
-import business.interfaces.IGerenciamentoItens;
-import business.interfaces.IGerenciamentoMultas;
-import business.interfaces.IGerenciamentoUsuarios;
+import business.interfaces.*;
 import business.relatorios.IRelatorios;
-import entidades.Categoria;
-import entidades.ContratoAluguel;
-import entidades.Fornecedor;
-import entidades.Item;
-import entidades.Multa;
-import entidades.Usuario;
+import entidades.*;
+
+import java.util.List;
 
 public class SistemaFacade {
 
-    private IGerenciamentoUsuarios   gerenciamentoUsuarios;
-    private IGerenciamentoContratos  gerenciamentoContratos;
-    private IGerenciamentoItens      gerenciamentoItens;
-    private IGerenciamentoCategoria  gerenciamentoCategoria;
-    private IGerenciamentoFornecedor gerenciamentoFornecedor;
-    private IGerenciamentoMultas     gerenciamentoMultas;
-    private IRelatorios              geradorRelatorios;
+    private Usuario usuarioLogado;
+
+    private final IGerenciamentoUsuarios   gerenciamentoUsuarios;
+    private final IGerenciamentoContratos  gerenciamentoContratos;
+    private final IGerenciamentoItens      gerenciamentoItens;
+    private final IGerenciamentoCategoria  gerenciamentoCategoria;
+    private final IGerenciamentoFornecedor gerenciamentoFornecedor;
+    private final IGerenciamentoMultas     gerenciamentoMultas;
+    private final IRelatorios              geradorRelatorios;
 
     public SistemaFacade(
             IGerenciamentoUsuarios   gerenciamentoUsuarios,
@@ -76,7 +68,16 @@ public class SistemaFacade {
     }
 
     public Usuario realizarLogin(String email, String senha) {
-        return gerenciamentoUsuarios.realizarLogin(email, senha);
+        this.usuarioLogado = gerenciamentoUsuarios.realizarLogin(email, senha);
+        return usuarioLogado;
+    }
+
+    public Usuario getTipoUsuarioLogado() {
+        return usuarioLogado;
+    }
+
+    public void reiniciaTipoUsuarioLogado() {
+        this.usuarioLogado = null;
     }
 
     public int gerarProximoIdUsuario() {
@@ -129,6 +130,34 @@ public class SistemaFacade {
         return gerenciamentoContratos.calcularMulta(diasAtraso, taxaDiaria);
 
     }
+    
+    public List<ContratoAluguel> filtraIDContrato(String pesquisado) {
+        return gerenciamentoContratos.filtrarPorId(pesquisado);
+    }
+
+    public List<ContratoAluguel> filtraItemContrato(String pesquisado) {
+        return gerenciamentoContratos.filtrarPorItem(pesquisado);
+    }
+
+    public List<ContratoAluguel> filtraDataRetiradaContrato(String pesquisado) {
+        return gerenciamentoContratos.filtrarPorDataRetirada(pesquisado);
+    }
+
+    public List<ContratoAluguel> filtraDataDevolucaoContrato(String pesquisado) {
+        return gerenciamentoContratos.filtrarPorDataDevolucao(pesquisado);
+    }
+
+    public List<ContratoAluguel> filtraStatusContrato(String pesquisado) {
+        return gerenciamentoContratos.filtrarPorStatus(pesquisado);
+    }
+
+    public List<ContratoAluguel> filtraValorTotalContrato(String pesquisado) {
+        return gerenciamentoContratos.filtrarPorValorTotal(pesquisado);
+    }
+
+    public List<ContratoAluguel> filtraValorMultaContrato(String pesquisado) {
+        return gerenciamentoContratos.filtrarPorValorMulta(pesquisado);
+    }
 
     // =========================================================================
     // ITENS
@@ -149,6 +178,23 @@ public class SistemaFacade {
     public List<Item> filtrarItem(String filtro) {
         return gerenciamentoItens.filtrarItem(filtro);
     }
+    
+    public List<Item> filtraID(String pesquisado) {
+        return gerenciamentoItens.filtrarPorId(pesquisado);
+    }
+
+    public List<Item> filtraNome(String pesquisado) {
+        return gerenciamentoItens.filtrarPorNome(pesquisado);
+    }
+
+    public List<Item> filtraCategoria(String pesquisado) {
+        return gerenciamentoItens.filtrarPorCategoria(pesquisado);
+    }
+
+    public List<Item> filtraTaxa(String pesquisado) {
+        return gerenciamentoItens.filtrarPorTaxa(pesquisado);
+    }
+    
     public boolean atualizarItem(Item itemNovo) {
         return gerenciamentoItens.atualizarItem(itemNovo);
     }
@@ -186,7 +232,23 @@ public class SistemaFacade {
     }
 
     public int gerarProximoIdCategoria() {
-        return gerenciamentoCategoria.gerarProximoId();
+        return gerenciamentoCategoria.gerarProximoId(); 
+    }
+    
+    public List<Categoria> buscarCategoriaPorId(String id) {
+        return gerenciamentoCategoria.buscarPorId(id);
+    }
+
+    public List<Categoria> buscarCategoriaPorNome(String nome) {
+        return gerenciamentoCategoria.buscarPorNome(nome);
+    }
+
+    public List<Categoria> buscarCategoriaPorDescricao(String descricao) {
+        return gerenciamentoCategoria.buscarPorDescricao(descricao);
+    }
+
+    public List<Categoria> buscarCategoriaPorTodos(String texto) {
+        return gerenciamentoCategoria.buscarPorTodos(texto);
     }
 
     // =========================================================================
@@ -201,10 +263,30 @@ public class SistemaFacade {
         return gerenciamentoFornecedor.buscarFornecedor(id);
     }
     
-    public List<Fornecedor> filtrarFornecedor(String filtro){
-    	return gerenciamentoFornecedor.filtraFornecedor(filtro);
+    public List<Fornecedor> buscarPorCnpj(String cnpj) {
+        return gerenciamentoFornecedor.buscarPorCnpj(cnpj);
     }
 
+    public List<Fornecedor> buscarPorNome(String nome) {
+        return gerenciamentoFornecedor.buscarPorNome(nome);
+    }
+
+    public List<Fornecedor> buscarPorEmail(String email) {
+        return gerenciamentoFornecedor.buscarPorEmail(email);
+    }
+
+    public List<Fornecedor> buscarPorTelefone(String telefone) {
+        return gerenciamentoFornecedor.buscarPorTelefone(telefone);
+    }
+    
+    public List<Fornecedor> buscarPorId(String id) {
+        return gerenciamentoFornecedor.buscarPorId(id);
+    }
+    
+    public List<Fornecedor> buscarPorTodos(String texto){
+    	return gerenciamentoFornecedor.buscarPorTodos(texto);
+    }
+    
     public List<Fornecedor> listarFornecedores() {
         return gerenciamentoFornecedor.listarFornecedores();
     }

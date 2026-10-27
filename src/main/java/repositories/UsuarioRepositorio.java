@@ -1,25 +1,23 @@
 package repositories;
 
-import java.util.ArrayList;
-
-
-import java.util.List;
-
 import entidades.Administrador;
 import entidades.Cliente;
 import entidades.Funcionario;
 import entidades.Usuario;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class UsuarioRepositorio implements IUsuarioRepositorio {
 
-    private String arquivo = "dados/usuarios.csv";
+    private static final String ARQUIVO = "dados/usuarios.csv";
 
-    private List<Usuario> usuarios;
-    private ManipulaArquivo manipulaArquivo;
+    private final List<Usuario> usuarios;
+    private final ManipulaArquivo manipulaArquivo;
 
     public UsuarioRepositorio() {
 
-        manipulaArquivo = new ManipulaArquivo(arquivo);
+        manipulaArquivo = new ManipulaArquivo(ARQUIVO);
         usuarios = carregar();
 
     }

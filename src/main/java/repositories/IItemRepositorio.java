@@ -1,8 +1,8 @@
 package repositories;
 
-import java.util.List;
-
 import entidades.Item;
+
+import java.util.List;
 
 public interface IItemRepositorio {
 
@@ -17,4 +17,5 @@ public interface IItemRepositorio {
     public abstract void salvar();
 
     public abstract int gerarProximoId();
+    
 }

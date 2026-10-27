@@ -1,27 +1,27 @@
 package repositories;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import entidades.Categoria;
 import entidades.Fornecedor;
 import entidades.Item;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class ItemRepositorio implements IItemRepositorio {
 
-    private String arquivo = "dados/itens.csv";
+    private static final String ARQUIVO = "dados/itens.csv";
 
-    private List<Item> itens;
-    private ICategoriaRepositorio categoriaRepositorio;
-    private IFornecedorRepositorio fornecedorRepositorio;
-    private ManipulaArquivo manipulaArquivo;
+    private final List<Item> itens;
+    private final ICategoriaRepositorio categoriaRepositorio;
+    private final IFornecedorRepositorio fornecedorRepositorio;
+    private final ManipulaArquivo manipulaArquivo;
 
     public ItemRepositorio(ICategoriaRepositorio categoriaRepositorio, IFornecedorRepositorio fornecedorRepositorio) {
 
         this.categoriaRepositorio = categoriaRepositorio;
         this.fornecedorRepositorio = fornecedorRepositorio;
 
-        manipulaArquivo = new ManipulaArquivo(arquivo);
+        manipulaArquivo = new ManipulaArquivo(ARQUIVO);
 
         itens = carregar();
 
@@ -161,5 +161,6 @@ public class ItemRepositorio implements IItemRepositorio {
         return maiorId + 1;
 
     }
+    
 
 }

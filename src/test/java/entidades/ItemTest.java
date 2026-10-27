@@ -1,12 +1,10 @@
 package entidades;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 @DisplayName("Item (regras de disponibilidade)")
 class ItemTest {
@@ -60,12 +58,12 @@ class ItemTest {
     }
 
     @Test
-    @DisplayName("um item desativado nunca deve estar disponível, mesmo com status DISPONIVEL")
+    @DisplayName("um item desativado fica INDISPONIVEL e nunca está disponível para aluguel")
     void itemDesativadoNuncaEstaDisponivel() {
         item.desativar();
 
         assertFalse(item.isAtivo());
-        assertEquals("DISPONIVEL", item.getStatus());
+        assertEquals("INDISPONIVEL", item.getStatus());
         assertFalse(item.estaDisponivel(), "Item desativado não pode estar disponível para aluguel");
     }
 
@@ -75,5 +73,26 @@ class ItemTest {
         item.setStatus("disponivel");
 
         assertEquals("DISPONIVEL", item.getStatus());
+    }
+    @Test
+    @DisplayName("item desativado ignora tentativas de mudar o status")
+    void itemDesativadoIgnoraMudancaDeStatus() {
+        item.desativar();
+
+        item.setStatus("DISPONIVEL");
+        item.alugar();
+        item.devolver();
+        item.enviarParaManutencao();
+
+        assertEquals("INDISPONIVEL", item.getStatus());
+        assertFalse(item.estaDisponivel());
+    }
+
+    @Test
+    @DisplayName("setAtivo(false) também deixa o item INDISPONIVEL")
+    void setAtivoFalseDeixaItemIndisponivel() {
+        item.setAtivo(false);
+
+        assertEquals("INDISPONIVEL", item.getStatus());
     }
 }

@@ -1,7 +1,8 @@
 package business.interfaces;
-import java.util.List;
 
 import entidades.Usuario;
+
+import java.util.List;
 
 public interface IGerenciamentoUsuarios {
 

@@ -1,20 +1,20 @@
 package repositories;
 
+import entidades.Categoria;
+
 import java.util.ArrayList;
 import java.util.List;
 
-import entidades.Categoria;
-
 public class CategoriaRepositorio implements ICategoriaRepositorio {
 
-    private String arquivo = "dados/categorias.csv";
+    private static final String ARQUIVO = "dados/categorias.csv";
 
-    private List<Categoria> categorias;
-    private ManipulaArquivo manipulaArquivo;
+    private final List<Categoria> categorias;
+    private final ManipulaArquivo manipulaArquivo;
 
     public CategoriaRepositorio() {
 
-        manipulaArquivo = new ManipulaArquivo(arquivo);
+        manipulaArquivo = new ManipulaArquivo(ARQUIVO);
         categorias = carregar();
 
     }

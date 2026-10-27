@@ -1,8 +1,8 @@
 package business.interfaces;
 
-import java.util.List;
-
 import entidades.Item;
+
+import java.util.List;
 
 public interface IGerenciamentoItens {
 
@@ -19,4 +19,12 @@ public interface IGerenciamentoItens {
     public abstract boolean excluirItem(int id);
 
     public abstract int gerarProximoId();
+    
+    public abstract List<Item> filtrarPorId(String pesquisado);
+    
+    public abstract List<Item> filtrarPorNome(String pesquisado);
+    
+    public abstract List<Item> filtrarPorCategoria(String pesquisado);
+    
+    public abstract List<Item> filtrarPorTaxa(String pesquisado);
 }

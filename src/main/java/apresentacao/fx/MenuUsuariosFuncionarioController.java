@@ -1,12 +1,11 @@
 package apresentacao.fx;
 
-import java.util.List;
-
 import entidades.Administrador;
 import entidades.Cliente;
 import entidades.Funcionario;
 import entidades.Usuario;
 import facade.SistemaFacade;
+import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -14,22 +13,23 @@ import javafx.collections.transformation.FilteredList;
 import javafx.collections.transformation.SortedList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.geometry.Pos;
 import javafx.scene.Node;
-import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.Label;
-import javafx.scene.control.PasswordField;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.layout.StackPane;
+import javafx.scene.layout.Pane;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 
+import java.util.List;
+
 public class MenuUsuariosFuncionarioController extends MenuController {
+    private static final String STYLE_TEXT_RED = "-fx-text-fill: red;";
+    private static final String OPCAO_TODOS = "Todos";
+    protected static final String TIPO_CLIENTE = "Cliente";
 
     @FXML
-    protected StackPane painelConteudo;
+    protected Pane painelConteudo;
 
     @FXML
     protected VBox painelTabela;
@@ -106,7 +106,8 @@ public class MenuUsuariosFuncionarioController extends MenuController {
     @FXML
     protected Button btnVoltar;
 
-    protected String tipoCadastroAtual = "Cliente";
+    protected ComboBox<String> cbTipoCadastroForm;
+    protected String tipoCadastroAtual = TIPO_CLIENTE;
     protected ObservableList<Usuario> listaUsuarios = FXCollections.observableArrayList();
     protected FilteredList<Usuario> listaFiltrada;
 
@@ -117,8 +118,89 @@ public class MenuUsuariosFuncionarioController extends MenuController {
 
     @FXML
     public void initialize() {
+        configurarResponsividade();
         configurarColunasTabela();
         configurarFiltroPesquisa();
+        removerRedundanciaBusca();
+        configurarFormularioUnificado();
+
+        Platform.runLater(() -> {
+            exibirPainel(painelTabela);
+            if (sistema != null) {
+                carregarTabela();
+            }
+        });
+    }
+
+    private void configurarResponsividade() {
+        if (painelConteudo != null) {
+            painelConteudo.setMaxWidth(Double.MAX_VALUE);
+            painelConteudo.setMaxHeight(Double.MAX_VALUE);
+        }
+
+        if (painelTabela != null) {
+            VBox.setVgrow(painelTabela, Priority.ALWAYS);
+            painelTabela.setMaxWidth(Double.MAX_VALUE);
+            painelTabela.setMaxHeight(Double.MAX_VALUE);
+            painelTabela.setFillWidth(true);
+        }
+
+        if (tabelaUsuarios != null) {
+            VBox.setVgrow(tabelaUsuarios, Priority.ALWAYS);
+            tabelaUsuarios.setMaxWidth(Double.MAX_VALUE);
+            tabelaUsuarios.setMaxHeight(Double.MAX_VALUE);
+            tabelaUsuarios.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+        }
+    }
+
+    private void removerRedundanciaBusca() {
+        if (btnBuscarUsuario != null) {
+            btnBuscarUsuario.setVisible(false);
+            btnBuscarUsuario.setManaged(false);
+        }
+    }
+
+    protected void configurarFormularioUnificado() {
+        if (btnCadastrarCliente != null) {
+            btnCadastrarCliente.setText("Novo Usuário");
+        }
+
+        if (painelCadastro != null && cbTipoCadastroForm == null) {
+            inicializarComboBoxCadastro();
+        }
+    }
+
+    private void inicializarComboBoxCadastro() {
+        cbTipoCadastroForm = new ComboBox<>(obterOpcoesCadastro());
+        cbTipoCadastroForm.setValue(TIPO_CLIENTE);
+        cbTipoCadastroForm.setMaxWidth(Double.MAX_VALUE);
+
+        cbTipoCadastroForm.valueProperty().addListener((obs, antigo, novo) -> atualizarRotulosFormulario(novo));
+
+        int indice = calcularIndiceComboBox();
+        painelCadastro.getChildren().add(indice, cbTipoCadastroForm);
+    }
+
+    private void atualizarRotulosFormulario(String novoTipo) {
+        if (novoTipo == null) return;
+        this.tipoCadastroAtual = novoTipo;
+        if (lblCadTitulo != null) {
+            lblCadTitulo.setText("Cadastrar " + novoTipo);
+        }
+        if (btnCadSalvar != null) {
+            btnCadSalvar.setText("Salvar " + novoTipo);
+        }
+    }
+
+    private int calcularIndiceComboBox() {
+        if (lblCadTitulo != null && painelCadastro.getChildren().contains(lblCadTitulo)) {
+            return painelCadastro.getChildren().indexOf(lblCadTitulo) + 1;
+        }
+        return 0;
+    }
+
+    protected ObservableList<String> obterOpcoesCadastro() {
+        return FXCollections.observableArrayList(TIPO_CLIENTE);
     }
 
     private void configurarColunasTabela() {
@@ -129,17 +211,58 @@ public class MenuUsuariosFuncionarioController extends MenuController {
             colPerfil.setCellValueFactory(dado ->
                 new SimpleStringProperty(dado.getValue().getClass().getSimpleName()));
         }
+
         if (colAtivo != null) {
             colAtivo.setCellValueFactory(dado ->
                 new SimpleStringProperty(dado.getValue().isAtivo() ? "Sim" : "Não"));
+            colAtivo.setCellFactory(col -> criarCelulaStatus());
+        }
+    }
+
+    private TableCell<Usuario, String> criarCelulaStatus() {
+        return new TableCell<>() {
+            private final Label badge = new Label();
+
+            @Override
+            protected void updateItem(String item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || item == null) {
+                    setGraphic(null);
+                    setText(null);
+                    return;
+                }
+                formatarBadgeStatus(badge, item);
+                setAlignment(Pos.CENTER);
+                setGraphic(badge);
+                setText(null);
+            }
+        };
+    }
+
+    private void formatarBadgeStatus(Label badge, String item) {
+        boolean ativo = "Sim".equalsIgnoreCase(item) || "true".equalsIgnoreCase(item);
+        if (ativo) {
+            badge.setText("● Ativo");
+            badge.setStyle(
+                "-fx-background-color: #d4edda; -fx-text-fill: #155724; " +
+                "-fx-font-weight: bold; -fx-padding: 3 8 3 8; " +
+                "-fx-background-radius: 10; -fx-font-size: 11px;"
+            );
+        } else {
+            badge.setText("● Inativo");
+            badge.setStyle(
+                "-fx-background-color: #f8d7da; -fx-text-fill: #721c24; " +
+                "-fx-font-weight: bold; -fx-padding: 3 8 3 8; " +
+                "-fx-background-radius: 10; -fx-font-size: 11px;"
+            );
         }
     }
 
     private void configurarFiltroPesquisa() {
         if (cbFiltro != null) {
-            cbFiltro.setItems(FXCollections.observableArrayList("Todos", "Nome", "ID"));
-            cbFiltro.setValue("Todos");
-            cbFiltro.valueProperty().addListener((obs, antigo, novo) -> 
+            cbFiltro.setItems(FXCollections.observableArrayList(OPCAO_TODOS, "Nome", "ID", "E-mail", "CPF"));
+            cbFiltro.setValue(OPCAO_TODOS);
+            cbFiltro.valueProperty().addListener((obs, antigo, novo) ->
                 aplicarFiltro(txtPesquisa != null ? txtPesquisa.getText() : "")
             );
         }
@@ -160,30 +283,54 @@ public class MenuUsuariosFuncionarioController extends MenuController {
     private void aplicarFiltro(String termo) {
         if (listaFiltrada == null) return;
 
-        listaFiltrada.setPredicate(usuario -> {
-            if (usuario == null) return false;
-            if (termo == null || termo.trim().isEmpty()) {
-                return true;
-            }
+        String filtroSelecionado = (cbFiltro != null && cbFiltro.getValue() != null) ? cbFiltro.getValue() : OPCAO_TODOS;
 
-            String termoFormatado = termo.trim().toLowerCase();
-            String filtroSelecionado = cbFiltro != null && cbFiltro.getValue() != null ? cbFiltro.getValue() : "Todos";
+        listaFiltrada.setPredicate(usuario -> usuarioAtendeFiltro(usuario, termo, filtroSelecionado));
+    }
 
-            boolean bateuId = String.valueOf(usuario.getId()).contains(termoFormatado);
-            boolean bateuNome = usuario.getNome() != null && usuario.getNome().toLowerCase().contains(termoFormatado);
+    private boolean usuarioAtendeFiltro(Usuario usuario, String termo, String filtro) {
+        if (usuario == null) return false;
+        if (termo == null || termo.trim().isEmpty()) return true;
 
-            return switch (filtroSelecionado) {
-                case "ID" -> bateuId;
-                case "Nome" -> bateuNome;
-                default -> bateuId || bateuNome;
-            };
-        });
+        String termoFormatado = termo.trim().toLowerCase();
+
+        return switch (filtro) {
+            case "ID" -> bateuId(usuario, termoFormatado);
+            case "Nome" -> bateuNome(usuario, termoFormatado);
+            case "E-mail" -> bateuEmail(usuario, termoFormatado);
+            case "CPF" -> bateuCpf(usuario, termoFormatado);
+            default -> bateuAlgumCampo(usuario, termoFormatado);
+        };
+    }
+
+    private boolean bateuId(Usuario u, String termo) {
+        return String.valueOf(u.getId()).contains(termo);
+    }
+
+    private boolean bateuNome(Usuario u, String termo) {
+        return u.getNome() != null && u.getNome().toLowerCase().contains(termo);
+    }
+
+    private boolean bateuEmail(Usuario u, String termo) {
+        return u.getEmail() != null && u.getEmail().toLowerCase().contains(termo);
+    }
+
+    private boolean bateuCpf(Usuario u, String termo) {
+        if (u.getCpf() == null) return false;
+        String termoNumerico = termo.replaceAll("\\D", "");
+        if (termoNumerico.isEmpty()) return false;
+        String cpfUsuario = u.getCpf().replaceAll("\\D", "");
+        return cpfUsuario.contains(termoNumerico);
+    }
+
+    private boolean bateuAlgumCampo(Usuario u, String termo) {
+        return bateuId(u, termo) || bateuNome(u, termo) || bateuEmail(u, termo) || bateuCpf(u, termo);
     }
 
     @FXML
     public void aoLimparPesquisa(ActionEvent event) {
         if (txtPesquisa != null) txtPesquisa.clear();
-        if (cbFiltro != null) cbFiltro.setValue("Todos");
+        if (cbFiltro != null) cbFiltro.setValue(OPCAO_TODOS);
     }
 
     public void setSistema(SistemaFacade sistema) {
@@ -193,15 +340,17 @@ public class MenuUsuariosFuncionarioController extends MenuController {
 
     protected void carregarTabela() {
         if (sistema != null) {
-            List<Usuario> usuarios = sistema.listarUsuarios();
-            listaUsuarios.setAll(usuarios);
+                List<Usuario> usuarios = sistema.listarUsuarios();
+            if (usuarios != null) {
+                listaUsuarios.setAll(usuarios);
+            }
         }
     }
 
     protected void exibirPainel(Node painelDesejado) {
-        painelTabela.setVisible(painelDesejado == painelTabela);
-        painelCadastro.setVisible(painelDesejado == painelCadastro);
-        painelBusca.setVisible(painelDesejado == painelBusca);
+        if (painelTabela != null) painelTabela.setVisible(painelDesejado == painelTabela);
+        if (painelCadastro != null) painelCadastro.setVisible(painelDesejado == painelCadastro);
+        if (painelBusca != null) painelBusca.setVisible(painelDesejado == painelBusca);
         if (painelDesejado != null) {
             painelDesejado.toFront();
         }
@@ -209,19 +358,23 @@ public class MenuUsuariosFuncionarioController extends MenuController {
 
     @FXML
     public void aoListarUsuarios(ActionEvent event) {
+        aoLimparPesquisa(event);
         exibirPainel(painelTabela);
         carregarTabela();
     }
 
     @FXML
     public void aoCadastrarCliente(ActionEvent event) {
-        prepararFormularioCadastro("Cliente");
+        prepararFormularioCadastro(tipoCadastroAtual);
     }
 
     protected void prepararFormularioCadastro(String tipo) {
         this.tipoCadastroAtual = tipo;
-        lblCadTitulo.setText("Cadastrar " + tipo);
-        btnCadSalvar.setText("Salvar " + tipo);
+        if (cbTipoCadastroForm != null) {
+            cbTipoCadastroForm.setValue(tipo);
+        }
+        if (lblCadTitulo != null) lblCadTitulo.setText("Cadastrar " + tipo);
+        if (btnCadSalvar != null) btnCadSalvar.setText("Salvar " + tipo);
         txtCadNome.clear();
         txtCadEmail.clear();
         txtCadCpf.clear();
@@ -241,7 +394,7 @@ public class MenuUsuariosFuncionarioController extends MenuController {
 
         if (nome.isEmpty() || email.isEmpty() || cpf.isEmpty() || senha.isEmpty()) {
             lblCadMensagem.setText("Por favor, preencha todos os campos.");
-            lblCadMensagem.setStyle("-fx-text-fill: red;");
+            lblCadMensagem.setStyle(STYLE_TEXT_RED);
             return;
         }
 
@@ -261,8 +414,8 @@ public class MenuUsuariosFuncionarioController extends MenuController {
             txtCadSenha.clear();
             carregarTabela();
         } else {
-            lblCadMensagem.setText("Erro: CPF ou e-mail já cadastrado");
-            lblCadMensagem.setStyle("-fx-text-fill: red;");
+            lblCadMensagem.setText("Erro: CPF ou e-mail já cadastrado.");
+            lblCadMensagem.setStyle(STYLE_TEXT_RED);
         }
     }
 
@@ -292,12 +445,12 @@ public class MenuUsuariosFuncionarioController extends MenuController {
                 );
                 lblBuscaResultado.setStyle("-fx-text-fill: black;");
             } else {
-                lblBuscaResultado.setText("Usuário não encontrado");
-                lblBuscaResultado.setStyle("-fx-text-fill: red;");
+                lblBuscaResultado.setText("Usuário não encontrado.");
+                lblBuscaResultado.setStyle(STYLE_TEXT_RED);
             }
         } catch (NumberFormatException ex) {
             lblBuscaResultado.setText("Digite um ID numérico válido.");
-            lblBuscaResultado.setStyle("-fx-text-fill: red;");
+            lblBuscaResultado.setStyle(STYLE_TEXT_RED);
         }
     }
 }

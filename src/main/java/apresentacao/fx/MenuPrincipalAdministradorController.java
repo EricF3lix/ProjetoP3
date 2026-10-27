@@ -4,15 +4,16 @@ import entidades.Administrador;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 
-
 public class MenuPrincipalAdministradorController extends MenuController {
 
     @FXML
     private Label lblBemVindo;
+    
+    @FXML
+    private Label lblPerfil;
 
     private Administrador administrador;
 
-    
     public void setAdministrador(Administrador administrador) {
         this.administrador = administrador;
     }
@@ -24,7 +25,17 @@ public class MenuPrincipalAdministradorController extends MenuController {
 
     @Override
     protected void aoExibir() {
-        lblBemVindo.setText("Bem-vindo(a), " + administrador.getNome());
+        String nome = (administrador != null && administrador.getNome() != null)
+                ? administrador.getNome()
+                : "Administrador";
+
+        if (lblBemVindo != null) {
+            lblBemVindo.setText("Bem-vindo(a), " + nome);
+        }
+        
+        lblPerfil.setText(administrador.getNome().substring(0,2).toUpperCase());
+
+        configurarIcones();
     }
 
     @FXML
@@ -42,16 +53,23 @@ public class MenuPrincipalAdministradorController extends MenuController {
         navegador.abrir("MenuRelatorios.fxml");
     }
 
-    @FXML private void abrirUsuarios()     { 
-    	navegador.abrir("MenuUsuariosAdmin.fxml"); }
-    
-    @FXML private void abrirItens()        { 
-        navegador.abrir("MenuItens.fxml"); 
+    @FXML
+    private void abrirUsuarios() {
+        navegador.abrir("MenuUsuariosAdmin.fxml");
     }
-    @FXML private void abrirFornecedores() { 
-    	navegador.abrir("MenuFornecedores.fxml");   
-    	}
-    @FXML private void abrirContratos() { 
-        navegador.abrir("MenuContratos.fxml"); 
+
+    @FXML
+    private void abrirItens() {
+        navegador.abrir("MenuItens.fxml");
+    }
+
+    @FXML
+    private void abrirFornecedores() {
+        navegador.abrir("MenuFornecedores.fxml");
+    }
+
+    @FXML
+    private void abrirContratos() {
+        navegador.abrir("MenuContratos.fxml");
     }
 }

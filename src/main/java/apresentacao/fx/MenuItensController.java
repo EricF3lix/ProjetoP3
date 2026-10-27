@@ -1,10 +1,8 @@
 package apresentacao.fx;
 
-import java.util.List;
-import java.util.Optional;
-
+import entidades.Categoria;
+import entidades.Fornecedor;
 import entidades.Item;
-import facade.SistemaFacade;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
@@ -12,18 +10,23 @@ import javafx.collections.transformation.SortedList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.Pos;
-import javafx.scene.control.Alert;
+import javafx.scene.control.*;
 import javafx.scene.control.Alert.AlertType;
-import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.Label;
-import javafx.scene.control.TableCell;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
-import javafx.scene.control.TextInputDialog;
+import javafx.scene.layout.VBox;
+
+import java.util.List;
+import java.util.Optional;
 
 public class MenuItensController extends MenuController {
+
+    private static final String PEDIR_ID_ITEM = "Digite o ID do item:";
+    private static final String ESTILO_BADGE_COMUM =
+            "-fx-font-weight: bold; -fx-padding: 3 8 3 8; -fx-background-radius: 10; -fx-font-size: 11px;";
+    private static final String ESTILO_BADGE_DISPONIVEL =
+            "-fx-background-color: #d4edda; -fx-text-fill: #155724; " + ESTILO_BADGE_COMUM;
+    private static final String ESTILO_BADGE_INDISPONIVEL =
+            "-fx-background-color: #f8d7da; -fx-text-fill: #721c24; " + ESTILO_BADGE_COMUM;
+    private static final String FILTRO_TODOS = "Todos";
 
     @FXML
     private ComboBox<String> cbFiltro;
@@ -40,8 +43,48 @@ public class MenuItensController extends MenuController {
     @FXML
     private TableColumn<Item, Boolean> colAtivo;
 
+    @FXML
+    private TextField nomeItem;
+    @FXML
+    private TextField descricaoItem;
+    @FXML
+    private TextField taxaDiaria;
+    @FXML
+    private TextField valorReposicao;
+    @FXML
+    private TextField estadoItem;
+
+    @FXML
+    private ComboBox<String> categoriaItem;
+    @FXML
+    private TextField fornecedoresItem;
+
+    @FXML
+    private TextField nomeItem1;
+    @FXML
+    private TextField descricaoItem1;
+    @FXML
+    private TextField taxaDiaria1;
+    @FXML
+    private TextField valorReposicao1;
+    @FXML
+    private TextField estadoItem1;
+
+    @FXML
+    private ComboBox<String> categoriaItem1;
+    @FXML
+    private TextField fornecedoresItem1;
+
+    @FXML
+    private VBox dadosItens;
+    @FXML
+    private VBox tabelaItens;
+    @FXML
+    private VBox dadosItens1;
+
     private final ObservableList<Item> listaItens = FXCollections.observableArrayList();
     private FilteredList<Item> listaFiltrada;
+    private Item itemEmEdicao;
 
     @Override
     public String getTitulo() {
@@ -52,13 +95,11 @@ public class MenuItensController extends MenuController {
     public void initialize() {
         configurarFiltroPesquisa();
         configurarColunaAtivo();
-        if (sistema != null) {
-            carregarTabela();
-        }
     }
 
-    public void setSistema(SistemaFacade sistema) {
-        this.sistema = sistema;
+    @Override
+    protected void aoExibir() {
+
         carregarTabela();
     }
 
@@ -73,53 +114,41 @@ public class MenuItensController extends MenuController {
 
     private void configurarColunaAtivo() {
         if (colAtivo != null) {
-            colAtivo.setCellFactory(col -> new TableCell<Item, Boolean>() {
-                private final Label badge = new Label();
-
-                @Override
-                protected void updateItem(Boolean ativo, boolean empty) {
-                    super.updateItem(ativo, empty);
-
-                    if (empty || ativo == null) {
-                        setGraphic(null);
-                        setText(null);
-                    } else {
-                        if (ativo) {
-                            badge.setText("● Disponível");
-                            badge.setStyle(
-                                "-fx-background-color: #d4edda; " +
-                                "-fx-text-fill: #155724; " +
-                                "-fx-font-weight: bold; " +
-                                "-fx-padding: 3 8 3 8; " +
-                                "-fx-background-radius: 10; " +
-                                "-fx-font-size: 11px;"
-                            );
-                        } else {
-                            badge.setText("● Indisponível");
-                            badge.setStyle(
-                                "-fx-background-color: #f8d7da; " +
-                                "-fx-text-fill: #721c24; " +
-                                "-fx-font-weight: bold; " +
-                                "-fx-padding: 3 8 3 8; " +
-                                "-fx-background-radius: 10; " +
-                                "-fx-font-size: 11px;"
-                            );
-                        }
-                        setAlignment(Pos.CENTER);
-                        setGraphic(badge);
-                        setText(null);
-                    }
-                }
-            });
+            colAtivo.setCellFactory(col -> criarCelulaAtivo());
         }
+    }
+
+    private TableCell<Item, Boolean> criarCelulaAtivo() {
+        return new TableCell<>() {
+            private final Label badge = new Label();
+
+            @Override
+            protected void updateItem(Boolean ativo, boolean empty) {
+                super.updateItem(ativo, empty);
+
+                if (empty || ativo == null) {
+                    setGraphic(null);
+                    setText(null);
+                    return;
+                }
+
+                boolean disponivel = Boolean.TRUE.equals(ativo);
+                badge.setText(disponivel ? "● Ativo" : "● Inativo");
+                badge.setStyle(disponivel ? ESTILO_BADGE_DISPONIVEL : ESTILO_BADGE_INDISPONIVEL);
+
+                setAlignment(Pos.CENTER);
+                setGraphic(badge);
+                setText(null);
+            }
+        };
     }
 
     private void configurarFiltroPesquisa() {
         if (cbFiltro != null) {
-            cbFiltro.setItems(FXCollections.observableArrayList("Todos", "Nome", "ID"));
-            cbFiltro.setValue("Todos");
+            cbFiltro.setItems(FXCollections.observableArrayList(FILTRO_TODOS, "Nome", "ID"));
+            cbFiltro.setValue(FILTRO_TODOS);
             cbFiltro.valueProperty().addListener((obs, antigo, novo) ->
-                aplicarFiltro(pesquisa != null ? pesquisa.getText() : "")
+                    aplicarFiltro(pesquisa != null ? pesquisa.getText() : "")
             );
         }
 
@@ -146,7 +175,7 @@ public class MenuItensController extends MenuController {
             }
 
             String termoFormatado = termo.trim().toLowerCase();
-            String filtroSelecionado = cbFiltro != null && cbFiltro.getValue() != null ? cbFiltro.getValue() : "Todos";
+            String filtroSelecionado = cbFiltro != null && cbFiltro.getValue() != null ? cbFiltro.getValue() : FILTRO_TODOS;
 
             boolean bateuId = String.valueOf(item.getId()).contains(termoFormatado);
             boolean bateuNome = item.getNome() != null && item.getNome().toLowerCase().contains(termoFormatado);
@@ -165,7 +194,7 @@ public class MenuItensController extends MenuController {
             pesquisa.clear();
         }
         if (cbFiltro != null) {
-            cbFiltro.setValue("Todos");
+            cbFiltro.setValue(FILTRO_TODOS);
         }
     }
 
@@ -173,63 +202,197 @@ public class MenuItensController extends MenuController {
     public void listarItens(ActionEvent event) {
         aoLimparPesquisa(event);
         carregarTabela();
+        mostrarTabela();
     }
 
     @FXML
     public void buscarItem(ActionEvent event) {
         String texto = pesquisa != null ? pesquisa.getText().trim() : "";
+
         if (texto.isEmpty()) {
-            TextInputDialog dialog = new TextInputDialog();
-            dialog.setTitle("Buscar Item");
-            dialog.setHeaderText("Buscar Item por ID");
-            dialog.setContentText("Digite o ID do item:");
-            Optional<String> resultado = dialog.showAndWait();
-            if (resultado.isPresent()) {
-                texto = resultado.get().trim();
-            } else {
-                return;
-            }
+            Optional<Integer> idOpt = pedirInteiro(PEDIR_ID_ITEM);
+            if (idOpt.isEmpty()) return;
+            texto = String.valueOf(idOpt.get());
         }
 
         try {
             int id = Integer.parseInt(texto);
             Item item = sistema != null ? sistema.buscarItem(id) : null;
+
             if (item != null) {
                 if (cbFiltro != null) cbFiltro.setValue("ID");
                 if (pesquisa != null) pesquisa.setText(String.valueOf(id));
-                mostrarAlerta(AlertType.INFORMATION, "Item Encontrado",
-                    "ID: " + item.getId() + "\n" +
-                    "Nome: " + item.getNome() + "\n" +
-                    "Categoria: " + item.getCategoria() + "\n" +
-                    "Taxa Diária: R$ " + item.getTaxaDiaria() + "\n" +
-                    "Estado: " + item.getEstadoConservacao() + "\n" +
-                    "Status: " + item.getStatus() + "\n" +
-                    "Ativo: " + (item.isAtivo() ? "Sim" : "Não")
-                );
             } else {
-                mostrarAlerta(AlertType.WARNING, "Não Encontrado", "Nenhum item encontrado com o ID " + id);
+                erro("Nenhum item encontrado com o ID " + id);
             }
         } catch (NumberFormatException e) {
-            mostrarAlerta(AlertType.ERROR, "Erro", "Por favor, informe um ID numérico válido.");
+            erro("Por favor, informe um ID numérico válido.");
         }
     }
 
     @FXML
+    private void mostrarTabela() {
+        tabelaItens.setVisible(true);
+        dadosItens.setVisible(false);
+        dadosItens1.setVisible(false);
+    }
+
+    @FXML
+    private void esconderTabela() {
+        tabelaItens.setVisible(false);
+        dadosItens.setVisible(true);
+        dadosItens1.setVisible(false);
+
+        ObservableList<String> nomes = FXCollections.observableArrayList();
+        List<Categoria> categorias = sistema.listarCategorias();
+        for (Categoria c : categorias) {
+            nomes.add(c.getNome());
+        }
+        categoriaItem.setItems(nomes);
+
+    }
+
+    @FXML
+    private void esconderTabela1() {
+        tabelaItens.setVisible(false);
+        dadosItens1.setVisible(true);
+        dadosItens.setVisible(false);
+
+        ObservableList<String> nomes = FXCollections.observableArrayList();
+        for (Categoria c : sistema.listarCategorias()) {
+            nomes.add(c.getNome());
+        }
+        categoriaItem1.setItems(nomes);
+    }
+
+
+    @FXML
     public void cadastrarItem(ActionEvent event) {
-        carregarTabela();
+
+        String nomeitem = nomeItem.getText().trim();
+        String descricaoitem = descricaoItem.getText().trim();
+        String taxadiaria = (taxaDiaria.getText().trim());
+        String valorreposicao = (valorReposicao.getText().trim());
+        String estado = estadoItem.getText().trim();
+        String categoria = categoriaItem.getValue();
+        String idfornecedortxt = fornecedoresItem.getText().trim();
+
+        if (nomeitem.isEmpty() || descricaoitem.isEmpty() || taxadiaria.isEmpty() || valorreposicao.isEmpty() || estado.isEmpty() || categoria == null || categoria.isEmpty() || idfornecedortxt.isEmpty()) {
+            erro("Preencha todos os campos");
+            return;
+        }
+
+        double taxa = Double.parseDouble(taxadiaria.replace(',', '.'));
+        double valor = Double.parseDouble(valorreposicao.replace(',', '.'));
+        int id = sistema.gerarProximoIdItem();
+        int idfornecedor = Integer.parseInt(idfornecedortxt);
+
+        List<Categoria> categorias = sistema.buscarCategoriaPorNome(categoria);
+        Categoria catgoriatxt = categorias.getFirst();
+
+        Fornecedor fornecedor = sistema.buscarFornecedor(idfornecedor);
+
+        Item item = new Item(id, nomeitem, descricaoitem, taxa, estado, valor, catgoriatxt, fornecedor);
+
+        sistema.cadastrarItem(item);
+        info("Item cadastrado com sucesso");
+
     }
 
     @FXML
     public void atualizarItem(ActionEvent event) {
-        carregarTabela();
+        Item selecionado = obterItemParaAtualizar();
+        if (selecionado == null) return;
+
+        itemEmEdicao = selecionado;
+        esconderTabela1();
+        preencherCamposAtualizacao(selecionado);
+    }
+
+    private void preencherCamposAtualizacao(Item item) {
+        nomeItem1.setText(item.getNome());
+        descricaoItem1.setText(item.getDescricao());
+        taxaDiaria1.setText(String.format("%.2f", item.getTaxaDiaria()).replace('.', ','));
+        valorReposicao1.setText(String.format("%.2f", item.getValorReposicao()).replace('.', ','));
+        estadoItem1.setText(item.getEstadoConservacao());
+        fornecedoresItem1.setText(item.getFornecedor() != null ? String.valueOf(item.getFornecedor().getId()) : "");
+        categoriaItem1.setValue(item.getCategoria() != null ? item.getCategoria().getNome() : null);
+    }
+
+    @FXML
+    public void salvarAtualizacao(ActionEvent event) {
+        if (itemEmEdicao == null) {
+            erro("Nenhum item selecionado para atualização.");
+            return;
+        }
+
+        String nome = nomeItem1.getText().trim();
+        String descricao = descricaoItem1.getText().trim();
+        String taxaTxt = taxaDiaria1.getText().trim();
+        String valorTxt = valorReposicao1.getText().trim();
+        String estado = estadoItem1.getText().trim();
+        String categoriaNome = categoriaItem1.getValue();
+        String fornecedorTxt = fornecedoresItem1.getText().trim();
+
+        if (nome.isEmpty() || descricao.isEmpty() || taxaTxt.isEmpty() || valorTxt.isEmpty()
+                || estado.isEmpty() || categoriaNome == null || fornecedorTxt.isEmpty()) {
+            erro("Preencha todos os campos");
+            return;
+        }
+
+        double taxa;
+        double valor;
+        int idFornecedor;
+
+        try {
+            taxa = Double.parseDouble(taxaTxt.replace(',', '.'));
+            valor = Double.parseDouble(valorTxt.replace(',', '.'));
+            idFornecedor = Integer.parseInt(fornecedorTxt);
+        } catch (NumberFormatException e) {
+            erro("Informe valores numéricos válidos para taxa, valor de reposição e fornecedor.");
+            return;
+        }
+
+        List<Categoria> categorias = sistema.buscarCategoriaPorNome(categoriaNome);
+        if (categorias.isEmpty()) {
+            erro("Categoria não encontrada.");
+            return;
+        }
+
+        Fornecedor fornecedor = sistema.buscarFornecedor(idFornecedor);
+        if (fornecedor == null) {
+            erro("Fornecedor não encontrado.");
+            return;
+        }
+
+        Item atualizado = new Item(itemEmEdicao.getId(), nome, descricao, taxa, estado, valor, categorias.getFirst(), fornecedor);
+
+        sistema.atualizarItem(atualizado);
+        info("Item atualizado com sucesso");
+        listarItens(event);
+    }
+
+    private Item obterItemParaAtualizar() {
+        Item selecionado = tabela.getSelectionModel().getSelectedItem();
+        if (selecionado != null) return selecionado;
+
+        Optional<Integer> id = pedirInteiro(PEDIR_ID_ITEM);
+        if (id.isEmpty()) return null;
+
+        Item item = sistema.buscarItem(id.get());
+        if (item == null) {
+            erro("Item não encontrado.");
+        }
+        return item;
     }
 
     @FXML
     public void desativarItem(ActionEvent event) {
+        mostrarTabela();
         TextInputDialog dialog = new TextInputDialog();
         dialog.setTitle("Desativar Item");
         dialog.setHeaderText("Desativar Item");
-        dialog.setContentText("Digite o ID do item:");
+        dialog.setContentText(PEDIR_ID_ITEM);
 
         Optional<String> resultado = dialog.showAndWait();
         if (resultado.isPresent()) {

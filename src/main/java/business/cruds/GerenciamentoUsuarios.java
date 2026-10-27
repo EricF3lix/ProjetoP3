@@ -1,17 +1,17 @@
 package business.cruds;
 
-import java.util.List;
-
 import business.interfaces.IGerenciamentoContratos;
 import business.interfaces.IGerenciamentoUsuarios;
 import entidades.Usuario;
 import repositories.IUsuarioRepositorio;
 
+import java.util.List;
+
 @SuppressWarnings("java:S106")
 public class GerenciamentoUsuarios implements IGerenciamentoUsuarios {
 
-    private IUsuarioRepositorio repositorio;
-    private IGerenciamentoContratos gerenciamentoContratos;
+    private final IUsuarioRepositorio repositorio;
+    private final IGerenciamentoContratos gerenciamentoContratos;
 
     public GerenciamentoUsuarios(IUsuarioRepositorio repositorio,
                                   IGerenciamentoContratos gerenciamentoContratos) {

@@ -1,21 +1,21 @@
 package repositories;
 
+import entidades.Multa;
+
 import java.util.ArrayList;
 import java.util.List;
-
-import entidades.Multa;
 
 
 public class MultaRepositorio implements IMultaRepositorio {
 
-    private String arquivo = "dados/multas.csv";
+    private static final String ARQUIVO = "dados/multas.csv";
 
-    private List<Multa> multas;
-    private ManipulaArquivo manipulaArquivo;
+    private final List<Multa> multas;
+    private final ManipulaArquivo manipulaArquivo;
 
     public MultaRepositorio() {
 
-        manipulaArquivo = new ManipulaArquivo(arquivo);
+        manipulaArquivo = new ManipulaArquivo(ARQUIVO);
 
         multas = carregar();
 

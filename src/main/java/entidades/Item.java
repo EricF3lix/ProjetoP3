@@ -3,7 +3,7 @@ package entidades;
 @SuppressWarnings("java:S107")
 public class Item {
 
-    private int id;
+    private final int id;
     private String nome;
     private String descricao;
     private double taxaDiaria;
@@ -14,6 +14,7 @@ public class Item {
     private String status;
     private boolean ativo;
     private static final String DISPONIVEL = "DISPONIVEL";
+    private static final String INDISPONIVEL = "INDISPONIVEL";
 
     public Item(int id, String nome, String descricao, double taxaDiaria,
                 String estadoConservacao, double valorReposicao,
@@ -105,7 +106,11 @@ public class Item {
     }
 
     public void setStatus(String status) {
-        this.status = status.toUpperCase();
+        if (!this.ativo) {
+            this.status = INDISPONIVEL;
+        } else {
+            this.status = status != null ? status.toUpperCase() : INDISPONIVEL;
+        }
     }
 
     public boolean isAtivo() {
@@ -114,33 +119,47 @@ public class Item {
 
     public void setAtivo(boolean ativo) {
         this.ativo = ativo;
+        if (!ativo) {
+            this.status = INDISPONIVEL;
+        }
     }
 
     public void desativar() {
         this.ativo = false;
+        this.status = INDISPONIVEL;
     }
 
     public boolean estaDisponivel() {
-        return ativo && status.equals(DISPONIVEL);
+        return ativo && DISPONIVEL.equalsIgnoreCase(status);
     }
 
     public boolean estaAlugado() {
-        return status.equals("ALUGADO");
+        return "ALUGADO".equalsIgnoreCase(status);
     }
 
     public boolean estaEmManutencao() {
-        return status.equals("MANUTENCAO");
+        return "MANUTENCAO".equalsIgnoreCase(status);
     }
 
     public void alugar() {
-        this.status = "ALUGADO";
+        if (ativo) {
+            this.status = "ALUGADO";
+        }
     }
 
     public void devolver() {
-        this.status = DISPONIVEL;
+        if (ativo) {
+            this.status = DISPONIVEL;
+        }
     }
 
     public void enviarParaManutencao() {
-        this.status = "MANUTENCAO";
+        if (ativo) {
+            this.status = "MANUTENCAO";
+        }
+    }
+    
+    public String getTaxaDiariaFormatada() {
+        return ("R$ " + String.format("%.2f", taxaDiaria).replace('.', ','));
     }
 }
