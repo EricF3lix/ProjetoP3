@@ -404,6 +404,7 @@ public class MenuItensController extends MenuController {
                     return;
                 }
             }
+            else{return;}
         }
 
         if (sistema.excluirItem(item.getId())) {
