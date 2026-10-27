@@ -6,8 +6,10 @@ import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Optional;
 
-import entidades.*;
-import javafx.application.Platform;
+import entidades.Cliente;
+import entidades.ContratoAluguel;
+import entidades.Item;
+import entidades.Usuario;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
@@ -56,7 +58,6 @@ public class MenuContratosController extends MenuController {
     private final ObservableList<ContratoAluguel> listaContratos = FXCollections.observableArrayList();
     private FilteredList<ContratoAluguel> listaFiltrada;
 
-    private record DadosAluguelForm(String idClienteStr, String idItemStr, LocalDate dataRet, LocalDate dataDev) {}
 
     @Override
     protected String getTitulo() {
