@@ -56,19 +56,19 @@
                <children>
                   <Label style="-fx-font-family: -apple-system, 'SF Pro Display', 'Segoe UI', sans-serif; -fx-font-weight: bold; -fx-font-size: 18px; -fx-text-fill: #1d1d1f;" text="Registrar Aluguel" />
                   
-                  <Label style="-fx-font-weight: bold; -fx-font-size: 13px; -fx-text-fill: #6e6e73;" text="ID do cliente:">
+                  <Label style="-fx-font-weight: bold; -fx-font-size: 13px; -fx-text-fill: #6e6e73;" text="Cliente:">
                      <VBox.margin>
                         <Insets top="5.0" />
                      </VBox.margin>
                   </Label>
-                  <TextField fx:id="idCliente" prefHeight="36.0" promptText="Digite o ID do cliente" style="-fx-background-color: #e5e5ea; -fx-background-radius: 8px; -fx-padding: 8px;" />
+                  <ComboBox fx:id="cbCliente" maxWidth="1.7976931348623157E308" prefHeight="36.0" promptText="Selecione o cliente" style="-fx-background-color: #e5e5ea; -fx-background-radius: 8px;" />
                   
-                  <Label style="-fx-font-weight: bold; -fx-font-size: 13px; -fx-text-fill: #6e6e73;" text="ID do item:">
+                  <Label style="-fx-font-weight: bold; -fx-font-size: 13px; -fx-text-fill: #6e6e73;" text="Item:">
                      <VBox.margin>
                         <Insets top="5.0" />
                      </VBox.margin>
                   </Label>
-                  <TextField fx:id="idItem" prefHeight="36.0" promptText="Digite o ID do item" style="-fx-background-color: #e5e5ea; -fx-background-radius: 8px; -fx-padding: 8px;" />
+                  <ComboBox fx:id="cbItem" maxWidth="1.7976931348623157E308" prefHeight="36.0" promptText="Selecione o item" style="-fx-background-color: #e5e5ea; -fx-background-radius: 8px;" />
                   
                   <Label style="-fx-font-weight: bold; -fx-font-size: 13px; -fx-text-fill: #6e6e73;" text="Data de retirada do produto:">
                      <VBox.margin>
@@ -125,7 +125,7 @@
                          <cellValueFactory><PropertyValueFactory property="status" /></cellValueFactory>
                       </TableColumn>
                       <TableColumn prefWidth="80.0" text="Valor">
-                         <cellValueFactory><PropertyValueFactory property="valorMultaFormatado" /></cellValueFactory>
+                         <cellValueFactory><PropertyValueFactory property="valorTotal" /></cellValueFactory>
                       </TableColumn>
                     </columns>
                   </TableView>

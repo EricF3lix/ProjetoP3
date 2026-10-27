@@ -3,13 +3,13 @@ package apresentacao.fx;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import entidades.Cliente;
 import entidades.ContratoAluguel;
 import entidades.Item;
-import entidades.Usuario;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
@@ -26,7 +26,6 @@ import javafx.scene.control.DatePicker;
 import javafx.scene.control.Dialog;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
@@ -36,6 +35,10 @@ public class MenuContratosController extends MenuController {
     private static final String ID_CONTRATO = "Digite o ID do contrato: ";
     private static final String CONTRATO_NAO_ENCONTRADO = "Contrato não encontrado.";
     private static final String FILTRO_TODOS = "Todos";
+    private static final String FILTRO_ID = "ID";
+    private static final String FILTRO_CLIENTE = "Cliente";
+    private static final String FILTRO_ITEM = "Item";
+    private static final String FILTRO_STATUS = "Status";
     private static final ZoneId FUSO_HORARIO = ZoneId.of("America/Recife");
 
     @FXML
@@ -50,14 +53,16 @@ public class MenuContratosController extends MenuController {
     @FXML private VBox dadosContrato;
     @FXML private VBox tabelaContrato;
 
-    @FXML private TextField idCliente;
-    @FXML private TextField idItem;
+    @FXML private ComboBox<String> cbCliente;
+    @FXML private ComboBox<String> cbItem;
     @FXML private DatePicker dpDataInicio;
     @FXML private DatePicker dpDataFinal;
 
     private final ObservableList<ContratoAluguel> listaContratos = FXCollections.observableArrayList();
     private FilteredList<ContratoAluguel> listaFiltrada;
 
+    private List<Cliente> listaClientes = new ArrayList<>();
+    private List<Item> listaItensDisponiveis = new ArrayList<>();
 
     @Override
     protected String getTitulo() {
@@ -68,11 +73,52 @@ public class MenuContratosController extends MenuController {
     public void initialize() {
         configurarResponsividade();
         configurarFiltroPesquisa();
+        inicializarDatas();
     }
 
     @Override
     protected void aoExibir() {
+        mostrarTabela();
         carregarTabela();
+    }
+
+    private void inicializarDatas() {
+        LocalDate hoje = LocalDate.now(FUSO_HORARIO);
+        if (dpDataInicio != null) {
+            dpDataInicio.setValue(hoje);
+        }
+        if (dpDataFinal != null) {
+            dpDataFinal.setValue(hoje.plusDays(1));
+        }
+    }
+
+    private void carregarOpcoesFormulario() {
+        if (sistema == null) return;
+
+        listaClientes = sistema.listarUsuarios().stream()
+                .filter(Cliente.class::isInstance)
+                .map(Cliente.class::cast)
+                .toList();
+
+        if (cbCliente != null) {
+            cbCliente.getItems().setAll(listaClientes.stream()
+                    .map(c -> c.getId() + " - " + c.getNome())
+                    .toList());
+            cbCliente.getSelectionModel().clearSelection();
+            cbCliente.setPromptText(listaClientes.isEmpty() ? "Nenhum cliente cadastrado" : "Selecione o cliente");
+        }
+
+        listaItensDisponiveis = sistema.listarItens().stream()
+                .filter(Item::estaDisponivel)
+                .toList();
+
+        if (cbItem != null) {
+            cbItem.getItems().setAll(listaItensDisponiveis.stream()
+                    .map(i -> i.getId() + " - " + i.getNome())
+                    .toList());
+            cbItem.getSelectionModel().clearSelection();
+            cbItem.setPromptText(listaItensDisponiveis.isEmpty() ? "Nenhum item disponível" : "Selecione o item");
+        }
     }
 
     @SuppressWarnings("deprecation")
@@ -87,7 +133,7 @@ public class MenuContratosController extends MenuController {
 
     private void configurarFiltroPesquisa() {
         if (cbFiltro != null) {
-            cbFiltro.setItems(FXCollections.observableArrayList(FILTRO_TODOS, "ID", "Cliente", "Item", "Status"));
+            cbFiltro.setItems(FXCollections.observableArrayList(FILTRO_TODOS, FILTRO_ID, FILTRO_CLIENTE, FILTRO_ITEM, FILTRO_STATUS));
             cbFiltro.setValue(FILTRO_TODOS);
             cbFiltro.valueProperty().addListener((obs, antigo, novo) ->
                 aplicarFiltro(pesquisa != null ? pesquisa.getText() : "")
@@ -127,10 +173,10 @@ public class MenuContratosController extends MenuController {
             boolean bateuStatus = contrato.getStatus() != null && contrato.getStatus().toLowerCase().contains(termoFormatado);
 
             return switch (filtroSelecionado) {
-                case "ID" -> bateuId;
-                case "Cliente" -> bateuCliente;
-                case "Item" -> bateuItem;
-                case "Status" -> bateuStatus;
+                case FILTRO_ID -> bateuId;
+                case FILTRO_CLIENTE -> bateuCliente;
+                case FILTRO_ITEM -> bateuItem;
+                case FILTRO_STATUS -> bateuStatus;
                 default -> bateuId || bateuCliente || bateuItem || bateuStatus;
             };
         });
@@ -162,69 +208,86 @@ public class MenuContratosController extends MenuController {
         mostrarTabela();
     }
 
-
-    
-    @FXML private void mostrarTabela(){
-        tabelaContrato.setVisible(true);
-        dadosContrato.setVisible(false);
+    @FXML 
+    private void mostrarTabela() {
+        if (tabelaContrato != null && dadosContrato != null) {
+            dadosContrato.setVisible(false);
+            dadosContrato.setManaged(false);
+            tabelaContrato.setVisible(true);
+            tabelaContrato.setManaged(true);
+        }
     }
 
-    @FXML private void escondeTabela(){
-        tabelaContrato.setVisible(false);
-        dadosContrato.setVisible(true);
+    @FXML 
+    private void escondeTabela() {
+        if (tabelaContrato != null && dadosContrato != null) {
+            tabelaContrato.setVisible(false);
+            tabelaContrato.setManaged(false);
+            dadosContrato.setVisible(true);
+            dadosContrato.setManaged(true);
+            carregarOpcoesFormulario();
+        }
     }
 
     @FXML
     private void registrarAluguel(ActionEvent event) {
-        if (idCliente.getText().trim().isEmpty() || idItem.getText().trim().isEmpty() || dpDataInicio.getValue() == null || dpDataInicio.getValue() == null){
-            erro("Todos os campos devem ser preenchidos");
+        if (sistema == null) return;
+
+        int posCliente = cbCliente != null ? cbCliente.getSelectionModel().getSelectedIndex() : -1;
+        int posItem = cbItem != null ? cbItem.getSelectionModel().getSelectedIndex() : -1;
+        LocalDate dataInicio = dpDataInicio != null ? dpDataInicio.getValue() : null;
+        LocalDate dataFinal = dpDataFinal != null ? dpDataFinal.getValue() : null;
+
+        if (posCliente < 0 || posItem < 0 || dataInicio == null || dataFinal == null) {
+            erro("Por favor, selecione o cliente, o item e as datas de início e fim.");
             return;
         }
 
-        int idcliente = Integer.parseInt(idCliente.getText().trim());
-        int iditem = Integer.parseInt(idItem.getText().trim());
-        LocalDate datainicio = dpDataInicio.getValue();
-        LocalDate datafinal = dpDataFinal.getValue();
-
-        if (datainicio.isAfter(datafinal)){
-            erro("A data inicial nao pode ser apos a data final");
+        if (dataInicio.isAfter(dataFinal) || dataInicio.equals(dataFinal)) {
+            erro("A data de devolução deve ser posterior à data de retirada.");
             return;
         }
 
-        long quantidadedias = ChronoUnit.DAYS.between(datainicio,datafinal);
+        Cliente cliente = listaClientes.get(posCliente);
+        Item item = listaItensDisponiveis.get(posItem);
 
-        String datainiciotxt = String.valueOf(datainicio);
-        String datafinaltxt = String.valueOf(datafinal);
-
-        int id = sistema.gerarProximoIdContrato();
-        Usuario usuario = sistema.buscarUsuario(idcliente);
-
-        if (!(usuario instanceof Cliente)){
-            erro("Cliente não encontrado");
+        if (sistema.clientePossuiMultaPendente(cliente.getId())) {
+            erro("Cliente possui multa pendente e não pode realizar novos aluguéis.");
             return;
         }
 
-        Cliente cliente = new Cliente(usuario.getId(),usuario.getNome(),usuario.getEmail(),usuario.getCpf(),usuario.getSenha());
-
-        Item item = sistema.buscarItem(iditem);
-
-        if (item == null){
-            erro("Itemnão encontrado");
+        if (!item.estaDisponivel()) {
+            erro("Item indisponível para aluguel. Status atual: " + item.getStatus());
             return;
         }
 
-        double valorTotal = quantidadedias * item.getTaxaDiaria();
+        long quantidadeDias = ChronoUnit.DAYS.between(dataInicio, dataFinal);
+        double valorTotal = quantidadeDias * item.getTaxaDiaria();
+        int idContrato = sistema.gerarProximoIdContrato();
 
-        ContratoAluguel aluguel = new ContratoAluguel(id,cliente,item,datainiciotxt,datafinaltxt,valorTotal);
+        ContratoAluguel aluguel = new ContratoAluguel(
+                idContrato, cliente, item, dataInicio.toString(), dataFinal.toString(), valorTotal);
 
-        sistema.cadastrarContrato(aluguel);
+        if (sistema.cadastrarContrato(aluguel)) {
+            item.alugar();
+            info("Aluguel registrado com sucesso! ID do Contrato: " + idContrato);
+            limparFormulario();
+            carregarTabela();
+            mostrarTabela();
+        } else {
+            erro("Erro ao cadastrar o contrato no sistema.");
+        }
+    }
 
-        escrever("Alguel cadastrado com sucesso");
-
+    private void limparFormulario() {
+        if (cbCliente != null) cbCliente.getSelectionModel().clearSelection();
+        if (cbItem != null) cbItem.getSelectionModel().clearSelection();
+        inicializarDatas();
     }
 
     @FXML
     private void finalizarContrato(ActionEvent event) {
+        mostrarTabela();
         ContratoAluguel contrato = obterContratoAlvo();
         if (contrato == null) return;
 
@@ -300,7 +363,7 @@ public class MenuContratosController extends MenuController {
         if (sistema.finalizarContrato(contrato.getId())) {
             carregarTabela();
         } else {
-            erro("Erro ao finalizar contrato");
+            erro("Erro ao finalizar contrato.");
         }
     }
 
@@ -311,7 +374,7 @@ public class MenuContratosController extends MenuController {
         if (contrato == null) return;
 
         if ("FINALIZADO".equalsIgnoreCase(contrato.getStatus())) {
-            erro("Não é possível cancelar um contrato já finalizado");
+            erro("Não é possível cancelar um contrato já finalizado.");
             return;
         }
 
@@ -329,7 +392,6 @@ public class MenuContratosController extends MenuController {
     }
 
     private ContratoAluguel obterContratoAlvo() {
-        mostrarTabela();
         if (tabela == null) return null;
         ContratoAluguel selecionado = tabela.getSelectionModel().getSelectedItem();
         tabela.getSelectionModel().clearSelection();
