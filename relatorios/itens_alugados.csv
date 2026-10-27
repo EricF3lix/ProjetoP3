@@ -1,2 +1,8 @@
 Contrato;Cliente;Item;DataPrevista;Situacao
-4;test;Cafeteira;2027-01-01;EM_DIA
+5;test;Cama;2026-10-30;EM_DIA
+6;test;Cafeteira de catiguria;2026-10-30;EM_DIA
+7;test;moises gamer;2026-10-27;EM_DIA
+8;test;sofa;2026-10-27;EM_DIA
+10;test;ventilador;2026-10-27;EM_DIA
+11;test;lapis;2026-10-27;EM_DIA
+12;test;batata;2026-10-27;EM_DIA
