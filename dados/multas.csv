@@ -7,11 +7,3 @@ id;idContrato;tipo;descricao;valor;paga;dataCriacao
 10;2;Mau Uso;aaa;30.0;true;2026-10-26
 11;3;Mau Uso;PROBLEMA;20.0;true;2026-10-27
 12;13;Extravio de Item;nao pagou safado;200.0;true;2026-10-27
-13;14;Dano Material;USOU ERRADO;100.0;true;2026-10-27
-14;12;Dano Material;aa;200.0;true;2026-10-27
-15;14;Mau Uso;aaa;200.0;true;2026-10-27
-16;15;Extravio de Item;aaa;100.0;true;2026-10-27
-17;14;Mau Uso;aaa;200.0;true;2026-10-27
-18;16;Atraso na devolução;Multa gerada automaticamente;20.0;true;2026-10-27
-19;5;Dano Material;aa;200.0;true;2026-10-27
-20;5;Dano Material;socoror;200.0;false;2026-10-27
