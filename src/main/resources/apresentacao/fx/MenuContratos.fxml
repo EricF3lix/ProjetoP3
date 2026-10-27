@@ -15,9 +15,8 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.VBox?>
-<?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="660.0" prefWidth="950.0" style="-fx-background-color: #F5F5F7;" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="apresentacao.fx.MenuContratosController">
+<AnchorPane prefHeight="660.0" prefWidth="950.0" style="-fx-background-color: #F5F5F7;" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="apresentacao.fx.MenuContratosController">
    <children>
       <Label layoutX="40.0" layoutY="25.0" style="-fx-font-family: -apple-system, 'SF Pro Display', 'Segoe UI', sans-serif; -fx-font-weight: 900; -fx-font-size: 26px; -fx-text-fill: #1d1d1f;" text="Gerenciar Contratos" />
       <Label layoutX="40.0" layoutY="58.0" style="-fx-font-family: -apple-system, 'SF Pro Text', 'Segoe UI', sans-serif; -fx-font-size: 14px; -fx-text-fill: #86868b;" text="Painel de Contratos e Aluguéis" />
@@ -39,7 +38,6 @@
             
             <Separator style="-fx-padding: 5 0 5 0;" />
             
-            <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#buscarContrato" prefHeight="38.0" style="-fx-background-color: #ffffff; -fx-background-radius: 10px; -fx-border-color: #d1d1d6; -fx-border-radius: 10px; -fx-text-fill: #1d1d1f; -fx-font-weight: bold; -fx-cursor: hand; -fx-font-size: 13px;" text="Buscar Contrato por ID" />
             <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#listarContratos" prefHeight="38.0" style="-fx-background-color: #ffffff; -fx-background-radius: 10px; -fx-border-color: #d1d1d6; -fx-border-radius: 10px; -fx-text-fill: #1d1d1f; -fx-font-weight: bold; -fx-cursor: hand; -fx-font-size: 13px;" text="Listar todos os Contratos" />
             <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#finalizarContrato" prefHeight="38.0" style="-fx-background-color: #ffffff; -fx-background-radius: 10px; -fx-border-color: #d1d1d6; -fx-border-radius: 10px; -fx-text-fill: #34c759; -fx-font-weight: bold; -fx-cursor: hand; -fx-font-size: 13px;" text="Finalizar Contrato" />
             <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#cancelarContrato" prefHeight="38.0" style="-fx-background-color: #fff0f0; -fx-background-radius: 10px; -fx-border-color: #ffcccc; -fx-border-radius: 10px; -fx-text-fill: #ff3b30; -fx-font-weight: bold; -fx-cursor: hand; -fx-font-size: 13px;" text="Cancelar Contrato" />
@@ -51,76 +49,51 @@
 
       <AnchorPane prefHeight="520.0" prefWidth="590.0" style="-fx-background-color: #ffffff; -fx-background-radius: 16px; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 12, 0, 2, 6);" AnchorPane.bottomAnchor="40.0" AnchorPane.leftAnchor="320.0" AnchorPane.rightAnchor="40.0" AnchorPane.topAnchor="100.0">
          <children>
-            <VBox fx:id="dadosContrato" prefHeight="520.0" prefWidth="590.0" visible="false">
+            <VBox fx:id="dadosContrato" spacing="10.0" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+               <padding>
+                  <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+               </padding>
                <children>
-                  <Label text="Registrar Aluguel">
-                     <font>
-                        <Font name="System Bold" size="21.0" />
-                     </font>
-                     <padding>
-                        <Insets left="15.0" top="10.0" />
-                     </padding>
-                  </Label>
-                  <Label text="ID do cliente:" textFill="#727272">
-                     <font>
-                        <Font name="System Bold" size="15.0" />
-                     </font>
+                  <Label style="-fx-font-family: -apple-system, 'SF Pro Display', 'Segoe UI', sans-serif; -fx-font-weight: bold; -fx-font-size: 18px; -fx-text-fill: #1d1d1f;" text="Registrar Aluguel" />
+                  
+                  <Label style="-fx-font-weight: bold; -fx-font-size: 13px; -fx-text-fill: #6e6e73;" text="ID do cliente:">
                      <VBox.margin>
-                        <Insets left="15.0" top="10.0" />
+                        <Insets top="5.0" />
                      </VBox.margin>
                   </Label>
-                  <TextField fx:id="idCliente" promptText="Digite o ID do cliente">
+                  <TextField fx:id="idCliente" prefHeight="36.0" promptText="Digite o ID do cliente" style="-fx-background-color: #e5e5ea; -fx-background-radius: 8px; -fx-padding: 8px;" />
+                  
+                  <Label style="-fx-font-weight: bold; -fx-font-size: 13px; -fx-text-fill: #6e6e73;" text="ID do item:">
                      <VBox.margin>
-                        <Insets left="15.0" right="15.0" />
-                     </VBox.margin>
-                  </TextField>
-                  <Label text="ID do item:" textFill="#727272">
-                     <font>
-                        <Font name="System Bold" size="15.0" />
-                     </font>
-                     <VBox.margin>
-                        <Insets left="15.0" top="10.0" />
+                        <Insets top="5.0" />
                      </VBox.margin>
                   </Label>
-                  <TextField fx:id="idItem" promptText="Digite o ID do cliente">
+                  <TextField fx:id="idItem" prefHeight="36.0" promptText="Digite o ID do item" style="-fx-background-color: #e5e5ea; -fx-background-radius: 8px; -fx-padding: 8px;" />
+                  
+                  <Label style="-fx-font-weight: bold; -fx-font-size: 13px; -fx-text-fill: #6e6e73;" text="Data de retirada do produto:">
                      <VBox.margin>
-                        <Insets left="15.0" right="15.0" />
-                     </VBox.margin></TextField>
-                  <Label text="Data de retirada do produto:" textFill="#727272">
-                     <font>
-                        <Font name="System Bold" size="15.0" />
-                     </font>
-                     <VBox.margin>
-                        <Insets left="15.0" top="10.0" />
+                        <Insets top="5.0" />
                      </VBox.margin>
                   </Label>
-                  <DatePicker fx:id="dpDataInicio" prefHeight="26.0" prefWidth="590.0">
+                  <DatePicker fx:id="dpDataInicio" maxWidth="1.7976931348623157E308" prefHeight="36.0" style="-fx-background-color: #e5e5ea; -fx-background-radius: 8px;" />
+                  
+                  <Label style="-fx-font-weight: bold; -fx-font-size: 13px; -fx-text-fill: #6e6e73;" text="Data de devolução do produto:">
                      <VBox.margin>
-                        <Insets left="15.0" right="15.0" />
-                     </VBox.margin>
-                  </DatePicker>
-                  <Label text="Data de devolução do produto:" textFill="#727272">
-                     <font>
-                        <Font name="System Bold" size="15.0" />
-                     </font>
-                     <VBox.margin>
-                        <Insets left="15.0" top="10.0" />
+                        <Insets top="5.0" />
                      </VBox.margin>
                   </Label>
-                  <DatePicker fx:id="dpDataFinal" prefHeight="26.0" prefWidth="590.0">
-                     <VBox.margin>
-                        <Insets left="15.0" right="15.0" />
-                     </VBox.margin>
-                  </DatePicker>
-                  <Region prefHeight="205.0" prefWidth="590.0" />
-                  <HBox prefHeight="37.0" prefWidth="590.0">
+                  <DatePicker fx:id="dpDataFinal" maxWidth="1.7976931348623157E308" prefHeight="36.0" style="-fx-background-color: #e5e5ea; -fx-background-radius: 8px;" />
+                  
+                  <Region VBox.vgrow="ALWAYS" />
+                  
+                  <HBox alignment="CENTER_RIGHT">
                      <children>
-                        <Region prefHeight="37.0" prefWidth="445.0" />
-                        <Button mnemonicParsing="false" onAction="#registrarAluguel" prefHeight="30.0" prefWidth="124.0" text="Registrar Aluguel" />
+                        <Button mnemonicParsing="false" onAction="#registrarAluguel" prefHeight="38.0" prefWidth="150.0" style="-fx-background-color: #007AFF; -fx-background-radius: 8px; -fx-text-fill: white; -fx-font-weight: bold; -fx-cursor: hand; -fx-font-size: 13px;" text="Registrar Aluguel" />
                      </children>
                   </HBox>
                </children>
             </VBox>
+
             <VBox fx:id="tabelaContrato" spacing="15.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                <padding>
                   <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
