@@ -2,13 +2,13 @@ package entidades;
 
 public class Multa {
 
-    private int id;
-    private int idContrato;
-    private String tipo;       
-    private String descricao;
+    private final int id;
+    private final int idContrato;
+    private final String tipo;
+    private final String descricao;
     private double valor;
     private boolean paga;
-    private String dataCriacao;
+    private final String dataCriacao;
 
     public Multa(int id, int idContrato, String tipo, String descricao, double valor, String dataCriacao) {
         this.id = id;
