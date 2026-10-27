@@ -163,32 +163,7 @@ public class MenuContratosController extends MenuController {
     }
 
 
-    @FXML
-    public void buscarContrato(ActionEvent event) {
-        mostrarTabela();
-        String texto = pesquisa != null ? pesquisa.getText().trim() : "";
-
-        if (texto.isEmpty()) {
-            Optional<Integer> idOpt = pedirInteiro(ID_CONTRATO);
-            if (idOpt.isEmpty()) return;
-            texto = String.valueOf(idOpt.get());
-        }
-
-        try {
-            int id = Integer.parseInt(texto);
-            ContratoAluguel contrato = sistema != null ? sistema.buscarContrato(id) : null;
-
-            if (contrato != null) {
-                if (cbFiltro != null) cbFiltro.setValue("ID");
-                if (pesquisa != null) pesquisa.setText(String.valueOf(id));
-            } else {
-                erro(CONTRATO_NAO_ENCONTRADO);
-            }
-        } catch (NumberFormatException e) {
-            erro("Por favor, informe um ID numérico válido.");
-        }
-    }
-
+    
     @FXML private void mostrarTabela(){
         tabelaContrato.setVisible(true);
         dadosContrato.setVisible(false);

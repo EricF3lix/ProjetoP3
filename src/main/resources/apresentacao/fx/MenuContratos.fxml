@@ -17,7 +17,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="660.0" prefWidth="950.0" style="-fx-background-color: #F5F5F7;" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="apresentacao.fx.MenuContratosController">
+<AnchorPane prefHeight="660.0" prefWidth="950.0" style="-fx-background-color: #F5F5F7;" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="apresentacao.fx.MenuContratosController">
    <children>
       <Label layoutX="40.0" layoutY="25.0" style="-fx-font-family: -apple-system, 'SF Pro Display', 'Segoe UI', sans-serif; -fx-font-weight: 900; -fx-font-size: 26px; -fx-text-fill: #1d1d1f;" text="Gerenciar Contratos" />
       <Label layoutX="40.0" layoutY="58.0" style="-fx-font-family: -apple-system, 'SF Pro Text', 'Segoe UI', sans-serif; -fx-font-size: 14px; -fx-text-fill: #86868b;" text="Painel de Contratos e Aluguéis" />
@@ -39,7 +39,7 @@
             
             <Separator style="-fx-padding: 5 0 5 0;" />
             
-            <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#buscarContrato" prefHeight="38.0" style="-fx-background-color: #ffffff; -fx-background-radius: 10px; -fx-border-color: #d1d1d6; -fx-border-radius: 10px; -fx-text-fill: #1d1d1f; -fx-font-weight: bold; -fx-cursor: hand; -fx-font-size: 13px;" text="Buscar Contrato por ID" />
+            
             <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#listarContratos" prefHeight="38.0" style="-fx-background-color: #ffffff; -fx-background-radius: 10px; -fx-border-color: #d1d1d6; -fx-border-radius: 10px; -fx-text-fill: #1d1d1f; -fx-font-weight: bold; -fx-cursor: hand; -fx-font-size: 13px;" text="Listar todos os Contratos" />
             <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#finalizarContrato" prefHeight="38.0" style="-fx-background-color: #ffffff; -fx-background-radius: 10px; -fx-border-color: #d1d1d6; -fx-border-radius: 10px; -fx-text-fill: #34c759; -fx-font-weight: bold; -fx-cursor: hand; -fx-font-size: 13px;" text="Finalizar Contrato" />
             <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#cancelarContrato" prefHeight="38.0" style="-fx-background-color: #fff0f0; -fx-background-radius: 10px; -fx-border-color: #ffcccc; -fx-border-radius: 10px; -fx-text-fill: #ff3b30; -fx-font-weight: bold; -fx-cursor: hand; -fx-font-size: 13px;" text="Cancelar Contrato" />
