@@ -46,12 +46,13 @@ public class MenuItensController extends MenuController {
     @FXML
     private TextField valorReposicao;
     @FXML
-    private TextField estadoItem;
+    private ComboBox<String> estadoItem;
 
     @FXML
     private ComboBox<String> categoriaItem;
     @FXML
-    private TextField fornecedoresItem;
+    private ComboBox<String> fornecedoresItem;
+
 
     @FXML
     private TextField nomeItem1;
@@ -62,12 +63,12 @@ public class MenuItensController extends MenuController {
     @FXML
     private TextField valorReposicao1;
     @FXML
-    private TextField estadoItem1;
+    private ComboBox<String> estadoItem1;
 
     @FXML
     private ComboBox<String> categoriaItem1;
     @FXML
-    private TextField fornecedoresItem1;
+    private ComboBox fornecedoresItem1;
 
     @FXML
     private VBox dadosItens;
@@ -200,31 +201,6 @@ public class MenuItensController extends MenuController {
     }
 
     @FXML
-    public void buscarItem(ActionEvent event) {
-        String texto = pesquisa != null ? pesquisa.getText().trim() : "";
-
-        if (texto.isEmpty()) {
-            Optional<Integer> idOpt = pedirInteiro(PEDIR_ID_ITEM);
-            if (idOpt.isEmpty()) return;
-            texto = String.valueOf(idOpt.get());
-        }
-
-        try {
-            int id = Integer.parseInt(texto);
-            Item item = sistema != null ? sistema.buscarItem(id) : null;
-
-            if (item != null) {
-                if (cbFiltro != null) cbFiltro.setValue("ID");
-                if (pesquisa != null) pesquisa.setText(String.valueOf(id));
-            } else {
-            	notificarPopUpErro("Nenhum item encontrado com o ID " + id);
-            }
-        } catch (NumberFormatException e) {
-        	notificarPopUpErro("Por favor, informe um ID numérico válido.");
-        }
-    }
-
-    @FXML
     private void mostrarTabela() {
         tabelaItens.setVisible(true);
         dadosItens.setVisible(false);
@@ -244,6 +220,16 @@ public class MenuItensController extends MenuController {
         }
         categoriaItem.setItems(nomes);
 
+        ObservableList<String> listanomes = FXCollections.observableArrayList();
+        List<Fornecedor> fornecedores = sistema.listarFornecedores();
+        for (Fornecedor f : fornecedores) {
+            listanomes.add(f.getRazaoSocial());
+        }
+        fornecedoresItem.setItems(listanomes);
+
+        ObservableList<String> estados = FXCollections.observableArrayList("Novo","Seminovo","Usado","Danificado");
+        estadoItem.setItems(estados);
+
     }
 
     @FXML
@@ -257,6 +243,16 @@ public class MenuItensController extends MenuController {
             nomes.add(c.getNome());
         }
         categoriaItem1.setItems(nomes);
+
+        ObservableList<String> listanomes1 = FXCollections.observableArrayList();
+        List<Fornecedor> fornecedores1 = sistema.listarFornecedores();
+        for (Fornecedor f : fornecedores1) {
+            listanomes1.add(f.getRazaoSocial());
+        }
+        fornecedoresItem1.setItems(listanomes1);
+
+        ObservableList<String> estados = FXCollections.observableArrayList("Novo","Seminovo","Usado","Danificado");
+        estadoItem1.setItems(estados);
     }
 
 
@@ -267,24 +263,24 @@ public class MenuItensController extends MenuController {
         String descricaoitem = descricaoItem.getText().trim();
         String taxadiaria = (taxaDiaria.getText().trim());
         String valorreposicao = (valorReposicao.getText().trim());
-        String estado = estadoItem.getText().trim();
+        String estado = estadoItem.getValue();
         String categoria = categoriaItem.getValue();
-        String idfornecedortxt = fornecedoresItem.getText().trim();
+        String fornecedortxt = fornecedoresItem.getValue();
 
-        if (nomeitem.isEmpty() || descricaoitem.isEmpty() || taxadiaria.isEmpty() || valorreposicao.isEmpty() || estado.isEmpty() || categoria == null || categoria.isEmpty() || idfornecedortxt.isEmpty()) {
-        	notificarPopUpErro("Preencha todos os campos");
+        if (nomeitem.isEmpty() || descricaoitem.isEmpty() || taxadiaria.isEmpty() || valorreposicao.isEmpty() || estado.isEmpty() || categoria == null || categoria.isEmpty() || fornecedortxt.isEmpty()) {
+            notificarPopUpErro("Preencha todos os campos");
             return;
         }
 
         double taxa = Double.parseDouble(taxadiaria.replace(',', '.'));
         double valor = Double.parseDouble(valorreposicao.replace(',', '.'));
         int id = sistema.gerarProximoIdItem();
-        int idfornecedor = Integer.parseInt(idfornecedortxt);
 
         List<Categoria> categorias = sistema.buscarCategoriaPorNome(categoria);
         Categoria catgoriatxt = categorias.getFirst();
 
-        Fornecedor fornecedor = sistema.buscarFornecedor(idfornecedor);
+        List<Fornecedor> fornecedores = sistema.buscarPorNome(fornecedortxt);
+        Fornecedor fornecedor = fornecedores.getFirst();
 
         Item item = new Item(id, nomeitem, descricaoitem, taxa, estado, valor, catgoriatxt, fornecedor);
 
@@ -308,8 +304,8 @@ public class MenuItensController extends MenuController {
         descricaoItem1.setText(item.getDescricao());
         taxaDiaria1.setText(String.format("%.2f", item.getTaxaDiaria()).replace('.', ','));
         valorReposicao1.setText(String.format("%.2f", item.getValorReposicao()).replace('.', ','));
-        estadoItem1.setText(item.getEstadoConservacao());
-        fornecedoresItem1.setText(item.getFornecedor() != null ? String.valueOf(item.getFornecedor().getId()) : "");
+        estadoItem1.setValue(item.getEstadoConservacao());
+        fornecedoresItem1.setValue(item.getFornecedor() != null ? String.valueOf(item.getFornecedor().getRazaoSocial()) : "");
         categoriaItem1.setValue(item.getCategoria() != null ? item.getCategoria().getNome() : null);
     }
 
@@ -324,9 +320,9 @@ public class MenuItensController extends MenuController {
         String descricao = descricaoItem1.getText().trim();
         String taxaTxt = taxaDiaria1.getText().trim();
         String valorTxt = valorReposicao1.getText().trim();
-        String estado = estadoItem1.getText().trim();
+        String estado = estadoItem1.getValue();
         String categoriaNome = categoriaItem1.getValue();
-        String fornecedorTxt = fornecedoresItem1.getText().trim();
+        String fornecedorTxt = fornecedoresItem1.getValue().toString();
 
         if (nome.isEmpty() || descricao.isEmpty() || taxaTxt.isEmpty() || valorTxt.isEmpty()
                 || estado.isEmpty() || categoriaNome == null || fornecedorTxt.isEmpty()) {
@@ -336,12 +332,10 @@ public class MenuItensController extends MenuController {
 
         double taxa;
         double valor;
-        int idFornecedor;
 
         try {
             taxa = Double.parseDouble(taxaTxt.replace(',', '.'));
             valor = Double.parseDouble(valorTxt.replace(',', '.'));
-            idFornecedor = Integer.parseInt(fornecedorTxt);
         } catch (NumberFormatException e) {
         	notificarPopUpErro("Informe valores numéricos válidos para taxa, valor de reposição e fornecedor.");
             return;
@@ -353,7 +347,7 @@ public class MenuItensController extends MenuController {
             return;
         }
 
-        Fornecedor fornecedor = sistema.buscarFornecedor(idFornecedor);
+        Fornecedor fornecedor = sistema.buscarPorNome(fornecedorTxt).getFirst();
         if (fornecedor == null) {
         	notificarPopUpErro("Fornecedor não encontrado.");
             return;
@@ -383,30 +377,42 @@ public class MenuItensController extends MenuController {
     @FXML
     public void desativarItem(ActionEvent event) {
         mostrarTabela();
-        TextInputDialog dialog = new TextInputDialog();
-        dialog.setTitle("Desativar Item");
-        dialog.setHeaderText("Desativar Item");
-        dialog.setContentText(PEDIR_ID_ITEM);
+        Item item = tabela.getSelectionModel().getSelectedItem();
+        if (item == null) {
+            TextInputDialog dialog = new TextInputDialog();
+            dialog.setTitle("Desativar Item");
+            dialog.setHeaderText("Desativar Item");
+            dialog.setContentText(PEDIR_ID_ITEM);
+            Optional<String> resultado = dialog.showAndWait();
 
-        Optional<String> resultado = dialog.showAndWait();
-        if (resultado.isPresent()) {
-            try {
-                int id = Integer.parseInt(resultado.get().trim());
-                if (sistema != null) {
-                    boolean sucesso = sistema.excluirItem(id);
-                    if (sucesso) {
+
+            if (resultado.isPresent()) {
+                try {
+                    int id = Integer.parseInt(resultado.get().trim());
+
+                    if (sistema.excluirItem(id)) {
                         mostrarAlerta(AlertType.INFORMATION, "Sucesso", "Item desativado com sucesso!");
                         carregarTabela();
                     } else {
                         mostrarAlerta(AlertType.ERROR, "Erro", "Não foi possível desativar o item.");
                     }
-                }
-            } catch (NumberFormatException e) {
-                mostrarAlerta(AlertType.ERROR, "Erro", "Digite um ID numérico válido.");
-            }
-        }
-    }
 
+                } catch (NumberFormatException e) {
+                    mostrarAlerta(AlertType.ERROR, "Erro", "Digite um ID numérico válido.");
+                }
+            }
+            else{return;}
+        }
+        if (item != null){
+        if (sistema.excluirItem(item.getId())) {
+            mostrarAlerta(AlertType.INFORMATION, "Sucesso", "Item desativado com sucesso!");
+            carregarTabela();
+        } else {
+            mostrarAlerta(AlertType.ERROR, "Erro", "Não foi possível desativar o item.");
+        }
+        }
+
+    }
     private void mostrarAlerta(AlertType tipo, String titulo, String mensagem) {
         Alert alert = new Alert(tipo);
         alert.setTitle(titulo);
