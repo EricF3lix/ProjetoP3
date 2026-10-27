@@ -10,6 +10,7 @@ import java.util.Optional;
 import entidades.Cliente;
 import entidades.ContratoAluguel;
 import entidades.Item;
+import entidades.Usuario;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
@@ -93,12 +94,12 @@ public class MenuContratosController extends MenuController {
     }
 
     private void carregarOpcoesFormulario() {
-        if (sistema == null) return;
 
-        listaClientes = sistema.listarUsuarios().stream()
+        List<Usuario> usuarios = sistema.listarUsuarios();
+        listaClientes = (usuarios != null) ? usuarios.stream()
                 .filter(Cliente.class::isInstance)
                 .map(Cliente.class::cast)
-                .toList();
+                .toList() : List.of();
 
         if (cbCliente != null) {
             cbCliente.getItems().setAll(listaClientes.stream()
@@ -108,13 +109,24 @@ public class MenuContratosController extends MenuController {
             cbCliente.setPromptText(listaClientes.isEmpty() ? "Nenhum cliente cadastrado" : "Selecione o cliente");
         }
 
-        listaItensDisponiveis = sistema.listarItens().stream()
-                .filter(Item::estaDisponivel)
-                .toList();
+       
+        List<ContratoAluguel> contratos = sistema.listarContratos();
+        List<Integer> idsItensAlugados = (contratos != null) ? contratos.stream()
+                .filter(c -> c != null && c.estaAtivo())
+                .map(c -> c.getItem() != null ? c.getItem().getId() : -1)
+                .toList() : List.of();
+
+       
+        List<Item> todosItens = sistema.listarItens();
+        listaItensDisponiveis = (todosItens != null) ? todosItens.stream()
+                .filter(i -> i != null)
+                .filter(i -> !idsItensAlugados.contains(i.getId())) 
+                .filter(i -> i.estaDisponivel() || "DISPONIVEL".equalsIgnoreCase(i.getStatus()) || "DISPONÍVEL".equalsIgnoreCase(i.getStatus()))
+                .toList() : List.of();
 
         if (cbItem != null) {
             cbItem.getItems().setAll(listaItensDisponiveis.stream()
-                    .map(i -> i.getId() + " - " + i.getNome())
+                    .map(i -> i.getId() + " - " + i.getNome() + " (R$ " + String.format("%.2f", i.getTaxaDiaria()) + "/dia)")
                     .toList());
             cbItem.getSelectionModel().clearSelection();
             cbItem.setPromptText(listaItensDisponiveis.isEmpty() ? "Nenhum item disponível" : "Selecione o item");

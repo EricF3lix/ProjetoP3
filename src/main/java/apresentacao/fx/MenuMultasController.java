@@ -3,10 +3,12 @@ package apresentacao.fx;
 import java.text.NumberFormat;
 import java.time.LocalDate;
 import java.time.ZoneId;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
 
+import entidades.ContratoAluguel;
 import entidades.Multa;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -52,7 +54,7 @@ public class MenuMultasController extends MenuController {
     @FXML private TableColumn<Multa, Boolean> colStatus;
     @FXML private TableColumn<Multa, String> colData;
 
-    @FXML private TextField idContrato;
+    @FXML private ComboBox<String> cbContrato;
     @FXML private TextField descricaoMulta;
     @FXML private TextField valorMulta;
 
@@ -64,22 +66,43 @@ public class MenuMultasController extends MenuController {
     private final ObservableList<Multa> listaMultas = FXCollections.observableArrayList();
     private FilteredList<Multa> listaFiltrada;
 
+    private List<ContratoAluguel> listaContratosOpcoes = new ArrayList<>();
+
     @Override
     protected String getTitulo() {
         return "Gerenciar Multas";
     }
 
-
-
     @Override
     protected void aoExibir() {
         configurarResponsividade();
         configurarColunas();
-        tipoMulta.getItems().setAll("Atraso na Devolução", "Dano Material", "Extravio de Item", "Mau Uso", "Outro");
+        if (tipoMulta != null) {
+            tipoMulta.getItems().setAll("Atraso na Devolução", "Dano Material", "Extravio de Item", "Mau Uso", "Outro");
+        }
         atualizarTabela();
-        configurarResponsividade();
-        configurarColunas();
         configurarFiltroPesquisa();
+    }
+
+    private void carregarContratosFormulario() {
+        if (sistema == null) return;
+
+        List<ContratoAluguel> contratos = sistema.listarContratos();
+        if (contratos != null) {
+            listaContratosOpcoes = contratos;
+        } else {
+            listaContratosOpcoes = new ArrayList<>();
+        }
+
+        if (cbContrato != null) {
+            cbContrato.getItems().setAll(listaContratosOpcoes.stream()
+                    .map(c -> "Contrato #" + c.getId() + " - " + 
+                             (c.getCliente() != null ? c.getCliente().getNome() : "Sem Cliente") + 
+                             " (" + (c.getItem() != null ? c.getItem().getNome() : "Sem Item") + ")")
+                    .toList());
+            cbContrato.getSelectionModel().clearSelection();
+            cbContrato.setPromptText(listaContratosOpcoes.isEmpty() ? "Nenhum contrato cadastrado" : "Selecione o contrato");
+        }
     }
 
     @SuppressWarnings("deprecation")
@@ -216,8 +239,12 @@ public class MenuMultasController extends MenuController {
 
     @FXML
     private void mostrarTabela() {
-        tabelaMulta.setVisible(true);
-        dadosMulta.setVisible(false);
+        if (tabelaMulta != null && dadosMulta != null) {
+            tabelaMulta.setVisible(true);
+            tabelaMulta.setManaged(true);
+            dadosMulta.setVisible(false);
+            dadosMulta.setManaged(false);
+        }
     }
 
     @FXML
@@ -228,39 +255,42 @@ public class MenuMultasController extends MenuController {
 
     @FXML
     private void esconderTabela() {
-        tabelaMulta.setVisible(false);
-        dadosMulta.setVisible(true);
+        if (tabelaMulta != null && dadosMulta != null) {
+            tabelaMulta.setVisible(false);
+            tabelaMulta.setManaged(false);
+            dadosMulta.setVisible(true);
+            dadosMulta.setManaged(true);
+            carregarContratosFormulario();
+        }
     }
 
     @FXML
     private void cadastrarMulta() {
-        idContrato.clear();
-        descricaoMulta.clear();
-        valorMulta.clear();
-        tipoMulta.setValue(null);
+        if (cbContrato != null) cbContrato.getSelectionModel().clearSelection();
+        if (descricaoMulta != null) descricaoMulta.clear();
+        if (valorMulta != null) valorMulta.clear();
+        if (tipoMulta != null) tipoMulta.setValue(null);
 
         esconderTabela();
     }
 
     @FXML
     private void registrarMulta() {
-        String idcontratotxt = idContrato.getText().trim();
-        String descricaomulta = descricaoMulta.getText().trim();
-        String txtvalor = valorMulta.getText().trim();
-        String tipo = tipoMulta.getValue();
+        int posContrato = cbContrato != null ? cbContrato.getSelectionModel().getSelectedIndex() : -1;
+        String descricaomulta = descricaoMulta != null ? descricaoMulta.getText().trim() : "";
+        String txtvalor = valorMulta != null ? valorMulta.getText().trim() : "";
+        String tipo = tipoMulta != null ? tipoMulta.getValue() : null;
 
-        if (idcontratotxt.isEmpty() || descricaomulta.isEmpty() || txtvalor.isEmpty() || tipo == null) {
+        if (posContrato < 0 || descricaomulta.isEmpty() || txtvalor.isEmpty() || tipo == null) {
             erro("Preencha todos os campos!");
             return;
         }
 
         float valor;
-        int idcontrato;
         try {
             valor = Float.parseFloat(txtvalor.replace(",", "."));
-            idcontrato = Integer.parseInt(idcontratotxt);
         } catch (NumberFormatException e) {
-            erro("ID do contrato ou valor inválido.");
+            erro("Valor inválido.");
             return;
         }
 
@@ -268,6 +298,9 @@ public class MenuMultasController extends MenuController {
             erro("Valor inválido.");
             return;
         }
+
+        ContratoAluguel contratoSelecionado = listaContratosOpcoes.get(posContrato);
+        int idcontrato = contratoSelecionado.getId();
 
         int id = sistema.gerarProximoIdMulta();
         String data = LocalDate.now(ZoneId.of("America/Recife")).toString();
@@ -282,7 +315,6 @@ public class MenuMultasController extends MenuController {
         }
     }
 
-    
     @FXML
     private void listarMultas() {
         if (sistema == null) return;
@@ -348,8 +380,9 @@ public class MenuMultasController extends MenuController {
     }
 
     private Multa obterMultaAlvo() {
-        Multa atual = (tabela != null) ? tabela.getSelectionModel().getSelectedItem() : null;
-        if (tabela != null) tabela.getSelectionModel().clearSelection();
+        if (tabela == null) return null;
+        Multa atual = tabela.getSelectionModel().getSelectedItem();
+        tabela.getSelectionModel().clearSelection();
 
         if (atual == null) {
             Optional<Integer> id = pedirInteiro(ID_MULTA);

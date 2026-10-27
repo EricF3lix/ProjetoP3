@@ -125,7 +125,7 @@
                          <cellValueFactory><PropertyValueFactory property="status" /></cellValueFactory>
                       </TableColumn>
                       <TableColumn prefWidth="80.0" text="Valor">
-                         <cellValueFactory><PropertyValueFactory property="valorTotal" /></cellValueFactory>
+                         <cellValueFactory><PropertyValueFactory property="valorTotalFormatado" /></cellValueFactory>
                       </TableColumn>
                     </columns>
                   </TableView>
