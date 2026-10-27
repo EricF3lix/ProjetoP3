@@ -157,7 +157,7 @@ public class MenuCategoriasController extends MenuController {
         Categoria categoria = new Categoria(id, nome, descricao);
 
         if (sistema.cadastrarCategoria(categoria)) {
-            info("Categoria cadastrada com sucesso! ID: " + id);
+        	notificarPopUp("Categoria cadastrada com sucesso! ID: " + id);
             txtNome.clear();
             txtDescricao.clear();
             listarCategorias();
@@ -179,7 +179,7 @@ public class MenuCategoriasController extends MenuController {
         }
 
         if (sistema.atualizarCategoria(new Categoria(atual.getId(), nome, descricao))) {
-            info("Categoria atualizada com sucesso!");
+        	notificarPopUp("Categoria atualizada com sucesso!");
             btnAtualizar.setUserData(null);
             txtNome.clear();
             txtDescricao.clear();
@@ -198,7 +198,7 @@ public class MenuCategoriasController extends MenuController {
         }
 
         if (sistema.desativarCategoria(categoria.getId())) {
-            info("Categoria desativada com sucesso.");
+        	notificarPopUp("Categoria desativada com sucesso.");
             listarCategorias();
         } else {
             erro("Erro ao desativar categoria.");
