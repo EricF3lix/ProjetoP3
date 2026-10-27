@@ -15,7 +15,13 @@ import javafx.collections.transformation.SortedList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.Pos;
-import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.Label;
+import javafx.scene.control.TableCell;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
+import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
@@ -276,14 +282,7 @@ public class MenuMultasController extends MenuController {
         }
     }
 
-    @FXML
-    private void buscarMultas() {
-        mostrarTabela();
-        Optional<Integer> id = pedirInteiro(ID_MULTA);
-        if (id.isEmpty()) return;
-        mostraMulta(id.get());
-    }
-
+    
     @FXML
     private void listarMultas() {
         if (sistema == null) return;
