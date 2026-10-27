@@ -243,7 +243,7 @@ public class MenuContratosController extends MenuController {
 
         sistema.cadastrarContrato(aluguel);
 
-        escrever("Alguel cadastrado com sucesso");
+        info("Alguel cadastrado com sucesso");
 
     }
 
