@@ -32,12 +32,6 @@ public class MenuItensController extends MenuController {
     private ComboBox<String> cbFiltro;
 
     @FXML
-    private TextField pesquisa;
-
-    @FXML
-    private Button btnLimparPesquisa;
-
-    @FXML
     private TableView<Item> tabela;
 
     @FXML

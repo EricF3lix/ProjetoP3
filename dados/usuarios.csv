@@ -4,3 +4,4 @@ id;tipo;nome;email;cpf;senha;ativo
 3;Cliente;Yan;yan@loja.com;222.222.222-22;666;true
 4;Administrador;adm;adm;777.777.777-77;123;true
 5;Cliente;test;test;999.999.999-99;test;false
+6;Funcionario;test;a;123.456.789-00;test;true
