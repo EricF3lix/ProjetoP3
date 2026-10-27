@@ -149,7 +149,7 @@ public class MenuCategoriasController extends MenuController {
         String descricao = txtDescricao.getText().trim();
 
         if (nome.isEmpty() || descricao.isEmpty()) {
-            erro("Preencha todos os campos!");
+        	notificarPopUpErro("Preencha todos os campos!");
             return;
         }
 
@@ -157,12 +157,12 @@ public class MenuCategoriasController extends MenuController {
         Categoria categoria = new Categoria(id, nome, descricao);
 
         if (sistema.cadastrarCategoria(categoria)) {
-            info("Categoria cadastrada com sucesso! ID: " + id);
+        	notificarPopUp("Categoria cadastrada com sucesso! ID: " + id);
             txtNome.clear();
             txtDescricao.clear();
             listarCategorias();
         } else {
-            erro("Já existe uma categoria com esse nome");
+        	notificarPopUpErro("Já existe uma categoria com esse nome");
         }
     }
 
@@ -174,18 +174,18 @@ public class MenuCategoriasController extends MenuController {
         String descricao = txtDescricao.getText().trim();
 
         if (nome.isEmpty() || descricao.isEmpty()) {
-            erro("Preencha todos os campos!");
+        	notificarPopUpErro("Preencha todos os campos!");
             return;
         }
 
         if (sistema.atualizarCategoria(new Categoria(atual.getId(), nome, descricao))) {
-            info("Categoria atualizada com sucesso!");
+        	notificarPopUp("Categoria atualizada com sucesso!");
             btnAtualizar.setUserData(null);
             txtNome.clear();
             txtDescricao.clear();
             listarCategorias();
         } else {
-            erro("Erro ao atualizar categoria.");
+        	notificarPopUpErro("Erro ao atualizar categoria.");
         }
     }
 
@@ -198,10 +198,10 @@ public class MenuCategoriasController extends MenuController {
         }
 
         if (sistema.desativarCategoria(categoria.getId())) {
-            info("Categoria desativada com sucesso.");
+        	notificarPopUp("Categoria desativada com sucesso.");
             listarCategorias();
         } else {
-            erro("Erro ao desativar categoria.");
+        	notificarPopUpErro("Erro ao desativar categoria.");
         }
     }
 
@@ -211,7 +211,7 @@ public class MenuCategoriasController extends MenuController {
             if (c != null) {
                 pesquisa.setText(String.valueOf(id));
             } else {
-                erro(NAO_ENCONTRADA);
+            	notificarPopUpErro(NAO_ENCONTRADA);
             }
         });
     }
@@ -253,7 +253,7 @@ public class MenuCategoriasController extends MenuController {
             if (id.isEmpty()) return null;
             atual = sistema.buscarCategoria(id.get());
             if (atual == null) {
-                erro(NAO_ENCONTRADA);
+            	notificarPopUpErro(NAO_ENCONTRADA);
             }
         }
         return atual;

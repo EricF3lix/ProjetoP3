@@ -217,10 +217,10 @@ public class MenuItensController extends MenuController {
                 if (cbFiltro != null) cbFiltro.setValue("ID");
                 if (pesquisa != null) pesquisa.setText(String.valueOf(id));
             } else {
-                erro("Nenhum item encontrado com o ID " + id);
+            	notificarPopUpErro("Nenhum item encontrado com o ID " + id);
             }
         } catch (NumberFormatException e) {
-            erro("Por favor, informe um ID numérico válido.");
+        	notificarPopUpErro("Por favor, informe um ID numérico válido.");
         }
     }
 
@@ -272,7 +272,7 @@ public class MenuItensController extends MenuController {
         String idfornecedortxt = fornecedoresItem.getText().trim();
 
         if (nomeitem.isEmpty() || descricaoitem.isEmpty() || taxadiaria.isEmpty() || valorreposicao.isEmpty() || estado.isEmpty() || categoria == null || categoria.isEmpty() || idfornecedortxt.isEmpty()) {
-            erro("Preencha todos os campos");
+        	notificarPopUpErro("Preencha todos os campos");
             return;
         }
 
@@ -289,7 +289,7 @@ public class MenuItensController extends MenuController {
         Item item = new Item(id, nomeitem, descricaoitem, taxa, estado, valor, catgoriatxt, fornecedor);
 
         sistema.cadastrarItem(item);
-        info("Item cadastrado com sucesso");
+        notificarPopUp("Item cadastrado com sucesso");
 
     }
 
@@ -316,7 +316,7 @@ public class MenuItensController extends MenuController {
     @FXML
     public void salvarAtualizacao(ActionEvent event) {
         if (itemEmEdicao == null) {
-            erro("Nenhum item selecionado para atualização.");
+        	notificarPopUpErro("Nenhum item selecionado para atualização.");
             return;
         }
 
@@ -330,7 +330,7 @@ public class MenuItensController extends MenuController {
 
         if (nome.isEmpty() || descricao.isEmpty() || taxaTxt.isEmpty() || valorTxt.isEmpty()
                 || estado.isEmpty() || categoriaNome == null || fornecedorTxt.isEmpty()) {
-            erro("Preencha todos os campos");
+        	notificarPopUpErro("Preencha todos os campos");
             return;
         }
 
@@ -343,26 +343,26 @@ public class MenuItensController extends MenuController {
             valor = Double.parseDouble(valorTxt.replace(',', '.'));
             idFornecedor = Integer.parseInt(fornecedorTxt);
         } catch (NumberFormatException e) {
-            erro("Informe valores numéricos válidos para taxa, valor de reposição e fornecedor.");
+        	notificarPopUpErro("Informe valores numéricos válidos para taxa, valor de reposição e fornecedor.");
             return;
         }
 
         List<Categoria> categorias = sistema.buscarCategoriaPorNome(categoriaNome);
         if (categorias.isEmpty()) {
-            erro("Categoria não encontrada.");
+        	notificarPopUpErro("Categoria não encontrada.");
             return;
         }
 
         Fornecedor fornecedor = sistema.buscarFornecedor(idFornecedor);
         if (fornecedor == null) {
-            erro("Fornecedor não encontrado.");
+        	notificarPopUpErro("Fornecedor não encontrado.");
             return;
         }
 
         Item atualizado = new Item(itemEmEdicao.getId(), nome, descricao, taxa, estado, valor, categorias.getFirst(), fornecedor);
 
         sistema.atualizarItem(atualizado);
-        info("Item atualizado com sucesso");
+        notificarPopUp("Item atualizado com sucesso");
         listarItens(event);
     }
 
@@ -375,7 +375,7 @@ public class MenuItensController extends MenuController {
 
         Item item = sistema.buscarItem(id.get());
         if (item == null) {
-            erro("Item não encontrado.");
+        	notificarPopUpErro("Item não encontrado.");
         }
         return item;
     }
