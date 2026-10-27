@@ -10,6 +10,7 @@ import java.util.Optional;
 import entidades.Cliente;
 import entidades.ContratoAluguel;
 import entidades.Item;
+import entidades.Multa;
 import entidades.Usuario;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -269,12 +270,12 @@ public class MenuContratosController extends MenuController {
         LocalDate dataFinal = dpDataFinal != null ? dpDataFinal.getValue() : null;
 
         if (posCliente < 0 || posItem < 0 || dataInicio == null || dataFinal == null) {
-            erro("Por favor, selecione o cliente, o item e as datas de início e fim.");
+        	notificarPopUpErro("Por favor, selecione o cliente, o item e as datas de início e fim.");
             return;
         }
 
         if (dataInicio.isAfter(dataFinal) || dataInicio.equals(dataFinal)) {
-            erro("A data de devolução deve ser posterior à data de retirada.");
+        	notificarPopUpErro("A data de devolução deve ser posterior à data de retirada.");
             return;
         }
 
@@ -282,12 +283,12 @@ public class MenuContratosController extends MenuController {
         Item item = listaItensDisponiveis.get(posItem);
 
         if (sistema.clientePossuiMultaPendente(cliente.getId())) {
-            erro("Cliente possui multa pendente e não pode realizar novos aluguéis.");
+        	notificarPopUpErro("Cliente possui multa pendente e não pode realizar novos aluguéis.");
             return;
         }
 
         if (!item.estaDisponivel()) {
-            erro("Item indisponível para aluguel. Status atual: " + item.getStatus());
+        	notificarPopUpErro("Item indisponível para aluguel. Status atual: " + item.getStatus());
             return;
         }
 
@@ -300,12 +301,12 @@ public class MenuContratosController extends MenuController {
 
         if (sistema.cadastrarContrato(aluguel)) {
             item.alugar();
-            info("Aluguel registrado com sucesso! ID do Contrato: " + idContrato);
+            notificarPopUp("Aluguel registrado com sucesso! ID do Contrato: " + idContrato);
             limparFormulario();
             carregarTabela();
             mostrarTabela();
         } else {
-            erro("Erro ao cadastrar o contrato no sistema.");
+        	notificarPopUpErro("Erro ao cadastrar o contrato no sistema.");
         }
     }
 
@@ -322,7 +323,7 @@ public class MenuContratosController extends MenuController {
         if (contrato == null) return;
 
         if (!contrato.estaAtivo() || contrato.estaFinalizado()) {
-            erro("Este contrato não está ativo. Status: " + contrato.getStatus());
+        	notificarPopUpErro("Este contrato não está ativo. Status: " + contrato.getStatus());
             return;
         }
 
@@ -378,22 +379,29 @@ public class MenuContratosController extends MenuController {
         contrato.setDataDevolucaoReal(real.toString());
 
         long diasAtraso = ChronoUnit.DAYS.between(prevista, real);
-
+        
+        if(!contrato.isMultaPaga()) {
+            info("O cliente deve pagar a multa antes de realizar novos aluguéis.");
+            return;
+        }
         if (diasAtraso > 0) {
             double multa = sistema.calcularMulta(diasAtraso, contrato.getItem().getTaxaDiaria());
             contrato.setValorMulta(multa);
             contrato.setMultaPaga(false);
-            info(String.format("Contrato finalizado com atraso de %d dia(s). Multa gerada: R$ %.2f", diasAtraso, multa));
-        } else {
-            info("Devolução realizada dentro do prazo.");
-        }
+            notificarPopUp(String.format("Contrato finalizado com atraso de %d dia(s). Multa gerada: R$ %.2f", diasAtraso, multa));
+            String data = LocalDate.now(ZoneId.of("America/Recife")).toString();
+            Multa multaNova = new Multa(sistema.gerarProximoIdMulta(), contrato.getId(),"Atraso na devolução","Multa gerada automaticamente", multa, data);
+            sistema.registrarMulta(multaNova);
 
+        } else {
+        	notificarPopUp("Devolução realizada dentro do prazo.");
+        }
         contrato.getItem().devolver();
 
         if (sistema.finalizarContrato(contrato.getId())) {
             carregarTabela();
         } else {
-            erro("Erro ao finalizar contrato.");
+        	notificarPopUpErro("Erro ao finalizar contrato.");
         }
     }
 
@@ -404,7 +412,7 @@ public class MenuContratosController extends MenuController {
         if (contrato == null) return;
 
         if ("FINALIZADO".equalsIgnoreCase(contrato.getStatus())) {
-            erro("Não é possível cancelar um contrato já finalizado.");
+        	notificarPopUpErro("Não é possível cancelar um contrato já finalizado.");
             return;
         }
 
@@ -414,10 +422,10 @@ public class MenuContratosController extends MenuController {
 
         if (sistema.cancelarContrato(contrato.getId())) {
             contrato.getItem().devolver();
-            info("Contrato cancelado com sucesso. Item devolvido ao estoque.");
+            notificarPopUp("Contrato cancelado com sucesso. Item devolvido ao estoque.");
             carregarTabela();
         } else {
-            erro("Erro ao cancelar contrato.");
+        	notificarPopUpErro("Erro ao cancelar contrato.");
         }
     }
 
@@ -433,7 +441,7 @@ public class MenuContratosController extends MenuController {
         return pedirInteiro(ID_CONTRATO)
                 .map(id -> {
                     ContratoAluguel c = sistema.buscarContrato(id);
-                    if (c == null) erro(CONTRATO_NAO_ENCONTRADO);
+                    if (c == null) notificarPopUpErro(CONTRATO_NAO_ENCONTRADO);
                     return c;
                 })
                 .orElse(null);

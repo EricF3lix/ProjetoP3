@@ -282,7 +282,7 @@ public class MenuMultasController extends MenuController {
         String tipo = tipoMulta != null ? tipoMulta.getValue() : null;
 
         if (posContrato < 0 || descricaomulta.isEmpty() || txtvalor.isEmpty() || tipo == null) {
-            erro("Preencha todos os campos!");
+        	notificarPopUpErro("Preencha todos os campos!");
             return;
         }
 
@@ -290,12 +290,12 @@ public class MenuMultasController extends MenuController {
         try {
             valor = Float.parseFloat(txtvalor.replace(",", "."));
         } catch (NumberFormatException e) {
-            erro("Valor inválido.");
+        	notificarPopUpErro("Valor inválido.");
             return;
         }
 
         if (Float.isNaN(valor) || Float.isInfinite(valor) || valor <= 0) {
-            erro("Valor inválido.");
+        	notificarPopUpErro("Valor inválido.");
             return;
         }
 
@@ -308,10 +308,13 @@ public class MenuMultasController extends MenuController {
         Multa multa = new Multa(id, idcontrato, tipo, descricaomulta, valor, data);
 
         if (sistema.registrarMulta(multa)) {
-            info("Multa cadastrada com sucesso! ID: " + id);
+            notificarPopUp("Multa cadastrada com sucesso! ID: " + id);
+            contratoSelecionado.setMultaPaga(false);
+            contratoSelecionado.setValorMulta(valor);
+            esconderTabela();
             atualizarTabela();
         } else {
-            erro("Erro ao cadastrar multa.");
+        	notificarPopUpErro("Erro ao cadastrar multa.");
         }
     }
 
@@ -335,7 +338,7 @@ public class MenuMultasController extends MenuController {
         List<Multa> multas = sistema.listarMultasPorContrato(id.get());
         if (multas == null || multas.isEmpty()) {
             listaMultas.clear();
-            info("Nenhuma multa encontrada para esse contrato.");
+            notificarPopUp("Nenhuma multa encontrada para esse contrato.");
             return;
         }
 
@@ -349,7 +352,7 @@ public class MenuMultasController extends MenuController {
         List<Multa> multas = sistema.listarMultasPendentes();
         if (multas == null || multas.isEmpty()) {
             listaMultas.clear();
-            info("Nenhuma multa pendente.");
+            notificarPopUp("Nenhuma multa pendente.");
             return;
         }
 
@@ -363,7 +366,7 @@ public class MenuMultasController extends MenuController {
         if (multa == null) return;
 
         if (multa.isPaga()) {
-            info("Essa multa já está paga.");
+        	notificarPopUp("Essa multa já está paga.");
             return;
         }
 
@@ -372,10 +375,10 @@ public class MenuMultasController extends MenuController {
         }
 
         if (sistema.quitarMulta(multa.getId())) {
-            info("Multa quitada com sucesso.");
+        	notificarPopUp("Multa quitada com sucesso.");
             listarMultas();
         } else {
-            erro("Erro ao quitar multa.");
+        	notificarPopUpErro("Erro ao quitar multa.");
         }
     }
 
@@ -389,7 +392,7 @@ public class MenuMultasController extends MenuController {
             if (id.isEmpty()) return null;
             atual = sistema.buscarMulta(id.get());
             if (atual == null) {
-                erro(NAO_ENCONTRADA);
+            	notificarPopUpErro(NAO_ENCONTRADA);
             }
         }
         return atual;

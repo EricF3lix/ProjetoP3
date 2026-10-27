@@ -1,5 +1,5 @@
 id;nome;descricao;taxaDiaria;estadoConservacao;valorReposicao;status;ativo;idCategoria;idFornecedor
-1;Cafeteira;de fazer café;10.0;NOVO;5.0;INDISPONIVEL;false;1;0
+1;Cafeteira;de fazer café;10.0;NOVO;5.0;DISPONIVEL;true;1;3
 2;Cafeteira de catiguria;a mesma coisa de uma sem categoria;50.0;NOVO;5.0;INDISPONIVEL;false;1;0
 3;Teclado gamer;grande;2000.0;NOVO;20.0;INDISPONIVEL;false;1;1
 4;celular;azul;100.0;NOVO;20.0;INDISPONIVEL;false;1;0
@@ -7,5 +7,7 @@ id;nome;descricao;taxaDiaria;estadoConservacao;valorReposicao;status;ativo;idCat
 6;Cama;de dormir;100.0;NOVO;40.0;INDISPONIVEL;true;1;1
 7;sofa;de dormir;20000.0;USADO;120.0;DISPONIVEL;true;1;3
 8;ventilador;ventila a dor;20.0;novo;300.0;DISPONIVEL;true;6;2
-9;lapis;de escrever;100000.0;20;50.0;DISPONIVEL;true;0;0
-10;batata;de comer;100.0;20;2.0;DISPONIVEL;true;0;0
+9;lapis;de escrever;100000.0;20;50.0;INDISPONIVEL;false;0;0
+10;batata;de comer;100.0;20;2.0;INDISPONIVEL;false;0;0
+11;mesa;de sentar;1000.0;NOVO;200.0;INDISPONIVEL;false;2;2
+12;dente;de morrder;20.0;SEMI-NOVO;40.0;INDISPONIVEL;false;4;2
