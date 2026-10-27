@@ -6,10 +6,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Optional;
 
-import entidades.Cliente;
-import entidades.ContratoAluguel;
-import entidades.Item;
-import entidades.Usuario;
+import entidades.*;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -47,6 +44,14 @@ public class MenuContratosController extends MenuController {
 
     @FXML 
     private TableView<ContratoAluguel> tabela;
+
+    @FXML private VBox dadosContrato;
+    @FXML private VBox tabelaContrato;
+
+    @FXML private TextField idCliente;
+    @FXML private TextField idItem;
+    @FXML private DatePicker dpDataInicio;
+    @FXML private DatePicker dpDataFinal;
 
     private final ObservableList<ContratoAluguel> listaContratos = FXCollections.observableArrayList();
     private FilteredList<ContratoAluguel> listaFiltrada;
@@ -153,15 +158,13 @@ public class MenuContratosController extends MenuController {
     public void listarContratos(ActionEvent event) {
         aoLimparPesquisa(event);
         carregarTabela();
+        mostrarTabela();
     }
 
-    @FXML
-    public void listarContratos() {
-        carregarTabela();
-    }
 
     @FXML
     public void buscarContrato(ActionEvent event) {
+        mostrarTabela();
         String texto = pesquisa != null ? pesquisa.getText().trim() : "";
 
         if (texto.isEmpty()) {
@@ -185,145 +188,63 @@ public class MenuContratosController extends MenuController {
         }
     }
 
+    @FXML private void mostrarTabela(){
+        tabelaContrato.setVisible(true);
+        dadosContrato.setVisible(false);
+    }
+
+    @FXML private void escondeTabela(){
+        tabelaContrato.setVisible(false);
+        dadosContrato.setVisible(true);
+    }
+
     @FXML
     private void registrarAluguel(ActionEvent event) {
-        if (sistema == null) return;
-
-        DadosAluguelForm form = exibirDialogoAluguel();
-        if (form == null) return;
-
-        processarRegistroAluguel(form);
-    }
-
-    private DadosAluguelForm exibirDialogoAluguel() {
-        Dialog<ButtonType> dialog = new Dialog<>();
-        dialog.setTitle("Registrar Aluguel");
-        dialog.setHeaderText("Preencha os dados do novo contrato de aluguel");
-
-        ButtonType btnConfirmar = new ButtonType("Registrar", ButtonData.OK_DONE);
-        dialog.getDialogPane().getButtonTypes().addAll(btnConfirmar, ButtonType.CANCEL);
-
-        GridPane grid = new GridPane();
-        grid.setHgap(10);
-        grid.setVgap(12);
-        grid.setPadding(new Insets(20, 20, 10, 10));
-
-        TextField txtIdCliente = new TextField();
-        txtIdCliente.setPromptText("Ex: 1");
-
-        TextField txtIdItem = new TextField();
-        txtIdItem.setPromptText("Ex: 10");
-
-        DatePicker dpRetirada = new DatePicker(LocalDate.now(FUSO_HORARIO));
-        DatePicker dpDevolucao = new DatePicker(LocalDate.now(FUSO_HORARIO).plusDays(1));
-
-        grid.add(new Label("ID do Cliente:"), 0, 0);
-        grid.add(txtIdCliente, 1, 0);
-        grid.add(new Label("ID do Item:"), 0, 1);
-        grid.add(txtIdItem, 1, 1);
-        grid.add(new Label("Data de Retirada:"), 0, 2);
-        grid.add(dpRetirada, 1, 2);
-        grid.add(new Label("Devolução Prevista:"), 0, 3);
-        grid.add(dpDevolucao, 1, 3);
-
-        dialog.getDialogPane().setContent(grid);
-        Platform.runLater(txtIdCliente::requestFocus);
-
-        Optional<ButtonType> resultado = dialog.showAndWait();
-        if (resultado.isEmpty() || resultado.get() != btnConfirmar) {
-            return null;
-        }
-
-        return new DadosAluguelForm(
-                txtIdCliente.getText().trim(),
-                txtIdItem.getText().trim(),
-                dpRetirada.getValue(),
-                dpDevolucao.getValue()
-        );
-    }
-
-    private void processarRegistroAluguel(DadosAluguelForm form) {
-        if (form.dataRet() == null || form.dataDev() == null) {
-            erro("Por favor, selecione as duas datas no calendário.");
+        if (idCliente.getText().trim().isEmpty() || idItem.getText().trim().isEmpty() || dpDataInicio.getValue() == null || dpDataInicio.getValue() == null){
+            erro("Todos os campos devem ser preenchidos");
             return;
         }
 
-        long quantidadeDias = ChronoUnit.DAYS.between(form.dataRet(), form.dataDev());
-        if (quantidadeDias <= 0) {
-            erro("A data de devolução deve ser posterior à data de retirada.");
+        int idcliente = Integer.parseInt(idCliente.getText().trim());
+        int iditem = Integer.parseInt(idItem.getText().trim());
+        LocalDate datainicio = dpDataInicio.getValue();
+        LocalDate datafinal = dpDataFinal.getValue();
+
+        if (datainicio.isAfter(datafinal)){
+            erro("A data inicial nao pode ser apos a data final");
             return;
         }
 
-        Cliente cliente = validarEObterCliente(form.idClienteStr());
-        if (cliente == null) return;
+        long quantidadedias = ChronoUnit.DAYS.between(datainicio,datafinal);
 
-        Item item = validarEObterItem(form.idItemStr());
-        if (item == null) return;
+        String datainiciotxt = String.valueOf(datainicio);
+        String datafinaltxt = String.valueOf(datafinal);
 
-        executarCadastroContrato(cliente, item, form.dataRet(), form.dataDev(), quantidadeDias);
-    }
+        int id = sistema.gerarProximoIdContrato();
+        Usuario usuario = sistema.buscarUsuario(idcliente);
 
-    private Cliente validarEObterCliente(String idClienteStr) {
-        int idCliente;
-        try {
-            idCliente = Integer.parseInt(idClienteStr);
-        } catch (NumberFormatException e) {
-            erro("Os IDs do cliente e do item devem ser numéricos.");
-            return null;
-        }
-
-        Usuario usuario = sistema.buscarUsuario(idCliente);
-        if (!(usuario instanceof Cliente cliente)) {
-            erro("Cliente não encontrado.");
-            return null;
-        }
-
-        if (sistema.clientePossuiMultaPendente(cliente.getId())) {
-            erro("Cliente possui multa pendente e não pode realizar novos aluguéis.");
-            return null;
-        }
-
-        return cliente;
-    }
-
-    private Item validarEObterItem(String idItemStr) {
-        int idItem;
-        try {
-            idItem = Integer.parseInt(idItemStr);
-        } catch (NumberFormatException e) {
-            erro("Os IDs do cliente e do item devem ser numéricos.");
-            return null;
-        }
-
-        Item item = sistema.buscarItem(idItem);
-        if (item == null) {
-            erro("Item não encontrado.");
-            return null;
-        }
-
-        if (!item.estaDisponivel()) {
-            erro("Item indisponível para aluguel. Status atual: " + item.getStatus());
-            return null;
-        }
-
-        return item;
-    }
-
-    private void executarCadastroContrato(Cliente cliente, Item item, LocalDate dataRet, LocalDate dataDev, long quantidadeDias) {
-        double valorTotal = quantidadeDias * item.getTaxaDiaria();
-        int idContrato = sistema.gerarProximoIdContrato();
-
-        ContratoAluguel contrato = new ContratoAluguel(
-                idContrato, cliente, item, dataRet.toString(), dataDev.toString(), valorTotal);
-
-        if (!sistema.cadastrarContrato(contrato)) {
-            erro("Erro ao registrar aluguel.");
+        if (!(usuario instanceof Cliente)){
+            erro("Cliente não encontrado");
             return;
         }
 
-        item.alugar();
-        info("Aluguel registrado com sucesso! ID do Contrato: " + idContrato);
-        carregarTabela();
+        Cliente cliente = new Cliente(usuario.getId(),usuario.getNome(),usuario.getEmail(),usuario.getCpf(),usuario.getSenha());
+
+        Item item = sistema.buscarItem(iditem);
+
+        if (item == null){
+            erro("Itemnão encontrado");
+            return;
+        }
+
+        double valorTotal = quantidadedias * item.getTaxaDiaria();
+
+        ContratoAluguel aluguel = new ContratoAluguel(id,cliente,item,datainiciotxt,datafinaltxt,valorTotal);
+
+        sistema.cadastrarContrato(aluguel);
+
+        escrever("Alguel cadastrado com sucesso");
+
     }
 
     @FXML
@@ -409,6 +330,7 @@ public class MenuContratosController extends MenuController {
 
     @FXML
     private void cancelarContrato(ActionEvent event) {
+        mostrarTabela();
         ContratoAluguel contrato = obterContratoAlvo();
         if (contrato == null) return;
 
@@ -431,6 +353,7 @@ public class MenuContratosController extends MenuController {
     }
 
     private ContratoAluguel obterContratoAlvo() {
+        mostrarTabela();
         if (tabela == null) return null;
         ContratoAluguel selecionado = tabela.getSelectionModel().getSelectedItem();
         tabela.getSelectionModel().clearSelection();
