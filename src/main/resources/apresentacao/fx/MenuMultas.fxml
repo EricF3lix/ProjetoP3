@@ -8,6 +8,7 @@
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.cell.PropertyValueFactory?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Pane?>
@@ -57,12 +58,12 @@
                <children>
                   <Label style="-fx-font-family: -apple-system, 'SF Pro Display', 'Segoe UI', sans-serif; -fx-font-weight: bold; -fx-font-size: 18px; -fx-text-fill: #1d1d1f;" text="Registrar Multa" />
                   
-                  <Label style="-fx-font-weight: bold; -fx-font-size: 13px; -fx-text-fill: #6e6e73;" text="ID do Contrato:">
+                  <Label style="-fx-font-weight: bold; -fx-font-size: 13px; -fx-text-fill: #6e6e73;" text="Contrato:">
                      <VBox.margin>
                         <Insets top="5.0" />
                      </VBox.margin>
                   </Label>
-                  <TextField fx:id="idContrato" prefHeight="36.0" promptText="Digite o ID do contrato" style="-fx-background-color: #e5e5ea; -fx-background-radius: 8px; -fx-padding: 8px;" />
+                  <ComboBox fx:id="cbContrato" maxWidth="1.7976931348623157E308" prefHeight="36.0" promptText="Selecione o contrato" style="-fx-background-color: #e5e5ea; -fx-background-radius: 8px;" />
                   
                   <Label style="-fx-font-weight: bold; -fx-font-size: 13px; -fx-text-fill: #6e6e73;" text="Tipo de multa:">
                      <VBox.margin>
