@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Optional;
 
 import entidades.*;
-import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
