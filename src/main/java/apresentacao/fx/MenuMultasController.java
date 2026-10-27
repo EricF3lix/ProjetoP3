@@ -361,13 +361,4 @@ public class MenuMultasController extends MenuController {
         }
         return atual;
     }
-
-    private void mostraMulta(int id) {
-        Multa multa = sistema.buscarMulta(id);
-        if (multa == null) {
-            info("Não cadastrada.");
-            return;
-        }
-        listaMultas.setAll(multa);
-    }
 }
