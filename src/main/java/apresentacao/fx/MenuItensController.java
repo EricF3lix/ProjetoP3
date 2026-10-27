@@ -14,10 +14,8 @@ import javafx.scene.control.*;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.layout.VBox;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 public class MenuItensController extends MenuController {
 
@@ -30,7 +28,6 @@ public class MenuItensController extends MenuController {
             "-fx-background-color: #f8d7da; -fx-text-fill: #721c24; " + ESTILO_BADGE_COMUM;
     private static final String FILTRO_TODOS = "Todos";
     private static final String SEPARADOR_OPCOES = " | Opções: ";
-    private static final String NENHUM = "nenhum";
     private static final String INDISPONIVEL = "INDISPONIVEL";
     private static final List<String> STATUS_VALIDOS =
             List.of("DISPONIVEL", "MANUTENCAO", "ALUGADO", INDISPONIVEL);
@@ -391,25 +388,6 @@ public class MenuItensController extends MenuController {
             erro("Item não encontrado.");
         }
         return item;
-    }
-
-    private Optional<String> pedirNovoStatus(Item atual) {
-        if (!atual.isAtivo()) {
-            return Optional.of(INDISPONIVEL);
-        }
-
-        Optional<String> entrada = pedirTexto("Novo status (Atual: " + atual.getStatus()
-                + SEPARADOR_OPCOES + String.join(", ", STATUS_VALIDOS) + ")\n[Enter mantém]:");
-        if (entrada.isEmpty()) return Optional.empty();
-
-        String status = entrada.get().toUpperCase();
-        if (status.isEmpty()) return Optional.of(atual.getStatus());
-
-        if (!STATUS_VALIDOS.contains(status)) {
-            erro("Status inválido. Digite: " + String.join(", ", STATUS_VALIDOS) + ".");
-            return Optional.empty();
-        }
-        return Optional.of(status);
     }
 
     @FXML
