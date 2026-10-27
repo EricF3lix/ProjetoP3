@@ -308,7 +308,10 @@ public class MenuMultasController extends MenuController {
         Multa multa = new Multa(id, idcontrato, tipo, descricaomulta, valor, data);
 
         if (sistema.registrarMulta(multa)) {
-        	notificarPopUp("Multa cadastrada com sucesso! ID: " + id);
+            notificarPopUp("Multa cadastrada com sucesso! ID: " + id);
+            contratoSelecionado.setMultaPaga(false);
+            contratoSelecionado.setValorMulta(valor);
+            esconderTabela();
             atualizarTabela();
         } else {
         	notificarPopUpErro("Erro ao cadastrar multa.");

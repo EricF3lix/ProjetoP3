@@ -10,6 +10,7 @@ import java.util.Optional;
 import entidades.Cliente;
 import entidades.ContratoAluguel;
 import entidades.Item;
+import entidades.Multa;
 import entidades.Usuario;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -378,16 +379,23 @@ public class MenuContratosController extends MenuController {
         contrato.setDataDevolucaoReal(real.toString());
 
         long diasAtraso = ChronoUnit.DAYS.between(prevista, real);
-
+        
+        if(!contrato.isMultaPaga()) {
+            info("O cliente deve pagar a multa antes de realizar novos aluguéis.");
+            return;
+        }
         if (diasAtraso > 0) {
             double multa = sistema.calcularMulta(diasAtraso, contrato.getItem().getTaxaDiaria());
             contrato.setValorMulta(multa);
             contrato.setMultaPaga(false);
             notificarPopUp(String.format("Contrato finalizado com atraso de %d dia(s). Multa gerada: R$ %.2f", diasAtraso, multa));
+            String data = LocalDate.now(ZoneId.of("America/Recife")).toString();
+            Multa multaNova = new Multa(sistema.gerarProximoIdMulta(), contrato.getId(),"Atraso na devolução","Multa gerada automaticamente", multa, data);
+            sistema.registrarMulta(multaNova);
+
         } else {
         	notificarPopUp("Devolução realizada dentro do prazo.");
         }
-
         contrato.getItem().devolver();
 
         if (sistema.finalizarContrato(contrato.getId())) {
