@@ -149,7 +149,7 @@ public class MenuCategoriasController extends MenuController {
         String descricao = txtDescricao.getText().trim();
 
         if (nome.isEmpty() || descricao.isEmpty()) {
-            erro("Preencha todos os campos!");
+        	notificarPopUpErro("Preencha todos os campos!");
             return;
         }
 
@@ -162,7 +162,7 @@ public class MenuCategoriasController extends MenuController {
             txtDescricao.clear();
             listarCategorias();
         } else {
-            erro("Já existe uma categoria com esse nome");
+        	notificarPopUpErro("Já existe uma categoria com esse nome");
         }
     }
 
@@ -174,7 +174,7 @@ public class MenuCategoriasController extends MenuController {
         String descricao = txtDescricao.getText().trim();
 
         if (nome.isEmpty() || descricao.isEmpty()) {
-            erro("Preencha todos os campos!");
+        	notificarPopUpErro("Preencha todos os campos!");
             return;
         }
 
@@ -185,7 +185,7 @@ public class MenuCategoriasController extends MenuController {
             txtDescricao.clear();
             listarCategorias();
         } else {
-            erro("Erro ao atualizar categoria.");
+        	notificarPopUpErro("Erro ao atualizar categoria.");
         }
     }
 
@@ -201,7 +201,7 @@ public class MenuCategoriasController extends MenuController {
         	notificarPopUp("Categoria desativada com sucesso.");
             listarCategorias();
         } else {
-            erro("Erro ao desativar categoria.");
+        	notificarPopUpErro("Erro ao desativar categoria.");
         }
     }
 
@@ -211,7 +211,7 @@ public class MenuCategoriasController extends MenuController {
             if (c != null) {
                 pesquisa.setText(String.valueOf(id));
             } else {
-                erro(NAO_ENCONTRADA);
+            	notificarPopUpErro(NAO_ENCONTRADA);
             }
         });
     }
@@ -253,7 +253,7 @@ public class MenuCategoriasController extends MenuController {
             if (id.isEmpty()) return null;
             atual = sistema.buscarCategoria(id.get());
             if (atual == null) {
-                erro(NAO_ENCONTRADA);
+            	notificarPopUpErro(NAO_ENCONTRADA);
             }
         }
         return atual;

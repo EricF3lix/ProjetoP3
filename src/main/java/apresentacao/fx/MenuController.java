@@ -175,8 +175,7 @@ public abstract class MenuController {
                 "-fx-background-radius: 25px; " +
                 "-fx-border-color: #5BE87B; " +
                 "-fx-border-width: 1.5px; " +
-                "-fx-border-radius: 25px; " +
-                "-fx-effect: dropshadow(gaussian, rgba(52,208,88,0.55), 18, 0, 0, 4);";
+                "-fx-border-radius: 25px;";
         } else {
             iconeSimbolo = "✕";
             estiloCard =
@@ -184,8 +183,7 @@ public abstract class MenuController {
                 "-fx-background-radius: 25px; " +
                 "-fx-border-color: #FF8A80; " +
                 "-fx-border-width: 1.5px; " +
-                "-fx-border-radius: 25px; " +
-                "-fx-effect: dropshadow(gaussian, rgba(255,69,58,0.55), 18, 0, 0, 4);";
+                "-fx-border-radius: 25px;";
         }
 
         card.setStyle(estiloCard);
