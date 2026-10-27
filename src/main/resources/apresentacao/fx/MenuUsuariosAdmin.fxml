@@ -40,7 +40,7 @@
       </VBox>
 
       
-      <AnchorPane layoutX="320.0" layoutY="100.0" prefHeight="520.0" prefWidth="590.0" style="-fx-background-color: #ffffff; -fx-background-radius: 16px; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 12, 0, 2, 6);">
+      <AnchorPane minHeight="0.0" AnchorPane.topAnchor="100.0" AnchorPane.leftAnchor="320.0" AnchorPane.rightAnchor="40.0" AnchorPane.bottomAnchor="40.0" prefHeight="520.0" prefWidth="590.0" style="-fx-background-color: #ffffff; -fx-background-radius: 16px; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 12, 0, 2, 6);">
          <children>
             <StackPane fx:id="painelConteudo" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                <children>
