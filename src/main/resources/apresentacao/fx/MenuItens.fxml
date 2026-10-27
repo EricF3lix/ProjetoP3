@@ -95,28 +95,28 @@
                         <Insets left="15.0" top="5.0" />
                      </VBox.margin>
                   </Label>
-                  <Label text="Nome do Item:">
+                  <Label style="-fx-text-fill: #6e6e73;" text="Nome do Item:">
                      <font>
                         <Font size="16.0" />
                      </font>
                      <VBox.margin>
-                        <Insets left="15.0" top="10.0" />
+                        <Insets left="15.0" top="5.0" />
                      </VBox.margin>
                   </Label>
-                  <TextField fx:id="nomeItem" promptText="Digite o nome do item">
+                  <TextField fx:id="nomeItem" promptText="Digite o nome do item" style="-fx-background-color: #F2F2F7; -fx-background-radius: 8px; -fx-padding: 8px;">
                      <VBox.margin>
                         <Insets left="15.0" right="15.0" />
                      </VBox.margin>
                   </TextField>
-                  <Label text="Descrição:">
+                  <Label style="-fx-text-fill: #6e6e73;" text="Descrição:">
                      <font>
                         <Font size="16.0" />
                      </font>
                      <VBox.margin>
-                        <Insets left="15.0" top="10.0" />
+                        <Insets left="15.0" top="5.0" />
                      </VBox.margin>
                   </Label>
-                  <TextField fx:id="descricaoItem" promptText="Digite uma Descrição para o item">
+                  <TextField fx:id="descricaoItem" promptText="Digite uma Descrição para o item" style="-fx-background-color: #F2F2F7; -fx-background-radius: 8px; -fx-padding: 8px;">
                      <VBox.margin>
                         <Insets left="15.0" right="15.0" />
                      </VBox.margin>
@@ -125,15 +125,15 @@
                      <children>
                         <VBox prefHeight="100.0" prefWidth="491.0">
                            <children>
-                              <Label text="Taxa diaria:">
+                              <Label style="-fx-text-fill: #6e6e73;" text="Taxa diaria:">
                                  <font>
                                     <Font size="16.0" />
                                  </font>
                                  <VBox.margin>
-                                    <Insets left="15.0" top="10.0" />
+                                    <Insets left="15.0" top="5.0" />
                                  </VBox.margin>
                               </Label>
-                              <TextField fx:id="taxaDiaria" promptText="Ex: 25,00">
+                              <TextField fx:id="taxaDiaria" promptText="Ex: 25,00" style="-fx-background-color: #F2F2F7; -fx-background-radius: 8px; -fx-padding: 8px;">
                                  <VBox.margin>
                                     <Insets left="15.0" right="15.0" />
                                  </VBox.margin>
@@ -141,15 +141,15 @@
                            </children></VBox>
                         <VBox prefHeight="100.0" prefWidth="496.0">
                            <children>
-                              <Label text="Valor de reposição:">
+                              <Label style="-fx-text-fill: #6e6e73;" text="Valor de reposição:">
                                  <font>
                                     <Font size="16.0" />
                                  </font>
                                  <VBox.margin>
-                                    <Insets right="15.0" top="10.0" />
+                                    <Insets right="15.0" top="5.0" />
                                  </VBox.margin>
                               </Label>
-                              <TextField fx:id="valorReposicao" promptText="Ex: 25,00">
+                              <TextField fx:id="valorReposicao" prefHeight="11.0" prefWidth="283.0" promptText="Ex: 25,00" style="-fx-background-color: #F2F2F7; -fx-background-radius: 8px; -fx-padding: 8px;">
                                  <VBox.margin>
                                     <Insets right="15.0" />
                                  </VBox.margin>
@@ -157,53 +157,67 @@
                            </children></VBox>
                      </children>
                   </HBox>
-                  <Label text="Estado:">
+                  <Label style="-fx-text-fill: #6e6e73;" text="Estado:">
                      <font>
                         <Font size="16.0" />
                      </font>
                      <VBox.margin>
-                        <Insets left="15.0" top="10.0" />
+                        <Insets left="15.0" top="5.0" />
                      </VBox.margin>
                   </Label>
-                  <TextField fx:id="estadoItem" promptText="Digite o estado do item">
-                     <VBox.margin>
-                        <Insets left="15.0" right="15.0" />
-                     </VBox.margin>
-                  </TextField>
-                  <Label text="ID do Fornecedor:">
-                     <font>
-                        <Font size="16.0" />
-                     </font>
-                     <VBox.margin>
-                        <Insets left="15.0" top="10.0" />
-                     </VBox.margin>
-                  </Label>
-                  <TextField fx:id="fornecedoresItem" promptText="Digite o id do fornecedor">
-                     <VBox.margin>
-                        <Insets left="15.0" right="15.0" />
-                     </VBox.margin>
-                  </TextField>
-                  <Label text="Categoria:">
-                     <font>
-                        <Font size="16.0" />
-                     </font>
-                     <VBox.margin>
-                        <Insets left="15.0" top="10.0" />
-                     </VBox.margin>
-                  </Label>
-                  <ComboBox fx:id="categoriaItem" prefHeight="26.0" prefWidth="564.0">
+                  <ComboBox fx:id="estadoItem" prefHeight="26.0" prefWidth="560.0" promptText="Estado do item" style="-fx-background-color: #F2F2F7; -fx-background-radius: 8px; -fx-padding: 8px;">
                      <VBox.margin>
                         <Insets left="15.0" right="15.0" />
                      </VBox.margin>
                   </ComboBox>
-                  <Region prefHeight="185.0" prefWidth="590.0" />
-                  <HBox prefHeight="100.0" prefWidth="200.0">
+                  <HBox alignment="BOTTOM_RIGHT" prefHeight="100.0" prefWidth="200.0">
                      <children>
-                        <Region prefHeight="70.0" prefWidth="438.0" />
-                        <Button mnemonicParsing="false" onAction="#cadastrarItem" prefHeight="33.0" prefWidth="143.0" text="Cadastrar Item">
+                        <VBox prefHeight="100.0" prefWidth="492.0">
+                           <children>
+                              <Label style="-fx-text-fill: #6e6e73;" text="Fornecedor:">
+                                 <font>
+                                    <Font size="16.0" />
+                                 </font>
+                                 <VBox.margin>
+                                    <Insets left="15.0" />
+                                 </VBox.margin>
+                              </Label>
+                              <ComboBox fx:id="fornecedoresItem" prefHeight="26.0" prefWidth="560.0" promptText="Fornecedores" style="-fx-background-color: #F2F2F7; -fx-background-radius: 8px; -fx-padding: 8px;">
+                                 <VBox.margin>
+                                    <Insets left="15.0" />
+                                 </VBox.margin>
+                              </ComboBox>
+                           </children>
+                        </VBox>
+                        <VBox layoutX="485.0" layoutY="10.0" prefHeight="100.0" prefWidth="533.0">
+                           <children>
+                              <Label style="-fx-text-fill: #6e6e73;" text="Categoria:">
+                                 <font>
+                                    <Font size="16.0" />
+                                 </font>
+                                 <VBox.margin>
+                                    <Insets left="15.0" />
+                                 </VBox.margin>
+                              </Label>
+                              <ComboBox fx:id="categoriaItem" prefHeight="33.0" prefWidth="560.0" promptText="Categorias" style="-fx-background-color: #F2F2F7; -fx-background-radius: 8px; -fx-padding: 8px;">
+                                 <VBox.margin>
+                                    <Insets left="15.0" right="15.0" />
+                                 </VBox.margin>
+                              </ComboBox>
+                           </children>
+                        </VBox>
+                     </children>
+                     <VBox.margin>
+                        <Insets right="15.0" top="15.0" />
+                     </VBox.margin>
+                  </HBox>
+                  <HBox alignment="BOTTOM_RIGHT" prefHeight="187.0" prefWidth="590.0">
+                     <children>
+                        <Button mnemonicParsing="false" onAction="#cadastrarItem" prefHeight="33.0" prefWidth="143.0" style="-fx-background-color: #007AFF; -fx-text-fill: white; -fx-background-radius: 8px; -fx-padding: 8px;" text="Cadastrar Item">
                            <HBox.margin>
-                              <Insets bottom="15.0" />
-                           </HBox.margin></Button>
+                              <Insets bottom="15.0" right="15.0" />
+                           </HBox.margin>
+                        </Button>
                      </children>
                   </HBox>
                </children>
@@ -218,7 +232,7 @@
                         <Insets left="15.0" top="5.0" />
                      </VBox.margin>
                   </Label>
-                  <Label text="Nome do Item:">
+                  <Label style="-fx-text-fill: #6e6e73;" text="Nome do Item:">
                      <font>
                         <Font size="16.0" />
                      </font>
@@ -226,12 +240,12 @@
                         <Insets left="15.0" top="10.0" />
                      </VBox.margin>
                   </Label>
-                  <TextField fx:id="nomeItem1" promptText="Digite o nome do item">
+                  <TextField fx:id="nomeItem1" promptText="Digite o nome do item" style="-fx-background-color: #F2F2F7; -fx-background-radius: 8px; -fx-padding: 8px;">
                      <VBox.margin>
                         <Insets left="15.0" right="15.0" />
                      </VBox.margin>
                   </TextField>
-                  <Label text="Descrição:">
+                  <Label style="-fx-text-fill: #6e6e73;" text="Descrição:">
                      <font>
                         <Font size="16.0" />
                      </font>
@@ -239,7 +253,7 @@
                         <Insets left="15.0" top="10.0" />
                      </VBox.margin>
                   </Label>
-                  <TextField fx:id="descricaoItem1" promptText="Digite uma Descrição para o item">
+                  <TextField fx:id="descricaoItem1" promptText="Digite uma Descrição para o item" style="-fx-background-color: #F2F2F7; -fx-background-radius: 8px; -fx-padding: 8px;">
                      <VBox.margin>
                         <Insets left="15.0" right="15.0" />
                      </VBox.margin>
@@ -248,7 +262,7 @@
                      <children>
                         <VBox prefHeight="100.0" prefWidth="491.0">
                            <children>
-                              <Label text="Taxa diaria:">
+                              <Label style="-fx-text-fill: #6e6e73;" text="Taxa diaria:">
                                  <font>
                                     <Font size="16.0" />
                                  </font>
@@ -256,7 +270,7 @@
                                     <Insets left="15.0" top="10.0" />
                                  </VBox.margin>
                               </Label>
-                              <TextField fx:id="taxaDiaria1" promptText="Ex: 25,00">
+                              <TextField fx:id="taxaDiaria1" promptText="Ex: 25,00" style="-fx-background-color: #F2F2F7; -fx-background-radius: 8px; -fx-padding: 8px;">
                                  <VBox.margin>
                                     <Insets left="15.0" right="15.0" />
                                  </VBox.margin>
@@ -265,7 +279,7 @@
                         </VBox>
                         <VBox prefHeight="100.0" prefWidth="496.0">
                            <children>
-                              <Label text="Valor de reposição:">
+                              <Label style="-fx-text-fill: #6e6e73;" text="Valor de reposição:">
                                  <font>
                                     <Font size="16.0" />
                                  </font>
@@ -273,7 +287,7 @@
                                     <Insets right="15.0" top="10.0" />
                                  </VBox.margin>
                               </Label>
-                              <TextField fx:id="valorReposicao1" promptText="Ex: 25,00">
+                              <TextField fx:id="valorReposicao1" promptText="Ex: 25,00" style="-fx-background-color: #F2F2F7; -fx-background-radius: 8px; -fx-padding: 8px;">
                                  <VBox.margin>
                                     <Insets right="15.0" />
                                  </VBox.margin>
@@ -282,7 +296,7 @@
                         </VBox>
                      </children>
                   </HBox>
-                  <Label text="Estado:">
+                  <Label style="-fx-text-fill: #6e6e73;" text="Estado:">
                      <font>
                         <Font size="16.0" />
                      </font>
@@ -290,52 +304,70 @@
                         <Insets left="15.0" top="10.0" />
                      </VBox.margin>
                   </Label>
-                  <TextField fx:id="estadoItem1" promptText="Digite o estado do item">
-                     <VBox.margin>
-                        <Insets left="15.0" right="15.0" />
-                     </VBox.margin>
-                  </TextField>
-                  <Label text="ID do Fornecedor:">
-                     <font>
-                        <Font size="16.0" />
-                     </font>
-                     <VBox.margin>
-                        <Insets left="15.0" top="10.0" />
-                     </VBox.margin>
-                  </Label>
-                  <TextField fx:id="fornecedoresItem1" promptText="Digite o id do fornecedor">
-                     <VBox.margin>
-                        <Insets left="15.0" right="15.0" />
-                     </VBox.margin>
-                  </TextField>
-                  <Label text="Categoria:">
-                     <font>
-                        <Font size="16.0" />
-                     </font>
-                     <VBox.margin>
-                        <Insets left="15.0" top="10.0" />
-                     </VBox.margin>
-                  </Label>
-                  <ComboBox fx:id="categoriaItem1" prefHeight="26.0" prefWidth="564.0">
+                  <ComboBox fx:id="estadoItem1" prefHeight="26.0" prefWidth="560.0" promptText="Estado do item" style="-fx-background-color: #F2F2F7; -fx-background-radius: 8px; -fx-padding: 8px;">
                      <VBox.margin>
                         <Insets left="15.0" right="15.0" />
                      </VBox.margin>
                   </ComboBox>
-                  <Region prefHeight="185.0" prefWidth="590.0" />
-                  <HBox prefHeight="100.0" prefWidth="200.0" spacing="10.0">
+                  <HBox prefHeight="100.0" prefWidth="200.0">
                      <children>
-                        <Region prefHeight="70.0" prefWidth="285.0" />
-                        <Button mnemonicParsing="false" onAction="#listarItens" prefHeight="33.0" prefWidth="130.0" text="Cancelar">
+                        <VBox prefHeight="78.0" prefWidth="507.0">
+                           <children>
+                              <Label style="-fx-text-fill: #6e6e73;" text="Fornecedor:">
+                                 <font>
+                                    <Font size="16.0" />
+                                 </font>
+                                 <VBox.margin>
+                                    <Insets left="15.0" top="10.0" />
+                                 </VBox.margin>
+                              </Label>
+                              <ComboBox fx:id="fornecedoresItem1" prefHeight="26.0" prefWidth="586.0" style="-fx-background-color: #F2F2F7; -fx-background-radius: 8px; -fx-padding: 8px;">
+                                 <VBox.margin>
+                                    <Insets left="15.0" right="15.0" />
+                                 </VBox.margin>
+                              </ComboBox>
+                           </children>
+                        </VBox>
+                        <VBox prefHeight="78.0" prefWidth="525.0">
+                           <children>
+                              <Label style="-fx-text-fill: #6e6e73;" text="Categoria:">
+                                 <font>
+                                    <Font size="16.0" />
+                                 </font>
+                                 <VBox.margin>
+                                    <Insets left="15.0" top="10.0" />
+                                 </VBox.margin>
+                              </Label>
+                              <ComboBox fx:id="categoriaItem1" prefHeight="26.0" prefWidth="564.0" style="-fx-background-color: #F2F2F7; -fx-background-radius: 8px; -fx-padding: 8px;">
+                                 <VBox.margin>
+                                    <Insets left="15.0" right="15.0" />
+                                 </VBox.margin>
+                              </ComboBox>
+                           </children>
+                        </VBox>
+                     </children>
+                  </HBox>
+                  <Region prefHeight="123.0" prefWidth="590.0" />
+                  <HBox prefHeight="62.0" prefWidth="590.0" spacing="10.0">
+                     <children>
+                        <Region prefHeight="70.0" prefWidth="285.0">
                            <HBox.margin>
-                              <Insets bottom="15.0" />
+                              <Insets />
+                           </HBox.margin></Region>
+                        <Button mnemonicParsing="false" onAction="#listarItens" prefHeight="44.0" prefWidth="130.0" style="-fx-background-color: #F2F2F7; -fx-background-radius: 8px; -fx-padding: 8px;" text="Cancelar">
+                           <HBox.margin>
+                              <Insets />
                            </HBox.margin>
                         </Button>
-                        <Button mnemonicParsing="false" onAction="#salvarAtualizacao" prefHeight="33.0" prefWidth="143.0" text="Salvar Alterações">
+                        <Button mnemonicParsing="false" onAction="#salvarAtualizacao" prefHeight="51.0" prefWidth="143.0" style="-fx-background-color: #007AFF; -fx-text-fill: white; -fx-background-radius: 8px; -fx-padding: 8px;" text="Salvar Alterações">
                            <HBox.margin>
-                              <Insets bottom="15.0" />
+                              <Insets right="15.0" />
                            </HBox.margin>
                         </Button>
                      </children>
+                     <VBox.margin>
+                        <Insets bottom="15.0" />
+                     </VBox.margin>
                   </HBox>
                </children>
             </VBox>
