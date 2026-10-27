@@ -332,7 +332,6 @@ public class MenuItensController extends MenuController {
 
         double taxa;
         double valor;
-        int idFornecedor;
 
         try {
             taxa = Double.parseDouble(taxaTxt.replace(',', '.'));
@@ -400,18 +399,17 @@ public class MenuItensController extends MenuController {
 
                 } catch (NumberFormatException e) {
                     mostrarAlerta(AlertType.ERROR, "Erro", "Digite um ID numérico válido.");
-                } finally {
-                    return;
                 }
             }
             else{return;}
         }
-
+        if (item != null){
         if (sistema.excluirItem(item.getId())) {
             mostrarAlerta(AlertType.INFORMATION, "Sucesso", "Item desativado com sucesso!");
             carregarTabela();
         } else {
             mostrarAlerta(AlertType.ERROR, "Erro", "Não foi possível desativar o item.");
+        }
         }
 
     }
