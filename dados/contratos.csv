@@ -9,3 +9,4 @@ id;idCliente;idItem;dataRetirada;dataDevolucaoPrevista;dataDevolucaoReal;valorTo
 8;5;7;2026-10-26;2026-10-27;;20000.0;0.0;ATIVO;true
 9;5;8;2026-10-26;2026-10-27;2026-10-26;20.0;0.0;FINALIZADO;true
 10;5;8;2026-10-26;2026-10-27;;20.0;0.0;ATIVO;true
+11;5;9;2026-10-26;2026-10-27;;100000.0;0.0;ATIVO;true
