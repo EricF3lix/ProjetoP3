@@ -171,7 +171,7 @@ public abstract class MenuController {
         if (sucesso) {
             iconeSimbolo = "✓";
             estiloCard =
-                "-fx-background-color: linear-gradient(to bottom right, #34D058, #248A3D); " +
+                "-fx-background-color: #2E9E4F; " +
                 "-fx-background-radius: 25px; " +
                 "-fx-border-color: #5BE87B; " +
                 "-fx-border-width: 1.5px; " +
@@ -179,7 +179,7 @@ public abstract class MenuController {
         } else {
             iconeSimbolo = "✕";
             estiloCard =
-                "-fx-background-color: linear-gradient(to bottom right, #FF5B52, #C0271E); " +
+                "-fx-background-color: #D63A2F; " +
                 "-fx-background-radius: 25px; " +
                 "-fx-border-color: #FF8A80; " +
                 "-fx-border-width: 1.5px; " +
