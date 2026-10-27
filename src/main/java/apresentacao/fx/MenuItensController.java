@@ -27,7 +27,6 @@ public class MenuItensController extends MenuController {
     private static final String ESTILO_BADGE_INDISPONIVEL =
             "-fx-background-color: #f8d7da; -fx-text-fill: #721c24; " + ESTILO_BADGE_COMUM;
     private static final String FILTRO_TODOS = "Todos";
-    private static final String INDISPONIVEL = "INDISPONIVEL";
 
     @FXML
     private ComboBox<String> cbFiltro;
