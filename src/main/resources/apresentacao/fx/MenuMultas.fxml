@@ -13,7 +13,6 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.VBox?>
-<?import javafx.scene.text.Font?>
 
 <AnchorPane prefHeight="660.0" prefWidth="950.0" style="-fx-background-color: #F5F5F7;" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="apresentacao.fx.MenuMultasController">
    <children>
@@ -51,86 +50,58 @@
 
       <AnchorPane AnchorPane.bottomAnchor="40.0" AnchorPane.leftAnchor="320.0" AnchorPane.rightAnchor="40.0" AnchorPane.topAnchor="100.0" prefHeight="520.0" prefWidth="590.0" style="-fx-background-color: #ffffff; -fx-background-radius: 16px; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 12, 0, 2, 6);">
          <children>
-            <VBox fx:id="dadosMulta" layoutX="7.0" layoutY="7.0" minHeight="0.0" opacity="1.0" prefHeight="513.0" prefWidth="583.0" AnchorPane.rightAnchor="19.0">
+            <VBox fx:id="dadosMulta" spacing="10.0" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+               <padding>
+                  <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+               </padding>
                <children>
-                  <Label text="Registar Multa">
-                     <font>
-                        <Font name="System Bold" size="21.0" />
-                     </font>
+                  <Label style="-fx-font-family: -apple-system, 'SF Pro Display', 'Segoe UI', sans-serif; -fx-font-weight: bold; -fx-font-size: 18px; -fx-text-fill: #1d1d1f;" text="Registrar Multa" />
+                  
+                  <Label style="-fx-font-weight: bold; -fx-font-size: 13px; -fx-text-fill: #6e6e73;" text="ID do Contrato:">
                      <VBox.margin>
-                        <Insets left="10.0" top="10.0" />
+                        <Insets top="5.0" />
                      </VBox.margin>
                   </Label>
-                  <Label text="ID do Contrato:">
+                  <TextField fx:id="idContrato" prefHeight="36.0" promptText="Digite o ID do contrato" style="-fx-background-color: #e5e5ea; -fx-background-radius: 8px; -fx-padding: 8px;" />
+                  
+                  <Label style="-fx-font-weight: bold; -fx-font-size: 13px; -fx-text-fill: #6e6e73;" text="Tipo de multa:">
                      <VBox.margin>
-                        <Insets left="15.0" top="15.0" />
-                     </VBox.margin>
-                     <font>
-                        <Font size="15.0" />
-                     </font>
-                  </Label>
-                  <TextField fx:id="idContrato" promptText="ID do contrato">
-                     <VBox.margin>
-                        <Insets left="15.0" right="15.0" />
-                     </VBox.margin>
-                  </TextField>
-                  <Label text="Tipo de multa:">
-                     <font>
-                        <Font size="15.0" />
-                     </font>
-                     <VBox.margin>
-                        <Insets left="15.0" top="15.0" />
+                        <Insets top="5.0" />
                      </VBox.margin>
                   </Label>
-                  <ComboBox fx:id="tipoMulta" prefHeight="26.0" prefWidth="585.0" promptText="Selecionar tipo da multa">
+                  <ComboBox fx:id="tipoMulta" maxWidth="1.7976931348623157E308" prefHeight="36.0" promptText="Selecionar tipo da multa" style="-fx-background-color: #e5e5ea; -fx-background-radius: 8px;" />
+                  
+                  <Label style="-fx-font-weight: bold; -fx-font-size: 13px; -fx-text-fill: #6e6e73;" text="Descrição:">
                      <VBox.margin>
-                        <Insets left="15.0" right="15.0" />
-                     </VBox.margin>
-                  </ComboBox>
-                  <Label text="Descrição:">
-                     <font>
-                        <Font size="15.0" />
-                     </font>
-                     <VBox.margin>
-                        <Insets left="15.0" right="15.0" top="15.0" />
+                        <Insets top="5.0" />
                      </VBox.margin>
                   </Label>
-                  <TextField fx:id="descricaoMulta" promptText="Descrição da ocorrencia">
+                  <TextField fx:id="descricaoMulta" prefHeight="36.0" promptText="Descrição da ocorrência" style="-fx-background-color: #e5e5ea; -fx-background-radius: 8px; -fx-padding: 8px;" />
+                  
+                  <Label style="-fx-font-weight: bold; -fx-font-size: 13px; -fx-text-fill: #6e6e73;" text="Valor (R$):">
                      <VBox.margin>
-                        <Insets left="15.0" right="15.0" />
-                     </VBox.margin>
-                  </TextField>
-                  <Label text="Valor (R$) :">
-                     <font>
-                        <Font size="15.0" />
-                     </font>
-                     <VBox.margin>
-                        <Insets left="15.0" right="15.0" top="15.0" />
+                        <Insets top="5.0" />
                      </VBox.margin>
                   </Label>
-                  <TextField fx:id="valorMulta" promptText="Ex: 50,0">
-                     <VBox.margin>
-                        <Insets left="15.0" right="15.0" />
-                     </VBox.margin>
-                  </TextField>
-                  <Region prefHeight="236.0" prefWidth="590.0" />
-                  <HBox prefHeight="100.0" prefWidth="200.0">
+                  <TextField fx:id="valorMulta" prefHeight="36.0" promptText="Ex: 50.00" style="-fx-background-color: #e5e5ea; -fx-background-radius: 8px; -fx-padding: 8px;" />
+                  
+                  <Region VBox.vgrow="ALWAYS" />
+                  
+                  <HBox alignment="CENTER_RIGHT">
                      <children>
-                        <Region prefHeight="48.0" prefWidth="440.0" />
-                        <Button alignment="CENTER" mnemonicParsing="false" onAction="#registrarMulta" prefHeight="33.0" prefWidth="138.0" text="Registrar multa" />
+                        <Button mnemonicParsing="false" onAction="#registrarMulta" prefHeight="38.0" prefWidth="150.0" style="-fx-background-color: #007AFF; -fx-background-radius: 8px; -fx-text-fill: white; -fx-font-weight: bold; -fx-cursor: hand; -fx-font-size: 13px;" text="Registrar Multa" />
                      </children>
                   </HBox>
                </children>
-               <opaqueInsets>
-                  <Insets />
-               </opaqueInsets>
             </VBox>
-            <VBox fx:id="tabelaMulta" spacing="15.0">
+
+            <VBox fx:id="tabelaMulta" spacing="15.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                <padding>
                   <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
                </padding>
                <children>
                   <Label style="-fx-font-family: -apple-system, 'SF Pro Display', 'Segoe UI', sans-serif; -fx-font-weight: bold; -fx-font-size: 18px; -fx-text-fill: #1d1d1f;" text="Lista de Multas" />
+                  
                   <TableView fx:id="tabela" style="-fx-border-color: #e5e5ea; -fx-border-radius: 8px; -fx-background-radius: 8px;" VBox.vgrow="ALWAYS">
                      <columnResizePolicy>
                         <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
