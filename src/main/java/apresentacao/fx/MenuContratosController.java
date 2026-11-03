@@ -28,6 +28,7 @@ import javafx.scene.control.DatePicker;
 import javafx.scene.control.Dialog;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableView;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
@@ -43,22 +44,19 @@ public class MenuContratosController extends MenuController {
     private static final String FILTRO_STATUS = "Status";
     private static final ZoneId FUSO_HORARIO = ZoneId.of("America/Recife");
 
-    @FXML
-    private ComboBox<String> cbFiltro;
-
-    @FXML
-    private Button btnLimparPesquisa;
-
-    @FXML 
-    private TableView<ContratoAluguel> tabela;
+    @FXML private ComboBox<String> cbFiltro;
+    @FXML private Button btnLimparPesquisa;
+    @FXML private TableView<ContratoAluguel> tabela;
 
     @FXML private VBox dadosContrato;
     @FXML private VBox tabelaContrato;
+    @FXML private VBox painelCancelar;
 
     @FXML private ComboBox<String> cbCliente;
     @FXML private ComboBox<String> cbItem;
     @FXML private DatePicker dpDataInicio;
     @FXML private DatePicker dpDataFinal;
+    @FXML private TextField txtIdCancelar;
 
     private final ObservableList<ContratoAluguel> listaContratos = FXCollections.observableArrayList();
     private FilteredList<ContratoAluguel> listaFiltrada;
@@ -96,7 +94,6 @@ public class MenuContratosController extends MenuController {
 
     private void carregarOpcoesFormulario() {
         if (sistema == null) return;
-
         carregarClientesFormulario();
         carregarItensFormulario();
     }
@@ -241,22 +238,34 @@ public class MenuContratosController extends MenuController {
 
     @FXML 
     private void mostrarTabela() {
-        if (tabelaContrato != null && dadosContrato != null) {
-            dadosContrato.setVisible(false);
-            dadosContrato.setManaged(false);
+        if (tabelaContrato != null) {
             tabelaContrato.setVisible(true);
             tabelaContrato.setManaged(true);
+        }
+        if (dadosContrato != null) {
+            dadosContrato.setVisible(false);
+            dadosContrato.setManaged(false);
+        }
+        if (painelCancelar != null) {
+            painelCancelar.setVisible(false);
+            painelCancelar.setManaged(false);
         }
     }
 
     @FXML 
     private void escondeTabela() {
-        if (tabelaContrato != null && dadosContrato != null) {
+        if (tabelaContrato != null) {
             tabelaContrato.setVisible(false);
             tabelaContrato.setManaged(false);
+        }
+        if (dadosContrato != null) {
             dadosContrato.setVisible(true);
             dadosContrato.setManaged(true);
             carregarOpcoesFormulario();
+        }
+        if (painelCancelar != null) {
+            painelCancelar.setVisible(false);
+            painelCancelar.setManaged(false);
         }
     }
 
@@ -270,12 +279,12 @@ public class MenuContratosController extends MenuController {
         LocalDate dataFinal = dpDataFinal != null ? dpDataFinal.getValue() : null;
 
         if (posCliente < 0 || posItem < 0 || dataInicio == null || dataFinal == null) {
-        	notificarPopUpErro("Por favor, selecione o cliente, o item e as datas de início e fim.");
+            notificarPopUpErro("Por favor, selecione o cliente, o item e as datas de início e fim.");
             return;
         }
 
         if (dataInicio.isAfter(dataFinal) || dataInicio.equals(dataFinal)) {
-        	notificarPopUpErro("A data de devolução deve ser posterior à data de retirada.");
+            notificarPopUpErro("A data de devolução deve ser posterior à data de retirada.");
             return;
         }
 
@@ -283,12 +292,12 @@ public class MenuContratosController extends MenuController {
         Item item = listaItensDisponiveis.get(posItem);
 
         if (sistema.clientePossuiMultaPendente(cliente.getId())) {
-        	notificarPopUpErro("Cliente possui multa pendente e não pode realizar novos aluguéis.");
+            notificarPopUpErro("Cliente possui multa pendente e não pode realizar novos aluguéis.");
             return;
         }
 
         if (!item.estaDisponivel()) {
-        	notificarPopUpErro("Item indisponível para aluguel. Status atual: " + item.getStatus());
+            notificarPopUpErro("Item indisponível para aluguel. Status atual: " + item.getStatus());
             return;
         }
 
@@ -306,7 +315,7 @@ public class MenuContratosController extends MenuController {
             carregarTabela();
             mostrarTabela();
         } else {
-        	notificarPopUpErro("Erro ao cadastrar o contrato no sistema.");
+            notificarPopUpErro("Erro ao cadastrar o contrato no sistema.");
         }
     }
 
@@ -323,7 +332,7 @@ public class MenuContratosController extends MenuController {
         if (contrato == null) return;
 
         if (!contrato.estaAtivo() || contrato.estaFinalizado()) {
-        	notificarPopUpErro("Este contrato não está ativo. Status: " + contrato.getStatus());
+            notificarPopUpErro("Este contrato não está ativo. Status: " + contrato.getStatus());
             return;
         }
 
@@ -392,40 +401,84 @@ public class MenuContratosController extends MenuController {
             String data = LocalDate.now(ZoneId.of("America/Recife")).toString();
             Multa multaNova = new Multa(sistema.gerarProximoIdMulta(), contrato.getId(),"Atraso na devolução","Multa gerada automaticamente", multa, data);
             sistema.registrarMulta(multaNova);
-
         } else {
-        	notificarPopUp("Devolução realizada dentro do prazo.");
+            notificarPopUp("Devolução realizada dentro do prazo.");
         }
         contrato.getItem().devolver();
 
         if (sistema.finalizarContrato(contrato.getId())) {
             carregarTabela();
         } else {
-        	notificarPopUpErro("Erro ao finalizar contrato.");
+            notificarPopUpErro("Erro ao finalizar contrato.");
         }
     }
 
     @FXML
     private void cancelarContrato(ActionEvent event) {
-        mostrarTabela();
-        ContratoAluguel contrato = obterContratoAlvo();
-        if (contrato == null) return;
+        if (tabelaContrato != null) {
+            tabelaContrato.setVisible(false);
+            tabelaContrato.setManaged(false);
+        }
+        if (dadosContrato != null) {
+            dadosContrato.setVisible(false);
+            dadosContrato.setManaged(false);
+        }
 
-        if ("FINALIZADO".equalsIgnoreCase(contrato.getStatus())) {
-        	notificarPopUpErro("Não é possível cancelar um contrato já finalizado.");
+        if (painelCancelar != null) {
+            painelCancelar.setVisible(true);
+            painelCancelar.setManaged(true);
+
+            ContratoAluguel selecionado = tabela.getSelectionModel().getSelectedItem();
+            if (selecionado != null) {
+                txtIdCancelar.setText(String.valueOf(selecionado.getId()));
+            } else {
+                txtIdCancelar.clear();
+            }
+            txtIdCancelar.requestFocus();
+        }
+    }
+
+    @FXML
+    private void confirmarCancelamentoContrato(ActionEvent event) {
+        String textoId = txtIdCancelar.getText().trim();
+
+        if (textoId.isEmpty()) {
+            tremer(painelCancelar);
+            notificarPopUpErro("Informe o ID do contrato");
             return;
         }
 
-        if (!confirmar("Tem certeza que deseja cancelar o contrato ID " + contrato.getId() + "?")) {
-            return;
-        }
+        try {
+            int id = Integer.parseInt(textoId);
+            ContratoAluguel contrato = sistema.buscarContrato(id);
 
-        if (sistema.cancelarContrato(contrato.getId())) {
-            contrato.getItem().devolver();
-            notificarPopUp("Contrato cancelado com sucesso. Item devolvido ao estoque.");
-            carregarTabela();
-        } else {
-        	notificarPopUpErro("Erro ao cancelar contrato.");
+            if (contrato == null) {
+                tremer(painelCancelar);
+                notificarPopUpErro(CONTRATO_NAO_ENCONTRADO);
+                return;
+            }
+
+            if ("FINALIZADO".equalsIgnoreCase(contrato.getStatus())) {
+                tremer(painelCancelar);
+                notificarPopUpErro("Não é possível cancelar um contrato já finalizado.");
+                return;
+            }
+
+            if (sistema.cancelarContrato(id)) {
+                if (contrato.getItem() != null) {
+                    contrato.getItem().devolver();
+                }
+                notificarPopUp("Contrato cancelado com sucesso. Item devolvido ao estoque.");
+                txtIdCancelar.clear();
+                carregarTabela();
+                mostrarTabela();
+            } else {
+                tremer(painelCancelar);
+                notificarPopUpErro("Erro ao cancelar contrato.");
+            }
+        } catch (NumberFormatException e) {
+            tremer(painelCancelar);
+            notificarPopUpErro("Digite um ID numérico válido.");
         }
     }
 

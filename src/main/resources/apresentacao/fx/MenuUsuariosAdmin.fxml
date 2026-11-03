@@ -15,7 +15,7 @@
 		<ComboBox fx:id="cbFiltro" prefHeight="35.0" prefWidth="250.0" style="-fx-background-color: #e5e5ea; -fx-background-radius: 8px;" />
 		<HBox spacing="8.0">
    			<children>
-      			<TextField fx:id="txtPesquisa" promptText="Digite para buscar..." style="-fx-background-color: #e5e5ea; -fx-background-radius: 8px; -fx-padding: 8px;" HBox.hgrow="ALWAYS" />
+      			<TextField fx:id="txtPesquisa" promptText="Digite para buscar..." style="-fx-background-color: #e5e5ea; -fx-background-radius: 8px; -fx-padding: 8px;"  />
       			<Button fx:id="btnLimparPesquisa" mnemonicParsing="false" onAction="#aoLimparPesquisa" style="-fx-background-color: #d1d1d6; -fx-text-fill: #1d1d1f; -fx-background-radius: 8px; -fx-cursor: hand;" text="Limpar" />
    			</children>
 		</HBox>

@@ -1,21 +1,29 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.lang.String?>
 <?import javafx.collections.FXCollections?>
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.control.cell.*?>
-<?import javafx.scene.layout.*?>
-<?import java.lang.*?>
-<AnchorPane minHeight="0.0" prefHeight="660.0" prefWidth="950.0" style="-fx-background-color: #F5F5F7;" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml" fx:controller="apresentacao.fx.MenuFornecedoresController">
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.cell.PropertyValueFactory?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.VBox?>
+
+<AnchorPane minHeight="0.0" prefHeight="660.0" prefWidth="950.0" style="-fx-background-color: #F5F5F7;" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="apresentacao.fx.MenuFornecedoresController">
    <children>
-      
       <Label layoutX="40.0" layoutY="25.0" style="-fx-font-family: -apple-system, 'SF Pro Display', 'Segoe UI', sans-serif; -fx-font-weight: 900; -fx-font-size: 26px; -fx-text-fill: #1d1d1f;" text="Gerenciar Fornecedores" />
       <Label layoutX="40.0" layoutY="58.0" style="-fx-font-family: -apple-system, 'SF Pro Text', 'Segoe UI', sans-serif; -fx-font-size: 14px; -fx-text-fill: #86868b;" text="Painel de Parceiros e Fornecedores" />
 
-      
       <VBox layoutX="40.0" layoutY="100.0" prefWidth="250.0" spacing="12.0">
          <children>
-         	<Label style="-fx-text-fill: #6e6e73; -fx-font-size: 12px; -fx-font-weight: bold;" text="Filtrar Fornecedores:" />
+            <Label style="-fx-text-fill: #6e6e73; -fx-font-size: 12px; -fx-font-weight: bold;" text="Filtrar Fornecedores:" />
             <ComboBox fx:id="filtro" maxWidth="Infinity" prefHeight="35.0" style="-fx-background-color: #e5e5ea; -fx-background-radius: 8px;">
               <items>
                 <FXCollections fx:factory="observableArrayList">
@@ -30,7 +38,7 @@
             </ComboBox>
             <HBox spacing="8.0">
                <children>
-                  <TextField fx:id="pesquisa" promptText="Digite para buscar..." style="-fx-background-color: #e5e5ea; -fx-background-radius: 8px; -fx-padding: 8px;" HBox.hgrow="ALWAYS" />
+                  <TextField fx:id="pesquisa" promptText="Digite para buscar..." style="-fx-background-color: #e5e5ea; -fx-background-radius: 8px; -fx-padding: 8px;" />
                   <Button fx:id="btnLimparPesquisa" mnemonicParsing="false" onAction="#aoLimparPesquisa" prefWidth="82.0" style="-fx-background-color: #d1d1d6; -fx-text-fill: #1d1d1f; -fx-background-radius: 8px; -fx-cursor: hand;" text="Limpar" />
                </children>
             </HBox>
@@ -38,51 +46,51 @@
             <Pane prefHeight="2.0" />
 
             <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#trocaCadastro" prefHeight="38.0" style="-fx-background-color: #ffffff; -fx-background-radius: 10px; -fx-border-color: #d1d1d6; -fx-border-radius: 10px; -fx-text-fill: #007AFF; -fx-font-weight: bold; -fx-cursor: hand; -fx-font-size: 13px;" text="Cadastrar Fornecedor" />
-            
+
             <Separator style="-fx-padding: 5 0 5 0;" />
-            
+
             <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#listarFornecedores" prefHeight="38.0" style="-fx-background-color: #ffffff; -fx-background-radius: 10px; -fx-border-color: #d1d1d6; -fx-border-radius: 10px; -fx-text-fill: #1d1d1f; -fx-font-weight: bold; -fx-cursor: hand; -fx-font-size: 13px;" text="Listar todos os Fornecedores" />
             <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#trocaAtualizar" prefHeight="38.0" style="-fx-background-color: #ffffff; -fx-background-radius: 10px; -fx-border-color: #d1d1d6; -fx-border-radius: 10px; -fx-text-fill: #1d1d1f; -fx-font-weight: bold; -fx-cursor: hand; -fx-font-size: 13px;" text="Atualizar Fornecedor" />
             <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#desativarFornecedor" prefHeight="38.0" style="-fx-background-color: #fff0f0; -fx-background-radius: 10px; -fx-border-color: #ffcccc; -fx-border-radius: 10px; -fx-text-fill: #ff3b30; -fx-font-weight: bold; -fx-cursor: hand; -fx-font-size: 13px;" text="Desativar Fornecedor" />
-            
+
             <Pane prefHeight="5.0" />
             <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#voltar" prefHeight="38.0" style="-fx-background-color: #e5e5ea; -fx-background-radius: 10px; -fx-text-fill: #1d1d1f; -fx-font-weight: bold; -fx-cursor: hand; -fx-font-size: 13px;" text="Voltar" />
          </children>
       </VBox>
 
-      
-      <AnchorPane minHeight="0.0" AnchorPane.topAnchor="100.0" AnchorPane.leftAnchor="320.0" AnchorPane.rightAnchor="40.0" AnchorPane.bottomAnchor="40.0" prefHeight="520.0" prefWidth="590.0" style="-fx-background-color: #ffffff; -fx-background-radius: 16px; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 12, 0, 2, 6);">
+      <AnchorPane minHeight="0.0" prefHeight="520.0" prefWidth="590.0" style="-fx-background-color: #ffffff; -fx-background-radius: 16px; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 12, 0, 2, 6);" AnchorPane.bottomAnchor="40.0" AnchorPane.leftAnchor="320.0" AnchorPane.rightAnchor="40.0" AnchorPane.topAnchor="100.0">
          <children>
-          <VBox fx:id="dadosFornecedor" managed="false" minHeight="0.0" spacing="8.0" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+            <VBox fx:id="dadosFornecedor" managed="false" minHeight="0.0" spacing="8.0" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                <padding>
                   <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
                </padding>
                <children>
-               <Label fx:id="tituloFornecedor" style="-fx-font-family: -apple-system, 'SF Pro Display', 'Segoe UI', sans-serif; -fx-font-weight: bold; -fx-font-size: 18px; -fx-text-fill: #1d1d1f;" text="Cadastrar Fornecedor" />
-               
-               <Label style="-fx-text-fill: #6e6e73;" text="Razão Social:" />
-               <TextField fx:id="txtNome" promptText="Nome do fornecedor" style="-fx-background-color: #F2F2F7; -fx-background-radius: 8px; -fx-padding: 8px;" />
-               
-               <Label style="-fx-text-fill: #6e6e73;" text="CNPJ:" />          
-               <TextField fx:id="txtCNPJ" promptText="Número do CNPJ" style="-fx-background-color: #F2F2F7; -fx-background-radius: 8px; -fx-padding: 8px;" />
-                        
-               <Label style="-fx-text-fill: #6e6e73;" text="E-mail:" />
-               <TextField fx:id="txtEmail" promptText="Endereço de e-mail" style="-fx-background-color: #F2F2F7; -fx-background-radius: 8px; -fx-padding: 8px;" />
-                        
-               <Label style="-fx-text-fill: #6e6e73;" text="Telefone:" />
-               <TextField fx:id="txtTelefone" promptText="Número de telefone" style="-fx-background-color: #F2F2F7; -fx-background-radius: 8px; -fx-padding: 8px;" />
-                    
-               <Button fx:id="btnAtualizar" mnemonicParsing="false" onAction="#atualizarFornecedor" style="-fx-background-color: #007AFF; -fx-text-fill: white; -fx-background-radius: 8px; -fx-font-weight: bold; -fx-padding: 8 20 8 20; -fx-cursor: hand;" text="Atualizar Fornecedor" />    
-               <Button fx:id="btnCadastrar" mnemonicParsing="false" onAction="#cadastrarFornecedor" style="-fx-background-color: #007AFF; -fx-text-fill: white; -fx-background-radius: 8px; -fx-font-weight: bold; -fx-padding: 8 20 8 20; -fx-cursor: hand;" text="Cadastrar Fornecedor" />
+                  <Label fx:id="tituloFornecedor" style="-fx-font-family: -apple-system, 'SF Pro Display', 'Segoe UI', sans-serif; -fx-font-weight: bold; -fx-font-size: 18px; -fx-text-fill: #1d1d1f;" text="Cadastrar Fornecedor" />
+
+                  <Label style="-fx-text-fill: #6e6e73;" text="Razão Social:" />
+                  <TextField fx:id="txtNome" promptText="Nome do fornecedor" style="-fx-background-color: #F2F2F7; -fx-background-radius: 8px; -fx-padding: 8px;" />
+
+                  <Label style="-fx-text-fill: #6e6e73;" text="CNPJ:" />
+                  <TextField fx:id="txtCNPJ" promptText="Número do CNPJ" style="-fx-background-color: #F2F2F7; -fx-background-radius: 8px; -fx-padding: 8px;" />
+
+                  <Label style="-fx-text-fill: #6e6e73;" text="E-mail:" />
+                  <TextField fx:id="txtEmail" promptText="Endereço de e-mail" style="-fx-background-color: #F2F2F7; -fx-background-radius: 8px; -fx-padding: 8px;" />
+
+                  <Label style="-fx-text-fill: #6e6e73;" text="Telefone:" />
+                  <TextField fx:id="txtTelefone" promptText="Número de telefone" style="-fx-background-color: #F2F2F7; -fx-background-radius: 8px; -fx-padding: 8px;" />
+
+                  <Button fx:id="btnAtualizar" mnemonicParsing="false" onAction="#atualizarFornecedor" style="-fx-background-color: #007AFF; -fx-text-fill: white; -fx-background-radius: 8px; -fx-font-weight: bold; -fx-padding: 8 20 8 20; -fx-cursor: hand;" text="Atualizar Fornecedor" />
+                  <Button fx:id="btnCadastrar" mnemonicParsing="false" onAction="#cadastrarFornecedor" style="-fx-background-color: #007AFF; -fx-text-fill: white; -fx-background-radius: 8px; -fx-font-weight: bold; -fx-padding: 8 20 8 20; -fx-cursor: hand;" text="Cadastrar Fornecedor" />
                </children>
-          </VBox>
+            </VBox>
+
             <VBox fx:id="tabelaFornecedor" spacing="15.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                <padding>
                   <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
                </padding>
                <children>
                   <Label fx:id="tituloTabela" style="-fx-font-family: -apple-system, 'SF Pro Display', 'Segoe UI', sans-serif; -fx-font-weight: bold; -fx-font-size: 18px; -fx-text-fill: #1d1d1f;" text="Lista de Fornecedores" />
-                  
+
                   <TableView fx:id="tabela" style="-fx-border-color: #e5e5ea; -fx-border-radius: 8px; -fx-background-radius: 8px;" VBox.vgrow="ALWAYS">
                      <columnResizePolicy>
                         <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
@@ -108,6 +116,25 @@
                         </TableColumn>
                      </columns>
                   </TableView>
+               </children>
+            </VBox>
+
+            <VBox fx:id="painelDesativar" managed="false" spacing="16.0" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+               <padding>
+                  <Insets bottom="24.0" left="24.0" right="24.0" top="24.0" />
+               </padding>
+               <children>
+                  <Label style="-fx-font-family: -apple-system, 'SF Pro Display', 'Segoe UI', sans-serif; -fx-font-weight: 800; -fx-font-size: 20px; -fx-text-fill: #1d1d1f;" text="Desativar Fornecedor" />
+                  <HBox alignment="CENTER_LEFT" spacing="12.0">
+                     <children>
+                        <TextField fx:id="txtIdDesativar" prefHeight="42.0" prefWidth="240.0" promptText="ID do fornecedor" style="-fx-background-color: #F2F2F7; -fx-background-radius: 10px; -fx-border-color: transparent; -fx-padding: 8 14; -fx-font-size: 14px;" />
+                        <Button mnemonicParsing="false" onAction="#confirmarDesativacaoFornecedor" prefHeight="42.0" style="-fx-background-color: #FFD5D2; -fx-text-fill: #D32F2F; -fx-background-radius: 10px; -fx-font-weight: bold; -fx-font-size: 14px; -fx-cursor: hand;" text="Desativar">
+                           <padding>
+                              <Insets left="20.0" right="20.0" />
+                           </padding>
+                        </Button>
+                     </children>
+                  </HBox>
                </children>
             </VBox>
          </children>

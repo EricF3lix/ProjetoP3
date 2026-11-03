@@ -38,12 +38,14 @@ public class MenuCategoriasController extends MenuController {
 
     @FXML private VBox dadosCategoria;
     @FXML private VBox tabelaCategoria;
+    @FXML private VBox painelDesativar;
 
     @FXML private Label tituloCategoria;
     @FXML private Label tituloTabela;
 
     @FXML private TextField txtNome;
     @FXML private TextField txtDescricao;
+    @FXML private TextField txtIdDesativar;
 
     @FXML private Button btnCadastrar;
     @FXML private Button btnAtualizar;
@@ -101,6 +103,11 @@ public class MenuCategoriasController extends MenuController {
 
         dadosCategoria.setVisible(true);
         dadosCategoria.setManaged(true);
+
+        if (painelDesativar != null) {
+            painelDesativar.setVisible(false);
+            painelDesativar.setManaged(false);
+        }
     }
 
     private void colocaTabela() {
@@ -109,6 +116,11 @@ public class MenuCategoriasController extends MenuController {
 
         dadosCategoria.setVisible(false);
         dadosCategoria.setManaged(false);
+
+        if (painelDesativar != null) {
+            painelDesativar.setVisible(false);
+            painelDesativar.setManaged(false);
+        }
     }
 
     @FXML private void trocaCadastro() {
@@ -149,7 +161,7 @@ public class MenuCategoriasController extends MenuController {
         String descricao = txtDescricao.getText().trim();
 
         if (nome.isEmpty() || descricao.isEmpty()) {
-        	notificarPopUpErro("Preencha todos os campos!");
+            notificarPopUpErro("Preencha todos os campos!");
             return;
         }
 
@@ -157,12 +169,12 @@ public class MenuCategoriasController extends MenuController {
         Categoria categoria = new Categoria(id, nome, descricao);
 
         if (sistema.cadastrarCategoria(categoria)) {
-        	notificarPopUp("Categoria cadastrada com sucesso! ID: " + id);
+            notificarPopUp("Categoria cadastrada com sucesso! ID: " + id);
             txtNome.clear();
             txtDescricao.clear();
             listarCategorias();
         } else {
-        	notificarPopUpErro("Já existe uma categoria com esse nome");
+            notificarPopUpErro("Já existe uma categoria com esse nome");
         }
     }
 
@@ -174,34 +186,64 @@ public class MenuCategoriasController extends MenuController {
         String descricao = txtDescricao.getText().trim();
 
         if (nome.isEmpty() || descricao.isEmpty()) {
-        	notificarPopUpErro("Preencha todos os campos!");
+            notificarPopUpErro("Preencha todos os campos!");
             return;
         }
 
         if (sistema.atualizarCategoria(new Categoria(atual.getId(), nome, descricao))) {
-        	notificarPopUp("Categoria atualizada com sucesso!");
+            notificarPopUp("Categoria atualizada com sucesso!");
             btnAtualizar.setUserData(null);
             txtNome.clear();
             txtDescricao.clear();
             listarCategorias();
         } else {
-        	notificarPopUpErro("Erro ao atualizar categoria.");
+            notificarPopUpErro("Erro ao atualizar categoria.");
         }
     }
 
     @FXML private void desativarCategoria() {
-        Categoria categoria = obterCategoriaAlvo();
-        if (categoria == null) return;
+        tabelaCategoria.setVisible(false);
+        tabelaCategoria.setManaged(false);
+        dadosCategoria.setVisible(false);
+        dadosCategoria.setManaged(false);
 
-        if (!confirmar("Tem certeza que deseja desativar \"" + categoria.getNome() + "\"?")) {
+        if (painelDesativar != null) {
+            painelDesativar.setVisible(true);
+            painelDesativar.setManaged(true);
+
+            Categoria selecionada = tabela.getSelectionModel().getSelectedItem();
+            if (selecionada != null) {
+                txtIdDesativar.setText(String.valueOf(selecionada.getId()));
+            } else {
+                txtIdDesativar.clear();
+            }
+            txtIdDesativar.requestFocus();
+        }
+    }
+
+    @FXML private void confirmarDesativacaoCategoria() {
+        String textoId = txtIdDesativar.getText().trim();
+
+        if (textoId.isEmpty()) {
+            tremer(painelDesativar);
+            notificarPopUpErro("Informe o ID da categoria");
             return;
         }
 
-        if (sistema.desativarCategoria(categoria.getId())) {
-        	notificarPopUp("Categoria desativada com sucesso.");
-            listarCategorias();
-        } else {
-        	notificarPopUpErro("Erro ao desativar categoria.");
+        try {
+            int id = Integer.parseInt(textoId);
+
+            if (sistema.desativarCategoria(id)) {
+                notificarPopUp("Categoria desativada com sucesso.");
+                txtIdDesativar.clear();
+                listarCategorias();
+            } else {
+                tremer(painelDesativar);
+                notificarPopUpErro("Erro ao desativar categoria.");
+            }
+        } catch (NumberFormatException e) {
+            tremer(painelDesativar);
+            notificarPopUpErro("Digite um ID numérico válido.");
         }
     }
 
@@ -211,7 +253,7 @@ public class MenuCategoriasController extends MenuController {
             if (c != null) {
                 pesquisa.setText(String.valueOf(id));
             } else {
-            	notificarPopUpErro(NAO_ENCONTRADA);
+                notificarPopUpErro(NAO_ENCONTRADA);
             }
         });
     }
@@ -253,7 +295,7 @@ public class MenuCategoriasController extends MenuController {
             if (id.isEmpty()) return null;
             atual = sistema.buscarCategoria(id.get());
             if (atual == null) {
-            	notificarPopUpErro(NAO_ENCONTRADA);
+                notificarPopUpErro(NAO_ENCONTRADA);
             }
         }
         return atual;

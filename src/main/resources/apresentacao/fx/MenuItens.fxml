@@ -27,7 +27,7 @@
             <ComboBox fx:id="cbFiltro" prefHeight="35.0" prefWidth="250.0" style="-fx-background-color: #e5e5ea; -fx-background-radius: 8px;" />
             <HBox spacing="8.0">
                <children>
-                  <TextField fx:id="pesquisa" promptText="Digite para buscar..." style="-fx-background-color: #e5e5ea; -fx-background-radius: 8px; -fx-padding: 8px;" HBox.hgrow="ALWAYS" />
+                  <TextField fx:id="pesquisa" promptText="Digite para buscar..." style="-fx-background-color: #e5e5ea; -fx-background-radius: 8px; -fx-padding: 8px;" />
                   <Button fx:id="btnLimparPesquisa" mnemonicParsing="false" onAction="#aoLimparPesquisa" style="-fx-background-color: #d1d1d6; -fx-text-fill: #1d1d1f; -fx-background-radius: 8px; -fx-cursor: hand;" text="Limpar" />
                </children>
             </HBox>
@@ -85,6 +85,7 @@
                   </TableView>
                </children>
             </VBox>
+
             <VBox fx:id="dadosItens" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                <children>
                   <Label text="Cadastrar Item">
@@ -138,7 +139,8 @@
                                     <Insets left="15.0" right="15.0" />
                                  </VBox.margin>
                               </TextField>
-                           </children></VBox>
+                           </children>
+                        </VBox>
                         <VBox prefHeight="100.0" prefWidth="496.0">
                            <children>
                               <Label style="-fx-text-fill: #6e6e73;" text="Valor de reposição:">
@@ -154,7 +156,8 @@
                                     <Insets right="15.0" />
                                  </VBox.margin>
                               </TextField>
-                           </children></VBox>
+                           </children>
+                        </VBox>
                      </children>
                   </HBox>
                   <Label style="-fx-text-fill: #6e6e73;" text="Estado:">
@@ -222,6 +225,7 @@
                   </HBox>
                </children>
             </VBox>
+
             <VBox fx:id="dadosItens1" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                <children>
                   <Label text="Atualizar Item">
@@ -353,7 +357,8 @@
                         <Region prefHeight="70.0" prefWidth="285.0">
                            <HBox.margin>
                               <Insets />
-                           </HBox.margin></Region>
+                           </HBox.margin>
+                        </Region>
                         <Button mnemonicParsing="false" onAction="#listarItens" prefHeight="44.0" prefWidth="130.0" style="-fx-background-color: #F2F2F7; -fx-background-radius: 8px; -fx-padding: 8px;" text="Cancelar">
                            <HBox.margin>
                               <Insets />
@@ -368,6 +373,26 @@
                      <VBox.margin>
                         <Insets bottom="15.0" />
                      </VBox.margin>
+                  </HBox>
+               </children>
+            </VBox>
+
+            <!-- Card Desativar Item -->
+            <VBox fx:id="painelDesativar" spacing="16.0" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+               <padding>
+                  <Insets bottom="24.0" left="24.0" right="24.0" top="24.0" />
+               </padding>
+               <children>
+                  <Label style="-fx-font-family: -apple-system, 'SF Pro Display', 'Segoe UI', sans-serif; -fx-font-weight: 800; -fx-font-size: 20px; -fx-text-fill: #1d1d1f;" text="Desativar Item" />
+                  <HBox alignment="CENTER_LEFT" spacing="12.0">
+                     <children>
+                        <TextField fx:id="txtIdDesativar" prefHeight="42.0" prefWidth="240.0" promptText="ID do item" style="-fx-background-color: #F2F2F7; -fx-background-radius: 10px; -fx-border-color: transparent; -fx-padding: 8 14; -fx-font-size: 14px;" />
+                        <Button mnemonicParsing="false" onAction="#confirmarDesativacaoItem" prefHeight="42.0" style="-fx-background-color: #FFD5D2; -fx-text-fill: #D32F2F; -fx-background-radius: 10px; -fx-font-weight: bold; -fx-font-size: 14px; -fx-cursor: hand;" text="Desativar">
+                           <padding>
+                              <Insets left="20.0" right="20.0" />
+                           </padding>
+                        </Button>
+                     </children>
                   </HBox>
                </children>
             </VBox>
