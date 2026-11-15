@@ -2,6 +2,8 @@ package main;
 
 
 import apresentacao.fx.App;
+import jakarta.persistence.EntityManager;
+import repositories.JPAUtil;
 
 
 @SuppressWarnings("java:S106")
