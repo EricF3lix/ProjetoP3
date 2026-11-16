@@ -6,25 +6,8 @@ SHELL ["powershell", "-Command", "$ErrorActionPreference = 'Stop'; $ProgressPref
 
 WORKDIR C:/app
 
-RUN New-Item -ItemType Directory -Path C:\app\dados, C:\app\relatorios, C:\pgdata
-
-RUN Invoke-WebRequest -Uri 'https://get.enterprisedb.com/postgresql/postgresql-16.4-1-windows-x64-binaries.zip' -OutFile C:\pg.zip; `
-    Expand-Archive C:\pg.zip -DestinationPath C:\; `
-    Remove-Item C:\pg.zip
-
-RUN icacls C:\pgdata /grant 'ContainerUser:(OI)(CI)F'; `
-    icacls C:\app /grant 'ContainerUser:(OI)(CI)F'
-
-USER ContainerUser
-
-RUN Set-Content -Path C:\app\pw.txt -Value '123' -NoNewline; `
-    C:\pgsql\bin\initdb.exe -D C:\pgdata -U adm --pwfile=C:\app\pw.txt -E UTF8 -A scram-sha-256; `
-    Remove-Item C:\app\pw.txt; `
-    C:\pgsql\bin\pg_ctl.exe start -D C:\pgdata -w; `
-    $env:PGPASSWORD = '123'; `
-    C:\pgsql\bin\createdb.exe -U adm -h localhost loja-que-aluga; `
-    C:\pgsql\bin\pg_ctl.exe stop -D C:\pgdata -w
+RUN New-Item -ItemType Directory -Path C:\app\dados, C:\app\relatorios
 
 COPY target/loja-aluga-de-um-tudo-1.0-SNAPSHOT.jar app.jar
 
-ENTRYPOINT ["powershell", "-Command", "C:/pgsql/bin/pg_ctl.exe start -D C:/pgdata -w; java -jar C:/app/app.jar"]
+ENTRYPOINT ["java", "-jar", "app.jar"]

@@ -1,35 +1,10 @@
 services:
-  postgres:
-    image: postgres:16
-    container_name: loja-postgres
-    environment:
-      POSTGRES_DB: loja-que-aluga
-      POSTGRES_USER: adm
-      POSTGRES_PASSWORD: "123"
-    ports:
-      - "5432:5432"
-    volumes:
-      - loja-pgdata:/var/lib/postgresql/data
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U adm -d loja-que-aluga"]
-      interval: 5s
-      timeout: 5s
-      retries: 10
-    restart: unless-stopped
-
   loja-aluga-de-um-tudo:
     build: .
     container_name: loja-aluga-de-um-tudo
-    network_mode: "service:postgres"
-    depends_on:
-      postgres:
-        condition: service_healthy
     volumes:
       - ./dados:/app/dados
       - ./relatorios:/app/relatorios
     restart: unless-stopped
     stdin_open: true
     tty: true
-
-volumes:
-  loja-pgdata:
