@@ -222,14 +222,10 @@ public class MenuLoginController extends MenuController {
     }
 
     private Image tornarFundoTransparente(Image img) {
-        if (img == null) return null;
         int largura = (int) img.getWidth();
         int altura = (int) img.getHeight();
-        if (largura <= 0 || altura <= 0) return img;
 
         PixelReader reader = img.getPixelReader();
-        if (reader == null) return img;
-
         WritableImage resultado = new WritableImage(largura, altura);
         PixelWriter writer = resultado.getPixelWriter();
 

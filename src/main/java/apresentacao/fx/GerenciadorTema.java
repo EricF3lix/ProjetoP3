@@ -12,10 +12,8 @@ import java.net.URL;
 public class GerenciadorTema {
     private static boolean isDarkMode = false;
     
-    // Correção SonarCloud #1454: Constante para literal duplicada
     private static final String ORIG_STYLE_KEY = "origStyle";
 
-    // Correção SonarCloud #1466: Adiciona construtor privado para esconder o construtor público implícito
     private GerenciadorTema() {
         throw new IllegalStateException("Classe utilitária");
     }
@@ -49,8 +47,6 @@ public class GerenciadorTema {
         return url;
     }
 
-    // --- CORREÇÃO ISSUE #1452: Método dividido para reduzir Complexidade Cognitiva ---
-
     private static void aplicarRecursivo(Node no, boolean dark) {
         if (no == null) return;
 
@@ -82,7 +78,6 @@ public class GerenciadorTema {
     }
 
     private static void aplicarEstiloTextInput(TextInputControl tic, boolean dark) {
-        // Correção SonarCloud #1453
         tic.setStyle(dark
                 ? "-fx-background-color: #2C2C2E; -fx-background-radius: 12px; -fx-border-color: transparent; -fx-border-width: 0; -fx-padding: 12px 16px; -fx-font-size: 14px; -fx-text-fill: #F5F5F7; -fx-prompt-text-fill: #8E8E93;"
                 : "-fx-background-color: #F2F2F7; -fx-background-radius: 12px; -fx-border-color: transparent; -fx-border-width: 0; -fx-padding: 12px 16px; -fx-font-size: 14px; -fx-text-fill: #1D1D1F; -fx-prompt-text-fill: #8E8E93;");
@@ -96,8 +91,8 @@ public class GerenciadorTema {
         String orig = (String) no.getProperties().get(ORIG_STYLE_KEY);
         if (orig == null || orig.isEmpty()) return;
 
+        String s = orig;
         if (dark) {
-            String s = orig;
             s = s.replaceAll("(?i)#007aff|#6d28d9|#7c3aed|#5b21b6", "#0A84FF");
             s = s.replaceAll("(?i)#f2f5f9|#f5f5f7|#f5f3ff|#f3f4f6", "#121214");
             s = s.replaceAll("(?i)#ffffff|\\bwhite\\b", "#1c1c1e");
@@ -105,17 +100,15 @@ public class GerenciadorTema {
             s = s.replaceAll("(?i)#dbeafe|#e5e5ea|#d1d1d6|#ddd6fe|#d9dde5|#c7c7cc", "#3a3a3c");
             s = s.replaceAll("(?i)#1d1d1f|#2e1065|#0f1b3d", "#f5f5f7");
             s = s.replaceAll("(?i)#86868b|#6e6e73|#4b5563", "#a1a1aa");
-            no.setStyle(s);
         } else {
-            String s = orig;
             s = s.replaceAll("(?i)#6d28d9|#7c3aed|#5b21b6", "#007AFF");
             s = s.replaceAll("(?i)#f5f3ff", "#f2f5f9");
             s = s.replaceAll("(?i)#ede9fe", "#eff6ff");
-            no.setStyle(s);
         }
+
+        // Correção SonarCloud #1453: Atribuição limpa única fora do if-else
+        no.setStyle(s);
     }
-    
-    // --------------------------------------------------------------------------------
 
     public static void alternarTema(Scene scene) {
         isDarkMode = !isDarkMode;
