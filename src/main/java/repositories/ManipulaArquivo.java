@@ -1,71 +1,110 @@
 package repositories;
 
-import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ManipulaArquivo {
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityTransaction;
+import jakarta.persistence.PersistenceException;
+import jakarta.persistence.QueryTimeoutException;
 
-    private final String caminhoArquivo;
+public class ManipulaArquivo<T> {
+	
+	public <T> void atualizar(Class<T> tipo, String atributo, Object valor, int id) {
+	    EntityManager em = JPAUtil.getEntityManager();
+	    EntityTransaction et = em.getTransaction();
 
-    public ManipulaArquivo(String caminhoArquivo) {
+	    try {
+	        et.begin();
+	        em.createQuery("UPDATE " + tipo.getName() + " t SET t." + atributo + " = :valor WHERE t.id = :id")
+	            .setParameter("valor", valor)
+	            .setParameter("id", id)
+	            .executeUpdate();
+	        et.commit();
+	    }
+	    catch (RuntimeException e) {
+	        if (et.isActive()) et.rollback();
+	        throw e;
+	    }
+	    finally {
+	        em.close();
+	    }
+	}
+	
+	public <T> void desativar(Class<T> tipo, int id) {
+		EntityManager em = JPAUtil.getEntityManager();
+	    EntityTransaction et = em.getTransaction();
+	    
+	    try {
+	    	et.begin();
+	    	em.createQuery("UPDATE " + tipo.getName() + " t SET t.ativo = :novo WHERE t.id = :id")
+	    	.setParameter("novo", false).setParameter("id", id).executeUpdate();
+	    	et.commit();
+	    	                                                                                                                                                     
+	    }
+	    
+	    catch (RuntimeException e) {
+	        if (et.isActive()) et.rollback();
+	        throw e;
+	    }
+	    
+	    finally {
+	    	em.close();
+	    }
+		
+	}
+	
+	public <T> void escrever(T tipo) {
+	    EntityManager em = JPAUtil.getEntityManager();
+	    EntityTransaction et = em.getTransaction();
+	    
+	    try {
+	        et.begin();
+	        em.persist(tipo);
+	        et.commit();
+	    } 
+	    
+	    catch (RuntimeException e) {
+	        if (et.isActive()) {
+	            et.rollback();
+	        }
+	        throw e;
+	    } 
+	    
+	    finally {
+	        em.close();
+	    }
+	}
 
-        this.caminhoArquivo = caminhoArquivo;
+    public <T> ArrayList<T> carregarTudo(Class<T> tipo) {
 
+        EntityManager em = JPAUtil.getEntityManager();
+        
+        try {
+        	List<T> lista = em.createQuery("select a from " + tipo.getName() + " a" + " order by a.id", tipo).getResultList();
+        	return new ArrayList<>(lista);
+        	
+        }
+        
+        catch (IllegalArgumentException | IllegalStateException e) {
+        // Erro na query
+        throw e; 
+        } 
+        
+        catch (QueryTimeoutException e) {
+        // Timeout na execução da query.
+        throw e;
+        } 
+        
+        catch (PersistenceException e) {
+        // Erro de persistência
+        throw e;
     }
-
-    public void salvar(List<String[]> linhas) {
-
-        File arquivo = new File(caminhoArquivo);
-
-        File pasta = arquivo.getParentFile();
-
-        if (pasta != null && !pasta.exists()) {
-
-            pasta.mkdirs();
-
-        }
-
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(arquivo))) {
-
-            for (String[] linha : linhas) {
-
-                writer.write(String.join(";", linha));
-                writer.newLine();
-
-            }
-
-        } catch (IOException e) {//ta vazio
+        finally {
+        	em.close();
         }
     }
-
-    public List<String[]> carregar() {
-
-        List<String[]> linhas = new ArrayList<>();
-
-        File arquivo = new File(caminhoArquivo);
-
-        if (!arquivo.exists()) {
-
-            return linhas;
-
-        }
-
-        try (BufferedReader reader = new BufferedReader(new FileReader(arquivo))) {
-
-            String cabecalho = reader.readLine();
-            if (cabecalho != null) {
-                String linha;
-                while ((linha = reader.readLine()) != null) {
-                    linhas.add(linha.split(";", -1));
-                }
-            }
-
-        } catch (IOException e) {//ta vazio
-        }
-
-        return linhas;
-
-    }
+    
+    
 
 }
