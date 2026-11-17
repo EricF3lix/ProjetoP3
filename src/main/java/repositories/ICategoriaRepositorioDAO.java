@@ -16,6 +16,4 @@ public interface ICategoriaRepositorioDAO{
 
     public abstract void salvar();
 
-    public abstract int gerarProximoId();
-
 }

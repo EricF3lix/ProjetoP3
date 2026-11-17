@@ -16,8 +16,7 @@ public class Fornecedor {
     private String telefone;
     private boolean ativo;
  
-    public Fornecedor(int id, String razaoSocial, String cnpj, String email, String telefone) {
-        this.id = id;
+    public Fornecedor(String razaoSocial, String cnpj, String email, String telefone) {
         this.razaoSocial = razaoSocial;
         this.cnpj = cnpj;
         this.email = email;

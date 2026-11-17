@@ -7,9 +7,9 @@ import jakarta.persistence.Id;
 @Entity
 public class Funcionario extends Usuario {
 
-    public Funcionario(int id, String nome, String email, String cpf, String senha) {
+    public Funcionario(String nome, String email, String cpf, String senha) {
 
-        super(id, nome, email, cpf, senha);
+        super(nome, email, cpf, senha);
     }
     @Override
     public String getTipo() {

@@ -16,8 +16,7 @@ public abstract class Usuario {
     private String senha;
     private boolean ativo;
 
-    protected Usuario(int id, String nome, String email, String cpf, String senha) {
-        this.id = id;
+    protected Usuario(String nome, String email, String cpf, String senha) {
         this.nome = nome;
         this.email = email;
         this.cpf = cpf;

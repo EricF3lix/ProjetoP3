@@ -14,8 +14,7 @@ public class Categoria {
     private String descricao;
     private boolean ativa;
  
-    public Categoria(int id, String nome, String descricao) {
-        this.id = id;
+    public Categoria(String nome, String descricao) {
         this.nome = nome;
         this.descricao = descricao;
         this.ativa = true;

@@ -18,6 +18,5 @@ public interface IFornecedorRepositorioDAO {
 
     public abstract void salvar();
 
-    public abstract int gerarProximoId();
 
 }

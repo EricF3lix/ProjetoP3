@@ -1,8 +1,6 @@
 package entidades;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 
 @SuppressWarnings("java:S107")
 @Entity
@@ -10,24 +8,29 @@ public class Item {
 
     @Id
     @GeneratedValue
-    private final int id;
+    private int id;
     private String nome;
     private String descricao;
     private double taxaDiaria;
     private String estadoConservacao;
     private double valorReposicao;
+
+    @ManyToOne
+    @JoinColumn
     private Categoria categoria;
+
+    @ManyToOne
+    @JoinColumn
     private Fornecedor fornecedor;
     private String status;
     private boolean ativo;
     private static final String DISPONIVEL = "DISPONIVEL";
     private static final String INDISPONIVEL = "INDISPONIVEL";
 
-    public Item(int id, String nome, String descricao, double taxaDiaria,
+    public Item(String nome, String descricao, double taxaDiaria,
                 String estadoConservacao, double valorReposicao,
                 Categoria categoria, Fornecedor fornecedor) {
 
-        this.id = id;
         this.nome = nome;
         this.descricao = descricao;
         this.taxaDiaria = taxaDiaria;

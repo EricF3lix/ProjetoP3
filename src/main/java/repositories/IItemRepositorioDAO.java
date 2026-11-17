@@ -11,11 +11,5 @@ public interface IItemRepositorioDAO {
     public abstract List<Item> listarTodos();
 
     public abstract Item buscarPorId(int id);
-
-    public abstract void remover(Item item);
-
-    public abstract void salvar();
-
-    public abstract int gerarProximoId();
     
 }

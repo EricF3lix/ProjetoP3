@@ -9,7 +9,7 @@ public class ContratoAluguel {
 
     @Id
     @GeneratedValue
-    private final int id;
+    private int id;
     private final Cliente cliente;
     private final Item item;
     private final String dataRetirada;
@@ -21,8 +21,7 @@ public class ContratoAluguel {
     private double valorMulta;
     private boolean multaPaga;
 
-    public ContratoAluguel(int id, Cliente cliente, Item item, String dataRetirada, String dataDevolucaoPrevista, double valorTotal) {
-        this.id = id;
+    public ContratoAluguel(Cliente cliente, Item item, String dataRetirada, String dataDevolucaoPrevista, double valorTotal) {
         this.cliente = cliente;
         this.item = item;
         this.dataRetirada = dataRetirada;

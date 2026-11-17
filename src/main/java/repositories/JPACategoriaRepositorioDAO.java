@@ -34,7 +34,7 @@ public class JPACategoriaRepositorioDAO implements ICategoriaRepositorioDAO {
                 String descricao = campos[2].trim();
                 boolean ativa = Boolean.parseBoolean(campos[3].trim());
 
-                Categoria categoria = new Categoria(id, nome, descricao);
+                Categoria categoria = new Categoria(nome, descricao);
 
                 categoria.setAtiva(ativa);
 
@@ -109,25 +109,6 @@ public class JPACategoriaRepositorioDAO implements ICategoriaRepositorioDAO {
         }
 
         return null;
-
-    }
-
-    @Override
-    public int gerarProximoId() {
-
-        int maiorId = 0;
-
-        for (Categoria categoria : categorias) {
-
-            if (categoria.getId() > maiorId) {
-
-                maiorId = categoria.getId();
-
-            }
-
-        }
-
-        return maiorId + 1;
 
     }
 

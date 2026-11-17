@@ -20,6 +20,5 @@ public interface IContratoRepositorioDAO {
     
     public abstract void salvar();
 
-    public abstract int gerarProximoId();
 
 }

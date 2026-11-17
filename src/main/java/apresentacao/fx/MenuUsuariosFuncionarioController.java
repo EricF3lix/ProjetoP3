@@ -400,9 +400,9 @@ public class MenuUsuariosFuncionarioController extends MenuController {
 
         int id = sistema.gerarProximoIdUsuario();
         Usuario novoUsuario = switch (tipoCadastroAtual) {
-            case "Funcionário" -> new Funcionario(id, nome, email, cpf, senha);
-            case "Administrador" -> new Administrador(id, nome, email, cpf, senha);
-            default -> new Cliente(id, nome, email, cpf, senha);
+            case "Funcionário" -> new Funcionario(nome, email, cpf, senha);
+            case "Administrador" -> new Administrador(nome, email, cpf, senha);
+            default -> new Cliente(nome, email, cpf, senha);
         };
 
         if (sistema.cadastrarUsuario(novoUsuario)) {
