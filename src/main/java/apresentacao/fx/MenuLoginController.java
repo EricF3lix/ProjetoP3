@@ -177,7 +177,11 @@ public class MenuLoginController extends MenuController {
                 if (arquivos != null && arquivos.length > 0) {
                     try {
                         url = arquivos[0].toURI().toURL();
-                    } catch (Exception ignored) {}
+                    } catch (Exception ignored) {
+                        // Correção SonarCloud #1457: Bloco intencionalmente vazio. 
+                        // Se falhar ao ler o arquivo físico, a variável 'url' continua nula
+                        // e o sistema exibe a label do logo padrão de forma segura.
+                    }
                 }
             }
         }
@@ -233,7 +237,6 @@ public class MenuLoginController extends MenuController {
                 } else if (dist < 0.35) {
                     double alfa = (dist - 0.20) / (0.35 - 0.20);
 
-                    // Correção SonarCloud #1460: Substituição por Math.clamp
                     double r = Math.clamp((c.getRed() - fundo.getRed() * (1.0 - alfa)) / alfa, 0.0, 1.0);
                     double g = Math.clamp((c.getGreen() - fundo.getGreen() * (1.0 - alfa)) / alfa, 0.0, 1.0);
                     double b = Math.clamp((c.getBlue() - fundo.getBlue() * (1.0 - alfa)) / alfa, 0.0, 1.0);
