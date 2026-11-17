@@ -76,7 +76,7 @@ public class ThemeToggleSwitch extends StackPane {
             fi.setIconColor(dark ? Color.valueOf("#1C1C1E") : Color.valueOf("#F59E0B"));
             lblIcone.setGraphic(fi);
             lblIcone.setText("");
-        } catch (Throwable t) {
+        } catch (Exception t) {
             lblIcone.setGraphic(null);
             lblIcone.setText(dark ? "🌙" : "☀️");
             lblIcone.setStyle("-fx-font-size: 11px;");
