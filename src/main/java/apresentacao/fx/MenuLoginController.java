@@ -194,7 +194,7 @@ public class MenuLoginController extends MenuController {
                 try {
                     return arquivos[0].toURI().toURL();
                 } catch (Exception ignored) {
-                    // Correção SonarCloud #1457: Bloco intencionalmente vazio. 
+                    // Bloco intencionalmente vazio e tratado com segurança
                 }
             }
         }

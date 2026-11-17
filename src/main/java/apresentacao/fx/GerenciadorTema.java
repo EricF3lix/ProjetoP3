@@ -91,22 +91,19 @@ public class GerenciadorTema {
         String orig = (String) no.getProperties().get(ORIG_STYLE_KEY);
         if (orig == null || orig.isEmpty()) return;
 
-        String s = orig;
-        if (dark) {
-            s = s.replaceAll("(?i)#007aff|#6d28d9|#7c3aed|#5b21b6", "#0A84FF");
-            s = s.replaceAll("(?i)#f2f5f9|#f5f5f7|#f5f3ff|#f3f4f6", "#121214");
-            s = s.replaceAll("(?i)#ffffff|\\bwhite\\b", "#1c1c1e");
-            s = s.replaceAll("(?i)#eff6ff|#faf5ff|#f8f9fb|#f2f2f7|#ede9fe|#e3e9fb", "#2c2c2e");
-            s = s.replaceAll("(?i)#dbeafe|#e5e5ea|#d1d1d6|#ddd6fe|#d9dde5|#c7c7cc", "#3a3a3c");
-            s = s.replaceAll("(?i)#1d1d1f|#2e1065|#0f1b3d", "#f5f5f7");
-            s = s.replaceAll("(?i)#86868b|#6e6e73|#4b5563", "#a1a1aa");
-        } else {
-            s = s.replaceAll("(?i)#6d28d9|#7c3aed|#5b21b6", "#007AFF");
-            s = s.replaceAll("(?i)#f5f3ff", "#f2f5f9");
-            s = s.replaceAll("(?i)#ede9fe", "#eff6ff");
-        }
+        // Utilização de operador ternário/atribuição limpa para satisfazer a regra do SonarCloud na linha 76
+        String s = dark 
+            ? orig.replaceAll("(?i)#007aff|#6d28d9|#7c3aed|#5b21b6", "#0A84FF")
+                  .replaceAll("(?i)#f2f5f9|#f5f5f7|#f5f3ff|#f3f4f6", "#121214")
+                  .replaceAll("(?i)#ffffff|\\bwhite\\b", "#1c1c1e")
+                  .replaceAll("(?i)#eff6ff|#faf5ff|#f8f9fb|#f2f2f7|#ede9fe|#e3e9fb", "#2c2c2e")
+                  .replaceAll("(?i)#dbeafe|#e5e5ea|#d1d1d6|#ddd6fe|#d9dde5|#c7c7cc", "#3a3a3c")
+                  .replaceAll("(?i)#1d1d1f|#2e1065|#0f1b3d", "#f5f5f7")
+                  .replaceAll("(?i)#86868b|#6e6e73|#4b5563", "#a1a1aa")
+            : orig.replaceAll("(?i)#6d28d9|#7c3aed|#5b21b6", "#007AFF")
+                  .replaceAll("(?i)#f5f3ff", "#f2f5f9")
+                  .replaceAll("(?i)#ede9fe", "#eff6ff");
 
-        // Correção SonarCloud #1453: Atribuição limpa única fora do if-else
         no.setStyle(s);
     }
 
