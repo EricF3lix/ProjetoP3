@@ -16,6 +16,6 @@ public interface IMultaRepositorioDAO {
 
     public abstract List<Multa> buscarPendentes();
 
-    public abstract void salvar();
+    public abstract void atualizar(String coluna, Object valor, int id);
 
 }
