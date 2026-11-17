@@ -1,8 +1,15 @@
 package entidades;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
+
 @SuppressWarnings("java:S107")
+@Entity
 public class Item {
 
+    @Id
+    @GeneratedValue
     private final int id;
     private String nome;
     private String descricao;
