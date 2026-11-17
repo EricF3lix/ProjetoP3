@@ -2,15 +2,15 @@ package business.cruds;
 
 import business.interfaces.IGerenciamentoFornecedor;
 import entidades.Fornecedor;
-import repositories.IFornecedorRepositorio;
+import repositories.IFornecedorRepositorioDAO;
 
 import java.util.List;
 
 public class GerenciamentoFornecedor implements IGerenciamentoFornecedor {
 
-    private final IFornecedorRepositorio repositorio;
+    private final IFornecedorRepositorioDAO repositorio;
 
-    public GerenciamentoFornecedor(IFornecedorRepositorio repositorio) {
+    public GerenciamentoFornecedor(IFornecedorRepositorioDAO repositorio) {
         this.repositorio = repositorio;
     }
 

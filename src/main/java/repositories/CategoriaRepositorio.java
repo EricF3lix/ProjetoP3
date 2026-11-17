@@ -1,11 +1,11 @@
 package repositories;
 
-import entidades.Categoria;
-
 import java.util.ArrayList;
 import java.util.List;
 
-public class CategoriaRepositorio implements ICategoriaRepositorio {
+import entidades.Categoria;
+
+public class CategoriaRepositorio implements ICategoriaRepositorioDAO {
 
     private static final String ARQUIVO = "dados/categorias.csv";
 

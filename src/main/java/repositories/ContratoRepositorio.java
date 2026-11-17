@@ -8,16 +8,16 @@ import entidades.Usuario;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ContratoRepositorio implements IContratoRepositorio {
+public class ContratoRepositorio implements IContratoRepositorioDAO {
 
     private static final String ARQUIVO = "dados/contratos.csv";
 
     private final List<ContratoAluguel> contratos;
-    private final IUsuarioRepositorio usuarioRepositorio;
-    private final IItemRepositorio itemRepositorio;
+    private final IUsuarioRepositorioDAO usuarioRepositorio;
+    private final IItemRepositorioDAO itemRepositorio;
     private final ManipulaArquivo manipulaArquivo;
 
-    public ContratoRepositorio(IUsuarioRepositorio usuarioRepositorio, IItemRepositorio itemRepositorio) {
+    public ContratoRepositorio(IUsuarioRepositorioDAO usuarioRepositorio, IItemRepositorioDAO itemRepositorio) {
 
         this.usuarioRepositorio = usuarioRepositorio;
         this.itemRepositorio = itemRepositorio;

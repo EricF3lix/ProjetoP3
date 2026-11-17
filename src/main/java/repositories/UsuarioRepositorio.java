@@ -8,7 +8,7 @@ import entidades.Usuario;
 import java.util.ArrayList;
 import java.util.List;
 
-public class UsuarioRepositorio implements IUsuarioRepositorio {
+public class UsuarioRepositorio implements IUsuarioRepositorioDAO {
 
     private static final String ARQUIVO = "dados/usuarios.csv";
 

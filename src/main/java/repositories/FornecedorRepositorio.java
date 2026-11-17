@@ -5,7 +5,7 @@ import entidades.Fornecedor;
 import java.util.ArrayList;
 import java.util.List;
 
-public class FornecedorRepositorio implements IFornecedorRepositorio {
+public class FornecedorRepositorio implements IFornecedorRepositorioDAO {
 
     private static final String ARQUIVO = "dados/fornecedores.csv";
 

@@ -1,22 +1,22 @@
 package repositories;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import entidades.Categoria;
 import entidades.Fornecedor;
 import entidades.Item;
 
-import java.util.ArrayList;
-import java.util.List;
-
-public class ItemRepositorio implements IItemRepositorio {
+public class ItemRepositorio implements IItemRepositorioDAO {
 
     private static final String ARQUIVO = "dados/itens.csv";
 
     private final List<Item> itens;
-    private final ICategoriaRepositorio categoriaRepositorio;
-    private final IFornecedorRepositorio fornecedorRepositorio;
+    private final ICategoriaRepositorioDAO categoriaRepositorio;
+    private final IFornecedorRepositorioDAO fornecedorRepositorio;
     private final ManipulaArquivo manipulaArquivo;
 
-    public ItemRepositorio(ICategoriaRepositorio categoriaRepositorio, IFornecedorRepositorio fornecedorRepositorio) {
+    public ItemRepositorio(ICategoriaRepositorioDAO categoriaRepositorio, IFornecedorRepositorioDAO fornecedorRepositorio) {
 
         this.categoriaRepositorio = categoriaRepositorio;
         this.fornecedorRepositorio = fornecedorRepositorio;
