@@ -1,56 +1,71 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import apresentacao.fx.ThemeToggleSwitch?>
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.control.*?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.TextField?>
 <?import javafx.scene.image.ImageView?>
-<?import javafx.scene.layout.*?>
-<VBox alignment="CENTER" prefHeight="600.0" prefWidth="900.0" spacing="12.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="apresentacao.fx.MenuLoginController">
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox alignment="CENTER" prefHeight="650.0" prefWidth="900.0" spacing="12.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="apresentacao.fx.MenuLoginController">
    <padding>
-      <Insets bottom="24.0" left="24.0" right="24.0" top="24.0" />
+      <Insets bottom="20.0" left="24.0" right="24.0" top="20.0" />
    </padding>
    <children>
-      <VBox alignment="CENTER" maxHeight="560.0" maxWidth="400.0" spacing="20.0" style="-fx-background-color: #ffffff; -fx-background-radius: 20px; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 25, 0, 0, 8);">
+      <HBox alignment="CENTER_RIGHT" maxWidth="1.7976931348623157E308" prefHeight="40.0">
+         <children>
+            <StackPane fx:id="containerTema" alignment="CENTER" maxHeight="40.0" maxWidth="60.0" minHeight="40.0" minWidth="60.0" prefHeight="40.0" prefWidth="60.0">
+               <children>
+                  <ThemeToggleSwitch />
+               </children>
+            </StackPane>
+         </children>
+      </HBox>
+      
+      <VBox fx:id="cardLogin" alignment="CENTER" maxHeight="600.0" maxWidth="420.0" spacing="14.0" style="-fx-background-color: #ffffff; -fx-background-radius: 20px; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 25, 0, 0, 8);">
          <padding>
-            <Insets bottom="45.0" left="40.0" right="40.0" top="45.0" />
+            <Insets bottom="36.0" left="36.0" right="36.0" top="36.0" />
          </padding>
          <children>
-
-
-            <StackPane fx:id="areaLogo" maxHeight="100.0" maxWidth="100.0" minHeight="100.0" minWidth="100.0" prefHeight="100.0" prefWidth="100.0" scaleX="2.0" scaleY="2.0" style="-fx-border-color: #c7c7cc; -fx-border-style: segments(6, 6); -fx-border-radius: 12px;">
+            <StackPane fx:id="areaLogo" alignment="CENTER" maxHeight="150.0" maxWidth="250.0" minHeight="130.0" minWidth="220.0" prefHeight="140.0" prefWidth="240.0">
                <children>
                   <Label fx:id="lblLogoPadrao" style="-fx-font-size: 14px; -fx-text-fill: #c7c7cc;" text="LOGO" />
-                  <ImageView fx:id="imgLogo" fitHeight="100.0" fitWidth="100.0" pickOnBounds="true" preserveRatio="true" />
+                  <ImageView fx:id="imgLogo" fitHeight="135.0" fitWidth="230.0" pickOnBounds="true" preserveRatio="true" />
                </children>
             </StackPane>
 
-            <VBox alignment="CENTER" spacing="5.0">
+            <VBox alignment="CENTER" spacing="4.0">
                <children>
                   <Label alignment="CENTER" style="-fx-font-family: -apple-system, 'SF Pro Display', 'Segoe UI', sans-serif; -fx-font-size: 22px; -fx-font-weight: 900; -fx-text-fill: #1d1d1f;" text="LOJA QUE ALUGA TUDO" textAlignment="CENTER" wrapText="true" />
                   <Label alignment="CENTER" style="-fx-font-family: -apple-system, 'SF Pro Text', 'Segoe UI', sans-serif; -fx-font-size: 15px; -fx-text-fill: #86868b;" text="Entrar" />
                </children>
                <VBox.margin>
-                  <Insets bottom="15.0" />
+                  <Insets bottom="4.0" />
                </VBox.margin>
             </VBox>
 
             <VBox spacing="12.0">
                <children>
-                  <TextField fx:id="txtEmail" prefHeight="45.0" promptText= "👤 Email" style="-fx-background-color: #F2F2F7; -fx-background-radius: 10px; -fx-padding: 12px; -fx-font-size: 14px; -fx-text-fill: #1d1d1f;" />
-                  <PasswordField fx:id="txtSenha" onAction="#entrar" prefHeight="45.0" promptText="🔒 Senha" style="-fx-background-color: #F2F2F7; -fx-background-radius: 10px; -fx-padding: 12px; -fx-font-size: 14px; -fx-text-fill: #1d1d1f;" />
+                  <TextField fx:id="txtEmail" prefHeight="45.0" promptText="👤 Email" style="-fx-background-color: #F2F2F7; -fx-background-radius: 12px; -fx-border-color: transparent; -fx-border-width: 0; -fx-padding: 12px 16px; -fx-font-size: 14px; -fx-text-fill: #1d1d1f; -fx-prompt-text-fill: #8E8E93;" />
+                  <PasswordField fx:id="txtSenha" onAction="#entrar" prefHeight="45.0" promptText="🔒 Senha" style="-fx-background-color: #F2F2F7; -fx-background-radius: 12px; -fx-border-color: transparent; -fx-border-width: 0; -fx-padding: 12px 16px; -fx-font-size: 14px; -fx-text-fill: #1d1d1f; -fx-prompt-text-fill: #8E8E93;" />
                </children>
             </VBox>
 
+            <Label fx:id="lblErro" alignment="CENTER" maxWidth="1.7976931348623157E308" managed="false" style="-fx-font-family: -apple-system, 'SF Pro Text', 'Segoe UI', sans-serif; -fx-font-size: 13px; -fx-font-weight: 600; -fx-text-fill: #FF3B30;" text="dados inválidos" textAlignment="CENTER" visible="false" />
 
-            <VBox spacing="12.0">
+            <VBox spacing="10.0">
                <VBox.margin>
-                  <Insets top="10.0" />
+                  <Insets top="4.0" />
                </VBox.margin>
                <children>
                   <Button defaultButton="true" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#entrar" prefHeight="45.0" style="-fx-background-color: #007AFF; -fx-text-fill: white; -fx-background-radius: 10px; -fx-font-weight: bold; -fx-font-size: 15px; -fx-cursor: hand;" text="Entrar" />
                   <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#voltar" prefHeight="45.0" style="-fx-background-color: #e5e5ea; -fx-text-fill: #1d1d1f; -fx-background-radius: 10px; -fx-font-weight: bold; -fx-font-size: 15px; -fx-cursor: hand;" text="Encerrar" />
                </children>
             </VBox>
-
          </children>
       </VBox>
    </children>
