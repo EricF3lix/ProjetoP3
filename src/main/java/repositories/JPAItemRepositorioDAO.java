@@ -10,13 +10,10 @@ import org.hibernate.cache.spi.support.AbstractReadWriteAccess;
 
 public class JPAItemRepositorioDAO implements IItemRepositorioDAO {
 
-    private static final String ARQUIVO = "dados/itens.csv";
-
     private final ManipulaArquivo manipulaArquivo;
 
     public JPAItemRepositorioDAO() {
-        manipulaArquivo = new ManipulaArquivo(ARQUIVO);
-
+        manipulaArquivo = new ManipulaArquivo();
     }
 
     @Override
@@ -32,14 +29,15 @@ public class JPAItemRepositorioDAO implements IItemRepositorioDAO {
     }
 
     @Override
-    public Item buscarPorId(int id) {
-        ArrayList<Item> retorno = manipulaArquivo.buscar(Item.class, "id", id);
-
-        if (retorno.isEmpty()){
-            return null;
-        }
-        return retorno.getFirst();
+    public List<Item> buscarItens(String tipofiltro, String filtro){
+        return manipulaArquivo.buscar(Item.class,tipofiltro,filtro);
     }
-    
+
+    @Override
+    public boolean atualizar(String coluna, String valor, int id) {
+
+        manipulaArquivo.atualizar(Item.class,coluna,valor,id);
+        return true;
+    }
 
 }

@@ -175,11 +175,11 @@ public class SistemaFacade {
         return gerenciamentoItens.listarItens();
     }
 
-    public List<Item> filtrarItem(String filtro) {
-        return gerenciamentoItens.filtrarItem(filtro);
+    public List<Item> filtrarItem(String tipofiltro,String filtro) {
+        return gerenciamentoItens.filtrarItem(tipofiltro,filtro);
     }
     
-    public List<Item> filtraID(String pesquisado) {
+    public Item filtraID(String pesquisado) {
         return gerenciamentoItens.filtrarPorId(pesquisado);
     }
 
@@ -195,16 +195,8 @@ public class SistemaFacade {
         return gerenciamentoItens.filtrarPorTaxa(pesquisado);
     }
     
-    public boolean atualizarItem(Item itemNovo) {
-        return gerenciamentoItens.atualizarItem(itemNovo);
-    }
-
-    public boolean excluirItem(int id) {
-        return gerenciamentoItens.excluirItem(id);
-    }
-
-    public int gerarProximoIdItem() {
-        return gerenciamentoItens.gerarProximoId();
+    public boolean atualizarItem(String coluna,String valor,int id) {
+        return gerenciamentoItens.atualizarItem(coluna,valor,id);
     }
 
     // =========================================================================
