@@ -1,167 +1,280 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import apresentacao.fx.ThemeToggleSwitch?>
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
-<?import javafx.scene.shape.Circle?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
 <?import org.kordamp.ikonli.javafx.FontIcon?>
 
-<StackPane prefHeight="640" prefWidth="1027" style="-fx-background-color: #f5f3ff; -fx-font-family: 'Inter', 'Segoe UI', 'System';" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="apresentacao.fx.MenuPrincipalAdministradorController">
-
-   <VBox maxWidth="900" spacing="24" StackPane.alignment="TOP_CENTER">
-      <padding>
-         <Insets bottom="36" left="40" right="40" top="36" />
-      </padding>
-
-      <HBox alignment="CENTER_LEFT" spacing="16">
-         <StackPane>
-            <Circle fill="#6d28d9" radius="26" />
-            <Label fx:id="lblPerfil" style="-fx-text-fill: white; -fx-font-size: 16px; -fx-font-weight: bold;" text="VI" />
-         </StackPane>
-         <VBox spacing="2">
-            <Label fx:id="lblBemVindo" style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #2e1065;" text="Olá, " />
-            <Label style="-fx-font-size: 13px; -fx-text-fill: #4b5563;" text="Administrador · Menu principal" />
-         </VBox>
-         <Region HBox.hgrow="ALWAYS" />
-         <Button graphicTextGap="8" onAction="#voltar" prefHeight="44" prefWidth="166" style="-fx-background-color: white; -fx-border-color: #ddd6fe; -fx-border-radius: 10; -fx-background-radius: 10; -fx-text-fill: #b91c1c; -fx-font-size: 14px; -fx-font-weight: bold; -fx-cursor: hand;" text="Encerrar sessão">
-            <graphic>
-               <FontIcon fx:id="iconSair" iconColor="#b91c1c" iconSize="16" />
-            </graphic>
-         </Button>
+<VBox prefHeight="700.0" prefWidth="950.0" spacing="24.0" style="-fx-background-color: #f2f5f9;" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="apresentacao.fx.MenuPrincipalAdministradorController">
+   <padding>
+      <Insets bottom="32.0" left="36.0" right="36.0" top="32.0" />
+   </padding>
+   <children>
+      <HBox alignment="CENTER_LEFT" spacing="16.0">
+         <children>
+            <Pane maxHeight="56.0" maxWidth="56.0" minHeight="56.0" minWidth="56.0" prefHeight="56.0" prefWidth="56.0" style="-fx-background-color: #007AFF; -fx-background-radius: 28px;">
+               <children>
+                  <Label fx:id="lblAvatar" alignment="CENTER" layoutX="0.0" layoutY="0.0" prefHeight="56.0" prefWidth="56.0" style="-fx-font-family: -apple-system, 'SF Pro Display', 'Segoe UI', sans-serif; -fx-font-size: 20px; -fx-font-weight: 900; -fx-text-fill: white;" text="--" />
+               </children>
+            </Pane>
+            <VBox alignment="CENTER_LEFT" spacing="2.0">
+               <children>
+                  <Label fx:id="lblBoasVindas" style="-fx-font-family: -apple-system, 'SF Pro Display', 'Segoe UI', sans-serif; -fx-font-size: 24px; -fx-font-weight: 800; -fx-text-fill: #1d1d1f;" text="Bem-vindo(a)" />
+                  <Label style="-fx-font-family: -apple-system, 'SF Pro Text', 'Segoe UI', sans-serif; -fx-font-size: 13px; -fx-text-fill: #6e6e73;" text="Administrador · Menu principal" />
+               </children>
+            </VBox>
+            <Region HBox.hgrow="ALWAYS" />
+            <HBox alignment="CENTER" spacing="16.0">
+               <children>
+                  <StackPane fx:id="containerTema" alignment="CENTER" maxHeight="40.0" maxWidth="60.0" minHeight="40.0" minWidth="60.0" prefHeight="40.0" prefWidth="60.0">
+                     <children>
+                        <ThemeToggleSwitch />
+                     </children>
+                  </StackPane>
+                  <Button fx:id="btnEncerrarSessao" alignment="CENTER" graphicTextGap="8.0" mnemonicParsing="false" onAction="#voltar" prefHeight="40.0" style="-fx-background-color: transparent; -fx-border-color: #e5e5ea; -fx-border-radius: 10px; -fx-cursor: hand;" text="Encerrar sessão" textFill="#b91c1c">
+                     <graphic>
+                        <FontIcon fx:id="iconSair" iconColor="#b91c1c" iconLiteral="fas-sign-out-alt" iconSize="15" />
+                     </graphic>
+                     <padding>
+                        <Insets bottom="8.0" left="16.0" right="16.0" top="8.0" />
+                     </padding>
+                  </Button>
+               </children>
+            </HBox>
+         </children>
       </HBox>
 
-      <HBox alignment="TOP_LEFT" spacing="22">
-
-         <VBox maxHeight="-Infinity" prefWidth="440" spacing="12" style="-fx-background-color: white; -fx-background-radius: 16; -fx-border-color: #ede9fe; -fx-border-radius: 16;" HBox.hgrow="ALWAYS">
-            <padding>
-               <Insets bottom="20" left="20" right="20" top="20" />
-            </padding>
-            <VBox spacing="2">
-               <Label style="-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: #2e1065;" text="Cadastros" />
-               <Label style="-fx-font-size: 13px; -fx-text-fill: #4b5563;" text="Dados-base do sistema" />
-            </VBox>
-
-            <Button alignment="CENTER_LEFT" maxWidth="Infinity" onAction="#abrirUsuarios" prefHeight="74" style="-fx-background-color: #faf5ff; -fx-border-color: #ddd6fe; -fx-border-radius: 12; -fx-background-radius: 12; -fx-cursor: hand; -fx-padding: 0 14 0 14;">
-               <graphic>
-                  <HBox alignment="CENTER_LEFT" spacing="14">
-                     <StackPane minHeight="44" minWidth="44" prefHeight="44" prefWidth="44" style="-fx-background-color: #ede9fe; -fx-background-radius: 10;">
-                        <FontIcon fx:id="iconUsuarios" iconColor="#6d28d9" iconSize="20" />
-                     </StackPane>
-                     <VBox alignment="CENTER_LEFT" spacing="2">
-                        <Label style="-fx-font-size: 15px; -fx-font-weight: bold; -fx-text-fill: #2e1065;" text="Usuários" />
-                        <Label style="-fx-font-size: 13px; -fx-text-fill: #4b5563;" text="Contas e permissões" />
-                     </VBox>
-                  </HBox>
-               </graphic>
-            </Button>
-
-            <Button alignment="CENTER_LEFT" maxWidth="Infinity" onAction="#abrirItens" prefHeight="74" style="-fx-background-color: #faf5ff; -fx-border-color: #ddd6fe; -fx-border-radius: 12; -fx-background-radius: 12; -fx-cursor: hand; -fx-padding: 0 14 0 14;">
-               <graphic>
-                  <HBox alignment="CENTER_LEFT" spacing="14">
-                     <StackPane minHeight="44" minWidth="44" prefHeight="44" prefWidth="44" style="-fx-background-color: #ede9fe; -fx-background-radius: 10;">
-                        <FontIcon fx:id="iconItens" iconColor="#6d28d9" iconSize="20" />
-                     </StackPane>
-                     <VBox alignment="CENTER_LEFT" spacing="2">
-                        <Label style="-fx-font-size: 15px; -fx-font-weight: bold; -fx-text-fill: #2e1065;" text="Itens" />
-                        <Label style="-fx-font-size: 13px; -fx-text-fill: #4b5563;" text="Cadastro de itens" />
-                     </VBox>
-                  </HBox>
-               </graphic>
-            </Button>
-
-            <Button alignment="CENTER_LEFT" maxWidth="Infinity" onAction="#abrirCategorias" prefHeight="74" style="-fx-background-color: #faf5ff; -fx-border-color: #ddd6fe; -fx-border-radius: 12; -fx-background-radius: 12; -fx-cursor: hand; -fx-padding: 0 14 0 14;">
-               <graphic>
-                  <HBox alignment="CENTER_LEFT" spacing="14">
-                     <StackPane minHeight="44" minWidth="44" prefHeight="44" prefWidth="44" style="-fx-background-color: #ede9fe; -fx-background-radius: 10;">
-                        <FontIcon fx:id="iconCategorias" iconColor="#6d28d9" iconSize="20" />
-                     </StackPane>
-                     <VBox alignment="CENTER_LEFT" spacing="2">
-                        <Label style="-fx-font-size: 15px; -fx-font-weight: bold; -fx-text-fill: #2e1065;" text="Categorias" />
-                        <Label style="-fx-font-size: 13px; -fx-text-fill: #4b5563;" text="Organização dos itens" />
-                     </VBox>
-                  </HBox>
-               </graphic>
-            </Button>
-
-            <Button alignment="CENTER_LEFT" maxWidth="Infinity" onAction="#abrirFornecedores" prefHeight="74" style="-fx-background-color: #faf5ff; -fx-border-color: #ddd6fe; -fx-border-radius: 12; -fx-background-radius: 12; -fx-cursor: hand; -fx-padding: 0 14 0 14;">
-               <graphic>
-                  <HBox alignment="CENTER_LEFT" spacing="14">
-                     <StackPane minHeight="44" minWidth="44" prefHeight="44" prefWidth="44" style="-fx-background-color: #ede9fe; -fx-background-radius: 10;">
-                        <FontIcon fx:id="iconFornecedores" iconColor="#6d28d9" iconSize="20" />
-                     </StackPane>
-                     <VBox alignment="CENTER_LEFT" spacing="2">
-                        <Label style="-fx-font-size: 15px; -fx-font-weight: bold; -fx-text-fill: #2e1065;" text="Fornecedores" />
-                        <Label style="-fx-font-size: 13px; -fx-text-fill: #4b5563;" text="Empresas parceiras" />
-                     </VBox>
-                  </HBox>
-               </graphic>
-            </Button>
-         </VBox>
-
-         <VBox prefWidth="440" spacing="22" HBox.hgrow="ALWAYS">
-
-            <VBox spacing="12" style="-fx-background-color: white; -fx-background-radius: 16; -fx-border-color: #ede9fe; -fx-border-radius: 16;">
+      <GridPane hgap="24.0" vgap="24.0" VBox.vgrow="ALWAYS">
+         <columnConstraints>
+            <ColumnConstraints percentWidth="50.0" />
+            <ColumnConstraints percentWidth="50.0" />
+         </columnConstraints>
+         <rowConstraints>
+            <RowConstraints minHeight="240.0" percentHeight="58.0" vgrow="ALWAYS" />
+            <RowConstraints minHeight="170.0" percentHeight="42.0" vgrow="ALWAYS" />
+         </rowConstraints>
+         <children>
+            <VBox spacing="14.0" style="-fx-background-color: #ffffff; -fx-background-radius: 20px; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.04), 16, 0, 0, 4);" GridPane.columnIndex="0" GridPane.rowIndex="0" GridPane.rowSpan="2">
                <padding>
-                  <Insets bottom="20" left="20" right="20" top="20" />
+                  <Insets bottom="24.0" left="24.0" right="24.0" top="24.0" />
                </padding>
-               <VBox spacing="2">
-                  <Label style="-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: #2e1065;" text="Operações" />
-                  <Label style="-fx-font-size: 13px; -fx-text-fill: #4b5563;" text="Rotina do dia a dia" />
-               </VBox>
+               <children>
+                  <VBox spacing="2.0">
+                     <children>
+                        <Label style="-fx-font-family: -apple-system, 'SF Pro Display', 'Segoe UI', sans-serif; -fx-font-size: 18px; -fx-font-weight: 800; -fx-text-fill: #1d1d1f;" text="Cadastros" />
+                        <Label style="-fx-font-family: -apple-system, 'SF Pro Text', 'Segoe UI', sans-serif; -fx-font-size: 13px; -fx-text-fill: #6e6e73;" text="Dados-base do sistema" />
+                     </children>
+                  </VBox>
+                  <VBox spacing="12.0" VBox.vgrow="ALWAYS">
+                     <children>
+                        <Button alignment="CENTER_LEFT" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#abrirUsuarios" prefHeight="68.0" style="-fx-background-color: #ffffff; -fx-border-color: #dbeafe; -fx-border-radius: 14px; -fx-background-radius: 14px; -fx-cursor: hand;" VBox.vgrow="ALWAYS">
+                           <graphic>
+                              <HBox alignment="CENTER_LEFT" mouseTransparent="true" spacing="14.0">
+                                 <children>
+                                    <StackPane maxHeight="48.0" maxWidth="48.0" minHeight="48.0" minWidth="48.0" prefHeight="48.0" prefWidth="48.0" style="-fx-background-color: #eff6ff; -fx-background-radius: 10px;">
+                                       <children>
+                                          <FontIcon iconColor="#007AFF" iconLiteral="fas-users" iconSize="18" />
+                                       </children>
+                                    </StackPane>
+                                    <VBox alignment="CENTER_LEFT" spacing="2.0">
+                                       <children>
+                                          <Label style="-fx-font-family: -apple-system, 'SF Pro Text', 'Segoe UI', sans-serif; -fx-font-size: 15px; -fx-font-weight: 700; -fx-text-fill: #1d1d1f;" text="Usuários" />
+                                          <Label style="-fx-font-family: -apple-system, 'SF Pro Text', 'Segoe UI', sans-serif; -fx-font-size: 12px; -fx-text-fill: #6e6e73;" text="Contas e permissões" />
+                                       </children>
+                                    </VBox>
+                                 </children>
+                              </HBox>
+                           </graphic>
+                           <padding>
+                              <Insets bottom="10.0" left="14.0" right="14.0" top="10.0" />
+                           </padding>
+                        </Button>
 
-               <Button alignment="CENTER_LEFT" maxWidth="Infinity" onAction="#abrirContratos" prefHeight="74" style="-fx-background-color: #faf5ff; -fx-border-color: #ddd6fe; -fx-border-radius: 12; -fx-background-radius: 12; -fx-cursor: hand; -fx-padding: 0 14 0 14;">
-                  <graphic>
-                     <HBox alignment="CENTER_LEFT" spacing="14">
-                        <StackPane minHeight="44" minWidth="44" prefHeight="44" prefWidth="44" style="-fx-background-color: #ede9fe; -fx-background-radius: 10;">
-                           <FontIcon fx:id="iconContratos" iconColor="#6d28d9" iconSize="20" />
-                        </StackPane>
-                        <VBox alignment="CENTER_LEFT" spacing="2">
-                           <Label style="-fx-font-size: 15px; -fx-font-weight: bold; -fx-text-fill: #2e1065;" text="Contratos" />
-                           <Label style="-fx-font-size: 13px; -fx-text-fill: #4b5563;" text="Acordos e prazos" />
-                        </VBox>
-                     </HBox>
-                  </graphic>
-               </Button>
+                        <Button alignment="CENTER_LEFT" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#abrirItens" prefHeight="68.0" style="-fx-background-color: #ffffff; -fx-border-color: #dbeafe; -fx-border-radius: 14px; -fx-background-radius: 14px; -fx-cursor: hand;" VBox.vgrow="ALWAYS">
+                           <graphic>
+                              <HBox alignment="CENTER_LEFT" mouseTransparent="true" spacing="14.0">
+                                 <children>
+                                    <StackPane maxHeight="48.0" maxWidth="48.0" minHeight="48.0" minWidth="48.0" prefHeight="48.0" prefWidth="48.0" style="-fx-background-color: #eff6ff; -fx-background-radius: 10px;">
+                                       <children>
+                                          <FontIcon iconColor="#007AFF" iconLiteral="fas-box" iconSize="18" />
+                                       </children>
+                                    </StackPane>
+                                    <VBox alignment="CENTER_LEFT" spacing="2.0">
+                                       <children>
+                                          <Label style="-fx-font-family: -apple-system, 'SF Pro Text', 'Segoe UI', sans-serif; -fx-font-size: 15px; -fx-font-weight: 700; -fx-text-fill: #1d1d1f;" text="Itens" />
+                                          <Label style="-fx-font-family: -apple-system, 'SF Pro Text', 'Segoe UI', sans-serif; -fx-font-size: 12px; -fx-text-fill: #6e6e73;" text="Cadastro de itens" />
+                                       </children>
+                                    </VBox>
+                                 </children>
+                              </HBox>
+                           </graphic>
+                           <padding>
+                              <Insets bottom="10.0" left="14.0" right="14.0" top="10.0" />
+                           </padding>
+                        </Button>
 
-               <Button alignment="CENTER_LEFT" maxWidth="Infinity" onAction="#abrirMultas" prefHeight="74" style="-fx-background-color: #faf5ff; -fx-border-color: #ddd6fe; -fx-border-radius: 12; -fx-background-radius: 12; -fx-cursor: hand; -fx-padding: 0 14 0 14;">
-                  <graphic>
-                     <HBox alignment="CENTER_LEFT" spacing="14">
-                        <StackPane minHeight="44" minWidth="44" prefHeight="44" prefWidth="44" style="-fx-background-color: #ede9fe; -fx-background-radius: 10;">
-                           <FontIcon fx:id="iconMultas" iconColor="#6d28d9" iconSize="20" />
-                        </StackPane>
-                        <VBox alignment="CENTER_LEFT" spacing="2">
-                           <Label style="-fx-font-size: 15px; -fx-font-weight: bold; -fx-text-fill: #2e1065;" text="Multas" />
-                           <Label style="-fx-font-size: 13px; -fx-text-fill: #4b5563;" text="Cobranças e pendências" />
-                        </VBox>
-                     </HBox>
-                  </graphic>
-               </Button>
+                        <Button alignment="CENTER_LEFT" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#abrirCategorias" prefHeight="68.0" style="-fx-background-color: #ffffff; -fx-border-color: #dbeafe; -fx-border-radius: 14px; -fx-background-radius: 14px; -fx-cursor: hand;" VBox.vgrow="ALWAYS">
+                           <graphic>
+                              <HBox alignment="CENTER_LEFT" mouseTransparent="true" spacing="14.0">
+                                 <children>
+                                    <StackPane maxHeight="48.0" maxWidth="48.0" minHeight="48.0" minWidth="48.0" prefHeight="48.0" prefWidth="48.0" style="-fx-background-color: #eff6ff; -fx-background-radius: 10px;">
+                                       <children>
+                                          <FontIcon iconColor="#007AFF" iconLiteral="fas-tag" iconSize="18" />
+                                       </children>
+                                    </StackPane>
+                                    <VBox alignment="CENTER_LEFT" spacing="2.0">
+                                       <children>
+                                          <Label style="-fx-font-family: -apple-system, 'SF Pro Text', 'Segoe UI', sans-serif; -fx-font-size: 15px; -fx-font-weight: 700; -fx-text-fill: #1d1d1f;" text="Categorias" />
+                                          <Label style="-fx-font-family: -apple-system, 'SF Pro Text', 'Segoe UI', sans-serif; -fx-font-size: 12px; -fx-text-fill: #6e6e73;" text="Organização dos itens" />
+                                       </children>
+                                    </VBox>
+                                 </children>
+                              </HBox>
+                           </graphic>
+                           <padding>
+                              <Insets bottom="10.0" left="14.0" right="14.0" top="10.0" />
+                           </padding>
+                        </Button>
+
+                        <Button alignment="CENTER_LEFT" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#abrirFornecedores" prefHeight="68.0" style="-fx-background-color: #ffffff; -fx-border-color: #dbeafe; -fx-border-radius: 14px; -fx-background-radius: 14px; -fx-cursor: hand;" VBox.vgrow="ALWAYS">
+                           <graphic>
+                              <HBox alignment="CENTER_LEFT" mouseTransparent="true" spacing="14.0">
+                                 <children>
+                                    <StackPane maxHeight="48.0" maxWidth="48.0" minHeight="48.0" minWidth="48.0" prefHeight="48.0" prefWidth="48.0" style="-fx-background-color: #eff6ff; -fx-background-radius: 10px;">
+                                       <children>
+                                          <FontIcon iconColor="#007AFF" iconLiteral="fas-truck" iconSize="18" />
+                                       </children>
+                                    </StackPane>
+                                    <VBox alignment="CENTER_LEFT" spacing="2.0">
+                                       <children>
+                                          <Label style="-fx-font-family: -apple-system, 'SF Pro Text', 'Segoe UI', sans-serif; -fx-font-size: 15px; -fx-font-weight: 700; -fx-text-fill: #1d1d1f;" text="Fornecedores" />
+                                          <Label style="-fx-font-family: -apple-system, 'SF Pro Text', 'Segoe UI', sans-serif; -fx-font-size: 12px; -fx-text-fill: #6e6e73;" text="Empresas parceiras" />
+                                       </children>
+                                    </VBox>
+                                 </children>
+                              </HBox>
+                           </graphic>
+                           <padding>
+                              <Insets bottom="10.0" left="14.0" right="14.0" top="10.0" />
+                           </padding>
+                        </Button>
+                     </children>
+                  </VBox>
+               </children>
             </VBox>
 
-            <VBox spacing="12" style="-fx-background-color: white; -fx-background-radius: 16; -fx-border-color: #ede9fe; -fx-border-radius: 16;">
+            <VBox spacing="14.0" style="-fx-background-color: #ffffff; -fx-background-radius: 20px; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.04), 16, 0, 0, 4);" GridPane.columnIndex="1" GridPane.rowIndex="0">
                <padding>
-                  <Insets bottom="20" left="20" right="20" top="20" />
+                  <Insets bottom="20.0" left="24.0" right="24.0" top="20.0" />
                </padding>
-               <VBox spacing="2">
-                  <Label style="-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: #2e1065;" text="Análise" />
-                  <Label style="-fx-font-size: 13px; -fx-text-fill: #4b5563;" text="Consulta e acompanhamento" />
-               </VBox>
+               <children>
+                  <VBox spacing="2.0">
+                     <children>
+                        <Label style="-fx-font-family: -apple-system, 'SF Pro Display', 'Segoe UI', sans-serif; -fx-font-size: 18px; -fx-font-weight: 800; -fx-text-fill: #1d1d1f;" text="Operações" />
+                        <Label style="-fx-font-family: -apple-system, 'SF Pro Text', 'Segoe UI', sans-serif; -fx-font-size: 13px; -fx-text-fill: #6e6e73;" text="Rotina do dia a dia" />
+                     </children>
+                  </VBox>
+                  <VBox spacing="12.0" VBox.vgrow="ALWAYS">
+                     <children>
+                        <Button alignment="CENTER_LEFT" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#abrirContratos" prefHeight="64.0" style="-fx-background-color: #ffffff; -fx-border-color: #dbeafe; -fx-border-radius: 14px; -fx-background-radius: 14px; -fx-cursor: hand;" VBox.vgrow="ALWAYS">
+                           <graphic>
+                              <HBox alignment="CENTER_LEFT" mouseTransparent="true" spacing="14.0">
+                                 <children>
+                                    <StackPane maxHeight="48.0" maxWidth="48.0" minHeight="48.0" minWidth="48.0" prefHeight="48.0" prefWidth="48.0" style="-fx-background-color: #eff6ff; -fx-background-radius: 10px;">
+                                       <children>
+                                          <FontIcon iconColor="#007AFF" iconLiteral="fas-file-alt" iconSize="18" />
+                                       </children>
+                                    </StackPane>
+                                    <VBox alignment="CENTER_LEFT" spacing="2.0">
+                                       <children>
+                                          <Label style="-fx-font-family: -apple-system, 'SF Pro Text', 'Segoe UI', sans-serif; -fx-font-size: 15px; -fx-font-weight: 700; -fx-text-fill: #1d1d1f;" text="Contratos" />
+                                          <Label style="-fx-font-family: -apple-system, 'SF Pro Text', 'Segoe UI', sans-serif; -fx-font-size: 12px; -fx-text-fill: #6e6e73;" text="Acordos e prazos" />
+                                       </children>
+                                    </VBox>
+                                 </children>
+                              </HBox>
+                           </graphic>
+                           <padding>
+                              <Insets bottom="10.0" left="14.0" right="14.0" top="10.0" />
+                           </padding>
+                        </Button>
 
-               <Button alignment="CENTER_LEFT" maxWidth="Infinity" onAction="#abrirRelatorios" prefHeight="74" style="-fx-background-color: #faf5ff; -fx-border-color: #ddd6fe; -fx-border-radius: 12; -fx-background-radius: 12; -fx-cursor: hand; -fx-padding: 0 14 0 14;">
-                  <graphic>
-                     <HBox alignment="CENTER_LEFT" spacing="14">
-                        <StackPane minHeight="44" minWidth="44" prefHeight="44" prefWidth="44" style="-fx-background-color: #ede9fe; -fx-background-radius: 10;">
-                           <FontIcon fx:id="iconRelatorios" iconColor="#6d28d9" iconSize="20" />
-                        </StackPane>
-                        <VBox alignment="CENTER_LEFT" spacing="2">
-                           <Label style="-fx-font-size: 15px; -fx-font-weight: bold; -fx-text-fill: #2e1065;" text="Relatórios" />
-                           <Label style="-fx-font-size: 13px; -fx-text-fill: #4b5563;" text="Consultas e indicadores" />
-                        </VBox>
-                     </HBox>
-                  </graphic>
-               </Button>
+                        <Button alignment="CENTER_LEFT" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#abrirMultas" prefHeight="64.0" style="-fx-background-color: #ffffff; -fx-border-color: #dbeafe; -fx-border-radius: 14px; -fx-background-radius: 14px; -fx-cursor: hand;" VBox.vgrow="ALWAYS">
+                           <graphic>
+                              <HBox alignment="CENTER_LEFT" mouseTransparent="true" spacing="14.0">
+                                 <children>
+                                    <StackPane maxHeight="48.0" maxWidth="48.0" minHeight="48.0" minWidth="48.0" prefHeight="48.0" prefWidth="48.0" style="-fx-background-color: #eff6ff; -fx-background-radius: 10px;">
+                                       <children>
+                                          <FontIcon iconColor="#007AFF" iconLiteral="fas-exclamation-triangle" iconSize="18" />
+                                       </children>
+                                    </StackPane>
+                                    <VBox alignment="CENTER_LEFT" spacing="2.0">
+                                       <children>
+                                          <Label style="-fx-font-family: -apple-system, 'SF Pro Text', 'Segoe UI', sans-serif; -fx-font-size: 15px; -fx-font-weight: 700; -fx-text-fill: #1d1d1f;" text="Multas" />
+                                          <Label style="-fx-font-family: -apple-system, 'SF Pro Text', 'Segoe UI', sans-serif; -fx-font-size: 12px; -fx-text-fill: #6e6e73;" text="Cobranças e pendências" />
+                                       </children>
+                                    </VBox>
+                                 </children>
+                              </HBox>
+                           </graphic>
+                           <padding>
+                              <Insets bottom="10.0" left="14.0" right="14.0" top="10.0" />
+                           </padding>
+                        </Button>
+                     </children>
+                  </VBox>
+               </children>
             </VBox>
-         </VBox>
-      </HBox>
-   </VBox>
-</StackPane>
+
+            <VBox spacing="14.0" style="-fx-background-color: #ffffff; -fx-background-radius: 20px; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.04), 16, 0, 0, 4);" GridPane.columnIndex="1" GridPane.rowIndex="1">
+               <padding>
+                  <Insets bottom="20.0" left="24.0" right="24.0" top="20.0" />
+               </padding>
+               <children>
+                  <VBox spacing="2.0">
+                     <children>
+                        <Label style="-fx-font-family: -apple-system, 'SF Pro Display', 'Segoe UI', sans-serif; -fx-font-size: 18px; -fx-font-weight: 800; -fx-text-fill: #1d1d1f;" text="Análise" />
+                        <Label style="-fx-font-family: -apple-system, 'SF Pro Text', 'Segoe UI', sans-serif; -fx-font-size: 13px; -fx-text-fill: #6e6e73;" text="Consulta e acompanhamento" />
+                     </children>
+                  </VBox>
+                  <VBox spacing="12.0" VBox.vgrow="ALWAYS">
+                     <children>
+                        <Button alignment="CENTER_LEFT" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#abrirRelatorios" prefHeight="64.0" style="-fx-background-color: #ffffff; -fx-border-color: #dbeafe; -fx-border-radius: 14px; -fx-background-radius: 14px; -fx-cursor: hand;" VBox.vgrow="ALWAYS">
+                           <graphic>
+                              <HBox alignment="CENTER_LEFT" mouseTransparent="true" spacing="14.0">
+                                 <children>
+                                    <StackPane maxHeight="48.0" maxWidth="48.0" minHeight="48.0" minWidth="48.0" prefHeight="48.0" prefWidth="48.0" style="-fx-background-color: #eff6ff; -fx-background-radius: 10px;">
+                                       <children>
+                                          <FontIcon iconColor="#007AFF" iconLiteral="fas-chart-bar" iconSize="18" />
+                                       </children>
+                                    </StackPane>
+                                    <VBox alignment="CENTER_LEFT" spacing="2.0">
+                                       <children>
+                                          <Label style="-fx-font-family: -apple-system, 'SF Pro Text', 'Segoe UI', sans-serif; -fx-font-size: 15px; -fx-font-weight: 700; -fx-text-fill: #1d1d1f;" text="Relatórios" />
+                                          <Label style="-fx-font-family: -apple-system, 'SF Pro Text', 'Segoe UI', sans-serif; -fx-font-size: 12px; -fx-text-fill: #6e6e73;" text="Consultas e indicadores" />
+                                       </children>
+                                    </VBox>
+                                 </children>
+                              </HBox>
+                           </graphic>
+                           <padding>
+                              <Insets bottom="10.0" left="14.0" right="14.0" top="10.0" />
+                           </padding>
+                        </Button>
+                     </children>
+                  </VBox>
+               </children>
+            </VBox>
+         </children>
+      </GridPane>
+   </children>
+</VBox>
