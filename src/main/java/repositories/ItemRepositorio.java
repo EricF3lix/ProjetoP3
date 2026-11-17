@@ -12,11 +12,11 @@ public class ItemRepositorio implements IItemRepositorio {
     private static final String ARQUIVO = "dados/itens.csv";
 
     private final List<Item> itens;
-    private final ICategoriaRepositorio categoriaRepositorio;
+    private final ICategoriaRepositorioDAO categoriaRepositorio;
     private final IFornecedorRepositorio fornecedorRepositorio;
     private final ManipulaArquivo manipulaArquivo;
 
-    public ItemRepositorio(ICategoriaRepositorio categoriaRepositorio, IFornecedorRepositorio fornecedorRepositorio) {
+    public ItemRepositorio(ICategoriaRepositorioDAO categoriaRepositorio, IFornecedorRepositorio fornecedorRepositorio) {
 
         this.categoriaRepositorio = categoriaRepositorio;
         this.fornecedorRepositorio = fornecedorRepositorio;

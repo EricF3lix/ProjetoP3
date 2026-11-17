@@ -1,5 +1,8 @@
 package entidades;
 
+import jakarta.persistence.Entity;
+
+@Entity
 public class Cliente extends Usuario {
 
     public Cliente(int id, String nome, String email, String cpf, String senha) {

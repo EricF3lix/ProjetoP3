@@ -19,16 +19,16 @@ public final class SistemaFactory {
 
         // REPOSITÓRIOS
         UsuarioRepositorio    usuarioRepositorio    = new UsuarioRepositorio();
-        CategoriaRepositorio  categoriaRepositorio  = new CategoriaRepositorio();
+        JPACategoriaRepositorioDAO jpaCategoriaRepositorioDAO = new JPACategoriaRepositorioDAO();
         FornecedorRepositorio fornecedorRepositorio = new FornecedorRepositorio();
-        ItemRepositorio       itemRepositorio       = new ItemRepositorio(categoriaRepositorio, fornecedorRepositorio);
+        ItemRepositorio       itemRepositorio       = new ItemRepositorio(jpaCategoriaRepositorioDAO, fornecedorRepositorio);
         ContratoRepositorio   contratoRepositorio   = new ContratoRepositorio(usuarioRepositorio, itemRepositorio);
         MultaRepositorio      multaRepositorio      = new MultaRepositorio();
 
         // CAMADA DE NEGÓCIO
         IGerenciamentoContratos  gerenciamentoContratos  = new GerenciamentoContratos(contratoRepositorio);
         IGerenciamentoUsuarios   gerenciamentoUsuarios   = new GerenciamentoUsuarios(usuarioRepositorio, gerenciamentoContratos);
-        IGerenciamentoCategoria  gerenciamentoCategoria  = new GerenciamentoCategoria(categoriaRepositorio);
+        IGerenciamentoCategoria  gerenciamentoCategoria  = new GerenciamentoCategoria(jpaCategoriaRepositorioDAO);
         IGerenciamentoFornecedor gerenciamentoFornecedor = new GerenciamentoFornecedor(fornecedorRepositorio);
         IGerenciamentoItens      gerenciamentoItens      = new GerenciamentoItens(itemRepositorio);
         IGerenciamentoMultas     gerenciamentoMultas     = new GerenciamentoMultas(multaRepositorio);
