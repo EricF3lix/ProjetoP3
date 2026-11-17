@@ -137,7 +137,7 @@ public class MenuFornecedoresController extends MenuController{
 		String telefoneFornecedor = txtTelefone.getText().trim();
 
 		if (nomeFornecedor.isEmpty() || cnpjFornecedor.isEmpty() || emailFornecedor.isEmpty() || telefoneFornecedor.isEmpty()) {
-			notificarPopUpErro("Preencha todos os campos!");
+			erro("Preencha todos os campos!");
 			return;
 		}
 		
@@ -145,7 +145,7 @@ public class MenuFornecedoresController extends MenuController{
 		Fornecedor fornecedor = new Fornecedor(id, nomeFornecedor, cnpjFornecedor, emailFornecedor, telefoneFornecedor);
 		
 		if(sistema.cadastrarFornecedor(fornecedor)) {
-			notificarPopUp("Fornecedor cadastrado com sucesso! ID: " + id);
+			info("Fornecedor cadastrado com sucesso! ID: " + id);
 			
 			txtNome.clear();
 			txtCNPJ.clear();
@@ -155,7 +155,7 @@ public class MenuFornecedoresController extends MenuController{
 			mostraFornecedor(id);
 		}
 		else {
-			notificarPopUpErro("Fornecedor já cadastrado!");
+			erro("Fornecedor já cadastrado!");
 		}
 		
 	}
@@ -197,14 +197,14 @@ public class MenuFornecedoresController extends MenuController{
 		String telefone = txtTelefone.getText().trim();
 
 		if (nome.isEmpty() || cnpj.isEmpty() || email.isEmpty() || telefone.isEmpty()) {
-			notificarPopUpErro("Preencha todos os campos!");
+			erro("Preencha todos os campos!");
 			return;
 		}
 
 		int id = atual.getId();
 
 		if (sistema.atualizarFornecedor(new Fornecedor(id, nome, cnpj, email, telefone))) {
-			notificarPopUp("Fornecedor atualizado com sucesso.");
+			info("Fornecedor atualizado com sucesso.");
 			btnAtualizar.setUserData(null);
 			txtNome.clear();
 			txtCNPJ.clear();
@@ -212,7 +212,7 @@ public class MenuFornecedoresController extends MenuController{
 			txtTelefone.clear();
 			mostraFornecedor(id);
 		} else {
-			notificarPopUpErro("Erro ao atualizar fornecedor.");
+			erro("Erro ao atualizar fornecedor.");
 		}
 	}
 	
@@ -228,7 +228,7 @@ public class MenuFornecedoresController extends MenuController{
 	    }
 
 	    if (sistema.desativarFornecedor(id.get())) {
-	    	notificarPopUp("Fornecedor desativado com sucesso");
+	        info("Fornecedor desativado com sucesso");
 	        mostraFornecedor(id.get());
 	    } else {
 	        erro("Erro ao desativar fornecedor");
@@ -244,7 +244,7 @@ public class MenuFornecedoresController extends MenuController{
 			if (id.isEmpty()) return null;
 			atual = sistema.buscarFornecedor(id.get());
 			if (atual == null) {
-				notificarPopUpErro(NAO_ENCONTRADO);
+				erro(NAO_ENCONTRADO);
 			}
 		}
 		return atual;
