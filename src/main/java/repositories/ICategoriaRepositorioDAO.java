@@ -14,8 +14,6 @@ public interface ICategoriaRepositorioDAO{
 
     public abstract Categoria buscarPorNome(String nome);
 
-    public abstract void salvar();
-
-    public abstract int gerarProximoId();
+    public abstract void atualizar(String coluna, String valor, int id);
 
 }

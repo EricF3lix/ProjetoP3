@@ -18,5 +18,4 @@ public interface IMultaRepositorioDAO {
 
     public abstract void salvar();
 
-    public abstract int gerarProximoId();
 }

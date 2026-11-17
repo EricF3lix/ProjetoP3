@@ -1,7 +1,14 @@
 package entidades;
- 
+
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
+
+@Entity
 public class Fornecedor {
- 
+
+    @Id
+    @GeneratedValue
     private int id;
     private String razaoSocial;
     private final String cnpj;
@@ -9,8 +16,7 @@ public class Fornecedor {
     private String telefone;
     private boolean ativo;
  
-    public Fornecedor(int id, String razaoSocial, String cnpj, String email, String telefone) {
-        this.id = id;
+    public Fornecedor(String razaoSocial, String cnpj, String email, String telefone) {
         this.razaoSocial = razaoSocial;
         this.cnpj = cnpj;
         this.email = email;

@@ -9,51 +9,28 @@ import java.util.List;
 
 public class FakeItemRepositorio implements IItemRepositorioDAO {
 
-    private final List<Item> itens = new ArrayList<>();
-    private int chamadasSalvar = 0;
-
     @Override
     public void adicionar(Item item) {
-        itens.add(item);
+
     }
 
     @Override
     public List<Item> listarTodos() {
-        return itens;
+        return List.of();
     }
 
     @Override
-    public Item buscarPorId(int id) {
-        for (Item item : itens) {
-            if (item.getId() == id) {
-                return item;
-            }
-        }
-        return null;
+    public List<Item> buscarItens(String tipofiltro, String filtro) {
+        return List.of();
     }
 
     @Override
-    public void remover(Item item) {
-        itens.remove(item);
+    public boolean atualizar(String coluna, String valor, int id) {
+        return false;
     }
 
     @Override
-    public int gerarProximoId() {
-        int maiorId = 0;
-        for (Item item : itens) {
-            if (item.getId() > maiorId) {
-                maiorId = item.getId();
-            }
-        }
-        return maiorId + 1;
-    }
+    public void desativarItem(int id) {
 
-    @Override
-    public void salvar() {
-        chamadasSalvar++;
-    }
-
-    public int getChamadasSalvar() {
-        return chamadasSalvar;
     }
 }

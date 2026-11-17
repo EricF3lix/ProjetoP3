@@ -1,7 +1,14 @@
 package entidades;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
+
+@Entity
 public abstract class Usuario {
 
+    @Id
+    @GeneratedValue
     private int id;
     private String nome;
     private final String cpf;
@@ -9,8 +16,7 @@ public abstract class Usuario {
     private String senha;
     private boolean ativo;
 
-    protected Usuario(int id, String nome, String email, String cpf, String senha) {
-        this.id = id;
+    protected Usuario(String nome, String email, String cpf, String senha) {
         this.nome = nome;
         this.email = email;
         this.cpf = cpf;

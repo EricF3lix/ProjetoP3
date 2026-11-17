@@ -1,10 +1,13 @@
 package entidades;
 
+import jakarta.persistence.Entity;
+
+@Entity
 public class Cliente extends Usuario {
 
-    public Cliente(int id, String nome, String email, String cpf, String senha) {
+    public Cliente(String nome, String email, String cpf, String senha) {
 
-        super(id, nome, email, cpf, senha);
+        super(nome, email, cpf, senha);
     }
     @Override
     public String getTipo() {

@@ -1,5 +1,7 @@
 package repositories;
 
+import entidades.Categoria;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -9,124 +11,48 @@ public class JPACategoriaRepositorioDAO implements ICategoriaRepositorioDAO {
 
     private static final String ARQUIVO = "dados/categorias.csv";
 
-    private final List<Categoria> categorias;
     private final ManipulaArquivo manipulaArquivo;
 
     public JPACategoriaRepositorioDAO() {
 
         manipulaArquivo = new ManipulaArquivo(ARQUIVO);
-        categorias = carregar();
 
     }
 
-    public List<Categoria> carregar() {
-
-        List<Categoria> lista = new ArrayList<>();
-
-        for (String[] campos : manipulaArquivo.carregar()) {
-
-            if (campos.length >= 4) {
-
-                int id = Integer.parseInt(campos[0].trim());
-                String nome = campos[1].trim();
-                String descricao = campos[2].trim();
-                boolean ativa = Boolean.parseBoolean(campos[3].trim());
-
-                Categoria categoria = new Categoria(id, nome, descricao);
-
-                categoria.setAtiva(ativa);
-
-                lista.add(categoria);
-
-            }
-
-        }
-
-        return lista;
-
-    }
     @Override
-    public void salvar() {
+    public void atualizar(String coluna, String valor, int id) {
 
-        List<String[]> linhas = new ArrayList<>();
-
-        linhas.add(new String[]{"id", "nome", "descricao", "ativa"});
-
-        for (Categoria categoria : categorias) {
-
-            linhas.add(new String[]{String.valueOf(categoria.getId()),categoria.getNome(),categoria.getDescricao(),String.valueOf(categoria.isAtiva())});
-
-        }
-
-        manipulaArquivo.salvar(linhas);
-
+        manipulaArquivo.atualizar(Categoria.class,coluna,valor,id);
     }
 
     @Override
     public void adicionar(Categoria categoria) {
 
-        categorias.add(categoria);
-        salvar();
-
+        manipulaArquivo.escrever(categoria);
     }
 
     @Override
     public List<Categoria> listarTodos() {
-        return categorias;
 
+        return manipulaArquivo.carregarTudo(Categoria.class);
     }
 
     @Override
     public Categoria buscarPorId(int id) {
+        ArrayList<Categoria> retorno = manipulaArquivo.buscar(Categoria.class,"id",id);
 
-        for (Categoria categoria : categorias) {
+        if (retorno.isEmpty()){return null;}
 
-            if (categoria.getId() == id) {
-
-                return categoria;
-
-            }
-
-        }
-
-        return null;
-
+        return retorno.getFirst();
     }
 
     @Override
     public Categoria buscarPorNome(String nome) {
+        ArrayList<Categoria> retorno = manipulaArquivo.buscar(Categoria.class,"nome",nome);
 
-        for (Categoria categoria : categorias) {
+        if (retorno.isEmpty()){return null;}
 
-            if (categoria.getNome().equalsIgnoreCase(nome)) {
-
-                return categoria;
-
-            }
-
-        }
-
-        return null;
-
-    }
-
-    @Override
-    public int gerarProximoId() {
-
-        int maiorId = 0;
-
-        for (Categoria categoria : categorias) {
-
-            if (categoria.getId() > maiorId) {
-
-                maiorId = categoria.getId();
-
-            }
-
-        }
-
-        return maiorId + 1;
-
+        return retorno.getFirst();
     }
 
 }

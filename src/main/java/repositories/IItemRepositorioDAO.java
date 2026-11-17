@@ -10,12 +10,9 @@ public interface IItemRepositorioDAO {
 
     public abstract List<Item> listarTodos();
 
-    public abstract Item buscarPorId(int id);
+    public abstract List<Item> buscarItens(String tipofiltro, String filtro);
 
-    public abstract void remover(Item item);
+    public abstract boolean atualizar(String coluna, String valor, int id);
 
-    public abstract void salvar();
-
-    public abstract int gerarProximoId();
-    
+    public abstract void desativarItem(int id);
 }

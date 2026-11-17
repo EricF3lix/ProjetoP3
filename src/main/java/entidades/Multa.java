@@ -1,8 +1,15 @@
 package entidades;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
+
+@Entity
 public class Multa {
 
-    private final int id;
+    @Id
+    @GeneratedValue
+    private int id;
     private final int idContrato;
     private final String tipo;
     private final String descricao;
@@ -10,8 +17,7 @@ public class Multa {
     private boolean paga;
     private final String dataCriacao;
 
-    public Multa(int id, int idContrato, String tipo, String descricao, double valor, String dataCriacao) {
-        this.id = id;
+    public Multa(int idContrato, String tipo, String descricao, double valor, String dataCriacao) {
         this.idContrato = idContrato;
         this.tipo = tipo;
         this.descricao = descricao;

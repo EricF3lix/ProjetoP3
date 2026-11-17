@@ -80,6 +80,7 @@ public class MenuItensController extends MenuController {
     private final ObservableList<Item> listaItens = FXCollections.observableArrayList();
     private FilteredList<Item> listaFiltrada;
     private Item itemEmEdicao;
+    private Item itemOriginal;
 
     @Override
     public String getTitulo() {
@@ -274,7 +275,6 @@ public class MenuItensController extends MenuController {
 
         double taxa = Double.parseDouble(taxadiaria.replace(',', '.'));
         double valor = Double.parseDouble(valorreposicao.replace(',', '.'));
-        int id = sistema.gerarProximoIdItem();
 
         List<Categoria> categorias = sistema.buscarCategoriaPorNome(categoria);
         Categoria catgoriatxt = categorias.getFirst();
@@ -282,7 +282,7 @@ public class MenuItensController extends MenuController {
         List<Fornecedor> fornecedores = sistema.buscarPorNome(fornecedortxt);
         Fornecedor fornecedor = fornecedores.getFirst();
 
-        Item item = new Item(id, nomeitem, descricaoitem, taxa, estado, valor, catgoriatxt, fornecedor);
+        Item item = new Item(nomeitem, descricaoitem, taxa, estado, valor, catgoriatxt, fornecedor);
 
         sistema.cadastrarItem(item);
         notificarPopUp("Item cadastrado com sucesso");
@@ -295,6 +295,7 @@ public class MenuItensController extends MenuController {
         if (selecionado == null) return;
 
         itemEmEdicao = selecionado;
+        itemOriginal = new Item(selecionado.getNome(), selecionado.getDescricao(),selecionado.getTaxaDiaria(),selecionado.getEstadoConservacao(),selecionado.getValorReposicao(),selecionado.getCategoria(),selecionado.getFornecedor());
         esconderTabela1();
         preencherCamposAtualizacao(selecionado);
     }
@@ -353,9 +354,14 @@ public class MenuItensController extends MenuController {
             return;
         }
 
-        Item atualizado = new Item(itemEmEdicao.getId(), nome, descricao, taxa, estado, valor, categorias.getFirst(), fornecedor);
+        if (!(itemEmEdicao.getNome().equals(itemOriginal.getNome()))) {sistema.atualizarItem("Nome",itemEmEdicao.getNome(),itemOriginal.getId());}
+        if (!(itemEmEdicao.getDescricao().equals(itemOriginal.getDescricao()))) {sistema.atualizarItem("Descricao",itemEmEdicao.getDescricao(),itemEmEdicao.getId());}
+        if (!(itemEmEdicao.getTaxaDiariaFormatada().equals(itemOriginal.getTaxaDiariaFormatada()))) {sistema.atualizarItem("TaxaDiaria",itemEmEdicao.getTaxaDiariaFormatada(),itemEmEdicao.getId());}
+        if (itemEmEdicao.getValorReposicao()!=(itemOriginal.getValorReposicao())) {sistema.atualizarItem("ValorReposicao",String.valueOf(itemEmEdicao.getValorReposicao()),itemEmEdicao.getId());}
+        if (!(itemEmEdicao.getEstadoConservacao().equals(itemOriginal.getEstadoConservacao()))) {sistema.atualizarItem("EstadoConservacao",itemEmEdicao.getEstadoConservacao(),itemEmEdicao.getId());}
+        if (itemEmEdicao.getCategoria().getId() !=(itemOriginal.getCategoria().getId())) {sistema.atualizarItem("Categoria",String.valueOf(itemEmEdicao.getCategoria().getId()),itemEmEdicao.getId());}
+        if (itemEmEdicao.getFornecedor().getId() != (itemOriginal.getFornecedor().getId())) {sistema.atualizarItem("Fornecedor",String.valueOf(itemEmEdicao.getFornecedor().getId()),itemEmEdicao.getId());}
 
-        sistema.atualizarItem(atualizado);
         notificarPopUp("Item atualizado com sucesso");
         listarItens(event);
     }
@@ -390,12 +396,9 @@ public class MenuItensController extends MenuController {
                 try {
                     int id = Integer.parseInt(resultado.get().trim());
 
-                    if (sistema.excluirItem(id)) {
-                        mostrarAlerta(AlertType.INFORMATION, "Sucesso", "Item desativado com sucesso!");
-                        carregarTabela();
-                    } else {
-                        mostrarAlerta(AlertType.ERROR, "Erro", "Não foi possível desativar o item.");
-                    }
+                    sistema.desativarItem(id);
+                    mostrarAlerta(AlertType.INFORMATION, "Sucesso", "Item desativado com sucesso!");
+                    carregarTabela();
 
                 } catch (NumberFormatException e) {
                     mostrarAlerta(AlertType.ERROR, "Erro", "Digite um ID numérico válido.");
@@ -403,15 +406,11 @@ public class MenuItensController extends MenuController {
             }
             else{return;}
         }
-        if (item != null){
-        if (sistema.excluirItem(item.getId())) {
+        if (item != null) {
+            sistema.desativarItem(item.getId());
             mostrarAlerta(AlertType.INFORMATION, "Sucesso", "Item desativado com sucesso!");
             carregarTabela();
-        } else {
-            mostrarAlerta(AlertType.ERROR, "Erro", "Não foi possível desativar o item.");
         }
-        }
-
     }
     private void mostrarAlerta(AlertType tipo, String titulo, String mensagem) {
         Alert alert = new Alert(tipo);

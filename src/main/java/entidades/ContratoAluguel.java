@@ -1,7 +1,15 @@
 package entidades;
+
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
+
+@Entity
 public class ContratoAluguel {
 
-    private final int id;
+    @Id
+    @GeneratedValue
+    private int id;
     private final Cliente cliente;
     private final Item item;
     private final String dataRetirada;
@@ -13,8 +21,7 @@ public class ContratoAluguel {
     private double valorMulta;
     private boolean multaPaga;
 
-    public ContratoAluguel(int id, Cliente cliente, Item item, String dataRetirada, String dataDevolucaoPrevista, double valorTotal) {
-        this.id = id;
+    public ContratoAluguel(Cliente cliente, Item item, String dataRetirada, String dataDevolucaoPrevista, double valorTotal) {
         this.cliente = cliente;
         this.item = item;
         this.dataRetirada = dataRetirada;

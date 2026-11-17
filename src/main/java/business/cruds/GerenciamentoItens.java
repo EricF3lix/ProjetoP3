@@ -17,10 +17,6 @@ public class GerenciamentoItens implements IGerenciamentoItens {
     @Override
     public boolean cadastrarItem(Item item) {
 
-        if (repositorio.buscarPorId(item.getId()) != null) {
-            return false;
-        }
-
         repositorio.adicionar(item);
 
         return true;
@@ -28,7 +24,7 @@ public class GerenciamentoItens implements IGerenciamentoItens {
 
     @Override
     public Item buscarItem(int id) {
-        return repositorio.buscarPorId(id);
+        return repositorio.buscarItens("id",String.valueOf(id)).getFirst();
     }
 
     @Override
@@ -37,88 +33,38 @@ public class GerenciamentoItens implements IGerenciamentoItens {
     }
 
     @Override 
-    public List<Item> filtrarItem(String filtro) {
-        if (filtro == null || filtro.isBlank()) {
-            return listarItens();
-        }
-
-        String termo = filtro.toLowerCase().trim();
-
-        return listarItens().stream()
-                .filter(item -> String.valueOf(item.getId()).contains(termo)
-                        || (item.getNome() != null && item.getNome().toLowerCase().contains(termo))
-                        || (item.getCategoria() != null && item.getCategoria().getNome() != null 
-                            && item.getCategoria().getNome().toLowerCase().contains(termo)))
-                .toList();
+    public List<Item> filtrarItem(String tipofiltro, String filtro) {
+        return repositorio.buscarItens(tipofiltro,filtro);
     }
 
     @Override
-    public boolean atualizarItem(Item itemNovo) {
+    public boolean atualizarItem(String coluna,String valor,int id) {
 
-        List<Item> items = repositorio.listarTodos();
-        
-        for (int i = 0; i < items.size(); i++){
-            if (items.get(i).getId() == itemNovo.getId()){
-                items.set(i, itemNovo);
-                repositorio.salvar();
-                return true;
-            }
-        }
-        return false;
-    }
-
-    @Override
-    public boolean excluirItem(int id) {
-
-        Item item = repositorio.buscarPorId(id);
-
-        if (item == null || item.getStatus().equals("ALUGADO")) {
-            return false;
-        }
-
-        item.desativar();
-
-        repositorio.salvar();
-
-        return true;
-    }
-
-    @Override
-    public int gerarProximoId() {
-        return repositorio.gerarProximoId();
+        return repositorio.atualizar(coluna,valor,id);
     }
     
     @Override
-    public List<Item> filtrarPorId(String pesquisado) {
-        String termo = pesquisado.toLowerCase();
-        return repositorio.listarTodos().stream()
-                .filter(item -> String.valueOf(item.getId()).toLowerCase().startsWith(termo))
-                .toList();
+    public Item filtrarPorId(String pesquisado) {
+        return repositorio.buscarItens("id",pesquisado).getFirst();
     }
 
     @Override
     public List<Item> filtrarPorNome(String pesquisado) {
-        String termo = pesquisado.toLowerCase();
-        return repositorio.listarTodos().stream()
-                .filter(item -> item.getNome() != null && item.getNome().toLowerCase().startsWith(termo))
-                .toList();
+        return repositorio.buscarItens("nome",pesquisado);
     }
 
     @Override
     public List<Item> filtrarPorCategoria(String pesquisado) {
-        String termo = pesquisado.toLowerCase();
-        return repositorio.listarTodos().stream()
-                .filter(item -> item.getCategoria() != null
-                        && item.getCategoria().getNome() != null
-                        && item.getCategoria().getNome().toLowerCase().startsWith(termo))
-                .toList();
+        return repositorio.buscarItens("categoria",pesquisado);
     }
 
     @Override
     public List<Item> filtrarPorTaxa(String pesquisado) {
-        String termo = pesquisado.toLowerCase();
-        return repositorio.listarTodos().stream()
-                .filter(item -> String.valueOf(item.getTaxaDiaria()).toLowerCase().startsWith(termo))
-                .toList();
+        return repositorio.buscarItens("taxa",pesquisado);
+    }
+
+    @Override
+    public void desativarItem(int id){
+        repositorio.desativarItem(id);
     }
 }

@@ -1,14 +1,20 @@
 package entidades;
- 
+
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
+
+@Entity
 public class Categoria {
- 
+
+    @Id
+    @GeneratedValue
     private int id;
     private String nome;
     private String descricao;
     private boolean ativa;
  
-    public Categoria(int id, String nome, String descricao) {
-        this.id = id;
+    public Categoria(String nome, String descricao) {
         this.nome = nome;
         this.descricao = descricao;
         this.ativa = true;

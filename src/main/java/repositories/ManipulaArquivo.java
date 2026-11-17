@@ -7,7 +7,7 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityTransaction;
 
 public class ManipulaArquivo {
-	
+
 	public <T, V> ArrayList<T> buscar(Class<T> tipo, String atributo, V valor) {
 	    EntityManager em = JPAUtil.getEntityManager();
 
@@ -23,7 +23,7 @@ public class ManipulaArquivo {
 	        em.close();
 	    }
 	}
-	
+
 	public <T, V> void atualizar(Class<T> tipo, String atributo, V valor, int id) {
 	    EntityManager em = JPAUtil.getEntityManager();
 	    EntityTransaction et = em.getTransaction();
@@ -99,7 +99,7 @@ public class ManipulaArquivo {
         	return new ArrayList<>(lista);
         	
         }
-        
+
         finally {
         	em.close();
         }
