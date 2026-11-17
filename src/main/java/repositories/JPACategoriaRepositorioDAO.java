@@ -11,28 +11,24 @@ public class JPACategoriaRepositorioDAO implements ICategoriaRepositorioDAO {
 
     private static final String ARQUIVO = "dados/categorias.csv";
 
-    private final List<Categoria> categorias;
     private final ManipulaArquivo manipulaArquivo;
 
     public JPACategoriaRepositorioDAO() {
 
         manipulaArquivo = new ManipulaArquivo(ARQUIVO);
-        categorias = carregar();
 
     }
 
     @Override
     public void atualizar(String coluna, String valor, int id) {
 
-        manipulaArquivo.salvar(Categoria.class,coluna,valor,id);
-
+        manipulaArquivo.atualizar(Categoria.class,coluna,valor,id);
     }
 
     @Override
     public void adicionar(Categoria categoria) {
 
         manipulaArquivo.escrever(categoria);
-
     }
 
     @Override
@@ -57,7 +53,6 @@ public class JPACategoriaRepositorioDAO implements ICategoriaRepositorioDAO {
         if (retorno.isEmpty()){return null;}
 
         return retorno.getFirst();
-
     }
 
 }

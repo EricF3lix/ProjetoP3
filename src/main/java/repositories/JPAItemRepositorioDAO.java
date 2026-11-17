@@ -12,15 +12,9 @@ public class JPAItemRepositorioDAO implements IItemRepositorioDAO {
 
     private static final String ARQUIVO = "dados/itens.csv";
 
-    private final ICategoriaRepositorioDAO categoriaRepositorio;
-    private final IFornecedorRepositorioDAO fornecedorRepositorio;
     private final ManipulaArquivo manipulaArquivo;
 
-    public JPAItemRepositorioDAO(ICategoriaRepositorioDAO categoriaRepositorio, IFornecedorRepositorioDAO fornecedorRepositorio) {
-
-        this.categoriaRepositorio = categoriaRepositorio;
-        this.fornecedorRepositorio = fornecedorRepositorio;
-
+    public JPAItemRepositorioDAO() {
         manipulaArquivo = new ManipulaArquivo(ARQUIVO);
 
     }
@@ -39,7 +33,7 @@ public class JPAItemRepositorioDAO implements IItemRepositorioDAO {
 
     @Override
     public Item buscarPorId(int id) {
-        ArrayList<Item> retorno = manipulaArquivo.busca(Item.class, "id", id);
+        ArrayList<Item> retorno = manipulaArquivo.buscar(Item.class, "id", id);
 
         if (retorno.isEmpty()){
             return null;

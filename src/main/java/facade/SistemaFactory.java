@@ -36,7 +36,7 @@ public final class SistemaFactory {
         JPAUsuarioRepositorioDAO    usuarioRepositorio    = new JPAUsuarioRepositorioDAO();
         JPACategoriaRepositorioDAO  categoriaRepositorio  = new JPACategoriaRepositorioDAO();
         JPAFornecedorRepositorioDAO fornecedorRepositorio = new JPAFornecedorRepositorioDAO();
-        JPAItemRepositorioDAO       itemRepositorio       = new JPAItemRepositorioDAO(categoriaRepositorio, fornecedorRepositorio);
+        JPAItemRepositorioDAO       itemRepositorio       = new JPAItemRepositorioDAO();
         JPAContratoRepositorioDAO   contratoRepositorio   = new JPAContratoRepositorioDAO(usuarioRepositorio, itemRepositorio);
         JPAMultaRepositorioDAO      multaRepositorio      = new JPAMultaRepositorioDAO();
 
@@ -63,7 +63,6 @@ public final class SistemaFactory {
     public static void criarAdminPadrao(SistemaFacade sistema) {
         if (sistema.buscarUsuarioPorEmail(EMAIL_ADMIN_PADRAO) == null) {
             Administrador admin = new Administrador(
-                    sistema.gerarProximoIdUsuario(),
                     "Jackson-Raniel",
                     EMAIL_ADMIN_PADRAO,
                     "000.000.000-00",
