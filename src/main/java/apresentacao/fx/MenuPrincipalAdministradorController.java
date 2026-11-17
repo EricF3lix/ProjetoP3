@@ -3,48 +3,19 @@ package apresentacao.fx;
 import entidades.Administrador;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
-import javafx.scene.layout.StackPane;
 
 public class MenuPrincipalAdministradorController extends MenuController {
 
     @FXML
-    private Label lblAvatar;
-
+    private Label lblBemVindo;
+    
     @FXML
-    private Label lblBoasVindas;
-
-    @FXML
-    private StackPane containerTema;
+    private Label lblPerfil;
 
     private Administrador administrador;
 
     public void setAdministrador(Administrador administrador) {
         this.administrador = administrador;
-        atualizarDadosUsuario();
-    }
-
-    private void atualizarDadosUsuario() {
-        if (administrador != null) {
-            String nome = administrador.getNome();
-            if (lblBoasVindas != null) {
-                lblBoasVindas.setText("Bem-vindo(a), " + nome);
-            }
-            if (lblAvatar != null) {
-                lblAvatar.setText(gerarIniciais(nome));
-            }
-        }
-    }
-
-    private String gerarIniciais(String nome) {
-        if (nome == null || nome.isBlank()) return "U";
-        String[] partes = nome.trim().split("\\s+");
-        if (partes.length == 1) {
-            String p = partes[0].toUpperCase();
-            return p.length() >= 2 ? p.substring(0, 2) : p;
-        }
-        String primeira = partes[0].substring(0, 1).toUpperCase();
-        String ultima = partes[partes.length - 1].substring(0, 1).toUpperCase();
-        return primeira + ultima;
     }
 
     @Override
@@ -54,44 +25,22 @@ public class MenuPrincipalAdministradorController extends MenuController {
 
     @Override
     protected void aoExibir() {
-        atualizarDadosUsuario();
-        garantirToggleTema();
-    }
+        String nome = (administrador != null && administrador.getNome() != null)
+                ? administrador.getNome()
+                : "Administrador";
 
-    @FXML
-    private void initialize() {
-        garantirToggleTema();
-    }
-
-    private void garantirToggleTema() {
-        if (containerTema != null && containerTema.getChildren().isEmpty()) {
-            containerTema.getChildren().add(new ThemeToggleSwitch());
+        if (lblBemVindo != null) {
+            lblBemVindo.setText("Bem-vindo(a), " + nome);
         }
-    }
+        
+        lblPerfil.setText(administrador.getNome().substring(0,2).toUpperCase());
 
-    @FXML
-    private void abrirUsuarios() {
-        navegador.abrir("MenuUsuariosAdmin.fxml");
-    }
-
-    @FXML
-    private void abrirItens() {
-        navegador.abrir("MenuItens.fxml");
+        configurarIcones();
     }
 
     @FXML
     private void abrirCategorias() {
         navegador.abrir("MenuCategorias.fxml");
-    }
-
-    @FXML
-    private void abrirFornecedores() {
-        navegador.abrir("MenuFornecedores.fxml");
-    }
-
-    @FXML
-    private void abrirContratos() {
-        navegador.abrir("MenuContratos.fxml");
     }
 
     @FXML
@@ -105,8 +54,22 @@ public class MenuPrincipalAdministradorController extends MenuController {
     }
 
     @FXML
-    @Override
-    public void voltar() {
-        navegador.abrir("MenuLogin.fxml");
+    private void abrirUsuarios() {
+        navegador.abrir("MenuUsuariosAdmin.fxml");
+    }
+
+    @FXML
+    private void abrirItens() {
+        navegador.abrir("MenuItens.fxml");
+    }
+
+    @FXML
+    private void abrirFornecedores() {
+        navegador.abrir("MenuFornecedores.fxml");
+    }
+
+    @FXML
+    private void abrirContratos() {
+        navegador.abrir("MenuContratos.fxml");
     }
 }
