@@ -1,10 +1,10 @@
 package repositories;
 
-import entidades.Multa;
-
 import java.util.List;
 
-public interface IMultaRepositorio {
+import entidades.Multa;
+
+public interface IMultaRepositorioDAO {
 
     public abstract void adicionar(Multa multa);
 

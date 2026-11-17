@@ -1,12 +1,12 @@
 package support;
 
-import entidades.Multa;
-import repositories.IMultaRepositorio;
-
 import java.util.ArrayList;
 import java.util.List;
 
-public class FakeMultaRepositorio implements IMultaRepositorio {
+import entidades.Multa;
+import repositories.IMultaRepositorioDAO;
+
+public class FakeMultaRepositorio implements IMultaRepositorioDAO {
 
     private final List<Multa> multas = new ArrayList<>();
     private int chamadasSalvar = 0;

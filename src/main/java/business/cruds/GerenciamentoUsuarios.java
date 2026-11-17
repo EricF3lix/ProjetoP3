@@ -3,17 +3,17 @@ package business.cruds;
 import business.interfaces.IGerenciamentoContratos;
 import business.interfaces.IGerenciamentoUsuarios;
 import entidades.Usuario;
-import repositories.IUsuarioRepositorio;
+import repositories.IUsuarioRepositorioDAO;
 
 import java.util.List;
 
 @SuppressWarnings("java:S106")
 public class GerenciamentoUsuarios implements IGerenciamentoUsuarios {
 
-    private final IUsuarioRepositorio repositorio;
+    private final IUsuarioRepositorioDAO repositorio;
     private final IGerenciamentoContratos gerenciamentoContratos;
 
-    public GerenciamentoUsuarios(IUsuarioRepositorio repositorio,
+    public GerenciamentoUsuarios(IUsuarioRepositorioDAO repositorio,
                                   IGerenciamentoContratos gerenciamentoContratos) {
         this.repositorio            = repositorio;
         this.gerenciamentoContratos = gerenciamentoContratos;

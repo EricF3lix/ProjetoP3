@@ -1,10 +1,10 @@
 package repositories;
 
-import entidades.Usuario;
-
 import java.util.List;
 
-public interface IUsuarioRepositorio {
+import entidades.Usuario;
+
+public interface IUsuarioRepositorioDAO {
 
     public abstract void adicionar(Usuario usuario);
 

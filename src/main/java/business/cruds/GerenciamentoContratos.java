@@ -2,15 +2,15 @@ package business.cruds;
 
 import business.interfaces.IGerenciamentoContratos;
 import entidades.ContratoAluguel;
-import repositories.IContratoRepositorio;
+import repositories.IContratoRepositorioDAO;
 
 import java.util.List;
 
 public class GerenciamentoContratos implements IGerenciamentoContratos {
 
-    private final IContratoRepositorio repositorio;
+    private final IContratoRepositorioDAO repositorio;
 
-    public GerenciamentoContratos(IContratoRepositorio repositorio) {
+    public GerenciamentoContratos(IContratoRepositorioDAO repositorio) {
         this.repositorio = repositorio;
     }
 

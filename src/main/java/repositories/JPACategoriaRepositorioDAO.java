@@ -1,18 +1,18 @@
 package repositories;
 
-import entidades.Categoria;
-
 import java.util.ArrayList;
 import java.util.List;
 
-public class CategoriaRepositorio implements ICategoriaRepositorio {
+import entidades.Categoria;
+
+public class JPACategoriaRepositorioDAO implements ICategoriaRepositorioDAO {
 
     private static final String ARQUIVO = "dados/categorias.csv";
 
     private final List<Categoria> categorias;
     private final ManipulaArquivo manipulaArquivo;
 
-    public CategoriaRepositorio() {
+    public JPACategoriaRepositorioDAO() {
 
         manipulaArquivo = new ManipulaArquivo(ARQUIVO);
         categorias = carregar();
