@@ -11,6 +11,14 @@ import java.net.URL;
 
 public class GerenciadorTema {
     private static boolean isDarkMode = false;
+    
+    // Correção SonarCloud #1454: Constante para literal duplicada
+    private static final String ORIG_STYLE_KEY = "origStyle";
+
+    // Correção SonarCloud #1466: Adiciona construtor privado para esconder o construtor público implícito
+    private GerenciadorTema() {
+        throw new IllegalStateException("Classe utilitária");
+    }
 
     public static void aplicarTema(Scene scene) {
         if (scene == null) return;
@@ -62,11 +70,12 @@ public class GerenciadorTema {
             return;
         }
 
-        if (!no.getProperties().containsKey("origStyle")) {
-            no.getProperties().put("origStyle", no.getStyle() != null ? no.getStyle() : "");
+        // Substituição das 3 strings "origStyle" pela constante ORIG_STYLE_KEY
+        if (!no.getProperties().containsKey(ORIG_STYLE_KEY)) {
+            no.getProperties().put(ORIG_STYLE_KEY, no.getStyle() != null ? no.getStyle() : "");
         }
 
-        String orig = (String) no.getProperties().get("origStyle");
+        String orig = (String) no.getProperties().get(ORIG_STYLE_KEY);
 
         if (dark) {
             if (!orig.isEmpty()) {
