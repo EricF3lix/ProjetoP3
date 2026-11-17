@@ -18,12 +18,12 @@ public final class SistemaFactory {
     public static SistemaFacade criar() {
 
         // REPOSITÓRIOS
-        UsuarioRepositorio    usuarioRepositorio    = new UsuarioRepositorio();
-        CategoriaRepositorio  categoriaRepositorio  = new CategoriaRepositorio();
-        FornecedorRepositorio fornecedorRepositorio = new FornecedorRepositorio();
-        ItemRepositorio       itemRepositorio       = new ItemRepositorio(categoriaRepositorio, fornecedorRepositorio);
-        ContratoRepositorio   contratoRepositorio   = new ContratoRepositorio(usuarioRepositorio, itemRepositorio);
-        MultaRepositorio      multaRepositorio      = new MultaRepositorio();
+        JPAUsuarioRepositorioDAO    usuarioRepositorio    = new JPAUsuarioRepositorioDAO();
+        JPACategoriaRepositorioDAO  categoriaRepositorio  = new JPACategoriaRepositorioDAO();
+        JPAFornecedorRepositorioDAO fornecedorRepositorio = new JPAFornecedorRepositorioDAO();
+        JPAItemRepositorioDAO       itemRepositorio       = new JPAItemRepositorioDAO(categoriaRepositorio, fornecedorRepositorio);
+        JPAContratoRepositorioDAO   contratoRepositorio   = new JPAContratoRepositorioDAO(usuarioRepositorio, itemRepositorio);
+        JPAMultaRepositorioDAO      multaRepositorio      = new JPAMultaRepositorioDAO();
 
         // CAMADA DE NEGÓCIO
         IGerenciamentoContratos  gerenciamentoContratos  = new GerenciamentoContratos(contratoRepositorio);

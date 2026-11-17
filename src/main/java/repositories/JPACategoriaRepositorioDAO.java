@@ -5,14 +5,14 @@ import java.util.List;
 
 import entidades.Categoria;
 
-public class CategoriaRepositorio implements ICategoriaRepositorioDAO {
+public class JPACategoriaRepositorioDAO implements ICategoriaRepositorioDAO {
 
     private static final String ARQUIVO = "dados/categorias.csv";
 
     private final List<Categoria> categorias;
     private final ManipulaArquivo manipulaArquivo;
 
-    public CategoriaRepositorio() {
+    public JPACategoriaRepositorioDAO() {
 
         manipulaArquivo = new ManipulaArquivo(ARQUIVO);
         categorias = carregar();
