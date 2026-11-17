@@ -1,17 +1,17 @@
 package business.cruds;
 
-import business.interfaces.IGerenciamentoCategoria;
-import entidades.Categoria;
-import repositories.ICategoriaRepositorio;
-
 import java.util.ArrayList;
 import java.util.List;
 
+import business.interfaces.IGerenciamentoCategoria;
+import entidades.Categoria;
+import repositories.ICategoriaRepositorioDAO;
+
 public class GerenciamentoCategoria implements IGerenciamentoCategoria {
 
-    private final ICategoriaRepositorio repositorio;
+    private final ICategoriaRepositorioDAO repositorio;
 
-    public GerenciamentoCategoria(ICategoriaRepositorio repositorio) {
+    public GerenciamentoCategoria(ICategoriaRepositorioDAO repositorio) {
         this.repositorio = repositorio;
     }
 
