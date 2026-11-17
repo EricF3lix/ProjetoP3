@@ -23,18 +23,6 @@ public class HistoricoCliente {
         // Construtor vazio obrigatório para o JPA
     }
 
-    public HistoricoCliente(Long idContrato, String cliente, String item, LocalDate dataRetirada, 
-                            LocalDate dataPrevista, String status, Double valorTotal, Double multa) {
-        this.idContrato = idContrato;
-        this.cliente = cliente;
-        this.item = item;
-        this.dataRetirada = dataRetirada;
-        this.dataPrevista = dataPrevista;
-        this.status = status;
-        this.valorTotal = valorTotal;
-        this.multa = multa;
-    }
-
     public Long getIdContrato() { 
         return idContrato; 
     }
