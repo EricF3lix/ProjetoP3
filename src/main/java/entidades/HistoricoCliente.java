@@ -35,28 +35,59 @@ public class HistoricoCliente {
         this.multa = multa;
     }
 
-    // Gets e Sets...
-    public Long getIdContrato() { return idContrato; }
-    public void setIdContrato(Long idContrato) { this.idContrato = idContrato; }
+    public Long getIdContrato() { 
+        return idContrato; 
+    }
+    public void setIdContrato(Long idContrato) { 
+        this.idContrato = idContrato; 
+    }
 
-    public String getCliente() { return cliente; }
-    public void setCliente(String cliente) { this.cliente = cliente; }
+    public String getCliente() { 
+        return cliente; 
+    }
+    public void setCliente(String cliente) { 
+        this.cliente = cliente; 
+    }
 
-    public String getItem() { return item; }
-    public void setItem(String item) { this.item = item; }
+    public String getItem() { 
+        return item; 
+    }
+    public void setItem(String item) { 
+        this.item = item; 
+    }
 
-    public LocalDate getDataRetirada() { return dataRetirada; }
-    public void setDataRetirada(LocalDate dataRetirada) { this.dataRetirada = dataRetirada; }
+    public LocalDate getDataRetirada() { 
+        return dataRetirada; 
+    }
+    public void setDataRetirada(LocalDate dataRetirada) { 
+        this.dataRetirada = dataRetirada; 
+    }
 
-    public LocalDategetDataPrevista() { return dataPrevista; }
-    public void setDataPrevista(LocalDate dataPrevista) { this.dataPrevista = dataPrevista; }
+    public LocalDate getDataPrevista() { 
+        return dataPrevista; 
+    }
+    public void setDataPrevista(LocalDate dataPrevista) { 
+        this.dataPrevista = dataPrevista; 
+    }
 
-    public String getStatus() { return status; }
-    public void setStatus(String status) { this.status = status; }
+    public String getStatus() { 
+        return status; 
+    }
+    public void setStatus(String status) { 
+        this.status = status; 
+    }
 
-    public Double getValorTotal() { return valorTotal; }
-    public void setValorTotal(Double valorTotal) { this.valorTotal = valorTotal; }
+    public Double getValorTotal() { 
+        return valorTotal; 
+    }
+    public void setValorTotal(Double valorTotal) { 
+        this.valorTotal = valorTotal; 
+    }
 
-    public Double getMulta() { return multa; }
-    public void setMulta(Double multa) { this.multa = multa; }
+    public Double getMulta() { 
+        return multa; 
+    }
+    public void setMulta(Double multa) { 
+        this.multa = multa; 
+    }
 }
