@@ -163,10 +163,6 @@ public abstract class MenuController {
         });
     }
 
-    private <R> void animarDialogo(Dialog<R> dialogo) {
-        animarDialogo(dialogo, false);
-    }
-
     public void notificarPopUp(String mensagem) {
         notificarPopUpSucesso(mensagem);
     }
