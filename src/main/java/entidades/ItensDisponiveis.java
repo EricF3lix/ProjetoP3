@@ -24,21 +24,6 @@ public class ItensDisponiveis {
         // Construtor vazio obrigatório para o JPA
     }
 
-    public ItensDisponiveis(Long id, String nome, String descricao, Double taxaDiaria, 
-                            String estadoConservacao, Double valorReposicao, String status, 
-                            Boolean ativo, Long idCategoria, Long idFornecedor) {
-        this.id = id;
-        this.nome = nome;
-        this.descricao = descricao;
-        this.taxaDiaria = taxaDiaria;
-        this.estadoConservacao = estadoConservacao;
-        this.valorReposicao = valorReposicao;
-        this.status = status;
-        this.ativo = ativo;
-        this.idCategoria = idCategoria;
-        this.idFornecedor = idFornecedor;
-    }
-
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 
