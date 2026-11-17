@@ -11,6 +11,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.layout.VBox;
 
 import java.util.List;
@@ -52,6 +53,7 @@ public class MenuItensController extends MenuController {
     @FXML
     private ComboBox<String> fornecedoresItem;
 
+
     @FXML
     private TextField nomeItem1;
     @FXML
@@ -75,11 +77,6 @@ public class MenuItensController extends MenuController {
     @FXML
     private VBox dadosItens1;
 
-    @FXML
-    private VBox painelDesativar;
-    @FXML
-    private TextField txtIdDesativar;
-
     private final ObservableList<Item> listaItens = FXCollections.observableArrayList();
     private FilteredList<Item> listaFiltrada;
     private Item itemEmEdicao;
@@ -97,6 +94,7 @@ public class MenuItensController extends MenuController {
 
     @Override
     protected void aoExibir() {
+
         carregarTabela();
     }
 
@@ -207,9 +205,6 @@ public class MenuItensController extends MenuController {
         tabelaItens.setVisible(true);
         dadosItens.setVisible(false);
         dadosItens1.setVisible(false);
-        if (painelDesativar != null) {
-            painelDesativar.setVisible(false);
-        }
     }
 
     @FXML
@@ -217,9 +212,6 @@ public class MenuItensController extends MenuController {
         tabelaItens.setVisible(false);
         dadosItens.setVisible(true);
         dadosItens1.setVisible(false);
-        if (painelDesativar != null) {
-            painelDesativar.setVisible(false);
-        }
 
         ObservableList<String> nomes = FXCollections.observableArrayList();
         List<Categoria> categorias = sistema.listarCategorias();
@@ -237,6 +229,7 @@ public class MenuItensController extends MenuController {
 
         ObservableList<String> estados = FXCollections.observableArrayList("Novo","Seminovo","Usado","Danificado");
         estadoItem.setItems(estados);
+
     }
 
     @FXML
@@ -244,9 +237,6 @@ public class MenuItensController extends MenuController {
         tabelaItens.setVisible(false);
         dadosItens1.setVisible(true);
         dadosItens.setVisible(false);
-        if (painelDesativar != null) {
-            painelDesativar.setVisible(false);
-        }
 
         ObservableList<String> nomes = FXCollections.observableArrayList();
         for (Categoria c : sistema.listarCategorias()) {
@@ -265,8 +255,10 @@ public class MenuItensController extends MenuController {
         estadoItem1.setItems(estados);
     }
 
+
     @FXML
     public void cadastrarItem(ActionEvent event) {
+
         String nomeitem = nomeItem.getText().trim();
         String descricaoitem = descricaoItem.getText().trim();
         String taxadiaria = (taxaDiaria.getText().trim());
@@ -275,32 +267,26 @@ public class MenuItensController extends MenuController {
         String categoria = categoriaItem.getValue();
         String fornecedortxt = fornecedoresItem.getValue();
 
-        if (nomeitem.isEmpty() || descricaoitem.isEmpty() || taxadiaria.isEmpty() || valorreposicao.isEmpty() || estado == null || estado.isEmpty() || categoria == null || categoria.isEmpty() || fornecedortxt == null || fornecedortxt.isEmpty()) {
+        if (nomeitem.isEmpty() || descricaoitem.isEmpty() || taxadiaria.isEmpty() || valorreposicao.isEmpty() || estado.isEmpty() || categoria == null || categoria.isEmpty() || fornecedortxt.isEmpty()) {
             notificarPopUpErro("Preencha todos os campos");
             return;
         }
 
-        try {
-            double taxa = Double.parseDouble(taxadiaria.replace(',', '.'));
-            double valor = Double.parseDouble(valorreposicao.replace(',', '.'));
-            int id = sistema.gerarProximoIdItem();
+        double taxa = Double.parseDouble(taxadiaria.replace(',', '.'));
+        double valor = Double.parseDouble(valorreposicao.replace(',', '.'));
+        int id = sistema.gerarProximoIdItem();
 
-            List<Categoria> categorias = sistema.buscarCategoriaPorNome(categoria);
-            Categoria catgoriatxt = categorias.getFirst();
+        List<Categoria> categorias = sistema.buscarCategoriaPorNome(categoria);
+        Categoria catgoriatxt = categorias.getFirst();
 
-            List<Fornecedor> fornecedores = sistema.buscarPorNome(fornecedortxt);
-            Fornecedor fornecedor = fornecedores.getFirst();
+        List<Fornecedor> fornecedores = sistema.buscarPorNome(fornecedortxt);
+        Fornecedor fornecedor = fornecedores.getFirst();
 
-            Item item = new Item(id, nomeitem, descricaoitem, taxa, estado, valor, catgoriatxt, fornecedor);
+        Item item = new Item(id, nomeitem, descricaoitem, taxa, estado, valor, catgoriatxt, fornecedor);
 
-            sistema.cadastrarItem(item);
-            notificarPopUp("Item cadastrado com sucesso");
-            listarItens(event);
-        } catch (NumberFormatException e) {
-            notificarPopUpErro("Valores numéricos inválidos");
-        } catch (Exception e) {
-            notificarPopUpErro(e.getMessage());
-        }
+        sistema.cadastrarItem(item);
+        notificarPopUp("Item cadastrado com sucesso");
+
     }
 
     @FXML
@@ -326,7 +312,7 @@ public class MenuItensController extends MenuController {
     @FXML
     public void salvarAtualizacao(ActionEvent event) {
         if (itemEmEdicao == null) {
-            notificarPopUpErro("Nenhum item selecionado para atualização.");
+        	notificarPopUpErro("Nenhum item selecionado para atualização.");
             return;
         }
 
@@ -336,11 +322,11 @@ public class MenuItensController extends MenuController {
         String valorTxt = valorReposicao1.getText().trim();
         String estado = estadoItem1.getValue();
         String categoriaNome = categoriaItem1.getValue();
-        String fornecedorTxt = fornecedoresItem1.getValue() != null ? fornecedoresItem1.getValue().toString() : "";
+        String fornecedorTxt = fornecedoresItem1.getValue().toString();
 
         if (nome.isEmpty() || descricao.isEmpty() || taxaTxt.isEmpty() || valorTxt.isEmpty()
-                || estado == null || estado.isEmpty() || categoriaNome == null || fornecedorTxt.isEmpty()) {
-            notificarPopUpErro("Preencha todos os campos");
+                || estado.isEmpty() || categoriaNome == null || fornecedorTxt.isEmpty()) {
+        	notificarPopUpErro("Preencha todos os campos");
             return;
         }
 
@@ -351,22 +337,21 @@ public class MenuItensController extends MenuController {
             taxa = Double.parseDouble(taxaTxt.replace(',', '.'));
             valor = Double.parseDouble(valorTxt.replace(',', '.'));
         } catch (NumberFormatException e) {
-            notificarPopUpErro("Informe valores numéricos válidos para taxa e valor de reposição.");
+        	notificarPopUpErro("Informe valores numéricos válidos para taxa, valor de reposição e fornecedor.");
             return;
         }
 
         List<Categoria> categorias = sistema.buscarCategoriaPorNome(categoriaNome);
         if (categorias.isEmpty()) {
-            notificarPopUpErro("Categoria não encontrada.");
+        	notificarPopUpErro("Categoria não encontrada.");
             return;
         }
 
-        List<Fornecedor> fornecedoresEncontrados = sistema.buscarPorNome(fornecedorTxt);
-        if (fornecedoresEncontrados.isEmpty()) {
-            notificarPopUpErro("Fornecedor não encontrado.");
+        Fornecedor fornecedor = sistema.buscarPorNome(fornecedorTxt).getFirst();
+        if (fornecedor == null) {
+        	notificarPopUpErro("Fornecedor não encontrado.");
             return;
         }
-        Fornecedor fornecedor = fornecedoresEncontrados.getFirst();
 
         Item atualizado = new Item(itemEmEdicao.getId(), nome, descricao, taxa, estado, valor, categorias.getFirst(), fornecedor);
 
@@ -384,55 +369,55 @@ public class MenuItensController extends MenuController {
 
         Item item = sistema.buscarItem(id.get());
         if (item == null) {
-            notificarPopUpErro("Item não encontrado.");
+        	notificarPopUpErro("Item não encontrado.");
         }
         return item;
     }
 
     @FXML
     public void desativarItem(ActionEvent event) {
-        tabelaItens.setVisible(false);
-        dadosItens.setVisible(false);
-        dadosItens1.setVisible(false);
+        mostrarTabela();
+        Item item = tabela.getSelectionModel().getSelectedItem();
+        if (item == null) {
+            TextInputDialog dialog = new TextInputDialog();
+            dialog.setTitle("Desativar Item");
+            dialog.setHeaderText("Desativar Item");
+            dialog.setContentText(PEDIR_ID_ITEM);
+            Optional<String> resultado = dialog.showAndWait();
 
-        if (painelDesativar != null) {
-            painelDesativar.setVisible(true);
 
-            Item selecionado = tabela.getSelectionModel().getSelectedItem();
-            if (selecionado != null) {
-                txtIdDesativar.setText(String.valueOf(selecionado.getId()));
-            } else {
-                txtIdDesativar.clear();
+            if (resultado.isPresent()) {
+                try {
+                    int id = Integer.parseInt(resultado.get().trim());
+
+                    if (sistema.excluirItem(id)) {
+                        mostrarAlerta(AlertType.INFORMATION, "Sucesso", "Item desativado com sucesso!");
+                        carregarTabela();
+                    } else {
+                        mostrarAlerta(AlertType.ERROR, "Erro", "Não foi possível desativar o item.");
+                    }
+
+                } catch (NumberFormatException e) {
+                    mostrarAlerta(AlertType.ERROR, "Erro", "Digite um ID numérico válido.");
+                }
             }
-            txtIdDesativar.requestFocus();
+            else{return;}
         }
+        if (item != null){
+        if (sistema.excluirItem(item.getId())) {
+            mostrarAlerta(AlertType.INFORMATION, "Sucesso", "Item desativado com sucesso!");
+            carregarTabela();
+        } else {
+            mostrarAlerta(AlertType.ERROR, "Erro", "Não foi possível desativar o item.");
+        }
+        }
+
     }
-
-    @FXML
-    public void confirmarDesativacaoItem(ActionEvent event) {
-        String textoId = txtIdDesativar.getText().trim();
-
-        if (textoId.isEmpty()) {
-            tremer(painelDesativar);
-            notificarPopUpErro("Informe o ID do item");
-            return;
-        }
-
-        try {
-            int id = Integer.parseInt(textoId);
-
-            if (sistema.excluirItem(id)) {
-                notificarPopUp("Item desativado com sucesso!");
-                carregarTabela();
-                txtIdDesativar.clear();
-                mostrarTabela();
-            } else {
-                tremer(painelDesativar);
-                notificarPopUpErro("Não foi possível desativar o item.");
-            }
-        } catch (NumberFormatException e) {
-            tremer(painelDesativar);
-            notificarPopUpErro("Digite um ID numérico válido.");
-        }
+    private void mostrarAlerta(AlertType tipo, String titulo, String mensagem) {
+        Alert alert = new Alert(tipo);
+        alert.setTitle(titulo);
+        alert.setHeaderText(null);
+        alert.setContentText(mensagem);
+        alert.showAndWait();
     }
 }

@@ -45,8 +45,6 @@ public class Navegador {
         stage.setScene(scene);
         stage.setMinWidth(800);
         stage.setMinHeight(500);
-
-        GerenciadorTema.aplicarTema(this.scene);
     }
 
     public void abrir(String fxml) {
@@ -141,7 +139,6 @@ public class Navegador {
             fade.setToValue(1.0);
             fade.setOnFinished(e -> {
                 animando = false;
-                GerenciadorTema.aplicarTema(scene);
                 if (destino.controller() != null) {
                     destino.controller().aoExibir();
                 }
@@ -151,7 +148,7 @@ public class Navegador {
         }
 
         StackPane container = new StackPane(raizAntiga, raizNova);
-        container.setStyle("-fx-background-color: transparent;");
+        container.setStyle("-fx-background-color: #F5F5F7;");
         container.setMouseTransparent(true);
         scene.setRoot(container);
 
@@ -171,7 +168,6 @@ public class Navegador {
             raizNova.setOpacity(1.0);
             raizAntiga.setOpacity(1.0);
             animando = false;
-            GerenciadorTema.aplicarTema(scene);
             if (destino.controller() != null) {
                 destino.controller().aoExibir();
             }
@@ -203,7 +199,7 @@ public class Navegador {
         raizDestino.setCacheHint(CacheHint.SPEED);
 
         StackPane container = new StackPane();
-        container.setStyle("-fx-background-color: transparent;");
+        container.setStyle("-fx-background-color: #F5F5F7;");
         container.setMouseTransparent(true);
         scene.setRoot(container);
 
@@ -273,7 +269,6 @@ public class Navegador {
             raizDestino.setOpacity(1.0);
 
             animando = false;
-            GerenciadorTema.aplicarTema(scene);
             if (destino.controller() != null) {
                 destino.controller().aoExibir();
             }
