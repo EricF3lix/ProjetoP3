@@ -68,12 +68,14 @@ public class ThemeToggleSwitch extends StackPane {
     }
 
     private void atualizarVisual(boolean dark, boolean animar) {
-        fundo.setFill(dark ? Color.valueOf("#34C759") : Color.valueOf("#D1D1D6"));
+        // Correção 1: Condição movida para dentro do valueOf
+        fundo.setFill(Color.valueOf(dark ? "#34C759" : "#D1D1D6"));
 
         try {
             FontIcon fi = new FontIcon(dark ? "fas-moon" : "fas-sun");
             fi.setIconSize(12);
-            fi.setIconColor(dark ? Color.valueOf("#1C1C1E") : Color.valueOf("#F59E0B"));
+            // Correção 2: Condição movida para dentro do valueOf
+            fi.setIconColor(Color.valueOf(dark ? "#1C1C1E" : "#F59E0B"));
             lblIcone.setGraphic(fi);
             lblIcone.setText("");
         } catch (Exception t) {
