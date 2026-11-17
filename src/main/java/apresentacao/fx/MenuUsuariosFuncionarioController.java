@@ -24,7 +24,6 @@ import javafx.scene.layout.VBox;
 import java.util.List;
 
 public class MenuUsuariosFuncionarioController extends MenuController {
-    private static final String STYLE_TEXT_RED = "-fx-text-fill: red;";
     private static final String OPCAO_TODOS = "Todos";
     protected static final String TIPO_CLIENTE = "Cliente";
 
@@ -340,7 +339,7 @@ public class MenuUsuariosFuncionarioController extends MenuController {
 
     protected void carregarTabela() {
         if (sistema != null) {
-                List<Usuario> usuarios = sistema.listarUsuarios();
+            List<Usuario> usuarios = sistema.listarUsuarios();
             if (usuarios != null) {
                 listaUsuarios.setAll(usuarios);
             }
@@ -379,7 +378,11 @@ public class MenuUsuariosFuncionarioController extends MenuController {
         txtCadEmail.clear();
         txtCadCpf.clear();
         txtCadSenha.clear();
-        lblCadMensagem.setText("");
+        if (lblCadMensagem != null) {
+            lblCadMensagem.setText("");
+            lblCadMensagem.setVisible(false);
+            lblCadMensagem.setManaged(false);
+        }
         exibirPainel(painelCadastro);
     }
 
@@ -387,14 +390,20 @@ public class MenuUsuariosFuncionarioController extends MenuController {
     public void aoSalvarCadastro(ActionEvent event) {
         if (sistema == null) return;
 
+        if (lblCadMensagem != null) {
+            lblCadMensagem.setText("");
+            lblCadMensagem.setVisible(false);
+            lblCadMensagem.setManaged(false);
+        }
+
         String nome = txtCadNome.getText().trim();
         String email = txtCadEmail.getText().trim();
         String cpf = txtCadCpf.getText().trim();
         String senha = txtCadSenha.getText().trim();
 
         if (nome.isEmpty() || email.isEmpty() || cpf.isEmpty() || senha.isEmpty()) {
-            lblCadMensagem.setText("Por favor, preencha todos os campos.");
-            lblCadMensagem.setStyle(STYLE_TEXT_RED);
+            tremer(painelCadastro != null ? painelCadastro : txtCadNome);
+            notificarPopUpErro("Por favor, preencha todos os campos.");
             return;
         }
 
@@ -406,23 +415,24 @@ public class MenuUsuariosFuncionarioController extends MenuController {
         };
 
         if (sistema.cadastrarUsuario(novoUsuario)) {
-            lblCadMensagem.setText(tipoCadastroAtual + " cadastrado com sucesso! ID: " + id);
-            lblCadMensagem.setStyle("-fx-text-fill: green;");
+            notificarPopUp(tipoCadastroAtual + " cadastrado com sucesso! ID: " + id);
             txtCadNome.clear();
             txtCadEmail.clear();
             txtCadCpf.clear();
             txtCadSenha.clear();
             carregarTabela();
         } else {
-            lblCadMensagem.setText("Erro: CPF ou e-mail já cadastrado.");
-            lblCadMensagem.setStyle(STYLE_TEXT_RED);
+            tremer(painelCadastro != null ? painelCadastro : txtCadNome);
+            notificarPopUpErro("Erro: CPF ou e-mail já cadastrado.");
         }
     }
 
     @FXML
     public void aoBuscarUsuario(ActionEvent event) {
         txtBuscaId.clear();
-        lblBuscaResultado.setText("");
+        if (lblBuscaResultado != null) {
+            lblBuscaResultado.setText("");
+        }
         exibirPainel(painelBusca);
     }
 
@@ -445,12 +455,14 @@ public class MenuUsuariosFuncionarioController extends MenuController {
                 );
                 lblBuscaResultado.setStyle("-fx-text-fill: black;");
             } else {
-                lblBuscaResultado.setText("Usuário não encontrado.");
-                lblBuscaResultado.setStyle(STYLE_TEXT_RED);
+                if (lblBuscaResultado != null) lblBuscaResultado.setText("");
+                tremer(painelBusca != null ? painelBusca : txtBuscaId);
+                notificarPopUpErro("Usuário não encontrado.");
             }
         } catch (NumberFormatException ex) {
-            lblBuscaResultado.setText("Digite um ID numérico válido.");
-            lblBuscaResultado.setStyle(STYLE_TEXT_RED);
+            if (lblBuscaResultado != null) lblBuscaResultado.setText("");
+            tremer(painelBusca != null ? painelBusca : txtBuscaId);
+            notificarPopUpErro("Digite um ID numérico válido.");
         }
     }
 }

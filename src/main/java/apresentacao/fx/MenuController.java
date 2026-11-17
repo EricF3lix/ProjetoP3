@@ -2,9 +2,12 @@ package apresentacao.fx;
 
 import facade.SistemaFacade;
 import javafx.animation.*;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.stage.Popup;
@@ -28,7 +31,7 @@ public abstract class MenuController {
     protected TextArea saida;
 
     protected boolean listenerConfigurado = false;
-    
+
     @FXML
     protected TextField pesquisa;
 
@@ -57,7 +60,6 @@ public abstract class MenuController {
             icone.setIconLiteral(literal);
         }
     }
-
 
     protected abstract String getTitulo();
 
@@ -90,28 +92,49 @@ public abstract class MenuController {
         escrever(String.format(formato, args));
     }
 
-    
-    
+    public static void tremer(Node no) {
+        if (no == null) return;
+        Platform.runLater(() -> {
+            TranslateTransition tt = new TranslateTransition(Duration.millis(40), no);
+            tt.setFromX(0);
+            tt.setByX(10);
+            tt.setCycleCount(6);
+            tt.setAutoReverse(true);
+            tt.setOnFinished(e -> no.setTranslateX(0));
+            tt.play();
+        });
+    }
+
+    public void tremerTelaAtual() {
+        if (navegador != null && navegador.getStage() != null) {
+            Scene cena = navegador.getStage().getScene();
+            if (cena != null && cena.getRoot() != null) {
+                tremer(cena.getRoot());
+            }
+        }
+    }
+
     protected void info(String mensagem) {
         Alert alerta = new Alert(Alert.AlertType.INFORMATION, mensagem);
-        animarDialogo(alerta);
+        animarDialogo(alerta, false);
         alerta.showAndWait();
     }
 
     protected void erro(String mensagem) {
+        tremerTelaAtual();
         Alert alerta = new Alert(Alert.AlertType.ERROR, mensagem);
-        animarDialogo(alerta);
+        animarDialogo(alerta, true);
         alerta.showAndWait();
     }
 
     protected boolean confirmar(String mensagem) {
         Alert alerta = new Alert(Alert.AlertType.CONFIRMATION, mensagem);
-        animarDialogo(alerta);
+        animarDialogo(alerta, false);
         Optional<ButtonType> r = alerta.showAndWait();
         return r.isPresent() && r.get() == ButtonType.OK;
     }
 
-    private <R> void animarDialogo(Dialog<R> dialogo) {
+    private <R> void animarDialogo(Dialog<R> dialogo, boolean tremerAoExibir) {
         if (navegador != null && navegador.getStage() != null) {
             dialogo.initOwner(navegador.getStage());
         }
@@ -121,21 +144,29 @@ public abstract class MenuController {
         pane.setOpacity(0.0);
 
         dialogo.setOnShown(e -> {
-            ScaleTransition zoom = new ScaleTransition(Duration.millis(220), pane);
+            ScaleTransition zoom = new ScaleTransition(Duration.millis(200), pane);
             zoom.setFromX(0.75);
             zoom.setFromY(0.75);
             zoom.setToX(1.0);
             zoom.setToY(1.0);
             zoom.setInterpolator(Interpolator.EASE_OUT);
 
-            FadeTransition fade = new FadeTransition(Duration.millis(180), pane);
+            FadeTransition fade = new FadeTransition(Duration.millis(160), pane);
             fade.setFromValue(0.0);
             fade.setToValue(1.0);
 
-            new ParallelTransition(zoom, fade).play();
+            ParallelTransition entrada = new ParallelTransition(zoom, fade);
+            if (tremerAoExibir) {
+                entrada.setOnFinished(ev -> tremer(pane));
+            }
+            entrada.play();
         });
     }
-    
+
+    private <R> void animarDialogo(Dialog<R> dialogo) {
+        animarDialogo(dialogo, false);
+    }
+
     public void notificarPopUp(String mensagem) {
         notificarPopUpSucesso(mensagem);
     }
@@ -156,6 +187,10 @@ public abstract class MenuController {
         if (navegador == null || navegador.getStage() == null) {
             info(mensagem);
             return;
+        }
+
+        if (!sucesso) {
+            tremerTelaAtual();
         }
 
         Stage stage = navegador.getStage();
@@ -225,7 +260,12 @@ public abstract class MenuController {
             fadeOut.setToValue(0.0);
             fadeOut.setOnFinished(ev -> popup.hide());
 
-            entrada.setOnFinished(ev -> espera.play());
+            entrada.setOnFinished(ev -> {
+                if (!sucesso) {
+                    tremer(card);
+                }
+                espera.play();
+            });
             espera.setOnFinished(ev -> fadeOut.play());
 
             entrada.play();
@@ -241,7 +281,7 @@ public abstract class MenuController {
     protected Optional<String> pedirTexto(String mensagem, String valorPadrao) {
         TextInputDialog dialogo = new TextInputDialog(valorPadrao);
         dialogo.setHeaderText(mensagem);
-        animarDialogo(dialogo);
+        animarDialogo(dialogo, false);
         return dialogo.showAndWait().map(String::trim);
     }
 
@@ -276,7 +316,7 @@ public abstract class MenuController {
     protected <T> Optional<T> pedir(String mensagem, Function<String, T> conversor, String msgErro) {
         return pedir(mensagem, "", conversor, msgErro);
     }
-    
+
     protected <T> Optional<T> pedir(String mensagem, String textoInicial, Function<String, T> conversor, String msgErro) {
         String texto = textoInicial;
         while (true) {
@@ -310,7 +350,7 @@ public abstract class MenuController {
 
         ChoiceDialog<String> dialogo = new ChoiceDialog<>(opcoes.get(0), opcoes);
         dialogo.setHeaderText(mensagem);
-        animarDialogo(dialogo);
+        animarDialogo(dialogo, false);
 
         Optional<String> escolhido = dialogo.showAndWait();
         if (escolhido.isEmpty()) {
@@ -330,7 +370,7 @@ public abstract class MenuController {
         }
         return antigo;
     }
-    
+
     protected <T> void configurarTabelaEPesquisa(
         javafx.scene.control.TableView<T> tabela, 
         java.util.function.Consumer<String> metodoPesquisa) {

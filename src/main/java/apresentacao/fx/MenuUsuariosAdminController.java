@@ -161,10 +161,14 @@ public class MenuUsuariosAdminController extends MenuUsuariosFuncionarioControll
             } else {
                 lblAtualizarStatus.setText(MSG_USUARIO_NAO_ENCONTRADO);
                 lblAtualizarStatus.setStyle(STYLE_TEXT_RED);
+                tremer(painelAtualizar != null ? painelAtualizar : lblAtualizarStatus);
+                notificarPopUpErro(MSG_USUARIO_NAO_ENCONTRADO);
             }
         } catch (NumberFormatException ex) {
             lblAtualizarStatus.setText("ID inválido.");
             lblAtualizarStatus.setStyle(STYLE_TEXT_RED);
+            tremer(painelAtualizar != null ? painelAtualizar : lblAtualizarStatus);
+            notificarPopUpErro("ID inválido.");
         }
     }
 
@@ -178,6 +182,8 @@ public class MenuUsuariosAdminController extends MenuUsuariosFuncionarioControll
             if (atual == null) {
                 lblAtualizarStatus.setText(MSG_USUARIO_NAO_ENCONTRADO);
                 lblAtualizarStatus.setStyle(STYLE_TEXT_RED);
+                tremer(painelAtualizar != null ? painelAtualizar : lblAtualizarStatus);
+                notificarPopUpErro(MSG_USUARIO_NAO_ENCONTRADO);
                 return;
             }
 
@@ -188,28 +194,35 @@ public class MenuUsuariosAdminController extends MenuUsuariosFuncionarioControll
             if (sistema.atualizarUsuario(id, novoNome, novoEmail, novaSenha)) {
                 lblAtualizarStatus.setText("Usuário atualizado com sucesso!");
                 lblAtualizarStatus.setStyle(STYLE_TEXT_GREEN);
+                notificarPopUp("Usuário atualizado com sucesso!");
                 carregarTabela();
             } else {
                 lblAtualizarStatus.setText("Erro ao atualizar usuário.");
                 lblAtualizarStatus.setStyle(STYLE_TEXT_RED);
+                tremer(painelAtualizar != null ? painelAtualizar : lblAtualizarStatus);
+                notificarPopUpErro("Erro ao atualizar usuário.");
             }
         } catch (NumberFormatException ex) {
             lblAtualizarStatus.setText("ID inválido.");
             lblAtualizarStatus.setStyle(STYLE_TEXT_RED);
+            tremer(painelAtualizar != null ? painelAtualizar : lblAtualizarStatus);
+            notificarPopUpErro("ID inválido.");
         }
     }
 
     @FXML
     public void aoDesativarUsuario(ActionEvent event) {
         txtDesativarId.clear();
-        lblDesativarStatus.setText("");
+        if (lblDesativarStatus != null) {
+            lblDesativarStatus.setText("");
+            lblDesativarStatus.setVisible(false);
+            lblDesativarStatus.setManaged(false);
+        }
 
         Usuario selecionado = (tabelaUsuarios != null) ? tabelaUsuarios.getSelectionModel().getSelectedItem() : null;
 
         if (selecionado != null) {
             txtDesativarId.setText(String.valueOf(selecionado.getId()));
-            lblDesativarStatus.setText("Selecionado: " + selecionado.getNome() + (selecionado.isAtivo() ? " (Ativo)" : " (Inativo)"));
-            lblDesativarStatus.setStyle("-fx-text-fill: #007AFF;");
         }
 
         exibirPainel(painelDesativar);
@@ -218,14 +231,27 @@ public class MenuUsuariosAdminController extends MenuUsuariosFuncionarioControll
     @FXML
     public void aoConfirmarDesativar(ActionEvent event) {
         if (sistema == null) return;
-        
+
+        if (lblDesativarStatus != null) {
+            lblDesativarStatus.setText("");
+            lblDesativarStatus.setVisible(false);
+            lblDesativarStatus.setManaged(false);
+        }
+
         try {
-            int id = Integer.parseInt(txtDesativarId.getText().trim());
+            String texto = txtDesativarId.getText() != null ? txtDesativarId.getText().trim() : "";
+            if (texto.isEmpty()) {
+                tremer(painelDesativar != null ? painelDesativar : txtDesativarId);
+                notificarPopUpErro("Digite um ID numérico válido.");
+                return;
+            }
+
+            int id = Integer.parseInt(texto);
             Usuario usuario = sistema.buscarUsuario(id);
 
             if (usuario == null) {
-                lblDesativarStatus.setText(MSG_USUARIO_NAO_ENCONTRADO);
-                lblDesativarStatus.setStyle(STYLE_TEXT_RED);
+                tremer(painelDesativar != null ? painelDesativar : txtDesativarId);
+                notificarPopUpErro(MSG_USUARIO_NAO_ENCONTRADO);
                 return;
             }
 
@@ -235,32 +261,30 @@ public class MenuUsuariosAdminController extends MenuUsuariosFuncionarioControll
                 executarReativacao(id);
             }
         } catch (NumberFormatException ex) {
-            lblDesativarStatus.setText("Digite um ID numérico válido.");
-            lblDesativarStatus.setStyle(STYLE_TEXT_RED);
+            tremer(painelDesativar != null ? painelDesativar : txtDesativarId);
+            notificarPopUpErro("Digite um ID numérico válido.");
         }
     }
 
     private void executarDesativacao(int id) {
         if (sistema.desativaUsuario(id)) {
-            lblDesativarStatus.setText("Usuário desativado com sucesso!");
-            lblDesativarStatus.setStyle(STYLE_TEXT_GREEN);
+            notificarPopUp("Usuário desativado com sucesso!");
             txtDesativarId.clear();
             carregarTabela();
         } else {
-            lblDesativarStatus.setText("Não foi possível desativar (verifique pendências/multas).");
-            lblDesativarStatus.setStyle(STYLE_TEXT_RED);
+            tremer(painelDesativar != null ? painelDesativar : txtDesativarId);
+            notificarPopUpErro("Não foi possível desativar (verifique pendências/multas).");
         }
     }
 
     private void executarReativacao(int id) {
         if (tentarReativarUsuario(id)) {
-            lblDesativarStatus.setText("Usuário reativado com sucesso!");
-            lblDesativarStatus.setStyle(STYLE_TEXT_GREEN);
+            notificarPopUp("Usuário reativado com sucesso!");
             txtDesativarId.clear();
             carregarTabela();
         } else {
-            lblDesativarStatus.setText("Este usuário já se encontra inativo.");
-            lblDesativarStatus.setStyle("-fx-text-fill: orange;");
+            tremer(painelDesativar != null ? painelDesativar : txtDesativarId);
+            notificarPopUpErro("Este usuário já se encontra inativo.");
         }
     }
 

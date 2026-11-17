@@ -1,0 +1,47 @@
+.root {
+    -fx-base-bg: #F5F5F7;
+    -fx-base-panel: #FFFFFF;
+    -fx-base-text: #1D1D1F;
+    -fx-base-text-muted: #86868B;
+    -fx-base-border: #E5E5EA;
+    -fx-base-primary: #007AFF;
+    
+    -fx-background-color: -fx-base-bg;
+}
+
+.label {
+    -fx-text-fill: -fx-base-text;
+}
+
+.table-view {
+    -fx-background-color: -fx-base-panel;
+    -fx-border-color: -fx-base-border;
+}
+
+.table-view .column-header-background {
+    -fx-background-color: #F9F9F9;
+}
+
+.table-view .column-header .label {
+    -fx-text-fill: -fx-base-text-muted;
+}
+
+.table-row-cell {
+    -fx-background-color: -fx-base-panel;
+    -fx-text-fill: -fx-base-text;
+}
+
+.table-row-cell:odd {
+    -fx-background-color: #FBFBFD;
+}
+
+.table-row-cell:selected {
+    -fx-background-color: -fx-base-primary;
+    -fx-text-fill: #FFFFFF;
+}
+
+.text-field, .password-field, .combo-box {
+    -fx-background-color: -fx-base-panel;
+    -fx-text-fill: -fx-base-text;
+    -fx-border-color: -fx-base-border;
+}

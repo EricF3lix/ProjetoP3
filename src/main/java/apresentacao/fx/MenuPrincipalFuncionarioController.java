@@ -3,24 +3,48 @@ package apresentacao.fx;
 import entidades.Funcionario;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
+import javafx.scene.layout.StackPane;
 
 public class MenuPrincipalFuncionarioController extends MenuController {
 
-    private static final String PREFIXO_BEM_VINDO = "Bem-vindo(a), ";
+    @FXML
+    private Label lblAvatar;
 
     @FXML
-    private Label lblBemVindo;
-    
+    private Label lblBoasVindas;
+
     @FXML
-    private Label lblPerfil;
+    private StackPane containerTema;
 
     private Funcionario funcionario;
 
     public void setFuncionario(Funcionario funcionario) {
         this.funcionario = funcionario;
-        if (funcionario != null && lblBemVindo != null) {
-            lblBemVindo.setText(PREFIXO_BEM_VINDO + funcionario.getNome());
+        atualizarDadosUsuario();
+    }
+
+    private void atualizarDadosUsuario() {
+        if (funcionario != null) {
+            String nome = funcionario.getNome();
+            if (lblBoasVindas != null) {
+                lblBoasVindas.setText("Bem-vindo(a), " + nome);
+            }
+            if (lblAvatar != null) {
+                lblAvatar.setText(gerarIniciais(nome));
+            }
         }
+    }
+
+    private String gerarIniciais(String nome) {
+        if (nome == null || nome.isBlank()) return "U";
+        String[] partes = nome.trim().split("\\s+");
+        if (partes.length == 1) {
+            String p = partes[0].toUpperCase();
+            return p.length() >= 2 ? p.substring(0, 2) : p;
+        }
+        String primeira = partes[0].substring(0, 1).toUpperCase();
+        String ultima = partes[partes.length - 1].substring(0, 1).toUpperCase();
+        return primeira + ultima;
     }
 
     @Override
@@ -30,30 +54,19 @@ public class MenuPrincipalFuncionarioController extends MenuController {
 
     @Override
     protected void aoExibir() {
-        String nome = (funcionario != null && funcionario.getNome() != null)
-                ? funcionario.getNome()
-                : "Funcionário";
+        atualizarDadosUsuario();
+        garantirToggleTema();
+    }
 
-        if (lblBemVindo != null) {
-            lblBemVindo.setText(PREFIXO_BEM_VINDO + nome);
+    @FXML
+    private void initialize() {
+        garantirToggleTema();
+    }
+
+    private void garantirToggleTema() {
+        if (containerTema != null && containerTema.getChildren().isEmpty()) {
+            containerTema.getChildren().add(new ThemeToggleSwitch());
         }
-        lblPerfil.setText(funcionario.getNome().substring(0,2).toUpperCase());
-        configurarIcones();
-    }
-
-    @FXML
-    private void abrirCategorias() {
-        navegador.abrir("MenuCategorias.fxml");
-    }
-
-    @FXML
-    private void abrirMultas() {
-        navegador.abrir("MenuMultas.fxml");
-    }
-
-    @FXML
-    private void abrirRelatorios() {
-        navegador.abrir("MenuRelatorios.fxml");
     }
 
     @FXML
@@ -67,6 +80,11 @@ public class MenuPrincipalFuncionarioController extends MenuController {
     }
 
     @FXML
+    private void abrirCategorias() {
+        navegador.abrir("MenuCategorias.fxml");
+    }
+
+    @FXML
     private void abrirFornecedores() {
         navegador.abrir("MenuFornecedores.fxml");
     }
@@ -74,5 +92,21 @@ public class MenuPrincipalFuncionarioController extends MenuController {
     @FXML
     private void abrirContratos() {
         navegador.abrir("MenuContratos.fxml");
+    }
+
+    @FXML
+    private void abrirMultas() {
+        navegador.abrir("MenuMultas.fxml");
+    }
+
+    @FXML
+    private void abrirRelatorios() {
+        navegador.abrir("MenuRelatorios.fxml");
+    }
+
+    @FXML
+    @Override
+    public void voltar() {
+        navegador.abrir("MenuLogin.fxml");
     }
 }
