@@ -233,9 +233,10 @@ public class MenuLoginController extends MenuController {
                 } else if (dist < 0.35) {
                     double alfa = (dist - 0.20) / (0.35 - 0.20);
 
-                    double r = Math.min(1.0, Math.max(0.0, (c.getRed() - fundo.getRed() * (1.0 - alfa)) / alfa));
-                    double g = Math.min(1.0, Math.max(0.0, (c.getGreen() - fundo.getGreen() * (1.0 - alfa)) / alfa));
-                    double b = Math.min(1.0, Math.max(0.0, (c.getBlue() - fundo.getBlue() * (1.0 - alfa)) / alfa));
+                    // Correção SonarCloud #1460: Substituição por Math.clamp
+                    double r = Math.clamp((c.getRed() - fundo.getRed() * (1.0 - alfa)) / alfa, 0.0, 1.0);
+                    double g = Math.clamp((c.getGreen() - fundo.getGreen() * (1.0 - alfa)) / alfa, 0.0, 1.0);
+                    double b = Math.clamp((c.getBlue() - fundo.getBlue() * (1.0 - alfa)) / alfa, 0.0, 1.0);
 
                     writer.setColor(x, y, new Color(r, g, b, Math.pow(alfa, 1.2)));
                 } else {
