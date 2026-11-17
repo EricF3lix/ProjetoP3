@@ -396,12 +396,9 @@ public class MenuItensController extends MenuController {
                 try {
                     int id = Integer.parseInt(resultado.get().trim());
 
-                    if (sistema.atualizarItem("ativo","false",id)) {
-                        mostrarAlerta(AlertType.INFORMATION, "Sucesso", "Item desativado com sucesso!");
-                        carregarTabela();
-                    } else {
-                        mostrarAlerta(AlertType.ERROR, "Erro", "Não foi possível desativar o item.");
-                    }
+                    sistema.desativarItem(id);
+                    mostrarAlerta(AlertType.INFORMATION, "Sucesso", "Item desativado com sucesso!");
+                    carregarTabela();
 
                 } catch (NumberFormatException e) {
                     mostrarAlerta(AlertType.ERROR, "Erro", "Digite um ID numérico válido.");
@@ -409,15 +406,11 @@ public class MenuItensController extends MenuController {
             }
             else{return;}
         }
-        if (item != null){
-        if (sistema.atualizarItem("ativo","false",item.getId())) {
+        if (item != null) {
+            sistema.desativarItem(item.getId());
             mostrarAlerta(AlertType.INFORMATION, "Sucesso", "Item desativado com sucesso!");
             carregarTabela();
-        } else {
-            mostrarAlerta(AlertType.ERROR, "Erro", "Não foi possível desativar o item.");
         }
-        }
-
     }
     private void mostrarAlerta(AlertType tipo, String titulo, String mensagem) {
         Alert alert = new Alert(tipo);

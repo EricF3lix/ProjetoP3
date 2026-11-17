@@ -40,4 +40,9 @@ public class JPAItemRepositorioDAO implements IItemRepositorioDAO {
         return true;
     }
 
+    @Override
+    public void desativarItem(int id){
+        manipulaArquivo.desativar(Item.class,id);
+    }
+
 }

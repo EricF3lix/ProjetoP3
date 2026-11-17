@@ -13,4 +13,6 @@ public interface IItemRepositorioDAO {
     public abstract List<Item> buscarItens(String tipofiltro, String filtro);
 
     public abstract boolean atualizar(String coluna, String valor, int id);
+
+    public abstract void desativarItem(int id);
 }

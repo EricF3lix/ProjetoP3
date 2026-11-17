@@ -23,4 +23,6 @@ public interface IGerenciamentoItens {
     public abstract boolean atualizarItem(String coluna,String valor,int id);
 
     public abstract List<Item> filtrarItem(String tipofiltro, String filtro);
+
+    public abstract void desativarItem(int id);
 }

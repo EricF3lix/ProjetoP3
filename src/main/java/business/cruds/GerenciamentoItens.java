@@ -62,4 +62,9 @@ public class GerenciamentoItens implements IGerenciamentoItens {
     public List<Item> filtrarPorTaxa(String pesquisado) {
         return repositorio.buscarItens("taxa",pesquisado);
     }
+
+    @Override
+    public void desativarItem(int id){
+        repositorio.desativarItem(id);
+    }
 }

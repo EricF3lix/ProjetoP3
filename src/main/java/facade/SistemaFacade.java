@@ -199,6 +199,10 @@ public class SistemaFacade {
         return gerenciamentoItens.atualizarItem(coluna,valor,id);
     }
 
+    public void desativarItem(int id){
+        gerenciamentoItens.desativarItem(id);
+    }
+
     // =========================================================================
     // CATEGORIAS
     // =========================================================================
