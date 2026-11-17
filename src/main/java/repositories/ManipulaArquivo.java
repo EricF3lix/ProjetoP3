@@ -39,7 +39,7 @@ public class ManipulaArquivo {
         }
     }
 
-    public <T> List<String[]> carregar(Class<T> a) {
+    public <T> List<String[]> carregar() {
 
         List<String[]> linhas = new ArrayList<>();
 

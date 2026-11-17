@@ -25,29 +25,22 @@ public class JPAItemRepositorioDAO implements IItemRepositorioDAO {
 
     }
 
-    public List<Item> carregar() {
-
-        return manipulaArquivo.carregar(Item.class);
-    }
-
     @Override
     public void adicionar(Item item) {
 
         manipulaArquivo.escrever(item);
-
     }
 
     @Override
     public List<Item> listarTodos() {
 
         return manipulaArquivo.carregarTudo(Item.class);
-
     }
 
     @Override
     public Item buscarPorId(int id) {
-
         ArrayList<Item> retorno = manipulaArquivo.busca(Item.class, "id", id);
+
         if (retorno.isEmpty()){
             return null;
         }

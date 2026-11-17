@@ -1,9 +1,9 @@
 package repositories;
 
+import entidades.Fornecedor;
+
 import java.util.ArrayList;
 import java.util.List;
-
-import entidades.Fornecedor;
 
 public class JPAFornecedorRepositorioDAO implements IFornecedorRepositorioDAO {
 
@@ -34,7 +34,7 @@ public class JPAFornecedorRepositorioDAO implements IFornecedorRepositorioDAO {
                 String telefone = campos[4].trim();
                 boolean ativo = Boolean.parseBoolean(campos[5].trim());
 
-                Fornecedor fornecedor = new Fornecedor(id, razaoSocial, cnpj, email, telefone);
+                Fornecedor fornecedor = new Fornecedor(razaoSocial, cnpj, email, telefone);
 
                 fornecedor.setAtivo(ativo);
 
@@ -102,7 +102,7 @@ public class JPAFornecedorRepositorioDAO implements IFornecedorRepositorioDAO {
 
             if (fornecedor.getCnpj().trim().equals(cnpj.trim())) {
 
-                return fornecedor;    
+                return fornecedor;
 
             }
 
@@ -111,7 +111,7 @@ public class JPAFornecedorRepositorioDAO implements IFornecedorRepositorioDAO {
         return null;
 
     }
-    
+
 
     @Override
     public Fornecedor buscarPorId(int id) {
