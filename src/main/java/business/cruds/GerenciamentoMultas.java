@@ -1,16 +1,16 @@
 package business.cruds;
 
+import java.util.List;
+
 import business.interfaces.IGerenciamentoMultas;
 import entidades.Multa;
-import repositories.IMultaRepositorio;
-
-import java.util.List;
+import repositories.IMultaRepositorioDAO;
 
 public class GerenciamentoMultas implements IGerenciamentoMultas {
 
-    private final IMultaRepositorio repositorio;
+    private final IMultaRepositorioDAO repositorio;
 
-    public GerenciamentoMultas(IMultaRepositorio repositorio) {
+    public GerenciamentoMultas(IMultaRepositorioDAO repositorio) {
         this.repositorio = repositorio;
     }
 

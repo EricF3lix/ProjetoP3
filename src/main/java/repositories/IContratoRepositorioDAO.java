@@ -4,7 +4,7 @@ import entidades.ContratoAluguel;
 
 import java.util.List;
 
-public interface IContratoRepositorio {
+public interface IContratoRepositorioDAO {
 
     public abstract void adicionar(ContratoAluguel contrato);
 

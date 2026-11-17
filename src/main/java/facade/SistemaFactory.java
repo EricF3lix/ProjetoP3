@@ -1,11 +1,26 @@
 package facade;
 
-import business.cruds.*;
-import business.interfaces.*;
+import business.cruds.GerenciamentoCategoria;
+import business.cruds.GerenciamentoContratos;
+import business.cruds.GerenciamentoFornecedor;
+import business.cruds.GerenciamentoItens;
+import business.cruds.GerenciamentoMultas;
+import business.cruds.GerenciamentoUsuarios;
+import business.interfaces.IGerenciamentoCategoria;
+import business.interfaces.IGerenciamentoContratos;
+import business.interfaces.IGerenciamentoFornecedor;
+import business.interfaces.IGerenciamentoItens;
+import business.interfaces.IGerenciamentoMultas;
+import business.interfaces.IGerenciamentoUsuarios;
 import business.relatorios.GeradorRelatorios;
 import business.relatorios.IRelatorios;
 import entidades.Administrador;
-import repositories.*;
+import repositories.JPACategoriaRepositorioDAO;
+import repositories.JPAContratoRepositorioDAO;
+import repositories.JPAFornecedorRepositorioDAO;
+import repositories.JPAItemRepositorioDAO;
+import repositories.JPAMultaRepositorioDAO;
+import repositories.JPAUsuarioRepositorioDAO;
 
 
 public final class SistemaFactory {
@@ -18,12 +33,12 @@ public final class SistemaFactory {
     public static SistemaFacade criar() {
 
         // REPOSITÓRIOS
-        UsuarioRepositorio    usuarioRepositorio    = new UsuarioRepositorio();
-        CategoriaRepositorio  categoriaRepositorio  = new CategoriaRepositorio();
-        FornecedorRepositorio fornecedorRepositorio = new FornecedorRepositorio();
-        ItemRepositorio       itemRepositorio       = new ItemRepositorio(categoriaRepositorio, fornecedorRepositorio);
-        ContratoRepositorio   contratoRepositorio   = new ContratoRepositorio(usuarioRepositorio, itemRepositorio);
-        MultaRepositorio      multaRepositorio      = new MultaRepositorio();
+        JPAUsuarioRepositorioDAO    usuarioRepositorio    = new JPAUsuarioRepositorioDAO();
+        JPACategoriaRepositorioDAO  categoriaRepositorio  = new JPACategoriaRepositorioDAO();
+        JPAFornecedorRepositorioDAO fornecedorRepositorio = new JPAFornecedorRepositorioDAO();
+        JPAItemRepositorioDAO       itemRepositorio       = new JPAItemRepositorioDAO(categoriaRepositorio, fornecedorRepositorio);
+        JPAContratoRepositorioDAO   contratoRepositorio   = new JPAContratoRepositorioDAO(usuarioRepositorio, itemRepositorio);
+        JPAMultaRepositorioDAO      multaRepositorio      = new JPAMultaRepositorioDAO();
 
         // CAMADA DE NEGÓCIO
         IGerenciamentoContratos  gerenciamentoContratos  = new GerenciamentoContratos(contratoRepositorio);

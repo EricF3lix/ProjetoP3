@@ -1,13 +1,13 @@
 package support;
 
 import entidades.ContratoAluguel;
-import repositories.IContratoRepositorio;
+import repositories.IContratoRepositorioDAO;
 
 import java.util.ArrayList;
 import java.util.List;
 
 
-public class FakeContratoRepositorio implements IContratoRepositorio {
+public class FakeContratoRepositorio implements IContratoRepositorioDAO {
 
     private final List<ContratoAluguel> contratos = new ArrayList<>();
     private int chamadasSalvar = 0;
