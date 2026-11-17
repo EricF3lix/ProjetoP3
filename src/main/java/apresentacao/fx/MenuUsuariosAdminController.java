@@ -19,6 +19,7 @@ public class MenuUsuariosAdminController extends MenuUsuariosFuncionarioControll
     private static final String STYLE_TEXT_RED = "-fx-text-fill: red;";
     private static final String STYLE_TEXT_GREEN = "-fx-text-fill: green;";
     private static final String MSG_USUARIO_NAO_ENCONTRADO = "Usuário não encontrado.";
+    private static final String MSG_ID_INVALIDO = "ID inválido.";
 
     @FXML
     private VBox painelAtualizar;
@@ -165,10 +166,10 @@ public class MenuUsuariosAdminController extends MenuUsuariosFuncionarioControll
                 notificarPopUpErro(MSG_USUARIO_NAO_ENCONTRADO);
             }
         } catch (NumberFormatException ex) {
-            lblAtualizarStatus.setText("ID inválido.");
+            lblAtualizarStatus.setText(MSG_ID_INVALIDO);
             lblAtualizarStatus.setStyle(STYLE_TEXT_RED);
             tremer(painelAtualizar != null ? painelAtualizar : lblAtualizarStatus);
-            notificarPopUpErro("ID inválido.");
+            notificarPopUpErro(MSG_ID_INVALIDO);
         }
     }
 
@@ -203,10 +204,10 @@ public class MenuUsuariosAdminController extends MenuUsuariosFuncionarioControll
                 notificarPopUpErro("Erro ao atualizar usuário.");
             }
         } catch (NumberFormatException ex) {
-            lblAtualizarStatus.setText("ID inválido.");
+            lblAtualizarStatus.setText(MSG_ID_INVALIDO);
             lblAtualizarStatus.setStyle(STYLE_TEXT_RED);
             tremer(painelAtualizar != null ? painelAtualizar : lblAtualizarStatus);
-            notificarPopUpErro("ID inválido.");
+            notificarPopUpErro(MSG_ID_INVALIDO);
         }
     }
 
