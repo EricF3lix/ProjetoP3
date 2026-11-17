@@ -5,12 +5,26 @@ import java.util.List;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityTransaction;
-import jakarta.persistence.PersistenceException;
-import jakarta.persistence.QueryTimeoutException;
 
-public class ManipulaArquivo<T> {
+public class ManipulaArquivo {
 	
-	public <T> void atualizar(Class<T> tipo, String atributo, Object valor, int id) {
+	public <T, V> ArrayList<T> buscar(Class<T> tipo, String atributo, V valor) {
+	    EntityManager em = JPAUtil.getEntityManager();
+
+	    try {
+	        List<T> lista = em.createQuery(
+	                "select a from " + tipo.getName()
+	                + " a where lower(cast(a." + atributo + " as String)) like lower(:valor) order by a.id", tipo)
+	            .setParameter("valor", valor + "%")
+	            .getResultList();
+	        return new ArrayList<>(lista);
+	    }
+	    finally {
+	        em.close();
+	    }
+	}
+	
+	public <T, V> void atualizar(Class<T> tipo, String atributo, V valor, int id) {
 	    EntityManager em = JPAUtil.getEntityManager();
 	    EntityTransaction et = em.getTransaction();
 
@@ -86,20 +100,6 @@ public class ManipulaArquivo<T> {
         	
         }
         
-        catch (IllegalArgumentException | IllegalStateException e) {
-        // Erro na query
-        throw e; 
-        } 
-        
-        catch (QueryTimeoutException e) {
-        // Timeout na execução da query.
-        throw e;
-        } 
-        
-        catch (PersistenceException e) {
-        // Erro de persistência
-        throw e;
-    }
         finally {
         	em.close();
         }
