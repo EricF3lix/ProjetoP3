@@ -155,56 +155,77 @@ public class MenuLoginController extends MenuController {
         }
     }
 
+    // --- CORREÇÃO ISSUE #1456: Métodos divididos para reduzir Complexidade Cognitiva ---
+    
     private void carregarLogo() {
-        URL url = null;
-        String[] nomes = {"logo.jpg", "logo.png", "logo.jpeg", "logo.webp"};
-
-        for (String nome : nomes) {
-            url = MenuLoginController.class.getResource("/imagens/" + nome);
-            if (url == null) {
-                url = MenuLoginController.class.getClassLoader().getResource("imagens/" + nome);
-            }
-            if (url != null) break;
-        }
-
+        URL url = buscarLogoNosRecursos();
+        
         if (url == null) {
-            File pasta = new File("src/main/resources/imagens");
-            if (pasta.exists() && pasta.isDirectory()) {
-                File[] arquivos = pasta.listFiles((dir, name) -> {
-                    String n = name.toLowerCase();
-                    return n.startsWith("logo") || n.endsWith(".png") || n.endsWith(".jpg") || n.endsWith(".jpeg");
-                });
-                if (arquivos != null && arquivos.length > 0) {
-                    try {
-                        url = arquivos[0].toURI().toURL();
-                    } catch (Exception ignored) {
-                        // Correção SonarCloud #1457: Bloco intencionalmente vazio. 
-                        // Se falhar ao ler o arquivo físico, a variável 'url' continua nula
-                        // e o sistema exibe a label do logo padrão de forma segura.
-                    }
-                }
-            }
+            url = buscarLogoNoDiretorioLocal();
         }
 
         if (url != null) {
-            try {
-                Image original = new Image(url.toExternalForm(), false);
-                Image renderizada = tornarFundoTransparente(original);
-
-                imgLogo.setImage(renderizada != null ? renderizada : original);
-                imgLogo.setPreserveRatio(true);
-                imgLogo.setSmooth(true);
-                imgLogo.setVisible(true);
-                lblLogoPadrao.setVisible(false);
-            } catch (Exception e) {
-                lblLogoPadrao.setVisible(true);
-                imgLogo.setVisible(false);
-            }
+            aplicarImagemLogo(url);
         } else {
-            lblLogoPadrao.setVisible(true);
-            imgLogo.setVisible(false);
+            exibirLogoPadrao();
         }
     }
+
+    private URL buscarLogoNosRecursos() {
+        String[] nomes = {"logo.jpg", "logo.png", "logo.jpeg", "logo.webp"};
+        for (String nome : nomes) {
+            URL url = MenuLoginController.class.getResource("/imagens/" + nome);
+            if (url == null) {
+                url = MenuLoginController.class.getClassLoader().getResource("imagens/" + nome);
+            }
+            if (url != null) {
+                return url;
+            }
+        }
+        return null;
+    }
+
+    private URL buscarLogoNoDiretorioLocal() {
+        File pasta = new File("src/main/resources/imagens");
+        if (pasta.exists() && pasta.isDirectory()) {
+            File[] arquivos = pasta.listFiles((dir, name) -> {
+                String n = name.toLowerCase();
+                return n.startsWith("logo") || n.endsWith(".png") || n.endsWith(".jpg") || n.endsWith(".jpeg");
+            });
+            if (arquivos != null && arquivos.length > 0) {
+                try {
+                    return arquivos[0].toURI().toURL();
+                } catch (Exception ignored) {
+                    // Correção SonarCloud #1457: Bloco intencionalmente vazio. 
+                    // Se falhar ao ler o arquivo físico, a variável 'url' continua nula
+                    // e o sistema exibe a label do logo padrão de forma segura.
+                }
+            }
+        }
+        return null;
+    }
+
+    private void aplicarImagemLogo(URL url) {
+        try {
+            Image original = new Image(url.toExternalForm(), false);
+            Image renderizada = tornarFundoTransparente(original);
+
+            imgLogo.setImage(renderizada != null ? renderizada : original);
+            imgLogo.setPreserveRatio(true);
+            imgLogo.setSmooth(true);
+            imgLogo.setVisible(true);
+            lblLogoPadrao.setVisible(false);
+        } catch (Exception e) {
+            exibirLogoPadrao();
+        }
+    }
+
+    private void exibirLogoPadrao() {
+        lblLogoPadrao.setVisible(true);
+        imgLogo.setVisible(false);
+    }
+    
+    // --------------------------------------------------------------------------------
 
     private Image tornarFundoTransparente(Image img) {
         if (img == null) return null;
@@ -237,6 +258,7 @@ public class MenuLoginController extends MenuController {
                 } else if (dist < 0.35) {
                     double alfa = (dist - 0.20) / (0.35 - 0.20);
 
+                    // Correção SonarCloud #1460: Substituição por Math.clamp
                     double r = Math.clamp((c.getRed() - fundo.getRed() * (1.0 - alfa)) / alfa, 0.0, 1.0);
                     double g = Math.clamp((c.getGreen() - fundo.getGreen() * (1.0 - alfa)) / alfa, 0.0, 1.0);
                     double b = Math.clamp((c.getBlue() - fundo.getBlue() * (1.0 - alfa)) / alfa, 0.0, 1.0);
