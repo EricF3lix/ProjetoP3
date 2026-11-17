@@ -4,7 +4,7 @@ import entidades.Categoria;
 
 import java.util.List;
 
-public interface ICategoriaRepositorioDAO {
+public interface ICategoriaRepositorioDAO{
 
     public abstract void adicionar(Categoria categoria);
 

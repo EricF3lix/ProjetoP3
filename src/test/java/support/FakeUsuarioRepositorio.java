@@ -1,12 +1,12 @@
 package support;
 
 import entidades.Usuario;
-import repositories.IUsuarioRepositorio;
+import repositories.IUsuarioRepositorioDAO;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class FakeUsuarioRepositorio implements IUsuarioRepositorio {
+public class FakeUsuarioRepositorio implements IUsuarioRepositorioDAO {
 
     private final List<Usuario> usuarios = new ArrayList<>();
     private int chamadasSalvar = 0;

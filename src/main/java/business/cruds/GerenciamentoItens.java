@@ -2,15 +2,15 @@ package business.cruds;
 
 import business.interfaces.IGerenciamentoItens;
 import entidades.Item;
-import repositories.IItemRepositorio;
+import repositories.IItemRepositorioDAO;
 
 import java.util.List;
 
 public class GerenciamentoItens implements IGerenciamentoItens {
 
-    private final IItemRepositorio repositorio;
+    private final IItemRepositorioDAO repositorio;
 
-    public GerenciamentoItens(IItemRepositorio repositorio) {
+    public GerenciamentoItens(IItemRepositorioDAO repositorio) {
         this.repositorio = repositorio;
     }
 

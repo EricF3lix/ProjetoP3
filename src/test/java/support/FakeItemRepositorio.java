@@ -1,13 +1,13 @@
 package support;
 
 import entidades.Item;
-import repositories.IItemRepositorio;
+import repositories.IItemRepositorioDAO;
 
 import java.util.ArrayList;
 import java.util.List;
 
 
-public class FakeItemRepositorio implements IItemRepositorio {
+public class FakeItemRepositorio implements IItemRepositorioDAO {
 
     private final List<Item> itens = new ArrayList<>();
     private int chamadasSalvar = 0;
