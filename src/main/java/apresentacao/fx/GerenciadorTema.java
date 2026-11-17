@@ -89,9 +89,9 @@ public class GerenciadorTema {
         }
 
         String orig = (String) no.getProperties().get(ORIG_STYLE_KEY);
-        if (orig == null || orig.isEmpty()) return;
+        // Correção: removida a verificação redundante 'orig == null' pois a propriedade nunca é nula
+        if (orig.isEmpty()) return;
 
-        // Utilização de operador ternário/atribuição limpa para satisfazer a regra do SonarCloud na linha 76
         String s = dark 
             ? orig.replaceAll("(?i)#007aff|#6d28d9|#7c3aed|#5b21b6", "#0A84FF")
                   .replaceAll("(?i)#f2f5f9|#f5f5f7|#f5f3ff|#f3f4f6", "#121214")

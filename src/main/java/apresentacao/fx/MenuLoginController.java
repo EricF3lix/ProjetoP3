@@ -194,7 +194,7 @@ public class MenuLoginController extends MenuController {
                 try {
                     return arquivos[0].toURI().toURL();
                 } catch (Exception ignored) {
-                    // Bloco intencionalmente vazio e tratado com segurança
+                    // Bloco intencionalmente vazio
                 }
             }
         }
@@ -206,7 +206,8 @@ public class MenuLoginController extends MenuController {
             Image original = new Image(url.toExternalForm(), false);
             Image renderizada = tornarFundoTransparente(original);
 
-            imgLogo.setImage(renderizada != null ? renderizada : original);
+            // Correção: removida a checagem redundante 'renderizada != null' pois nunca é nula
+            imgLogo.setImage(renderizada);
             imgLogo.setPreserveRatio(true);
             imgLogo.setSmooth(true);
             imgLogo.setVisible(true);
