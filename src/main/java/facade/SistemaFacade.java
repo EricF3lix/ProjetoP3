@@ -1,10 +1,20 @@
 package facade;
 
-import business.interfaces.*;
-import business.relatorios.IRelatorios;
-import entidades.*;
-
 import java.util.List;
+
+import business.interfaces.IGerenciamentoCategoria;
+import business.interfaces.IGerenciamentoContratos;
+import business.interfaces.IGerenciamentoFornecedor;
+import business.interfaces.IGerenciamentoItens;
+import business.interfaces.IGerenciamentoMultas;
+import business.interfaces.IGerenciamentoUsuarios;
+import business.relatorios.IRelatorios;
+import entidades.Categoria;
+import entidades.ContratoAluguel;
+import entidades.Fornecedor;
+import entidades.Item;
+import entidades.Multa;
+import entidades.Usuario;
 
 public class SistemaFacade {
 
@@ -325,10 +335,6 @@ public class SistemaFacade {
 
     public boolean quitarMulta(int id) {
         return gerenciamentoMultas.quitarMulta(id);
-    }
-
-    public int gerarProximoIdMulta() {
-        return gerenciamentoMultas.gerarProximoId();
     }
 
     // =========================================================================
