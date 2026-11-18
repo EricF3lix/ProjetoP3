@@ -17,10 +17,6 @@ public class GerenciamentoMultas implements IGerenciamentoMultas {
     @Override
     public boolean registrarMulta(Multa multa) {
 
-        if (repositorio.buscarPorId(multa.getId()) != null) {
-            return false;
-        }
-
         repositorio.adicionar(multa);
 
         return true;
@@ -55,16 +51,9 @@ public class GerenciamentoMultas implements IGerenciamentoMultas {
             return false;
         }
 
-        multa.pagar();
-
-        repositorio.salvar();
+        repositorio.atualizar("paga", true, id);
 
         return true;
     }
 
-
-    @Override
-    public int gerarProximoId() {
-        return repositorio.gerarProximoId();
-    }
 }
