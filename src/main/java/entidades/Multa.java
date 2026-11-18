@@ -1,21 +1,27 @@
 package entidades;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 
 @Entity
 public class Multa {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-    private final int idContrato;
-    private final String tipo;
-    private final String descricao;
+    private int idContrato;
+    private String tipo;
+    @Column(length = 500)
+    private String descricao;
     private double valor;
     private boolean paga;
-    private final String dataCriacao;
+    private String dataCriacao;
+
+    protected Multa() {
+    }
 
     public Multa(int idContrato, String tipo, String descricao, double valor, String dataCriacao) {
         this.idContrato = idContrato;
@@ -25,8 +31,6 @@ public class Multa {
         this.paga = false;
         this.dataCriacao = dataCriacao;
     }
-
-   
 
     public int getId() {
         return id;
@@ -56,7 +60,6 @@ public class Multa {
         return dataCriacao;
     }
 
-    
     public void setValor(double valor) {
         this.valor = valor;
     }
@@ -64,8 +67,6 @@ public class Multa {
     public void setPaga(boolean paga) {
         this.paga = paga;
     }
-
-    
 
     public void pagar() {
         this.paga = true;

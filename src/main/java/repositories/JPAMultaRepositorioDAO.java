@@ -26,10 +26,6 @@ public class JPAMultaRepositorioDAO implements IMultaRepositorioDAO {
         return manipulaArquivo.carregarTudo(Multa.class);
     }
 
-    /**
-     * O buscar() genérico compara pelo COMEÇO do texto (buscar o id 1 também traz 10, 11, 100...),
-     * por isso o filtro exato logo depois.
-     */
     @Override
     public Multa buscarPorId(int id) {
         return manipulaArquivo.buscar(Multa.class, "id", id).stream().filter(multa -> multa.getId() == id).findFirst().orElse(null);
