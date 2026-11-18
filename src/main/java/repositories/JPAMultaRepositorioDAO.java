@@ -1,136 +1,53 @@
 package repositories;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import entidades.Multa;
 
-
 public class JPAMultaRepositorioDAO implements IMultaRepositorioDAO {
 
-    private static final String ARQUIVO = "dados/multas.csv";
-
-    private final List<Multa> multas;
     private final ManipulaArquivo manipulaArquivo;
 
     public JPAMultaRepositorioDAO() {
-
-        manipulaArquivo = new ManipulaArquivo(ARQUIVO);
-
-        multas = carregar();
-
-    }
-    public List<Multa> carregar() {
-
-        List<Multa> lista = new ArrayList<>();
-
-        for (String[] campos : manipulaArquivo.carregar()) {
-
-            if (campos.length >= 7) {
-
-                int id = Integer.parseInt(campos[0].trim());
-                int idContrato = Integer.parseInt(campos[1].trim());
-                String tipo = campos[2].trim();
-                String descricao = campos[3].trim();
-                double valor = Double.parseDouble(campos[4].trim());
-                boolean paga = Boolean.parseBoolean(campos[5].trim());
-                String dataCriacao = campos[6].trim();
-
-                Multa multa = new Multa(id, idContrato, tipo, descricao, valor, dataCriacao);
-
-                multa.setPaga(paga);
-
-                lista.add(multa);
-
-            }
-
-        }
-
-        return lista;
-
+        this(new ManipulaArquivo());
     }
 
-    public void salvar() {
-
-        List<String[]> linhas = new ArrayList<>();
-
-        linhas.add(new String[]{"id","idContrato","tipo","descricao","valor","paga","dataCriacao"});
-
-        for (Multa multa : multas) {
-
-            linhas.add(new String[]{String.valueOf(multa.getId()),String.valueOf(multa.getIdContrato()),multa.getTipo(),multa.getDescricao().replace(",", ";"),String.valueOf(multa.getValor()),String.valueOf(multa.isPaga()),multa.getDataCriacao()});
-
-        }
-
-        manipulaArquivo.salvar(linhas);
-
+    public JPAMultaRepositorioDAO(ManipulaArquivo manipulaArquivo) {
+        this.manipulaArquivo = manipulaArquivo;
     }
 
     @Override
     public void adicionar(Multa multa) {
-
-        multas.add(multa);
-
-        salvar();
-
+        manipulaArquivo.escrever(multa);
     }
 
     @Override
     public List<Multa> listarTodos() {
-
-        return multas;
-
+        return manipulaArquivo.carregarTudo(Multa.class);
     }
 
+    /**
+     * O buscar() genérico compara pelo COMEÇO do texto (buscar o id 1 também traz 10, 11, 100...),
+     * por isso o filtro exato logo depois.
+     */
     @Override
     public Multa buscarPorId(int id) {
-
-        for (Multa multa : multas) {
-
-            if (multa.getId() == id) {
-
-                return multa;
-
-            }
-
-        }
-
-        return null;
-
+        return manipulaArquivo.buscar(Multa.class, "id", id).stream().filter(multa -> multa.getId() == id).findFirst().orElse(null);
     }
 
     @Override
     public List<Multa> buscarPorContrato(int idContrato) {
-        return multas.stream()
-                .filter(multa -> multa.getIdContrato() == idContrato)
-                .toList();
+        return manipulaArquivo.buscar(Multa.class, "idContrato", idContrato).stream().filter(multa -> multa.getIdContrato() == idContrato).toList();
     }
 
     @Override
     public List<Multa> buscarPendentes() {
-        return multas.stream()
-                .filter(multa -> !multa.isPaga())
-                .toList();
+        return manipulaArquivo.carregarTudo(Multa.class).stream().filter(multa -> !multa.isPaga()).toList();
     }
 
-
     @Override
-    public int gerarProximoId() {
-
-        int maiorId = 0;
-
-        for (Multa multa : multas) {
-
-            if (multa.getId() > maiorId) {
-
-                maiorId = multa.getId();
-
-            }
-
-        }
-
-        return maiorId + 1;
-
+    public void atualizar(String coluna, Object valor, int id) {
+        manipulaArquivo.atualizar(Multa.class, coluna, valor, id);
     }
 
 }
