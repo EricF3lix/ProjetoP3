@@ -302,13 +302,12 @@ public class MenuMultasController extends MenuController {
         ContratoAluguel contratoSelecionado = listaContratosOpcoes.get(posContrato);
         int idcontrato = contratoSelecionado.getId();
 
-        int id = sistema.gerarProximoIdMulta();
         String data = LocalDate.now(ZoneId.of("America/Recife")).toString();
 
-        Multa multa = new Multa(id, idcontrato, tipo, descricaomulta, valor, data);
+        Multa multa = new Multa(idcontrato, tipo, descricaomulta, valor, data);
 
         if (sistema.registrarMulta(multa)) {
-            notificarPopUp("Multa cadastrada com sucesso! ID: " + id);
+            notificarPopUp("Multa cadastrada com sucesso! ID: " + multa.getId());
             contratoSelecionado.setMultaPaga(false);
             contratoSelecionado.setValorMulta(valor);
             esconderTabela();
