@@ -9,14 +9,11 @@ import entidades.Categoria;
 
 public class JPACategoriaRepositorioDAO implements ICategoriaRepositorioDAO {
 
-    private static final String ARQUIVO = "dados/categorias.csv";
-
     private final ManipulaArquivo manipulaArquivo;
 
     public JPACategoriaRepositorioDAO() {
 
-        manipulaArquivo = new ManipulaArquivo(ARQUIVO);
-
+        manipulaArquivo = new ManipulaArquivo();
     }
 
     @Override
@@ -38,21 +35,13 @@ public class JPACategoriaRepositorioDAO implements ICategoriaRepositorioDAO {
     }
 
     @Override
-    public Categoria buscarPorId(int id) {
-        ArrayList<Categoria> retorno = manipulaArquivo.buscar(Categoria.class,"id",id);
-
-        if (retorno.isEmpty()){return null;}
-
-        return retorno.getFirst();
+    public ArrayList<Categoria> buscar(String tipo, String valor){
+        return manipulaArquivo.buscar(Categoria.class,tipo,valor);
     }
 
     @Override
-    public Categoria buscarPorNome(String nome) {
-        ArrayList<Categoria> retorno = manipulaArquivo.buscar(Categoria.class,"nome",nome);
-
-        if (retorno.isEmpty()){return null;}
-
-        return retorno.getFirst();
+    public void desativarCtegoria(int id){
+        manipulaArquivo.desativar(Categoria.class,id);
     }
 
 }

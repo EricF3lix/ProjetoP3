@@ -153,11 +153,10 @@ public class MenuCategoriasController extends MenuController {
             return;
         }
 
-        int id = sistema.gerarProximoIdCategoria();
-        Categoria categoria = new Categoria(id, nome, descricao);
+        Categoria categoria = new Categoria(nome, descricao);
 
         if (sistema.cadastrarCategoria(categoria)) {
-        	notificarPopUp("Categoria cadastrada com sucesso! ID: " + id);
+        	notificarPopUp("Categoria cadastrada com sucesso!");
             txtNome.clear();
             txtDescricao.clear();
             listarCategorias();
@@ -178,15 +177,13 @@ public class MenuCategoriasController extends MenuController {
             return;
         }
 
-        if (sistema.atualizarCategoria(new Categoria(atual.getId(), nome, descricao))) {
+        sistema.atualizarCategoria("nome",atual.getNome(), atual.getId());
+        sistema.atualizarCategoria("descricao",atual.getDescricao(), atual.getId());
         	notificarPopUp("Categoria atualizada com sucesso!");
             btnAtualizar.setUserData(null);
             txtNome.clear();
             txtDescricao.clear();
             listarCategorias();
-        } else {
-        	notificarPopUpErro("Erro ao atualizar categoria.");
-        }
     }
 
     @FXML private void desativarCategoria() {
@@ -203,17 +200,6 @@ public class MenuCategoriasController extends MenuController {
         } else {
         	notificarPopUpErro("Erro ao desativar categoria.");
         }
-    }
-
-    @FXML private void buscarCategoria() {
-        pedirInteiro(ID_CATEGORIA).ifPresent(id -> {
-            Categoria c = sistema.buscarCategoria(id);
-            if (c != null) {
-                pesquisa.setText(String.valueOf(id));
-            } else {
-            	notificarPopUpErro(NAO_ENCONTRADA);
-            }
-        });
     }
 
     @FXML private void listarCategorias() {
