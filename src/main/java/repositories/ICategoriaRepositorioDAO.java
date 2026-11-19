@@ -2,6 +2,7 @@ package repositories;
 
 import entidades.Categoria;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public interface ICategoriaRepositorioDAO{
@@ -10,10 +11,10 @@ public interface ICategoriaRepositorioDAO{
 
     public abstract List<Categoria> listarTodos();
 
-    public abstract Categoria buscarPorId(int id);
-
-    public abstract Categoria buscarPorNome(String nome);
+    public ArrayList<Categoria> buscar(String tipo, String valor);
 
     public abstract void atualizar(String coluna, String valor, int id);
+
+    public abstract void desativarCtegoria(int id);
 
 }

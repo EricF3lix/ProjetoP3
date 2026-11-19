@@ -219,16 +219,12 @@ public class SistemaFacade {
         return gerenciamentoCategoria.listarCategorias();
     }
 
-    public boolean atualizarCategoria(Categoria categoriaNova) {
-        return gerenciamentoCategoria.atualizarCategoria(categoriaNova);
+    public boolean atualizarCategoria(String coluna, String valor, int id) {
+        return gerenciamentoCategoria.atualizarCategoria(coluna,valor,id);
     }
 
     public boolean desativarCategoria(int id) {
         return gerenciamentoCategoria.desativarCategoria(id);
-    }
-
-    public int gerarProximoIdCategoria() {
-        return gerenciamentoCategoria.gerarProximoId(); 
     }
     
     public List<Categoria> buscarCategoriaPorId(String id) {
