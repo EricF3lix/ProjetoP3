@@ -7,14 +7,13 @@ import java.util.List;
 
 public class JPAFornecedorRepositorioDAO implements IFornecedorRepositorioDAO {
 
-    private static final String ARQUIVO = "dados/fornecedores.csv";
 
     private final List<Fornecedor> fornecedores;
     private final ManipulaArquivo manipulaArquivo;
 
     public JPAFornecedorRepositorioDAO() {
 
-        manipulaArquivo = new ManipulaArquivo(ARQUIVO);
+        manipulaArquivo = new ManipulaArquivo();
         fornecedores = carregar();
 
     }

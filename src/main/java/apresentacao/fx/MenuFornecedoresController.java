@@ -142,7 +142,7 @@ public class MenuFornecedoresController extends MenuController{
 		}
 		
 		int id = sistema.gerarProximoIdFornecedor();
-		Fornecedor fornecedor = new Fornecedor(id, nomeFornecedor, cnpjFornecedor, emailFornecedor, telefoneFornecedor);
+		Fornecedor fornecedor = new Fornecedor(nomeFornecedor, cnpjFornecedor, emailFornecedor, telefoneFornecedor);
 		
 		if(sistema.cadastrarFornecedor(fornecedor)) {
 			notificarPopUp("Fornecedor cadastrado com sucesso! ID: " + id);
@@ -203,7 +203,7 @@ public class MenuFornecedoresController extends MenuController{
 
 		int id = atual.getId();
 
-		if (sistema.atualizarFornecedor(new Fornecedor(id, nome, cnpj, email, telefone))) {
+		if (sistema.atualizarFornecedor(new Fornecedor(nome, cnpj, email, telefone))) {
 			notificarPopUp("Fornecedor atualizado com sucesso.");
 			btnAtualizar.setUserData(null);
 			txtNome.clear();
