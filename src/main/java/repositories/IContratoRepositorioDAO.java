@@ -1,8 +1,8 @@
 package repositories;
 
-import entidades.ContratoAluguel;
-
 import java.util.List;
+
+import entidades.ContratoAluguel;
 
 public interface IContratoRepositorioDAO {
 
@@ -16,9 +16,6 @@ public interface IContratoRepositorioDAO {
 
     public abstract ContratoAluguel buscarContratoAtivoPorItem(int idItem);
 
-    public abstract void remover(ContratoAluguel contrato);
-    
-    public abstract void salvar();
-
+    public abstract void atualizar(ContratoAluguel contrato);
 
 }
