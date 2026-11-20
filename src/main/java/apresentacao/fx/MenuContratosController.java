@@ -294,13 +294,12 @@ public class MenuContratosController extends MenuController {
 
         long quantidadeDias = ChronoUnit.DAYS.between(dataInicio, dataFinal);
         double valorTotal = quantidadeDias * item.getTaxaDiaria();
-        int idContrato = sistema.gerarProximoIdContrato();
 
         ContratoAluguel aluguel = new ContratoAluguel(cliente, item, dataInicio.toString(), dataFinal.toString(), valorTotal);
 
         if (sistema.cadastrarContrato(aluguel)) {
             item.alugar();
-            notificarPopUp("Aluguel registrado com sucesso! ID do Contrato: " + idContrato);
+            notificarPopUp("Aluguel registrado com sucesso! ID do Contrato: " + aluguel.getId() + "\nValor total: R$ " + String.format("%.2f", valorTotal));
             limparFormulario();
             carregarTabela();
             mostrarTabela();
@@ -397,7 +396,7 @@ public class MenuContratosController extends MenuController {
         }
         contrato.getItem().devolver();
 
-        if (sistema.finalizarContrato(contrato.getId())) {
+        if (sistema.finalizarContrato(contrato.getId(), real.toString())) {
             carregarTabela();
         } else {
         	notificarPopUpErro("Erro ao finalizar contrato.");

@@ -16,6 +16,5 @@ public interface IContratoRepositorioDAO {
 
     public abstract ContratoAluguel buscarContratoAtivoPorItem(int idItem);
 
-    public abstract void atualizar(ContratoAluguel contrato);
-
+    public abstract void atualizar(String coluna, Object valor, int id);
 }

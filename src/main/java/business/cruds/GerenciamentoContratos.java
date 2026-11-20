@@ -1,12 +1,12 @@
 package business.cruds;
 
-import business.interfaces.IGerenciamentoContratos;
-import entidades.ContratoAluguel;
-import repositories.IContratoRepositorioDAO;
-
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
+
+import business.interfaces.IGerenciamentoContratos;
+import entidades.ContratoAluguel;
+import repositories.IContratoRepositorioDAO;
 
 public class GerenciamentoContratos implements IGerenciamentoContratos {
 
@@ -26,7 +26,7 @@ public class GerenciamentoContratos implements IGerenciamentoContratos {
         repositorio.adicionar(contrato);
 
         contrato.getItem().alugar();
-        repositorio.atualizar(contrato);
+        repositorio.atualizar("status", "ATIVO", contrato.getId());
 
         return true;
     }
@@ -64,7 +64,7 @@ public class GerenciamentoContratos implements IGerenciamentoContratos {
         contrato.getItem().devolver();
         contrato.finalizarContrato();
 
-        repositorio.atualizar(contrato);
+        repositorio.atualizar("status", "FINALIZADO", contrato.getId());
 
         return true;
     }
@@ -87,7 +87,6 @@ public class GerenciamentoContratos implements IGerenciamentoContratos {
                 .toList();
     }
 
-    /** Só cancela contrato ativo; o item volta ao estoque. */
     @Override
     public boolean cancelarContrato(int id) {
 
@@ -100,7 +99,7 @@ public class GerenciamentoContratos implements IGerenciamentoContratos {
         contrato.cancelarContrato();
         contrato.getItem().devolver();
 
-        repositorio.atualizar(contrato);
+        repositorio.atualizar("status", "CANCELADO", contrato.getId());
 
         return true;
     }
@@ -120,7 +119,7 @@ public class GerenciamentoContratos implements IGerenciamentoContratos {
 
         contrato.setMultaPaga(true);
 
-        repositorio.atualizar(contrato);
+        repositorio.atualizar("multaPaga", true, contrato.getId());
 
         return true;
     }

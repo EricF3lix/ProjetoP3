@@ -28,7 +28,7 @@ public class JPAContratoRepositorioDAO implements IContratoRepositorioDAO {
 
     @Override
     public ContratoAluguel buscarPorId(int id) {
-        return manipulaArquivo.buscarPorId(ContratoAluguel.class, id);
+        return manipulaArquivo.buscar(ContratoAluguel.class, "id", id).stream().filter(contrato -> contrato.getId() == id).findFirst().orElse(null);
     }
 
     @Override
@@ -47,8 +47,8 @@ public class JPAContratoRepositorioDAO implements IContratoRepositorioDAO {
     }
 
     @Override
-    public void atualizar(ContratoAluguel contrato) {
-        manipulaArquivo.mesclar(contrato);
+    public void atualizar(String coluna, Object valor, int id) {
+        manipulaArquivo.atualizar(ContratoAluguel.class, coluna, valor, id);
     }
 
 }
