@@ -296,8 +296,7 @@ public class MenuContratosController extends MenuController {
         double valorTotal = quantidadeDias * item.getTaxaDiaria();
         int idContrato = sistema.gerarProximoIdContrato();
 
-        ContratoAluguel aluguel = new ContratoAluguel(
-                idContrato, cliente, item, dataInicio.toString(), dataFinal.toString(), valorTotal);
+        ContratoAluguel aluguel = new ContratoAluguel(cliente, item, dataInicio.toString(), dataFinal.toString(), valorTotal);
 
         if (sistema.cadastrarContrato(aluguel)) {
             item.alugar();
@@ -390,7 +389,7 @@ public class MenuContratosController extends MenuController {
             contrato.setMultaPaga(false);
             notificarPopUp(String.format("Contrato finalizado com atraso de %d dia(s). Multa gerada: R$ %.2f", diasAtraso, multa));
             String data = LocalDate.now(ZoneId.of("America/Recife")).toString();
-            Multa multaNova = new Multa(sistema.gerarProximoIdMulta(), contrato.getId(),"Atraso na devolução","Multa gerada automaticamente", multa, data);
+            Multa multaNova = new Multa(contrato.getId(),"Atraso na devolução","Multa gerada automaticamente", multa, data);
             sistema.registrarMulta(multaNova);
 
         } else {
