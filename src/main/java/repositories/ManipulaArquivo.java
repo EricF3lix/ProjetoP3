@@ -7,6 +7,18 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityTransaction;
 
 public class ManipulaArquivo {
+	
+	public <T> T buscaUnica(Class<T> tipo, int id) {
+		EntityManager em = JPAUtil.getEntityManager();
+		
+		try {
+			return em.find(tipo, id);
+		}
+		
+		finally {
+			em.close();
+		}
+	}
 
 	public <T, V> ArrayList<T> buscar(Class<T> tipo, String atributo, V valor) {
 	    EntityManager em = JPAUtil.getEntityManager();
