@@ -294,14 +294,12 @@ public class MenuContratosController extends MenuController {
 
         long quantidadeDias = ChronoUnit.DAYS.between(dataInicio, dataFinal);
         double valorTotal = quantidadeDias * item.getTaxaDiaria();
-        int idContrato = sistema.gerarProximoIdContrato();
 
-        ContratoAluguel aluguel = new ContratoAluguel(
-                idContrato, cliente, item, dataInicio.toString(), dataFinal.toString(), valorTotal);
+        ContratoAluguel aluguel = new ContratoAluguel(cliente, item, dataInicio.toString(), dataFinal.toString(), valorTotal);
 
         if (sistema.cadastrarContrato(aluguel)) {
             item.alugar();
-            notificarPopUp("Aluguel registrado com sucesso! ID do Contrato: " + idContrato);
+            notificarPopUp("Aluguel registrado com sucesso! ID do Contrato: " + aluguel.getId() + "\nValor total: R$ " + String.format("%.2f", valorTotal));
             limparFormulario();
             carregarTabela();
             mostrarTabela();
@@ -390,7 +388,7 @@ public class MenuContratosController extends MenuController {
             contrato.setMultaPaga(false);
             notificarPopUp(String.format("Contrato finalizado com atraso de %d dia(s). Multa gerada: R$ %.2f", diasAtraso, multa));
             String data = LocalDate.now(ZoneId.of("America/Recife")).toString();
-            Multa multaNova = new Multa(sistema.gerarProximoIdMulta(), contrato.getId(),"Atraso na devolução","Multa gerada automaticamente", multa, data);
+            Multa multaNova = new Multa(contrato.getId(),"Atraso na devolução","Multa gerada automaticamente", multa, data);
             sistema.registrarMulta(multaNova);
 
         } else {
@@ -398,7 +396,7 @@ public class MenuContratosController extends MenuController {
         }
         contrato.getItem().devolver();
 
-        if (sistema.finalizarContrato(contrato.getId())) {
+        if (sistema.finalizarContrato(contrato.getId(), real.toString())) {
             carregarTabela();
         } else {
         	notificarPopUpErro("Erro ao finalizar contrato.");

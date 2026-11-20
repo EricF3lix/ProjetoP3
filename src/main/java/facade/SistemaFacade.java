@@ -114,8 +114,8 @@ public class SistemaFacade {
         return gerenciamentoContratos.filtrarContratos(filtro);
     }
 
-    public boolean finalizarContrato(int id) {
-        return gerenciamentoContratos.finalizarContrato(id);
+    public boolean finalizarContrato(int id, String dataDevolucaoReal) {
+        return gerenciamentoContratos.finalizarContrato(id, dataDevolucaoReal);
     }
 
     public boolean cancelarContrato(int id) {
@@ -130,9 +130,6 @@ public class SistemaFacade {
         return gerenciamentoContratos.clientePossuiHistorico(idCliente);
     }
 
-    public int gerarProximoIdContrato() {
-        return gerenciamentoContratos.gerarProximoId();
-    }
     public boolean quitarMultaContrato(int idContrato) {
         return gerenciamentoContratos.quitarMultaContrato(idContrato);
     }

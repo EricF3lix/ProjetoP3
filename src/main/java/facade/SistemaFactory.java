@@ -37,7 +37,7 @@ public final class SistemaFactory {
         JPACategoriaRepositorioDAO  categoriaRepositorio  = new JPACategoriaRepositorioDAO();
         JPAFornecedorRepositorioDAO fornecedorRepositorio = new JPAFornecedorRepositorioDAO();
         JPAItemRepositorioDAO       itemRepositorio       = new JPAItemRepositorioDAO();
-        JPAContratoRepositorioDAO   contratoRepositorio   = new JPAContratoRepositorioDAO(usuarioRepositorio, itemRepositorio);
+        JPAContratoRepositorioDAO   contratoRepositorio   = new JPAContratoRepositorioDAO();
         JPAMultaRepositorioDAO      multaRepositorio      = new JPAMultaRepositorioDAO();
 
         // CAMADA DE NEGÓCIO

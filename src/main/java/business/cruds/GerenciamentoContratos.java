@@ -1,10 +1,12 @@
 package business.cruds;
 
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
+import java.util.List;
+
 import business.interfaces.IGerenciamentoContratos;
 import entidades.ContratoAluguel;
 import repositories.IContratoRepositorioDAO;
-
-import java.util.List;
 
 public class GerenciamentoContratos implements IGerenciamentoContratos {
 
@@ -17,15 +19,14 @@ public class GerenciamentoContratos implements IGerenciamentoContratos {
     @Override
     public boolean cadastrarContrato(ContratoAluguel contrato) {
 
-        if (repositorio.buscarPorId(contrato.getId()) != null) {
-            return false;
-        }
-
         if (repositorio.buscarContratoAtivoPorItem(contrato.getItem().getId()) != null) {
             return false;
         }
 
         repositorio.adicionar(contrato);
+
+        contrato.getItem().alugar();
+        repositorio.atualizar("status", "ATIVO", contrato.getId());
 
         return true;
     }
@@ -41,17 +42,29 @@ public class GerenciamentoContratos implements IGerenciamentoContratos {
     }
 
     @Override
-    public boolean finalizarContrato(int id) {
+    public boolean finalizarContrato(int id, String dataDevolucaoReal) {
 
         ContratoAluguel contrato = repositorio.buscarPorId(id);
 
-        if (contrato == null) {
+        if (contrato == null || !contrato.estaAtivo()) {
             return false;
         }
 
+        LocalDate prevista = LocalDate.parse(contrato.getDataDevolucaoPrevista());
+        LocalDate real = LocalDate.parse(dataDevolucaoReal);
+        long diasAtraso = ChronoUnit.DAYS.between(prevista, real);
+
+        contrato.setDataDevolucaoReal(dataDevolucaoReal);
+
+        if (diasAtraso > 0) {
+            contrato.setValorMulta(calcularMulta(diasAtraso, contrato.getItem().getTaxaDiaria()));
+            contrato.setMultaPaga(false);
+        }
+
+        contrato.getItem().devolver();
         contrato.finalizarContrato();
 
-        repositorio.salvar();
+        repositorio.atualizar("status", "FINALIZADO", contrato.getId());
 
         return true;
     }
@@ -66,9 +79,9 @@ public class GerenciamentoContratos implements IGerenciamentoContratos {
 
         return listarContratos().stream()
                 .filter(c -> String.valueOf(c.getId()).contains(termo)
-                        || (c.getCliente() != null && c.getCliente().getNome() != null 
+                        || (c.getCliente() != null && c.getCliente().getNome() != null
                             && c.getCliente().getNome().toLowerCase().contains(termo))
-                        || (c.getItem() != null && c.getItem().getNome() != null 
+                        || (c.getItem() != null && c.getItem().getNome() != null
                             && c.getItem().getNome().toLowerCase().contains(termo))
                         || (c.getStatus() != null && c.getStatus().toLowerCase().contains(termo)))
                 .toList();
@@ -79,68 +92,47 @@ public class GerenciamentoContratos implements IGerenciamentoContratos {
 
         ContratoAluguel contrato = repositorio.buscarPorId(id);
 
-        if (contrato == null) {
+        if (contrato == null || !contrato.estaAtivo()) {
             return false;
         }
 
         contrato.cancelarContrato();
+        contrato.getItem().devolver();
 
-        repositorio.salvar();
+        repositorio.atualizar("status", "CANCELADO", contrato.getId());
 
         return true;
     }
 
     @Override
     public boolean quitarMultaContrato(int idContrato) {
-    
+
         ContratoAluguel contrato = repositorio.buscarPorId(idContrato);
-    
+
         if (contrato == null) {
             return false;
         }
-    
+
         if (contrato.getValorMulta() <= 0 || contrato.isMultaPaga()) {
             return false;
         }
-    
+
         contrato.setMultaPaga(true);
-    
-        repositorio.salvar();
-    
+
+        repositorio.atualizar("multaPaga", true, contrato.getId());
+
         return true;
     }
 
     @Override
     public boolean clientePossuiMultaPendente(int idCliente) {
-
-        for (ContratoAluguel contrato : repositorio.listarTodos()) {
-
-            if (contrato.getCliente().getId() == idCliente
-                    && contrato.getValorMulta() > 0
-                    && !contrato.isMultaPaga()) {
-                return true;
-            }
-        }
-
-        return false;
+        return repositorio.buscarPorCliente(idCliente).stream()
+                .anyMatch(contrato -> contrato.getValorMulta() > 0 && !contrato.isMultaPaga());
     }
 
     @Override
     public boolean clientePossuiHistorico(int idCliente) {
-
-        for (ContratoAluguel contrato : repositorio.listarTodos()) {
-
-            if (contrato.getCliente().getId() == idCliente) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    @Override
-    public int gerarProximoId() {
-        return repositorio.gerarProximoId();
+        return !repositorio.buscarPorCliente(idCliente).isEmpty();
     }
 
     @Override
@@ -150,7 +142,7 @@ public class GerenciamentoContratos implements IGerenciamentoContratos {
         }
         return 10 + (0.05 * taxaDiaria * diasAtraso);
     }
-    
+
     @Override
     public List<ContratoAluguel> filtrarPorId(String pesquisado) {
         String termo = pesquisado.toLowerCase();
