@@ -64,16 +64,16 @@ public class ContratoAluguel {
         return item.getNome();
     }
 
-    public String getDataRet irada() {
+    public String getDataRetirada() {
         return dataRetirada; 
     } 
  
-    public String getDataDev olucaoPrevista() {
-        return dataDevolucao Prevista;
+    public String getDataDevolucaoPrevista() {
+        return dataDevolucaoPrevista;
     } 
  
-    public void setDataDevol ucaoPrevista(String dataDevolucaoPrevista) {
-        this.dataDevolucaoPr evista = dataDevolucaoPrevista;
+    public void setDataDevolucaoPrevista(String dataDevolucaoPrevista) {
+        this.dataDevolucaoPrevista = dataDevolucaoPrevista;
     } 
 
     public String getDataDevolucaoReal() {

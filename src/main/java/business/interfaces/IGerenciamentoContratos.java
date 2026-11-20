@@ -1,8 +1,8 @@
 package business.interfaces;
 
-import entidades.ContratoAluguel;
-
 import java.util.List;
+
+import entidades.ContratoAluguel;
 
 public interface IGerenciamentoContratos {
 
@@ -14,13 +14,12 @@ public interface IGerenciamentoContratos {
 
     public abstract List<ContratoAluguel> filtrarContratos(String filtro);
 
-    public abstract boolean finalizarContrato(int id);
+    public abstract boolean finalizarContrato(int id, String dataDevolucaoReal);
 
     public abstract boolean cancelarContrato(int id);
 
     public abstract boolean quitarMultaContrato(int idContrato);
 
-    public abstract int gerarProximoId();
 
     public boolean clientePossuiMultaPendente(int idCliente);
 
