@@ -1,10 +1,11 @@
 package entidades;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 @DisplayName("Multa")
 class MultaTest {
@@ -13,7 +14,7 @@ class MultaTest {
 
     @BeforeEach
     void setUp() {
-        multa = new Multa(1, 10, "ATRASO", "Devolução em atraso", 45.0, "2026-01-15");
+        multa = new Multa(10, "ATRASO", "Devolução em atraso", 45.0, "2026-01-15");
     }
 
     @Test

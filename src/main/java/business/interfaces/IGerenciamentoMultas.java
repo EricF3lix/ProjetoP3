@@ -1,8 +1,8 @@
 package business.interfaces;
 
-import entidades.Multa;
-
 import java.util.List;
+
+import entidades.Multa;
 
 public interface IGerenciamentoMultas {
 
@@ -18,5 +18,4 @@ public interface IGerenciamentoMultas {
 
     public abstract boolean quitarMulta(int id);
 
-    public abstract int gerarProximoId();
 }
