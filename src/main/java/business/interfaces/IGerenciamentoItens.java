@@ -24,5 +24,5 @@ public interface IGerenciamentoItens {
 
     public abstract List<Item> filtrarItem(String tipofiltro, String filtro);
 
-    public abstract void desativarItem(int id);
+    public abstract boolean desativarItem(int id);
 }
