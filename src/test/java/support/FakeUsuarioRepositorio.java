@@ -56,16 +56,6 @@ public class FakeUsuarioRepositorio implements IUsuarioRepositorioDAO {
         return null;
     }
 
-    @Override
-    public int gerarProximoId() {
-        int maiorId = 0;
-        for (Usuario usuario : usuarios) {
-            if (usuario.getId() > maiorId) {
-                maiorId = usuario.getId();
-            }
-        }
-        return maiorId + 1;
-    }
  
     @Override
     public void salvar() {

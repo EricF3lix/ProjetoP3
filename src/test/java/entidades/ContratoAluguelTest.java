@@ -14,12 +14,12 @@ class ContratoAluguelTest {
 
     @BeforeEach
     void setUp() {
-        Categoria categoria = new Categoria(1, "Ferramentas", "Ferramentas em geral");
-        Fornecedor fornecedor = new Fornecedor(1, "Fornecedor XPTO", "00.000.000/0001-00", "contato@xpto.com", "8199999999");
-        Item item = new Item(1, "Furadeira", "Furadeira de impacto", 20.0, "BOM", 500.0, categoria, fornecedor);
-        Cliente cliente = new Cliente(1, "Maria Silva", "maria@email.com", "111.111.111-11", "senha123");
+        Categoria categoria = new Categoria("Ferramentas", "Ferramentas em geral");
+        Fornecedor fornecedor = new Fornecedor("Fornecedor XPTO", "00.000.000/0001-00", "contato@xpto.com", "8199999999");
+        Item item = new Item("Furadeira", "Furadeira de impacto", 20.0, "BOM", 500.0, categoria, fornecedor);
+        Cliente cliente = new Cliente("Maria Silva", "maria@email.com", "111.111.111-11", "senha123");
 
-        contrato = new ContratoAluguel(1, cliente, item, "2026-01-01", "2026-01-10", 100.0);
+        contrato = new ContratoAluguel(cliente, item, "2026-01-01", "2026-01-10", 100.0);
     }
 
     @Test

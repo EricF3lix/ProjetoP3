@@ -13,10 +13,10 @@ class ItemTest {
 
     @BeforeEach
     void setUp() {
-        Categoria categoria = new Categoria(1, "Ferramentas", "Ferramentas em geral");
-        Fornecedor fornecedor = new Fornecedor(1, "Fornecedor XPTO", "00.000.000/0001-00", "contato@xpto.com", "8199999999");
+        Categoria categoria = new Categoria("Ferramentas", "Ferramentas em geral");
+        Fornecedor fornecedor = new Fornecedor("Fornecedor XPTO", "00.000.000/0001-00", "contato@xpto.com", "8199999999");
 
-        item = new Item(1, "Furadeira", "Furadeira de impacto", 20.0, "BOM", 500.0, categoria, fornecedor);
+        item = new Item("Furadeira", "Furadeira de impacto", 20.0, "BOM", 500.0, categoria, fornecedor);
     }
 
     @Test
