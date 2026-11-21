@@ -17,39 +17,27 @@ public class JPAFornecedorRepositorioDAO implements IFornecedorRepositorioDAO {
 
     @Override
     public void adicionar(Fornecedor fornecedor) {
-
-        fornecedores.add(fornecedor);
-
-        salvar();
+        manipulaArquivo.escrever(fornecedor);
 
     }
 
     @Override
     public List<Fornecedor> listarTodos() {
-
-        return fornecedores;
+        return manipulaArquivo.carregarTudo(Fornecedor.class);
 
     }
 
     @Override
     public void desativar(int id) {
-
-        Fornecedor fornecedor = buscarPorId(id);
-
-        if (fornecedor != null) {
-
-            fornecedor.desativar();
-
-            salvar();
+    	manipulaArquivo.desativar(Fornecedor.class, id);
 
         }
 
-    }
+    
 
     @Override
     public Fornecedor buscarPesquisa(String valor, String campo) {
 
-        
 
     }
 
