@@ -37,17 +37,8 @@ public class GerenciamentoFornecedor implements IGerenciamentoFornecedor {
 
     @Override
     public boolean atualizarFornecedor(Fornecedor fornecedorNovo) {
-
-        List<Fornecedor> fornecedores = repositorio.listarTodos();
-
-        for (int i = 0; i < fornecedores.size(); i++){
-            if (fornecedores.get(i).getId() == fornecedorNovo.getId()){
-                fornecedores.set(i, fornecedorNovo);
-                repositorio.salvar();
-                return true;
-            }
-        }
-        return false;
+    	return repositorio.atualizar(fornecedorNovo);
+        
     }
 
     @Override
