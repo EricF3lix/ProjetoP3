@@ -10,7 +10,7 @@ public interface IFornecedorRepositorioDAO {
 
     public abstract List<Fornecedor> listarTodos();
 
-    public abstract void desativar(int id);
+    public abstract boolean desativar(int id);
 
     public abstract List<Fornecedor> buscarPesquisa(String valor, String campo);
 

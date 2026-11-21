@@ -62,17 +62,7 @@ public class GerenciamentoFornecedor implements IGerenciamentoFornecedor {
 
     @Override
     public boolean desativarFornecedor(int id) {
-
-        Fornecedor fornecedor = repositorio.buscarPorId(id);
-
-        if (fornecedor == null) {
-            return false;
-        }
-
-        repositorio.desativar(id); 
-
-        return true;
-    }
+        repositorio.desativar(id);
 
     @Override
     public int gerarProximoId() {

@@ -28,8 +28,8 @@ public class JPAFornecedorRepositorioDAO implements IFornecedorRepositorioDAO {
     }
 
     @Override
-    public void desativar(int id) {
-    	manipulaArquivo.desativar(Fornecedor.class, id);
+    public boolean desativar(int id) {
+    	return manipulaArquivo.desativar(Fornecedor.class, id);
 
         }
 
