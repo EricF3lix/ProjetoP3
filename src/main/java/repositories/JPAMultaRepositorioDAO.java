@@ -28,17 +28,17 @@ public class JPAMultaRepositorioDAO implements IMultaRepositorioDAO {
 
     @Override
     public Multa buscarPorId(int id) {
-        return manipulaArquivo.buscar(Multa.class, "id", id).stream().filter(multa -> multa.getId() == id).findFirst().orElse(null);
+        return manipulaArquivo.buscar(Multa.class, "id", id).stream().findFirst().orElse(null);
     }
 
     @Override
     public List<Multa> buscarPorContrato(int idContrato) {
-        return manipulaArquivo.buscar(Multa.class, "idContrato", idContrato).stream().filter(multa -> multa.getIdContrato() == idContrato).toList();
+        return manipulaArquivo.buscar(Multa.class, "idContrato", idContrato);
     }
 
     @Override
     public List<Multa> buscarPendentes() {
-        return manipulaArquivo.carregarTudo(Multa.class).stream().filter(multa -> !multa.isPaga()).toList();
+        return manipulaArquivo.buscar(Multa.class, "paga", false);
     }
 
     @Override
