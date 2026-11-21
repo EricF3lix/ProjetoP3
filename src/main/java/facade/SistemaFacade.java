@@ -263,7 +263,7 @@ public class SistemaFacade {
     }
     
     public List<Fornecedor> buscarPesquisa(String valor, String campo) {
-        return gerenciamentoFornecedor.buscarPorCnpj();
+        return gerenciamentoFornecedor.buscarPesquisa(valor, campo);
     }
 
     
