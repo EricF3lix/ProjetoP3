@@ -12,12 +12,9 @@ public interface IFornecedorRepositorioDAO {
 
     public abstract void desativar(int id);
 
-    public abstract Fornecedor buscarPorCnpj(String cnpj);
+    public abstract Fornecedor buscarPesquisa(String valor, String campo);
 
-    public abstract Fornecedor buscarPorId(int id);
+    public abstract Fornecedor buscarFornecedor(int id);
 
-    public abstract void salvar();
-
-    public abstract int gerarProximoId();
 
 }

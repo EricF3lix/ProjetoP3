@@ -36,55 +36,8 @@ public class GerenciamentoFornecedor implements IGerenciamentoFornecedor {
     }
 
     @Override
-    public List<Fornecedor> buscarPorCnpj(String cnpj) {
-
-        return repositorio.listarTodos().stream()
-                .filter(f -> f.getCnpj().trim().startsWith(cnpj.trim()))
-                .toList();
-    }
-
-    @Override
-    public List<Fornecedor> buscarPorNome(String nome) {
-
-        return repositorio.listarTodos().stream()
-                .filter(f -> f.getRazaoSocial().trim().toLowerCase().startsWith(nome.trim().toLowerCase()))
-                .toList();
-    }
-
-    @Override
-    public List<Fornecedor> buscarPorEmail(String email) {
-
-        return repositorio.listarTodos().stream()
-                .filter(f -> f.getEmail().trim().toLowerCase().startsWith(email.trim().toLowerCase()))
-                .toList();
-    }
-
-    @Override
-    public List<Fornecedor> buscarPorTelefone(String telefone) {
-
-        return repositorio.listarTodos().stream()
-                .filter(f -> f.getTelefone().trim().startsWith(telefone.trim()))
-                .toList();
-    }
-    
-    @Override
-    public List<Fornecedor> buscarPorId(String id) {
-
-        return repositorio.listarTodos().stream()
-                .filter(f -> String.valueOf(f.getId()).startsWith(id.trim()))
-                .toList();
-    }
-    
-    @Override
-    public List<Fornecedor> buscarPorTodos(String texto) {
-
-        return repositorio.listarTodos().stream()
-                .filter(f -> String.valueOf(f.getId()).equals(texto.trim())
-                        || f.getRazaoSocial().trim().toLowerCase().startsWith(texto.trim().toLowerCase())
-                        || f.getCnpj().trim().startsWith(texto.trim())
-                        || f.getEmail().trim().toLowerCase().startsWith(texto.trim().toLowerCase())
-                        || f.getTelefone().trim().startsWith(texto.trim()))
-                .toList();
+    public List<Fornecedor> buscarPesquisa(String valor, String campo){
+    	
     }
 
     @Override

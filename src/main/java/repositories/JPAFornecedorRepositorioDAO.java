@@ -7,59 +7,11 @@ import java.util.List;
 
 public class JPAFornecedorRepositorioDAO implements IFornecedorRepositorioDAO {
 
-
-    private final List<Fornecedor> fornecedores;
     private final ManipulaArquivo manipulaArquivo;
 
     public JPAFornecedorRepositorioDAO() {
 
         manipulaArquivo = new ManipulaArquivo();
-        fornecedores = carregar();
-
-    }
-
-    public List<Fornecedor> carregar() {
-
-        List<Fornecedor> lista = new ArrayList<>();
-
-        for (String[] campos : manipulaArquivo.carregar()) {
-
-            if (campos.length >= 6) {
-
-                int id = Integer.parseInt(campos[0].trim());
-                String razaoSocial = campos[1].trim();
-                String cnpj = campos[2].trim();
-                String email = campos[3].trim();
-                String telefone = campos[4].trim();
-                boolean ativo = Boolean.parseBoolean(campos[5].trim());
-
-                Fornecedor fornecedor = new Fornecedor(razaoSocial, cnpj, email, telefone);
-
-                fornecedor.setAtivo(ativo);
-
-                lista.add(fornecedor);
-
-            }
-
-        }
-
-        return lista;
-
-    }
-    @Override
-    public void salvar() {
-
-        List<String[]> linhas = new ArrayList<>();
-
-        linhas.add(new String[]{"id", "razaoSocial", "cnpj", "email", "telefone", "ativo"});
-
-        for (Fornecedor fornecedor : fornecedores) {
-
-            linhas.add(new String[]{String.valueOf(fornecedor.getId()),fornecedor.getRazaoSocial(),fornecedor.getCnpj(),fornecedor.getEmail(),fornecedor.getTelefone(),String.valueOf(fornecedor.isAtivo())});
-
-        }
-
-        manipulaArquivo.salvar(linhas);
 
     }
 
@@ -95,56 +47,17 @@ public class JPAFornecedorRepositorioDAO implements IFornecedorRepositorioDAO {
     }
 
     @Override
-    public Fornecedor buscarPorCnpj(String cnpj) {
+    public Fornecedor buscarPesquisa(String valor, String campo) {
 
-        for (Fornecedor fornecedor : fornecedores) {
-
-            if (fornecedor.getCnpj().trim().equals(cnpj.trim())) {
-
-                return fornecedor;
-
-            }
-
-        }
-
-        return null;
+        
 
     }
 
 
     @Override
-    public Fornecedor buscarPorId(int id) {
+    public Fornecedor buscarFornecedor(int id) {
 
-        for (Fornecedor fornecedor : fornecedores) {
-
-            if (fornecedor.getId() == id) {
-
-                return fornecedor;
-
-            }
-
-        }
-
-        return null;
-
-    }
-
-    @Override
-    public int gerarProximoId() {
-
-        int maiorId = 0;
-
-        for (Fornecedor fornecedor : fornecedores) {
-
-            if (fornecedor.getId() > maiorId) {
-
-                maiorId = fornecedor.getId();
-
-            }
-
-        }
-
-        return maiorId + 1;
+        
 
     }
 
