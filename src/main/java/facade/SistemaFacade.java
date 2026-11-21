@@ -90,10 +90,6 @@ public class SistemaFacade {
         this.usuarioLogado = null;
     }
 
-    public int gerarProximoIdUsuario() {
-        return gerenciamentoUsuarios.gerarProximoId();
-    }
-
     // =========================================================================
     // CONTRATOS
     // =========================================================================
