@@ -27,18 +27,23 @@ public class JPAMultaRepositorioDAO implements IMultaRepositorioDAO {
     }
 
     @Override
+    public List<Multa> buscarMultas(String tipofiltro, String filtro) {
+        return manipulaArquivo.buscar(Multa.class, tipofiltro, filtro);
+    }
+
+    @Override
     public Multa buscarPorId(int id) {
-        return manipulaArquivo.buscar(Multa.class, "id", id).stream().findFirst().orElse(null);
+        return manipulaArquivo.buscaUnica(Multa.class, id);
     }
 
     @Override
     public List<Multa> buscarPorContrato(int idContrato) {
-        return manipulaArquivo.buscar(Multa.class, "idContrato", idContrato);
+        return manipulaArquivo.buscaExata(Multa.class, "idContrato", idContrato);
     }
 
     @Override
     public List<Multa> buscarPendentes() {
-        return manipulaArquivo.buscar(Multa.class, "paga", false);
+        return manipulaArquivo.buscaExata(Multa.class, "paga", false);
     }
 
     @Override

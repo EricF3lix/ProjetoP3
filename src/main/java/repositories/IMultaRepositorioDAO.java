@@ -10,6 +10,8 @@ public interface IMultaRepositorioDAO {
 
     public abstract List<Multa> listarTodos();
 
+    public abstract List<Multa> buscarMultas(String tipofiltro, String filtro);
+    
     public abstract Multa buscarPorId(int id);
 
     public abstract List<Multa> buscarPorContrato(int idContrato);
