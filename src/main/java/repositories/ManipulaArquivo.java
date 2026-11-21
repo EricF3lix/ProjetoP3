@@ -109,26 +109,37 @@ public class ManipulaArquivo {
 	    return sucesso;
 	}
 	
-	public <T> void escrever(T tipo) {
+	public <T> boolean escrever(T tipo) {
 	    EntityManager em = JPAUtil.getEntityManager();
 	    EntityTransaction et = em.getTransaction();
-	    
+	    boolean sucesso;
+
 	    try {
 	        et.begin();
 	        em.persist(tipo);
 	        et.commit();
-	    } 
-	    
-	    catch (RuntimeException e) {
-	        if (et.isActive()) {
-	            et.rollback();
-	        }
+	        sucesso = true;
+	    }
+	    catch (IllegalArgumentException e) {
+	        if (et.isActive()) et.rollback();
+	        sucesso = false;
 	        throw e;
-	    } 
-	    
+	    }
+	    catch (PersistenceException e) {
+	        if (et.isActive()) et.rollback();
+	        sucesso = false;
+	        throw e;
+	    }
+	    catch (RuntimeException e) {
+	        if (et.isActive()) et.rollback();
+	        sucesso = false;
+	        throw e;
+	    }
 	    finally {
 	        em.close();
 	    }
+
+	    return sucesso;
 	}
 
     public <T> ArrayList<T> carregarTudo(Class<T> tipo) {

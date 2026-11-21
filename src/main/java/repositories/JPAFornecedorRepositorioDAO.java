@@ -16,8 +16,8 @@ public class JPAFornecedorRepositorioDAO implements IFornecedorRepositorioDAO {
     }
 
     @Override
-    public void adicionar(Fornecedor fornecedor) {
-        manipulaArquivo.escrever(fornecedor);
+    public boolean adicionar(Fornecedor fornecedor) {
+        return manipulaArquivo.escrever(fornecedor);
 
     }
 

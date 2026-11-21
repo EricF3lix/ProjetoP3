@@ -6,7 +6,7 @@ import java.util.List;
 
 public interface IFornecedorRepositorioDAO {
 
-    public abstract void adicionar(Fornecedor fornecedor);
+    public abstract boolean adicionar(Fornecedor fornecedor);
 
     public abstract List<Fornecedor> listarTodos();
 
