@@ -6,7 +6,7 @@ import entidades.Item;
 
 public interface IItemRepositorioDAO {
 
-    public abstract void adicionar(Item item);
+    public abstract boolean adicionar(Item item);
 
     public abstract List<Item> listarTodos();
 
@@ -14,5 +14,5 @@ public interface IItemRepositorioDAO {
 
     public abstract boolean atualizar(String coluna, String valor, int id);
 
-    public abstract void desativarItem(int id);
+    public abstract boolean desativarItem(int id);
 }

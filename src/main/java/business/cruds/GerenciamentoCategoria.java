@@ -18,8 +18,7 @@ public class GerenciamentoCategoria implements IGerenciamentoCategoria {
     @Override
     public boolean cadastrarCategoria(Categoria categoria) {
 
-        repositorio.adicionar(categoria);
-        return true;
+        return repositorio.adicionar(categoria);
     }
 
     @Override
@@ -35,15 +34,13 @@ public class GerenciamentoCategoria implements IGerenciamentoCategoria {
     @Override
     public boolean atualizarCategoria(String coluna, String valor,int id) {
 
-        repositorio.atualizar(coluna,valor,id);
-        return true;
+        return repositorio.atualizar(coluna,valor,id);
     }
 
     @Override
     public boolean desativarCategoria(int id) {
 
-        repositorio.desativarCtegoria(id);
-        return true;
+        return repositorio.desativarCtegoria(id);
     }
 
     @Override

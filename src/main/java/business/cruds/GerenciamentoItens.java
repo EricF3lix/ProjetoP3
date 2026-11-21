@@ -17,9 +17,8 @@ public class GerenciamentoItens implements IGerenciamentoItens {
     @Override
     public boolean cadastrarItem(Item item) {
 
-        repositorio.adicionar(item);
+        return repositorio.adicionar(item);
 
-        return true;
     }
 
     @Override
@@ -64,7 +63,7 @@ public class GerenciamentoItens implements IGerenciamentoItens {
     }
 
     @Override
-    public void desativarItem(int id){
-        repositorio.desativarItem(id);
+    public boolean desativarItem(int id){
+        return repositorio.desativarItem(id);
     }
 }

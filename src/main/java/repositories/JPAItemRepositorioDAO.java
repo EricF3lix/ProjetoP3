@@ -1,6 +1,7 @@
 package repositories;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import entidades.Categoria;
@@ -17,9 +18,9 @@ public class JPAItemRepositorioDAO implements IItemRepositorioDAO {
     }
 
     @Override
-    public void adicionar(Item item) {
+    public boolean adicionar(Item item) {
 
-        manipulaArquivo.escrever(item);
+       return manipulaArquivo.escrever(item);
     }
 
     @Override
@@ -30,19 +31,25 @@ public class JPAItemRepositorioDAO implements IItemRepositorioDAO {
 
     @Override
     public List<Item> buscarItens(String tipofiltro, String filtro){
+        if (tipofiltro.equals("id")){
+            List<Item> lista = new ArrayList<>();
+            lista.add(manipulaArquivo.buscaUnica(Item.class, Integer.parseInt(filtro)));
+            return lista;
+
+        }
         return manipulaArquivo.buscar(Item.class,tipofiltro,filtro);
     }
 
     @Override
     public boolean atualizar(String coluna, String valor, int id) {
 
-        manipulaArquivo.atualizar(Item.class,coluna,valor,id);
-        return true;
+        return manipulaArquivo.atualizar(Item.class,coluna,valor,id);
+
     }
 
     @Override
-    public void desativarItem(int id){
-        manipulaArquivo.desativar(Item.class,id);
+    public boolean desativarItem(int id){
+        return manipulaArquivo.desativar(Item.class,id);
     }
 
 }

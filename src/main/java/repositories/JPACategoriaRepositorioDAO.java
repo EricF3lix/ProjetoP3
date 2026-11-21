@@ -17,15 +17,15 @@ public class JPACategoriaRepositorioDAO implements ICategoriaRepositorioDAO {
     }
 
     @Override
-    public void atualizar(String coluna, String valor, int id) {
+    public boolean atualizar(String coluna, String valor, int id) {
 
-        manipulaArquivo.atualizar(Categoria.class,coluna,valor,id);
+        return manipulaArquivo.atualizar(Categoria.class,coluna,valor,id);
     }
 
     @Override
-    public void adicionar(Categoria categoria) {
+    public boolean adicionar(Categoria categoria) {
 
-        manipulaArquivo.escrever(categoria);
+        return manipulaArquivo.escrever(categoria);
     }
 
     @Override
@@ -36,12 +36,17 @@ public class JPACategoriaRepositorioDAO implements ICategoriaRepositorioDAO {
 
     @Override
     public ArrayList<Categoria> buscar(String tipo, String valor){
+        if (tipo.equals("id")){
+            ArrayList<Categoria> lista = new ArrayList<>();
+            lista.add(manipulaArquivo.buscaUnica(Categoria.class,Integer.parseInt(valor)));
+            return lista;
+        }
         return manipulaArquivo.buscar(Categoria.class,tipo,valor);
     }
 
     @Override
-    public void desativarCtegoria(int id){
-        manipulaArquivo.desativar(Categoria.class,id);
+    public boolean desativarCtegoria(int id){
+        return manipulaArquivo.desativar(Categoria.class,id);
     }
 
 }
