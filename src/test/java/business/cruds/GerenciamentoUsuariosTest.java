@@ -7,6 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -16,9 +17,7 @@ import entidades.Cliente;
 import entidades.ContratoAluguel;
 import entidades.Funcionario;
 import entidades.Item;
-import repositories.IItemRepositorioDAO;
 import support.FakeContratoRepositorio;
-import support.FakeItemRepositorio;
 import support.FakeUsuarioRepositorio;
 
 @DisplayName("GerenciamentoUsuarios (operações que gravam no banco)")
@@ -129,8 +128,8 @@ class GerenciamentoUsuariosOperacoesTest {
         negocio.cadastrarUsuario(cliente);
 
         Item item = new Item("Furadeira", "Furadeira de impacto", 20.0, "BOM", 500.0, null, null);
-        IItemRepositorioDAO itemRepositorio = new FakeItemRepositorio();
-        itemRepositorio.adicionar(item);
+        item.setId(1);
+
         ContratoAluguel contrato = new ContratoAluguel(cliente, item, "2026-01-05", "2026-01-10", 100.0);
         contratos.cadastrarContrato(contrato);
         contratos.finalizarContrato(contrato.getId(), "2026-01-13");

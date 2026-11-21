@@ -1,6 +1,10 @@
 package entidades;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 
 @SuppressWarnings("java:S107")
 @Entity
@@ -44,6 +48,9 @@ public class Item {
 
     public int getId() {
         return id;
+    }
+    public void setId(int id) {
+        this.id = id;
     }
 
     @Override
