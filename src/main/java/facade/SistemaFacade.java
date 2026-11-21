@@ -262,29 +262,10 @@ public class SistemaFacade {
         return gerenciamentoFornecedor.buscarFornecedor(id);
     }
     
-    public List<Fornecedor> buscarPorCnpj(String cnpj) {
-        return gerenciamentoFornecedor.buscarPorCnpj(cnpj);
+    public List<Fornecedor> buscarPesquisa(String valor, String campo) {
+        return gerenciamentoFornecedor.buscarPesquisa(valor, campo);
     }
 
-    public List<Fornecedor> buscarPorNome(String nome) {
-        return gerenciamentoFornecedor.buscarPorNome(nome);
-    }
-
-    public List<Fornecedor> buscarPorEmail(String email) {
-        return gerenciamentoFornecedor.buscarPorEmail(email);
-    }
-
-    public List<Fornecedor> buscarPorTelefone(String telefone) {
-        return gerenciamentoFornecedor.buscarPorTelefone(telefone);
-    }
-    
-    public List<Fornecedor> buscarPorId(String id) {
-        return gerenciamentoFornecedor.buscarPorId(id);
-    }
-    
-    public List<Fornecedor> buscarPorTodos(String texto){
-    	return gerenciamentoFornecedor.buscarPorTodos(texto);
-    }
     
     public List<Fornecedor> listarFornecedores() {
         return gerenciamentoFornecedor.listarFornecedores();
@@ -298,9 +279,6 @@ public class SistemaFacade {
         return gerenciamentoFornecedor.desativarFornecedor(id);
     }
 
-    public int gerarProximoIdFornecedor() {
-        return gerenciamentoFornecedor.gerarProximoId();
-    }
 
     // =========================================================================
     // MULTAS

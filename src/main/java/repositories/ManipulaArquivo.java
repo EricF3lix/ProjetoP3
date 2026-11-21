@@ -5,8 +5,21 @@ import java.util.List;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityTransaction;
+import jakarta.persistence.PersistenceException;
 
 public class ManipulaArquivo {
+	
+	public <T> T buscaUnica(Class<T> tipo, int id) {
+		EntityManager em = JPAUtil.getEntityManager();
+		
+		try {
+			return em.find(tipo, id);
+		}
+		
+		finally {
+			em.close();
+		}
+	}
 
 	public <T, V> ArrayList<T> buscar(Class<T> tipo, String atributo, V valor) {
 	    EntityManager em = JPAUtil.getEntityManager();
@@ -24,9 +37,10 @@ public class ManipulaArquivo {
 	    }
 	}
 
-	public <T, V> void atualizar(Class<T> tipo, String atributo, V valor, int id) {
+	public <T, V> boolean atualizar(Class<T> tipo, String atributo, V valor, int id) {
 	    EntityManager em = JPAUtil.getEntityManager();
 	    EntityTransaction et = em.getTransaction();
+	    boolean sucesso;
 
 	    try {
 	        et.begin();
@@ -35,59 +49,97 @@ public class ManipulaArquivo {
 	            .setParameter("id", id)
 	            .executeUpdate();
 	        et.commit();
+	        sucesso = true;
+	    }
+	    catch (IllegalArgumentException e) {
+	        if (et.isActive()) et.rollback();
+	        sucesso = false;
+	        throw e;
+	    }
+	    catch (PersistenceException e) {
+	        if (et.isActive()) et.rollback();
+	        sucesso = false;
+	        throw e;
 	    }
 	    catch (RuntimeException e) {
 	        if (et.isActive()) et.rollback();
+	        sucesso = false;
 	        throw e;
 	    }
 	    finally {
 	        em.close();
 	    }
+
+	    return sucesso;
 	}
 	
-	public <T> void desativar(Class<T> tipo, int id) {
-		EntityManager em = JPAUtil.getEntityManager();
-	    EntityTransaction et = em.getTransaction();
-	    
-	    try {
-	    	et.begin();
-	    	em.createQuery("UPDATE " + tipo.getName() + " t SET t.ativo = :novo WHERE t.id = :id")
-	    	.setParameter("novo", false).setParameter("id", id).executeUpdate();
-	    	et.commit();
-	    	                                                                                                                                                     
-	    }
-	    
-	    catch (RuntimeException e) {
-	        if (et.isActive()) et.rollback();
-	        throw e;
-	    }
-	    
-	    finally {
-	    	em.close();
-	    }
-		
-	}
-	
-	public <T> void escrever(T tipo) {
+	public <T> boolean desativar(Class<T> tipo, int id) {
 	    EntityManager em = JPAUtil.getEntityManager();
 	    EntityTransaction et = em.getTransaction();
+	    boolean sucesso;
 	    
+	    try {
+	        et.begin();
+	        em.createQuery("UPDATE " + tipo.getName() + " t SET t.ativo = :novo WHERE t.id = :id")
+	            .setParameter("novo", false)
+	            .setParameter("id", id)
+	            .executeUpdate();
+	        et.commit();
+	        sucesso = true;
+	    }
+	    catch (IllegalArgumentException e) {
+	        if (et.isActive()) et.rollback();
+	        sucesso = false;
+	        throw e;
+	    }
+	    catch (PersistenceException e) {
+	        if (et.isActive()) et.rollback();
+	        sucesso = false;
+	        throw e;
+	    }
+	    catch (RuntimeException e) {
+	        if (et.isActive()) et.rollback();
+	        sucesso = false;
+	        throw e;
+	    }
+	    finally {
+	        em.close();
+	    }
+	    
+	    return sucesso;
+	}
+	
+	public <T> boolean escrever(T tipo) {
+	    EntityManager em = JPAUtil.getEntityManager();
+	    EntityTransaction et = em.getTransaction();
+	    boolean sucesso;
+
 	    try {
 	        et.begin();
 	        em.persist(tipo);
 	        et.commit();
-	    } 
-	    
-	    catch (RuntimeException e) {
-	        if (et.isActive()) {
-	            et.rollback();
-	        }
+	        sucesso = true;
+	    }
+	    catch (IllegalArgumentException e) {
+	        if (et.isActive()) et.rollback();
+	        sucesso = false;
 	        throw e;
-	    } 
-	    
+	    }
+	    catch (PersistenceException e) {
+	        if (et.isActive()) et.rollback();
+	        sucesso = false;
+	        throw e;
+	    }
+	    catch (RuntimeException e) {
+	        if (et.isActive()) et.rollback();
+	        sucesso = false;
+	        throw e;
+	    }
 	    finally {
 	        em.close();
 	    }
+
+	    return sucesso;
 	}
 
     public <T> ArrayList<T> carregarTudo(Class<T> tipo) {

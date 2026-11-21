@@ -279,7 +279,7 @@ public class MenuItensController extends MenuController {
         List<Categoria> categorias = sistema.buscarCategoriaPorNome(categoria);
         Categoria catgoriatxt = categorias.getFirst();
 
-        List<Fornecedor> fornecedores = sistema.buscarPorNome(fornecedortxt);
+        List<Fornecedor> fornecedores = sistema.buscarPesquisa(fornecedortxt, "nome");
         Fornecedor fornecedor = fornecedores.getFirst();
 
         Item item = new Item(nomeitem, descricaoitem, taxa, estado, valor, catgoriatxt, fornecedor);
@@ -348,7 +348,7 @@ public class MenuItensController extends MenuController {
             return;
         }
 
-        Fornecedor fornecedor = sistema.buscarPorNome(fornecedorTxt).getFirst();
+        Fornecedor fornecedor = sistema.buscarPesquisa(fornecedorTxt, "nome").getFirst();
         if (fornecedor == null) {
         	notificarPopUpErro("Fornecedor não encontrado.");
             return;

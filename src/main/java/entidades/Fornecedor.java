@@ -11,11 +11,11 @@ public class Fornecedor {
     @GeneratedValue
     private int id;
     private String razaoSocial;
-    private final String cnpj;
+    private String cnpj;
     private String email;
     private String telefone;
     private boolean ativo;
- 
+    
     public Fornecedor(String razaoSocial, String cnpj, String email, String telefone) {
         this.razaoSocial = razaoSocial;
         this.cnpj = cnpj;
@@ -23,6 +23,8 @@ public class Fornecedor {
         this.telefone = telefone;
         this.ativo = true;
     }
+    
+    protected Fornecedor() {}
 
     public int getId() {
         return id;

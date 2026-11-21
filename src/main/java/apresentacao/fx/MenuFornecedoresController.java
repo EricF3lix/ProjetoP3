@@ -141,18 +141,18 @@ public class MenuFornecedoresController extends MenuController{
 			return;
 		}
 		
-		int id = sistema.gerarProximoIdFornecedor();
+		
 		Fornecedor fornecedor = new Fornecedor(nomeFornecedor, cnpjFornecedor, emailFornecedor, telefoneFornecedor);
 		
 		if(sistema.cadastrarFornecedor(fornecedor)) {
-			notificarPopUp("Fornecedor cadastrado com sucesso! ID: " + id);
+			notificarPopUp("Fornecedor cadastrado com sucesso!");
 			
 			txtNome.clear();
 			txtCNPJ.clear();
 			txtEmail.clear();
 			txtTelefone.clear();
 			
-			mostraFornecedor(id);
+			
 		}
 		else {
 			notificarPopUpErro("Fornecedor já cadastrado!");
@@ -169,12 +169,12 @@ public class MenuFornecedoresController extends MenuController{
 		}
 		
 		switch(filtro.getValue()) {
-		case "Todos" -> tabela.setItems(FXCollections.observableArrayList(sistema.buscarPorTodos(pesquisado)));
-		case "ID" -> tabela.setItems(FXCollections.observableArrayList(sistema.buscarPorId(pesquisado)));
-		case "Razão Social" -> tabela.setItems(FXCollections.observableArrayList(sistema.buscarPorNome(pesquisado)));
-		case "CNPJ" -> tabela.setItems(FXCollections.observableArrayList(sistema.buscarPorCnpj(pesquisado)));
-		case "E-mail" -> tabela.setItems(FXCollections.observableArrayList(sistema.buscarPorEmail(pesquisado)));
-		case "Telefone" -> tabela.setItems(FXCollections.observableArrayList(sistema.buscarPorTelefone(pesquisado)));
+		case "Todos" -> tabela.setItems(FXCollections.observableArrayList(sistema.buscarPesquisa(pesquisado, "todos")));
+		case "ID" -> tabela.setItems(FXCollections.observableArrayList(sistema.buscarPesquisa(pesquisado, "id")));
+		case "Razão Social" -> tabela.setItems(FXCollections.observableArrayList(sistema.buscarPesquisa(pesquisado, "razaoSocial")));
+		case "CNPJ" -> tabela.setItems(FXCollections.observableArrayList(sistema.buscarPesquisa(pesquisado, "cnpj")));
+		case "E-mail" -> tabela.setItems(FXCollections.observableArrayList(sistema.buscarPesquisa(pesquisado, "email")));
+		case "Telefone" -> tabela.setItems(FXCollections.observableArrayList(sistema.buscarPesquisa(pesquisado, "telefone")));
 		default ->  filtro.getSelectionModel().selectFirst(); 
 		}
 	}

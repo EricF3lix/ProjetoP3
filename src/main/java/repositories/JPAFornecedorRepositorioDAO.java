@@ -7,144 +7,78 @@ import java.util.List;
 
 public class JPAFornecedorRepositorioDAO implements IFornecedorRepositorioDAO {
 
-
-    private final List<Fornecedor> fornecedores;
     private final ManipulaArquivo manipulaArquivo;
 
     public JPAFornecedorRepositorioDAO() {
 
         manipulaArquivo = new ManipulaArquivo();
-        fornecedores = carregar();
-
-    }
-
-    public List<Fornecedor> carregar() {
-
-        List<Fornecedor> lista = new ArrayList<>();
-
-        for (String[] campos : manipulaArquivo.carregar()) {
-
-            if (campos.length >= 6) {
-
-                int id = Integer.parseInt(campos[0].trim());
-                String razaoSocial = campos[1].trim();
-                String cnpj = campos[2].trim();
-                String email = campos[3].trim();
-                String telefone = campos[4].trim();
-                boolean ativo = Boolean.parseBoolean(campos[5].trim());
-
-                Fornecedor fornecedor = new Fornecedor(razaoSocial, cnpj, email, telefone);
-
-                fornecedor.setAtivo(ativo);
-
-                lista.add(fornecedor);
-
-            }
-
-        }
-
-        return lista;
-
-    }
-    @Override
-    public void salvar() {
-
-        List<String[]> linhas = new ArrayList<>();
-
-        linhas.add(new String[]{"id", "razaoSocial", "cnpj", "email", "telefone", "ativo"});
-
-        for (Fornecedor fornecedor : fornecedores) {
-
-            linhas.add(new String[]{String.valueOf(fornecedor.getId()),fornecedor.getRazaoSocial(),fornecedor.getCnpj(),fornecedor.getEmail(),fornecedor.getTelefone(),String.valueOf(fornecedor.isAtivo())});
-
-        }
-
-        manipulaArquivo.salvar(linhas);
 
     }
 
     @Override
-    public void adicionar(Fornecedor fornecedor) {
-
-        fornecedores.add(fornecedor);
-
-        salvar();
+    public boolean adicionar(Fornecedor fornecedor) {
+        return manipulaArquivo.escrever(fornecedor);
 
     }
 
     @Override
     public List<Fornecedor> listarTodos() {
-
-        return fornecedores;
-
-    }
-
-    @Override
-    public void desativar(int id) {
-
-        Fornecedor fornecedor = buscarPorId(id);
-
-        if (fornecedor != null) {
-
-            fornecedor.desativar();
-
-            salvar();
-
-        }
+        return manipulaArquivo.carregarTudo(Fornecedor.class);
 
     }
 
     @Override
-    public Fornecedor buscarPorCnpj(String cnpj) {
-
-        for (Fornecedor fornecedor : fornecedores) {
-
-            if (fornecedor.getCnpj().trim().equals(cnpj.trim())) {
-
-                return fornecedor;
-
-            }
+    public boolean atualizar(Fornecedor fornecedor) { 
+    	ArrayList<Boolean> sucesso = new ArrayList<>();
+    	
+    	sucesso.add(manipulaArquivo.atualizar(Fornecedor.class, "razaoSocial", fornecedor.getRazaoSocial(), fornecedor.getId()));
+    	sucesso.add(manipulaArquivo.atualizar(Fornecedor.class, "cnpj", fornecedor.getCnpj(), fornecedor.getId()));
+    	sucesso.add(manipulaArquivo.atualizar(Fornecedor.class, "email", fornecedor.getEmail(), fornecedor.getId()));
+    	sucesso.add(manipulaArquivo.atualizar(Fornecedor.class, "telefone", fornecedor.getTelefone(), fornecedor.getId()));
+    	
+    	return !sucesso.contains(false);
+    }
+    
+    @Override
+    public boolean desativar(int id) {
+    	return manipulaArquivo.desativar(Fornecedor.class, id);
 
         }
 
-        return null;
-
+    public ArrayList<Fornecedor> removeDuplicado(ArrayList<Fornecedor> lista){
+    	for (int i = 0; i < lista.size() - 1; i++) {
+			if (lista.get(i).getId() == lista.get(i+1).getId()) {
+				lista.remove(i);
+			}
+		}
+    	return lista;
+    }
+    
+    @Override
+    public List<Fornecedor> buscarPesquisa(String valor, String campo) {
+    	ArrayList<Fornecedor> fornecedores = new ArrayList<>();
+    	if (campo.equals("todos")) {
+    		fornecedores.addAll(manipulaArquivo.buscar(Fornecedor.class, "id", valor));
+    		fornecedores.addAll(manipulaArquivo.buscar(Fornecedor.class, "razaoSocial", valor));
+    		fornecedores.addAll(manipulaArquivo.buscar(Fornecedor.class, "cnpj", valor));
+    		fornecedores.addAll(manipulaArquivo.buscar(Fornecedor.class, "email", valor));
+    		fornecedores.addAll(manipulaArquivo.buscar(Fornecedor.class, "telefone", valor));
+    		
+    		fornecedores = removeDuplicado(fornecedores);
+    	}
+    	
+    	else {
+    		fornecedores.addAll(manipulaArquivo.buscar(Fornecedor.class, campo, valor));
+    	}
+    	
+    	return fornecedores;
+    	
     }
 
 
     @Override
-    public Fornecedor buscarPorId(int id) {
-
-        for (Fornecedor fornecedor : fornecedores) {
-
-            if (fornecedor.getId() == id) {
-
-                return fornecedor;
-
-            }
-
-        }
-
-        return null;
-
-    }
-
-    @Override
-    public int gerarProximoId() {
-
-        int maiorId = 0;
-
-        for (Fornecedor fornecedor : fornecedores) {
-
-            if (fornecedor.getId() > maiorId) {
-
-                maiorId = fornecedor.getId();
-
-            }
-
-        }
-
-        return maiorId + 1;
+    public Fornecedor buscarFornecedor(int id) {
+        return manipulaArquivo.buscaUnica(Fornecedor.class, id);
 
     }
 
