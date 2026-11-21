@@ -48,9 +48,26 @@ public class FakeContratoRepositorio implements IContratoRepositorioDAO {
     }
 
     @Override
+    public List<ContratoAluguel> buscarContratos(String tipofiltro, String filtro) {
+        if (filtro == null || filtro.isBlank()) {
+            return listarTodos();
+        }
+        String termo = filtro.toLowerCase();
+        return contratos.stream()
+                .filter(contrato -> {
+                    Object valor = lerCampo(contrato, tipofiltro);
+                    return valor != null && valor.toString().toLowerCase().startsWith(termo);
+                })
+                .toList();
+    }
+
+    @Override
     public void atualizar(String coluna, Object valor, int id) {
         chamadasAtualizar++;
-        contratos.replaceAll(atual -> atual.getId() == id ? atual : atual);
+        ContratoAluguel contrato = buscarPorId(id);
+        if (contrato != null && coluna != null) {
+            atualizarCampo(contrato, coluna, valor);
+        }
     }
 
     public int getChamadasAtualizar() {
@@ -72,5 +89,48 @@ public class FakeContratoRepositorio implements IContratoRepositorioDAO {
             }
         }
         throw new IllegalArgumentException("A classe " + entidade.getClass().getSimpleName() + " não tem o campo id");
+    }
+
+    private static void atualizarCampo(Object entidade, String nomeCampo, Object valor) {
+        Class<?> classe = entidade.getClass();
+        while (classe != null) {
+            try {
+                Field campo = classe.getDeclaredField(nomeCampo);
+                campo.setAccessible(true);
+                campo.set(entidade, valor);
+                return;
+            } catch (NoSuchFieldException e) {
+                classe = classe.getSuperclass();
+            } catch (IllegalAccessException e) {
+                throw new IllegalStateException(e);
+            }
+        }
+    }
+
+    private static Object lerCampo(Object alvo, String caminho) {
+        Object atual = alvo;
+        for (String parte : caminho.split("\\.")) {
+            if (atual == null) {
+                return null;
+            }
+            atual = lerAtributoDireto(atual, parte);
+        }
+        return atual;
+    }
+
+    private static Object lerAtributoDireto(Object alvo, String nomeCampo) {
+        Class<?> classe = alvo.getClass();
+        while (classe != null) {
+            try {
+                Field campo = classe.getDeclaredField(nomeCampo);
+                campo.setAccessible(true);
+                return campo.get(alvo);
+            } catch (NoSuchFieldException e) {
+                classe = classe.getSuperclass();
+            } catch (IllegalAccessException e) {
+                throw new IllegalStateException(e);
+            }
+        }
+        return null;
     }
 }

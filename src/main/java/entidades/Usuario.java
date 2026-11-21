@@ -1,20 +1,29 @@
 package entidades;
 
+import jakarta.persistence.DiscriminatorColumn;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Inheritance;
+import jakarta.persistence.InheritanceType;
 
 @Entity
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@DiscriminatorColumn(name = "tipo")
 public abstract class Usuario {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     private String nome;
-    private final String cpf;
+    private String cpf;
     private String email;
     private String senha;
     private boolean ativo;
+
+    protected Usuario() {
+    }
 
     protected Usuario(String nome, String email, String cpf, String senha) {
         this.nome = nome;
@@ -25,7 +34,7 @@ public abstract class Usuario {
     }
 
     public abstract String getTipo();
-    
+
     public int getId() {
         return id;
     }
@@ -54,7 +63,7 @@ public abstract class Usuario {
         return email;
     }
 
-    public void setEmail(String email){
+    public void setEmail(String email) {
         this.email = email;
     }
 

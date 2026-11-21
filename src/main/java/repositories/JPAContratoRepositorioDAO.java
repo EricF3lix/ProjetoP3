@@ -27,21 +27,24 @@ public class JPAContratoRepositorioDAO implements IContratoRepositorioDAO {
     }
 
     @Override
+    public List<ContratoAluguel> buscarContratos(String tipofiltro, String filtro) {
+        return manipulaArquivo.buscar(ContratoAluguel.class, tipofiltro, filtro);
+    }
+
+    @Override
     public ContratoAluguel buscarPorId(int id) {
-        return manipulaArquivo.buscar(ContratoAluguel.class, "id", id).stream().filter(contrato -> contrato.getId() == id).findFirst().orElse(null);
+        return manipulaArquivo.buscaUnica(ContratoAluguel.class, id);
     }
 
     @Override
     public List<ContratoAluguel> buscarPorCliente(int idCliente) {
-        return manipulaArquivo.buscar(ContratoAluguel.class, "cliente.id", idCliente).stream()
-                .filter(contrato -> contrato.getCliente().getId() == idCliente)
-                .toList();
+        return manipulaArquivo.buscaExata(ContratoAluguel.class, "cliente.id", idCliente);
     }
 
     @Override
     public ContratoAluguel buscarContratoAtivoPorItem(int idItem) {
-        return manipulaArquivo.buscar(ContratoAluguel.class, "item.id", idItem).stream()
-                .filter(contrato -> contrato.getItem().getId() == idItem && contrato.estaAtivo())
+        return manipulaArquivo.buscaExata(ContratoAluguel.class, "item.id", idItem).stream()
+                .filter(ContratoAluguel::estaAtivo)
                 .findFirst()
                 .orElse(null);
     }

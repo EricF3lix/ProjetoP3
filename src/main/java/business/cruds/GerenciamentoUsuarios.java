@@ -22,10 +22,6 @@ public class GerenciamentoUsuarios implements IGerenciamentoUsuarios {
     @Override
     public boolean cadastrarUsuario(Usuario usuario) {
 
-        if (repositorio.buscarPorId(usuario.getId()) != null) {
-            return false;
-        }
-
         if (repositorio.buscarPorCpf(usuario.getCpf()) != null) {
             return false;
         }
@@ -51,7 +47,7 @@ public class GerenciamentoUsuarios implements IGerenciamentoUsuarios {
 
     @Override
     public boolean atualizarUsuario(int id, String nome, String email, String senha) {
-        
+
         Usuario usuario = repositorio.buscarPorId(id);
         if (usuario == null) {
             return false;
@@ -60,7 +56,7 @@ public class GerenciamentoUsuarios implements IGerenciamentoUsuarios {
         usuario.setEmail(email);
         usuario.setSenha(senha);
 
-        repositorio.salvar();
+        repositorio.atualizar(String.valueOf(usuario.isAtivo()), "ativo", id);
 
         return true;
     }
@@ -81,7 +77,7 @@ public class GerenciamentoUsuarios implements IGerenciamentoUsuarios {
 
         usuario.setAtivo(false);
 
-        repositorio.salvar();
+        repositorio.atualizar(String.valueOf(usuario.isAtivo()), "ativo", id);
 
         return true;
     }
@@ -102,8 +98,4 @@ public class GerenciamentoUsuarios implements IGerenciamentoUsuarios {
         return usuario;
     }
 
-    @Override
-    public int gerarProximoId() {
-        return repositorio.gerarProximoId();
-    }
 }
