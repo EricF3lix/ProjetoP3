@@ -141,18 +141,18 @@ public class MenuFornecedoresController extends MenuController{
 			return;
 		}
 		
-		int id = sistema.gerarProximoIdFornecedor();
+		
 		Fornecedor fornecedor = new Fornecedor(nomeFornecedor, cnpjFornecedor, emailFornecedor, telefoneFornecedor);
 		
 		if(sistema.cadastrarFornecedor(fornecedor)) {
-			notificarPopUp("Fornecedor cadastrado com sucesso! ID: " + id);
+			notificarPopUp("Fornecedor cadastrado com sucesso!");
 			
 			txtNome.clear();
 			txtCNPJ.clear();
 			txtEmail.clear();
 			txtTelefone.clear();
 			
-			mostraFornecedor(id);
+			
 		}
 		else {
 			notificarPopUpErro("Fornecedor já cadastrado!");

@@ -279,9 +279,6 @@ public class SistemaFacade {
         return gerenciamentoFornecedor.desativarFornecedor(id);
     }
 
-    public int gerarProximoIdFornecedor() {
-        return gerenciamentoFornecedor.gerarProximoId();
-    }
 
     // =========================================================================
     // MULTAS
