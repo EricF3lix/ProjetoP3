@@ -8,6 +8,30 @@ import jakarta.persistence.EntityTransaction;
 import jakarta.persistence.PersistenceException;
 
 public class ManipulaArquivo {
+
+	public <T, V> ArrayList<T> buscar(Class<T> tipo, V valor, String query) {
+	    EntityManager em = JPAUtil.getEntityManager();
+	    try {
+	        return new ArrayList<>(
+	            em.createQuery(query, tipo)
+	              .setParameter("valor", valor)
+	              .getResultList());
+	    } finally {
+	        em.close();
+	    }
+	}
+
+	public <T> ArrayList<T> buscar(Class<T> tipo, String atributo, String valor) {
+	    String query = "select a from " + tipo.getName()
+	        + " a where lower(cast(a." + atributo + " as string)) like lower(:valor) order by a.id";
+	    return buscar(tipo, valor + "%", query);
+	}
+
+	public <T, V> ArrayList<T> buscaExata(Class<T> tipo, String atributo, V valor) {
+	    String query = "select a from " + tipo.getName()
+	        + " a where a." + atributo + " = :valor order by a.id";
+	    return buscar(tipo, valor, query);
+	}
 	
 	public <T> T buscaUnica(Class<T> tipo, int id) {
 		EntityManager em = JPAUtil.getEntityManager();
@@ -19,22 +43,6 @@ public class ManipulaArquivo {
 		finally {
 			em.close();
 		}
-	}
-
-	public <T, V> ArrayList<T> buscar(Class<T> tipo, String atributo, V valor) {
-	    EntityManager em = JPAUtil.getEntityManager();
-
-	    try {
-	        List<T> lista = em.createQuery(
-	                "select a from " + tipo.getName()
-	                + " a where lower(cast(a." + atributo + " as String)) like lower(:valor) order by a.id", tipo)
-	            .setParameter("valor", valor + "%")
-	            .getResultList();
-	        return new ArrayList<>(lista);
-	    }
-	    finally {
-	        em.close();
-	    }
 	}
 
 	public <T, V> boolean atualizar(Class<T> tipo, String atributo, V valor, int id) {
