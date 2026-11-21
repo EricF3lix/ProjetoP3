@@ -33,9 +33,7 @@ public class JPAContratoRepositorioDAO implements IContratoRepositorioDAO {
 
     @Override
     public List<ContratoAluguel> buscarPorCliente(int idCliente) {
-        return manipulaArquivo.buscar(ContratoAluguel.class, "cliente.id", idCliente).stream()
-                .filter(contrato -> contrato.getCliente().getId() == idCliente)
-                .toList();
+        return manipulaArquivo.buscar(ContratoAluguel.class, "cliente.id", idCliente).stream().filter(contrato -> contrato.getCliente().getId() == idCliente).toList();
     }
 
     @Override

@@ -1,8 +1,8 @@
 package business.interfaces;
 
-import entidades.Usuario;
-
 import java.util.List;
+
+import entidades.Usuario;
 
 public interface IGerenciamentoUsuarios {
 
@@ -18,6 +18,5 @@ public interface IGerenciamentoUsuarios {
 
     public abstract Usuario realizarLogin(String email, String senha);
     
-    public abstract int gerarProximoId();
 
 }
