@@ -5,8 +5,6 @@ import entidades.Categoria;
 import java.util.ArrayList;
 import java.util.List;
 
-import entidades.Categoria;
-
 public class JPACategoriaRepositorioDAO implements ICategoriaRepositorioDAO {
 
     private final ManipulaArquivo manipulaArquivo;
