@@ -5,7 +5,6 @@ import java.util.List;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityTransaction;
-import jakarta.persistence.PersistenceException;
 
 public class ManipulaArquivo {
 
