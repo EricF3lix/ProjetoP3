@@ -9,7 +9,7 @@ import jakarta.persistence.PersistenceException;
 
 public class ManipulaArquivo {
 
-	public <T, V> ArrayList<T> fazBusca(Class<T> tipo, V valor, String query) {
+	public <T, V> List<T> fazBusca(Class<T> tipo, V valor, String query) {
 	    EntityManager em = JPAUtil.getEntityManager();
 	    try {
 	        return new ArrayList<>(
@@ -21,13 +21,13 @@ public class ManipulaArquivo {
 	    }
 	}
 
-	public <T, V> ArrayList<T> buscar(Class<T> tipo, String atributo, V valor) {
+	public <T, V> List<T> buscar(Class<T> tipo, String atributo, V valor) {
 	    String query = "select a from " + tipo.getName()
 	        + " a where lower(cast(a." + atributo + " as string)) like lower(:valor) order by a.id";
 	    return fazBusca(tipo, valor + "%", query);
 	}
 
-	public <T, V> ArrayList<T> buscaExata(Class<T> tipo, String atributo, V valor) {
+	public <T, V> List<T> buscaExata(Class<T> tipo, String atributo, V valor) {
 	    String query = "select a from " + tipo.getName()
 	        + " a where a." + atributo + " = :valor order by a.id";
 	    return fazBusca(tipo, valor, query);
@@ -120,7 +120,7 @@ public class ManipulaArquivo {
 	    return sucesso;
 	}
 
-    public <T> ArrayList<T> carregarTudo(Class<T> tipo) {
+    public <T> List<T> carregarTudo(Class<T> tipo) {
 
         EntityManager em = JPAUtil.getEntityManager();
         
