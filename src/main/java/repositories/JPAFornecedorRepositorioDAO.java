@@ -45,12 +45,12 @@ public class JPAFornecedorRepositorioDAO implements IFornecedorRepositorioDAO {
 
         }
 
-    public ArrayList<Fornecedor> removeDuplicado(ArrayList<Fornecedor> lista){
-    	for (int i = 0; i < lista.size() - 1; i++) {
-			if (lista.get(i).getId() == lista.get(i+1).getId()) {
-				lista.remove(i);
-			}
-		}
+    public List<Fornecedor> removeDuplicado(List<Fornecedor> lista){
+    	for (int i = lista.size() - 1; i > 0; i--) {
+    	    if (lista.get(i).getId() == lista.get(i - 1).getId()) {
+    	        lista.remove(i);
+    	    }
+    	}
     	return lista;
     }
     
@@ -64,7 +64,7 @@ public class JPAFornecedorRepositorioDAO implements IFornecedorRepositorioDAO {
     		fornecedores.addAll(manipulaArquivo.buscar(Fornecedor.class, "email", valor));
     		fornecedores.addAll(manipulaArquivo.buscar(Fornecedor.class, "telefone", valor));
     		
-    		fornecedores = removeDuplicado(fornecedores);
+    		fornecedores = new ArrayList<>(removeDuplicado(fornecedores));
     	}
     	
     	else {
