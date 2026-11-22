@@ -59,16 +59,6 @@ public class ManipulaArquivo {
 	        et.commit();
 	        sucesso = true;
 	    }
-	    catch (IllegalArgumentException e) {
-	        if (et.isActive()) et.rollback();
-	        sucesso = false;
-	        throw e;
-	    }
-	    catch (PersistenceException e) {
-	        if (et.isActive()) et.rollback();
-	        sucesso = false;
-	        throw e;
-	    }
 	    catch (RuntimeException e) {
 	        if (et.isActive()) et.rollback();
 	        sucesso = false;
@@ -95,16 +85,6 @@ public class ManipulaArquivo {
 	        et.commit();
 	        sucesso = true;
 	    }
-	    catch (IllegalArgumentException e) {
-	        if (et.isActive()) et.rollback();
-	        sucesso = false;
-	        throw e;
-	    }
-	    catch (PersistenceException e) {
-	        if (et.isActive()) et.rollback();
-	        sucesso = false;
-	        throw e;
-	    }
 	    catch (RuntimeException e) {
 	        if (et.isActive()) et.rollback();
 	        sucesso = false;
@@ -127,16 +107,6 @@ public class ManipulaArquivo {
 	        em.persist(tipo);
 	        et.commit();
 	        sucesso = true;
-	    }
-	    catch (IllegalArgumentException e) {
-	        if (et.isActive()) et.rollback();
-	        sucesso = false;
-	        throw e;
-	    }
-	    catch (PersistenceException e) {
-	        if (et.isActive()) et.rollback();
-	        sucesso = false;
-	        throw e;
 	    }
 	    catch (RuntimeException e) {
 	        if (et.isActive()) et.rollback();
