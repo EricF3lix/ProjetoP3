@@ -24,7 +24,7 @@ public class GerenciamentoItens implements IGerenciamentoItens {
     @Override
     public Item buscarItem(int id) {
         List<Item> busca = repositorio.buscarItens("id",String.valueOf(id));
-    	return (busca == null || busca.isEmpty()) ? null : busca.getFirst();
+    	return (busca.isEmpty()) ? null : busca.getFirst();
     }
 
     @Override
@@ -45,7 +45,7 @@ public class GerenciamentoItens implements IGerenciamentoItens {
     @Override
     public Item filtrarPorId(String pesquisado) {
     	List<Item> busca = repositorio.buscarItens("id",pesquisado);
-        return (busca == null || busca.isEmpty()) ? null: busca.getFirst();
+        return (busca.isEmpty()) ? null: busca.getFirst();
     }
 
     @Override
