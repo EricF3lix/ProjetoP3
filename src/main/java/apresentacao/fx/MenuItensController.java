@@ -333,17 +333,6 @@ public class MenuItensController extends MenuController {
             return;
         }
 
-        double taxa;
-        double valor;
-
-        try {
-            taxa = Double.parseDouble(taxaTxt.replace(',', '.'));
-            valor = Double.parseDouble(valorTxt.replace(',', '.'));
-        } catch (NumberFormatException e) {
-        	notificarPopUpErro("Informe valores numéricos válidos para taxa, valor de reposição e fornecedor.");
-            return;
-        }
-
         List<Categoria> categorias = sistema.buscarCategoriaPorNome(categoriaNome);
         if (categorias.isEmpty()) {
         	notificarPopUpErro("Categoria não encontrada.");
