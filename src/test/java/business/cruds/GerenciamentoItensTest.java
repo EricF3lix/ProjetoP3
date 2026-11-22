@@ -29,7 +29,9 @@ class GerenciamentoItensTest {
     }
 
     private Item novoItem(int id) {
-        return new Item("Furadeira", "Furadeira de impacto", 20.0, "BOM", 500.0, categoria, fornecedor);
+        Item novo = new Item("Furadeira", "Furadeira de impacto", 20.0, "BOM", 500.0, categoria, fornecedor);
+    	novo.setId(id);
+        return novo;
     }
 
     
