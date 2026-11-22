@@ -46,11 +46,11 @@ public class JPAFornecedorRepositorioDAO implements IFornecedorRepositorioDAO {
         }
 
     public List<Fornecedor> removeDuplicado(List<Fornecedor> lista){
-    	for (int i = 0; i < lista.size() - 1; i++) {
-			if (lista.get(i).getId() == lista.get(i+1).getId()) {
-				lista.remove(i);
-			}
-		}
+    	for (int i = lista.size() - 1; i > 0; i--) {
+    	    if (lista.get(i).getId() == lista.get(i - 1).getId()) {
+    	        lista.remove(i);
+    	    }
+    	}
     	return lista;
     }
     
