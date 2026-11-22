@@ -15,6 +15,7 @@ class MultaTest {
     @BeforeEach
     void setUp() {
         multa = new Multa(10, "ATRASO", "Devolução em atraso", 45.0, "2026-01-15");
+        multa.setId(1);
     }
 
     @Test
