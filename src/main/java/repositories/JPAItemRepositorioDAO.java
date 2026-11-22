@@ -1,13 +1,10 @@
 package repositories;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
-import entidades.Categoria;
-import entidades.Fornecedor;
 import entidades.Item;
-import org.hibernate.cache.spi.support.AbstractReadWriteAccess;
+
 
 public class JPAItemRepositorioDAO implements IItemRepositorioDAO {
 
