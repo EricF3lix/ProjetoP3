@@ -29,7 +29,9 @@ class GerenciamentoItensTest {
     }
 
     private Item novoItem(int id) {
-        return new Item("Furadeira", "Furadeira de impacto", 20.0, "BOM", 500.0, categoria, fornecedor);
+        Item novo = new Item("Furadeira", "Furadeira de impacto", 20.0, "BOM", 500.0, categoria, fornecedor);
+    	novo.setId(id);
+        return novo;
     }
 
     
@@ -86,17 +88,15 @@ class GerenciamentoItensTest {
     void deveAtualizarCamposDoItem() {
         gerenciamentoItens.cadastrarItem(novoItem(1));
 
-        boolean resultado = false;
-        if (gerenciamentoItens.atualizarItem("nome","Serra Elétrica",1)){
-        if (gerenciamentoItens.atualizarItem("descricao","Serra circular",1)){
-        if (gerenciamentoItens.atualizarItem("taxaDiaria","35.0",1)){
-        if (gerenciamentoItens.atualizarItem("estadoConservacao","OTIMO",1)){
-            if (gerenciamentoItens.atualizarItem("valorReposicao","800.0",1)){
-            resultado = true;}}}}}
+       
+        assertTrue(gerenciamentoItens.atualizarItem("nome", "Serra Elétrica", 1));
+        assertTrue(gerenciamentoItens.atualizarItem("descricao", "Serra circular", 1));
+        assertTrue(gerenciamentoItens.atualizarItem("taxaDiaria", "35.0", 1));
+        assertTrue(gerenciamentoItens.atualizarItem("estadoConservacao", "OTIMO", 1));
+        assertTrue(gerenciamentoItens.atualizarItem("valorReposicao", "800.0", 1));
 
         Item atualizado = gerenciamentoItens.buscarItem(1);
 
-        assertTrue(resultado);
         assertEquals("Serra Elétrica", atualizado.getNome());
         assertEquals("Serra circular", atualizado.getDescricao());
         assertEquals(35.0, atualizado.getTaxaDiaria(), 0.0001);
