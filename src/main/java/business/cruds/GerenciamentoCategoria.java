@@ -1,6 +1,5 @@
 package business.cruds;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import business.interfaces.IGerenciamentoCategoria;
