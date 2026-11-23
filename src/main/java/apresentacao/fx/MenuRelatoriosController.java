@@ -1,23 +1,12 @@
 package apresentacao.fx;
 
-import java.awt.Color;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
-import com.lowagie.text.Document;
-import com.lowagie.text.Font;
-import com.lowagie.text.FontFactory;
-import com.lowagie.text.Paragraph;
-import com.lowagie.text.Phrase;
-import com.lowagie.text.pdf.PdfPCell;
-import com.lowagie.text.pdf.PdfPTable;
-import com.lowagie.text.pdf.PdfWriter;
 
 import entidades.Administrador;
 import entidades.Cliente;
@@ -49,6 +38,7 @@ import javafx.stage.Popup;
 import javafx.stage.Stage;
 import javafx.stage.Window;
 import javafx.util.Duration;
+import repositories.GeradorPdfRelatorio;
 
 public class MenuRelatoriosController extends MenuController {
 
@@ -65,7 +55,6 @@ public class MenuRelatoriosController extends MenuController {
     private static final String ESTILO_ATIVO = "-fx-background-color: #ffffff; -fx-background-radius: 10px; "
             + "-fx-border-color: #007AFF; -fx-border-radius: 10px; -fx-text-fill: #007AFF; "
             + "-fx-font-weight: bold; -fx-cursor: hand; -fx-font-size: 13px;";
-
 
     private static final String PADRAO_DATA = "dd/MM/yyyy";
     private static final DateTimeFormatter FORMATO_DATA = DateTimeFormatter.ofPattern(PADRAO_DATA);
@@ -117,6 +106,7 @@ public class MenuRelatoriosController extends MenuController {
 
     private String[] ultimosCabecalhos = new String[0];
     private String nomeRelatorioAtual = "Relatório do Sistema";
+    private final GeradorPdfRelatorio geradorPdfRelatorio = new GeradorPdfRelatorio();
 
     @Override
     protected String getTitulo() {
@@ -124,7 +114,7 @@ public class MenuRelatoriosController extends MenuController {
     }
 
     @Override
-    protected void aoExibir(){
+    protected void aoExibir() {
         btnPeriodo.setVisible(sistema.getTipoUsuarioLogado() instanceof Administrador);
         btnPeriodo.setManaged(sistema.getTipoUsuarioLogado() instanceof Administrador);
     }
@@ -285,6 +275,7 @@ public class MenuRelatoriosController extends MenuController {
             gerarPeriodo();
         }
     }
+
     private void carregarClientes() {
         clientes = sistema.listarUsuarios().stream()
                 .filter(Cliente.class::isInstance)
@@ -428,6 +419,7 @@ public class MenuRelatoriosController extends MenuController {
         modalStage.setScene(scene);
         modalStage.showAndWait();
     }
+
     private void solicitarDestinoESalvarPDF() {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Salvar Relatório em PDF");
@@ -447,51 +439,15 @@ public class MenuRelatoriosController extends MenuController {
     }
 
     private void gerarArquivoPDF(File arquivoDestino) {
-        Document document = new Document();
-        try (FileOutputStream fos = new FileOutputStream(arquivoDestino)) {
-            PdfWriter.getInstance(document, fos);
-            document.open();
+        try {
+            String dataHoje = LocalDate.now(FUSO_HORARIO).format(FORMATO_DATA);
+            List<List<String>> linhas = new ArrayList<>(tabela.getItems());
 
-            Font fontTitulo = FontFactory.getFont(FontFactory.HELVETICA_BOLD, 18, Color.BLACK);
-            document.add(new Paragraph(nomeRelatorioAtual, fontTitulo));
-
-            Font fontSub = FontFactory.getFont(FontFactory.HELVETICA, 10, Color.DARK_GRAY);
-            String dataHoje = LocalDate.now(FUSO_HORARIO).format(DateTimeFormatter.ofPattern(PADRAO_DATA));
-            document.add(new Paragraph("Gerado em: " + dataHoje + " | Total de registros: " + tabela.getItems().size() + "\n\n", fontSub));
-
-            if (ultimosCabecalhos != null && ultimosCabecalhos.length > 0) {
-                PdfPTable tabelaPdf = new PdfPTable(ultimosCabecalhos.length);
-                tabelaPdf.setWidthPercentage(100);
-
-                Font fontCabecalho = FontFactory.getFont(FontFactory.HELVETICA_BOLD, 10, Color.WHITE);
-                for (String col : ultimosCabecalhos) {
-                    PdfPCell cell = new PdfPCell(new Phrase(col, fontCabecalho));
-                    cell.setBackgroundColor(new Color(0, 122, 255));
-                    cell.setPadding(6);
-                    tabelaPdf.addCell(cell);
-                }
-
-                Font fontCorpo = FontFactory.getFont(FontFactory.HELVETICA, 9, Color.BLACK);
-                for (ObservableList<String> linha : tabela.getItems()) {
-                    for (String valor : linha) {
-                        PdfPCell cell = new PdfPCell(new Phrase(valor != null ? valor : "", fontCorpo));
-                        cell.setPadding(5);
-                        tabelaPdf.addCell(cell);
-                    }
-                }
-
-                document.add(tabelaPdf);
-            }
-
-            document.close();
+            geradorPdfRelatorio.gerarPdf(arquivoDestino, nomeRelatorioAtual, dataHoje, ultimosCabecalhos, linhas);
 
             exibirSucessoExportacao(arquivoDestino);
         } catch (Exception e) {
             erro("Falha ao gerar o arquivo PDF: " + e.getMessage());
-        } finally {
-            if (document.isOpen()) {
-                document.close();
-            }
         }
     }
 
