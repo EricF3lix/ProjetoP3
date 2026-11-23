@@ -1,17 +1,18 @@
 package business.relatorios;
 
 import entidades.ContratoAluguel;
+import entidades.Item;
 
 import java.util.List;
 
 public interface IRelatorios {
 
-    public abstract List gerarRelatorioItensDisponiveis();
+    List<Item> gerarRelatorioItensDisponiveis();
 
-    public abstract List<ContratoAluguel> gerarHistoricoCliente(int idCliente);
+    List<ContratoAluguel> gerarHistoricoCliente(int idCliente);
 
-    public abstract List<ContratoAluguel> gerarRelatorioItensAlugados();
+    List<ContratoAluguel> gerarRelatorioItensAlugados();
 
-    public abstract List<ContratoAluguel> gerarRelatorioFaturamento(String dataInicial, String dataFinal);
+    List<ContratoAluguel> gerarRelatorioFaturamento(String dataInicial, String dataFinal);
 
 }

@@ -48,7 +48,7 @@ public final class SistemaFactory {
         IGerenciamentoItens      gerenciamentoItens      = new GerenciamentoItens(itemRepositorio);
         IGerenciamentoMultas     gerenciamentoMultas     = new GerenciamentoMultas(multaRepositorio);
 
-        IRelatorios geradorRelatorios = new GeradorRelatorios(gerenciamentoItens, gerenciamentoContratos, gerenciamentoUsuarios);
+        IRelatorios geradorRelatorios = new GeradorRelatorios(gerenciamentoContratos, gerenciamentoUsuarios);
 
         // FACADE
         SistemaFacade sistema = new SistemaFacade(
