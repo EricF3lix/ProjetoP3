@@ -133,7 +133,5 @@ public class ManipulaArquivo {
         	em.close();
         }
     }
-    
-    
 
 }
