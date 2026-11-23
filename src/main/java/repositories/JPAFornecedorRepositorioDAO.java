@@ -35,6 +35,7 @@ public class JPAFornecedorRepositorioDAO implements IFornecedorRepositorioDAO {
     	sucesso.add(manipulaArquivo.atualizar(Fornecedor.class, "cnpj", fornecedor.getCnpj(), fornecedor.getId()));
     	sucesso.add(manipulaArquivo.atualizar(Fornecedor.class, "email", fornecedor.getEmail(), fornecedor.getId()));
     	sucesso.add(manipulaArquivo.atualizar(Fornecedor.class, "telefone", fornecedor.getTelefone(), fornecedor.getId()));
+    	sucesso.add(manipulaArquivo.atualizar(Fornecedor.class, "ativo", true, fornecedor.getId()));
     	
     	return !sucesso.contains(false);
     }

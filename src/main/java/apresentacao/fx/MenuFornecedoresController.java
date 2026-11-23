@@ -202,8 +202,10 @@ public class MenuFornecedoresController extends MenuController{
 		}
 
 		int id = atual.getId();
-
-		if (sistema.atualizarFornecedor(new Fornecedor(nome, cnpj, email, telefone))) {
+		Fornecedor editado = new Fornecedor(nome, cnpj, email, telefone);
+		editado.setId(atual.getId());
+		
+		if (sistema.atualizarFornecedor(editado)) {
 			notificarPopUp("Fornecedor atualizado com sucesso.");
 			btnAtualizar.setUserData(null);
 			txtNome.clear();
