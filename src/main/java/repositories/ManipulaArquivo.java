@@ -11,7 +11,6 @@ import jakarta.persistence.criteria.CriteriaUpdate;
 import jakarta.persistence.criteria.Root;
 
 public class ManipulaArquivo {
-
 	private static final String CAMPO_ID = "id";
 
 	private <T> List<T> executarConsulta(EntityManager em, CriteriaQuery<T> criteriaQuery) {
