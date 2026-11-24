@@ -21,7 +21,6 @@ import support.FakeUsuarioRepositorio;
 
 @DisplayName("GerenciamentoUsuarios (operações que gravam no banco)")
 class GerenciamentoUsuariosOperacoesTest {
-
     private FakeUsuarioRepositorio repositorio;
     private GerenciamentoContratos contratos;
     private GerenciamentoUsuarios negocio;
