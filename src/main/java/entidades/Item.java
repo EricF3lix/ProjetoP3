@@ -1,26 +1,38 @@
 package entidades;
 
+import jakarta.persistence.*;
+
 @SuppressWarnings("java:S107")
+@Entity
 public class Item {
 
-    private final int id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int id;
     private String nome;
     private String descricao;
     private double taxaDiaria;
     private String estadoConservacao;
     private double valorReposicao;
+
+    @ManyToOne
+    @JoinColumn
     private Categoria categoria;
+
+    @ManyToOne
+    @JoinColumn
     private Fornecedor fornecedor;
     private String status;
     private boolean ativo;
     private static final String DISPONIVEL = "DISPONIVEL";
     private static final String INDISPONIVEL = "INDISPONIVEL";
 
-    public Item(int id, String nome, String descricao, double taxaDiaria,
+    public Item(){}
+
+    public Item(String nome, String descricao, double taxaDiaria,
                 String estadoConservacao, double valorReposicao,
                 Categoria categoria, Fornecedor fornecedor) {
 
-        this.id = id;
         this.nome = nome;
         this.descricao = descricao;
         this.taxaDiaria = taxaDiaria;
@@ -32,8 +44,12 @@ public class Item {
         this.ativo = true;
     }
 
+
     public int getId() {
         return id;
+    }
+    public void setId(int id) {
+        this.id = id;
     }
 
     @Override

@@ -1,22 +1,23 @@
 package repositories;
 
-import entidades.Multa;
-
 import java.util.List;
 
-public interface IMultaRepositorio {
+import entidades.Multa;
+
+public interface IMultaRepositorioDAO {
 
     public abstract void adicionar(Multa multa);
 
     public abstract List<Multa> listarTodos();
 
+    public abstract List<Multa> buscarMultas(String tipofiltro, String filtro);
+    
     public abstract Multa buscarPorId(int id);
 
     public abstract List<Multa> buscarPorContrato(int idContrato);
 
     public abstract List<Multa> buscarPendentes();
 
-    public abstract void salvar();
+    public abstract void atualizar(String coluna, Object valor, int id);
 
-    public abstract int gerarProximoId();
 }

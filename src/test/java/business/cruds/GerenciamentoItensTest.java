@@ -24,12 +24,14 @@ class GerenciamentoItensTest {
         repositorio = new FakeItemRepositorio();
         gerenciamentoItens = new GerenciamentoItens(repositorio);
 
-        categoria = new Categoria(1, "Ferramentas", "Ferramentas em geral");
-        fornecedor = new Fornecedor(1, "Fornecedor XPTO", "00.000.000/0001-00", "contato@xpto.com", "8199999999");
+        categoria = new Categoria("Ferramentas", "Ferramentas em geral");
+        fornecedor = new Fornecedor("Fornecedor XPTO", "00.000.000/0001-00", "contato@xpto.com", "8199999999");
     }
 
     private Item novoItem(int id) {
-        return new Item(id, "Furadeira", "Furadeira de impacto", 20.0, "BOM", 500.0, categoria, fornecedor);
+        Item novo = new Item("Furadeira", "Furadeira de impacto", 20.0, "BOM", 500.0, categoria, fornecedor);
+    	novo.setId(id);
+        return novo;
     }
 
     
@@ -76,8 +78,7 @@ class GerenciamentoItensTest {
     @Test
     @DisplayName("atualizarItem deve retornar false quando o item não existe")
     void deveRetornarFalseAoAtualizarItemInexistente() {
-        Item itemNovo = new Item(999, "Novo nome", "Nova descrição", 30.0, "OTIMO", 600.0, null, null);
-        boolean resultado = gerenciamentoItens.atualizarItem(itemNovo);
+        boolean resultado = gerenciamentoItens.atualizarItem("nome","novo nome",999);
 
         assertFalse(resultado);
     }
@@ -87,12 +88,15 @@ class GerenciamentoItensTest {
     void deveAtualizarCamposDoItem() {
         gerenciamentoItens.cadastrarItem(novoItem(1));
 
-        Item itemNovo = new Item(1, "Serra Elétrica", "Serra circular", 35.0, "OTIMO", 800.0, categoria, fornecedor);
-        boolean resultado = gerenciamentoItens.atualizarItem(itemNovo);
+       
+        assertTrue(gerenciamentoItens.atualizarItem("nome", "Serra Elétrica", 1));
+        assertTrue(gerenciamentoItens.atualizarItem("descricao", "Serra circular", 1));
+        assertTrue(gerenciamentoItens.atualizarItem("taxaDiaria", "35.0", 1));
+        assertTrue(gerenciamentoItens.atualizarItem("estadoConservacao", "OTIMO", 1));
+        assertTrue(gerenciamentoItens.atualizarItem("valorReposicao", "800.0", 1));
 
         Item atualizado = gerenciamentoItens.buscarItem(1);
 
-        assertTrue(resultado);
         assertEquals("Serra Elétrica", atualizado.getNome());
         assertEquals("Serra circular", atualizado.getDescricao());
         assertEquals(35.0, atualizado.getTaxaDiaria(), 0.0001);
@@ -100,41 +104,16 @@ class GerenciamentoItensTest {
         assertEquals(800.0, atualizado.getValorReposicao(), 0.0001);
     }
 
-  
-
-    @Test
-    @DisplayName("excluirItem deve retornar false quando o item não existe")
-    void deveRetornarFalseAoExcluirItemInexistente() {
-        assertFalse(gerenciamentoItens.excluirItem(999));
-    }
-
     @Test
     @DisplayName("excluirItem deve desativar o item, tornando-o indisponível")
     void deveDesativarItem() {
         gerenciamentoItens.cadastrarItem(novoItem(1));
 
-        boolean resultado = gerenciamentoItens.excluirItem(1);
+        gerenciamentoItens.desativarItem(1);
         Item item = gerenciamentoItens.buscarItem(1);
 
-        assertTrue(resultado);
         assertFalse(item.isAtivo());
         assertFalse(item.estaDisponivel(), "Item desativado não pode estar disponível para aluguel");
     }
 
-   
-
-    @Test
-    @DisplayName("gerarProximoId deve retornar 1 quando não há itens cadastrados")
-    void devePrimeiroIdQuandoVazio() {
-        assertEquals(1, gerenciamentoItens.gerarProximoId());
-    }
-
-    @Test
-    @DisplayName("gerarProximoId deve retornar o maior id cadastrado + 1")
-    void deveIncrementarAPartirDoMaiorId() {
-        gerenciamentoItens.cadastrarItem(novoItem(7));
-        gerenciamentoItens.cadastrarItem(novoItem(3));
-
-        assertEquals(8, gerenciamentoItens.gerarProximoId());
-    }
 }

@@ -1,10 +1,20 @@
 package facade;
 
-import business.interfaces.*;
-import business.relatorios.IRelatorios;
-import entidades.*;
-
 import java.util.List;
+
+import business.interfaces.IGerenciamentoCategoria;
+import business.interfaces.IGerenciamentoContratos;
+import business.interfaces.IGerenciamentoFornecedor;
+import business.interfaces.IGerenciamentoItens;
+import business.interfaces.IGerenciamentoMultas;
+import business.interfaces.IGerenciamentoUsuarios;
+import business.relatorios.IRelatorios;
+import entidades.Categoria;
+import entidades.ContratoAluguel;
+import entidades.Fornecedor;
+import entidades.Item;
+import entidades.Multa;
+import entidades.Usuario;
 
 public class SistemaFacade {
 
@@ -80,10 +90,6 @@ public class SistemaFacade {
         this.usuarioLogado = null;
     }
 
-    public int gerarProximoIdUsuario() {
-        return gerenciamentoUsuarios.gerarProximoId();
-    }
-
     // =========================================================================
     // CONTRATOS
     // =========================================================================
@@ -104,8 +110,8 @@ public class SistemaFacade {
         return gerenciamentoContratos.filtrarContratos(filtro);
     }
 
-    public boolean finalizarContrato(int id) {
-        return gerenciamentoContratos.finalizarContrato(id);
+    public boolean finalizarContrato(int id, String dataDevolucaoReal) {
+        return gerenciamentoContratos.finalizarContrato(id, dataDevolucaoReal);
     }
 
     public boolean cancelarContrato(int id) {
@@ -120,9 +126,6 @@ public class SistemaFacade {
         return gerenciamentoContratos.clientePossuiHistorico(idCliente);
     }
 
-    public int gerarProximoIdContrato() {
-        return gerenciamentoContratos.gerarProximoId();
-    }
     public boolean quitarMultaContrato(int idContrato) {
         return gerenciamentoContratos.quitarMultaContrato(idContrato);
     }
@@ -175,11 +178,11 @@ public class SistemaFacade {
         return gerenciamentoItens.listarItens();
     }
 
-    public List<Item> filtrarItem(String filtro) {
-        return gerenciamentoItens.filtrarItem(filtro);
+    public List<Item> filtrarItem(String tipofiltro,String filtro) {
+        return gerenciamentoItens.filtrarItem(tipofiltro,filtro);
     }
     
-    public List<Item> filtraID(String pesquisado) {
+    public Item filtraID(String pesquisado) {
         return gerenciamentoItens.filtrarPorId(pesquisado);
     }
 
@@ -195,16 +198,12 @@ public class SistemaFacade {
         return gerenciamentoItens.filtrarPorTaxa(pesquisado);
     }
     
-    public boolean atualizarItem(Item itemNovo) {
-        return gerenciamentoItens.atualizarItem(itemNovo);
+    public boolean atualizarItem(String coluna,String valor,int id) {
+        return gerenciamentoItens.atualizarItem(coluna,valor,id);
     }
 
-    public boolean excluirItem(int id) {
-        return gerenciamentoItens.excluirItem(id);
-    }
-
-    public int gerarProximoIdItem() {
-        return gerenciamentoItens.gerarProximoId();
+    public boolean desativarItem(int id){
+        return gerenciamentoItens.desativarItem(id);
     }
 
     // =========================================================================
@@ -223,16 +222,12 @@ public class SistemaFacade {
         return gerenciamentoCategoria.listarCategorias();
     }
 
-    public boolean atualizarCategoria(Categoria categoriaNova) {
-        return gerenciamentoCategoria.atualizarCategoria(categoriaNova);
+    public boolean atualizarCategoria(String coluna, String valor, int id) {
+        return gerenciamentoCategoria.atualizarCategoria(coluna,valor,id);
     }
 
     public boolean desativarCategoria(int id) {
         return gerenciamentoCategoria.desativarCategoria(id);
-    }
-
-    public int gerarProximoIdCategoria() {
-        return gerenciamentoCategoria.gerarProximoId(); 
     }
     
     public List<Categoria> buscarCategoriaPorId(String id) {
@@ -263,29 +258,10 @@ public class SistemaFacade {
         return gerenciamentoFornecedor.buscarFornecedor(id);
     }
     
-    public List<Fornecedor> buscarPorCnpj(String cnpj) {
-        return gerenciamentoFornecedor.buscarPorCnpj(cnpj);
+    public List<Fornecedor> buscarPesquisa(String valor, String campo) {
+        return gerenciamentoFornecedor.buscarPesquisa(valor, campo);
     }
 
-    public List<Fornecedor> buscarPorNome(String nome) {
-        return gerenciamentoFornecedor.buscarPorNome(nome);
-    }
-
-    public List<Fornecedor> buscarPorEmail(String email) {
-        return gerenciamentoFornecedor.buscarPorEmail(email);
-    }
-
-    public List<Fornecedor> buscarPorTelefone(String telefone) {
-        return gerenciamentoFornecedor.buscarPorTelefone(telefone);
-    }
-    
-    public List<Fornecedor> buscarPorId(String id) {
-        return gerenciamentoFornecedor.buscarPorId(id);
-    }
-    
-    public List<Fornecedor> buscarPorTodos(String texto){
-    	return gerenciamentoFornecedor.buscarPorTodos(texto);
-    }
     
     public List<Fornecedor> listarFornecedores() {
         return gerenciamentoFornecedor.listarFornecedores();
@@ -299,9 +275,6 @@ public class SistemaFacade {
         return gerenciamentoFornecedor.desativarFornecedor(id);
     }
 
-    public int gerarProximoIdFornecedor() {
-        return gerenciamentoFornecedor.gerarProximoId();
-    }
 
     // =========================================================================
     // MULTAS
@@ -329,10 +302,6 @@ public class SistemaFacade {
 
     public boolean quitarMulta(int id) {
         return gerenciamentoMultas.quitarMulta(id);
-    }
-
-    public int gerarProximoIdMulta() {
-        return gerenciamentoMultas.gerarProximoId();
     }
 
     // =========================================================================

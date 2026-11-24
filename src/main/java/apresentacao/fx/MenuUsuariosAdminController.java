@@ -1,284 +1,355 @@
 package apresentacao.fx;
 
+import java.util.List;
+import java.util.Optional;
+
+import entidades.Administrador;
+import entidades.Cliente;
+import entidades.Funcionario;
 import entidades.Usuario;
 import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.Node;
 import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
+import javafx.scene.control.TableCell;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.VBox;
 
-import java.lang.reflect.Method;
+public class MenuUsuariosAdminController extends MenuController {
 
-public class MenuUsuariosAdminController extends MenuUsuariosFuncionarioController {
+	private static final String ID = "Digite o ID do usuário: ";
+	private static final String NAO_ENCONTRADO = "Usuário não encontrado.";
+	private static final String PERFIL_CLIENTE = "Cliente";
+	private static final String PERFIL_FUNCIONARIO = "Funcionário";
+	private static final String PERFIL_ADMIN = "Administrador";
+	private static final String FILTRO_TODOS = "Todos";
 
-    private static final String STYLE_TEXT_RED = "-fx-text-fill: red;";
-    private static final String STYLE_TEXT_GREEN = "-fx-text-fill: green;";
-    private static final String MSG_USUARIO_NAO_ENCONTRADO = "Usuário não encontrado.";
+	@FXML private TableView<Usuario> tabela;
+	@FXML private ComboBox<String> filtro;
+	@FXML private TableColumn<Usuario, Integer> colId;
+	@FXML private TableColumn<Usuario, String> colNome;
+	@FXML private TableColumn<Usuario, String> colEmail;
+	@FXML private TableColumn<Usuario, String> colCpf;
+	@FXML private TableColumn<Usuario, String> colPerfil;
+	@FXML private TableColumn<Usuario, Boolean> colunaStatus;
 
-    @FXML
-    private VBox painelAtualizar;
+	@FXML private VBox dadosUsuario;
+	@FXML private VBox tabelaUsuario;
 
-    @FXML
-    private TextField txtAtualizarId;
+	@FXML private Label tituloUsuario;
 
-    @FXML
-    private TextField txtAtualizarNome;
+	@FXML private ComboBox<String> cbPerfil;
+	@FXML private TextField txtNome;
+	@FXML private TextField txtEmail;
+	@FXML private TextField txtCpf;
+	@FXML private PasswordField txtSenha;
 
-    @FXML
-    private TextField txtAtualizarEmail;
+	@FXML private Button btnCadastrar;
+	@FXML private Button btnAtualizar;
 
-    @FXML
-    private PasswordField txtAtualizarSenha;
+	private boolean listener = false;
 
-    @FXML
-    private Button btnAtualizarSalvar;
+	@Override
+	protected String getTitulo() {
+		return "Gerenciar Usuários (Administrador)";
+	}
 
-    @FXML
-    private Label lblAtualizarStatus;
+	@Override
+	protected void aoExibir() {
+		tabela.setPlaceholder(new Label("Nenhum usuário cadastrado"));
+		if (!listener) {
+			configurarColunas();
+			configurarCombos();
+			pesquisa.textProperty().addListener((obj, antigo, novo) -> fazPesquisa(novo));
+			this.listener = true;
+		}
+		filtro.setValue(FILTRO_TODOS);
+		listarUsuarios();
+	}
 
-    @FXML
-    private VBox painelDesativar;
+	private void configurarColunas() {
+		colId.setCellValueFactory(new PropertyValueFactory<>("id"));
+		colNome.setCellValueFactory(new PropertyValueFactory<>("nome"));
+		colEmail.setCellValueFactory(new PropertyValueFactory<>("email"));
+		colCpf.setCellValueFactory(new PropertyValueFactory<>("cpf"));
+		colPerfil.setCellValueFactory(new PropertyValueFactory<>("tipo"));
+		colunaStatus.setCellValueFactory(new PropertyValueFactory<>("ativo"));
 
-    @FXML
-    private TextField txtDesativarId;
+		colunaStatus.setCellFactory(c -> new TableCell<>() {
+			private final Label badge = new Label();
 
-    @FXML
-    private Label lblDesativarStatus;
+			@Override
+			protected void updateItem(Boolean ativo, boolean vazio) {
+				super.updateItem(ativo, vazio);
+				if (vazio || ativo == null) {
+					setGraphic(null);
+					setText(null);
+					return;
+				}
+				configuraBadge(badge, ativo);
+				setGraphic(badge);
+				setText(null);
+			}
+		});
+	}
 
-    @FXML
-    private Button btnCadastrarFuncionario;
+	private void configurarCombos() {
+		filtro.setItems(FXCollections.observableArrayList(
+				FILTRO_TODOS, "ID", "Nome", "E-mail", "CPF", "Perfil", "Status"));
+		cbPerfil.setItems(FXCollections.observableArrayList(
+				PERFIL_CLIENTE, PERFIL_FUNCIONARIO, PERFIL_ADMIN));
+		cbPerfil.setValue(PERFIL_CLIENTE);
+	}
 
-    @FXML
-    private Button btnCadastrarAdmin;
+	private void configuraBadge(Label badge, boolean ativo) {
+		badge.setText(ativo ? "● Ativo" : "● Inativo");
+		badge.setStyle(
+				"-fx-background-color: " + (ativo ? "#d4edda" : "#f8d7da") + "; " +
+				"-fx-text-fill: " + (ativo ? "#155724" : "#721c24") + "; " +
+				"-fx-font-weight: bold; -fx-padding: 3 8 3 8; " +
+				"-fx-background-radius: 10; -fx-font-size: 11px;");
+	}
 
-    @FXML
-    private Button btnAtualizarUsuario;
+	private void tiraTabela() {
+		tabelaUsuario.setVisible(false);
+		tabelaUsuario.setManaged(false);
 
-    @FXML
-    private Button btnDesativarUsuario;
+		dadosUsuario.setVisible(true);
+		dadosUsuario.setManaged(true);
+	}
 
-    @Override
-    public String getTitulo() {
-        return "Gerenciar Usuários (Administrador)";
-    }
+	private void colocaTabela() {
+		tabelaUsuario.setVisible(true);
+		tabelaUsuario.setManaged(true);
 
-    @Override
-    public void initialize() {
-        super.initialize();
-        removerBotoesCadastroRedundantes();
-    }
+		dadosUsuario.setVisible(false);
+		dadosUsuario.setManaged(false);
+	}
 
-    private void removerBotoesCadastroRedundantes() {
-        if (btnCadastrarFuncionario != null) {
-            btnCadastrarFuncionario.setVisible(false);
-            btnCadastrarFuncionario.setManaged(false);
-        }
-        if (btnCadastrarAdmin != null) {
-            btnCadastrarAdmin.setVisible(false);
-            btnCadastrarAdmin.setManaged(false);
-        }
-    }
+	private void limparFormulario() {
+		cbPerfil.setValue(PERFIL_CLIENTE);
+		cbPerfil.setDisable(false);
+		txtNome.clear();
+		txtEmail.clear();
+		txtCpf.clear();
+		txtCpf.setDisable(false);
+		txtSenha.clear();
+		txtSenha.setPromptText("Senha");
+	}
 
-    @Override
-    protected ObservableList<String> obterOpcoesCadastro() {
-        return FXCollections.observableArrayList("Cliente", "Funcionário", "Administrador");
-    }
+	@FXML
+	private void trocaCadastro() {
+		tiraTabela();
+		tituloUsuario.setText("Cadastrar Usuário");
 
-    @Override
-    protected void exibirPainel(Node painelDesejado) {
-        super.exibirPainel(painelDesejado);
-        if (painelAtualizar != null) painelAtualizar.setVisible(painelDesejado == painelAtualizar);
-        if (painelDesativar != null) painelDesativar.setVisible(painelDesejado == painelDesativar);
-        if (painelDesejado != null) {
-            painelDesejado.toFront();
-        }
-    }
+		btnCadastrar.setVisible(true);
+		btnCadastrar.setManaged(true);
 
-    @FXML
-    public void aoCadastrarFuncionario(ActionEvent event) {
-        prepararFormularioCadastro("Funcionário");
-    }
+		btnAtualizar.setVisible(false);
+		btnAtualizar.setManaged(false);
 
-    @FXML
-    public void aoCadastrarAdmin(ActionEvent event) {
-        prepararFormularioCadastro("Administrador");
-    }
+		limparFormulario();
+	}
 
-    @FXML
-    public void aoAtualizarUsuario(ActionEvent event) {
-        txtAtualizarId.clear();
-        txtAtualizarNome.clear();
-        txtAtualizarEmail.clear();
-        txtAtualizarSenha.clear();
-        lblAtualizarStatus.setText("");
+	@FXML
+	private void trocaAtualizar() {
+		Usuario alvo = obterUsuarioAlvo();
+		if (alvo == null) return;
 
-        Usuario selecionado = (tabelaUsuarios != null) ? tabelaUsuarios.getSelectionModel().getSelectedItem() : null;
+		tiraTabela();
+		tituloUsuario.setText("Atualizar Usuário");
 
-        if (selecionado != null) {
-            txtAtualizarId.setText(String.valueOf(selecionado.getId()));
-            txtAtualizarNome.setText(selecionado.getNome());
-            txtAtualizarEmail.setText(selecionado.getEmail());
-            txtAtualizarSenha.setText("");
-            txtAtualizarNome.setDisable(false);
-            txtAtualizarEmail.setDisable(false);
-            txtAtualizarSenha.setDisable(false);
-            btnAtualizarSalvar.setDisable(false);
-            lblAtualizarStatus.setText("Editando dados de: " + selecionado.getNome());
-            lblAtualizarStatus.setStyle("-fx-text-fill: #007AFF;");
-        } else {
-            txtAtualizarNome.setDisable(true);
-            txtAtualizarEmail.setDisable(true);
-            txtAtualizarSenha.setDisable(true);
-            btnAtualizarSalvar.setDisable(true);
-            lblAtualizarStatus.setText("Selecione um usuário na tabela ou informe o ID.");
-            lblAtualizarStatus.setStyle("-fx-text-fill: #6e6e73;");
-        }
+		btnCadastrar.setVisible(false);
+		btnCadastrar.setManaged(false);
+		btnAtualizar.setVisible(true);
+		btnAtualizar.setManaged(true);
+		btnAtualizar.setUserData(alvo);
 
-        exibirPainel(painelAtualizar);
-    }
+		cbPerfil.setValue(formatarPerfil(alvo.getTipo()));
+		cbPerfil.setDisable(true);
+		txtNome.setText(alvo.getNome());
+		txtEmail.setText(alvo.getEmail());
+		txtCpf.setText(alvo.getCpf());
+		txtCpf.setDisable(true);
+		txtSenha.clear();
+		txtSenha.setPromptText("Nova senha (opcional)");
+	}
 
-    @FXML
-    public void aoCarregarUsuarioParaAtualizar(ActionEvent event) {
-        if (sistema == null) return;
-        try {
-            int id = Integer.parseInt(txtAtualizarId.getText().trim());
-            Usuario u = sistema.buscarUsuario(id);
-            if (u != null) {
-                txtAtualizarNome.setText(u.getNome());
-                txtAtualizarEmail.setText(u.getEmail());
-                txtAtualizarSenha.setText("");
-                txtAtualizarNome.setDisable(false);
-                txtAtualizarEmail.setDisable(false);
-                txtAtualizarSenha.setDisable(false);
-                btnAtualizarSalvar.setDisable(false);
-                lblAtualizarStatus.setText("Usuário carregado. Edite e salve.");
-                lblAtualizarStatus.setStyle("-fx-text-fill: black;");
-            } else {
-                lblAtualizarStatus.setText(MSG_USUARIO_NAO_ENCONTRADO);
-                lblAtualizarStatus.setStyle(STYLE_TEXT_RED);
-            }
-        } catch (NumberFormatException ex) {
-            lblAtualizarStatus.setText("ID inválido.");
-            lblAtualizarStatus.setStyle(STYLE_TEXT_RED);
-        }
-    }
+	@FXML
+	private void cadastrarUsuario() {
+		String perfil = cbPerfil.getValue();
+		String nome = txtNome.getText().trim();
+		String email = txtEmail.getText().trim();
+		String cpf = txtCpf.getText().trim();
+		String senha = txtSenha.getText().trim();
 
-    @FXML
-    public void aoConfirmarAtualizar(ActionEvent event) {
-        if (sistema == null) return;
-        try {
-            int id = Integer.parseInt(txtAtualizarId.getText().trim());
-            Usuario atual = sistema.buscarUsuario(id);
+		if (perfil == null || nome.isEmpty() || email.isEmpty() || cpf.isEmpty() || senha.isEmpty()) {
+			notificarPopUpErro("Preencha todos os campos!");
+			return;
+		}
 
-            if (atual == null) {
-                lblAtualizarStatus.setText(MSG_USUARIO_NAO_ENCONTRADO);
-                lblAtualizarStatus.setStyle(STYLE_TEXT_RED);
-                return;
-            }
+		Usuario usuario = criarUsuarioPorPerfil(perfil, nome, email, cpf, senha);
 
-            String novoNome = txtAtualizarNome.getText().trim().isEmpty() ? atual.getNome() : txtAtualizarNome.getText().trim();
-            String novoEmail = txtAtualizarEmail.getText().trim().isEmpty() ? atual.getEmail() : txtAtualizarEmail.getText().trim();
-            String novaSenha = txtAtualizarSenha.getText().trim().isEmpty() ? atual.getSenha() : txtAtualizarSenha.getText().trim();
+		if (sistema.cadastrarUsuario(usuario)) {
+			notificarPopUp("Usuário cadastrado com sucesso!");
+			limparFormulario();
+			listarUsuarios();
+		} else {
+			notificarPopUpErro("Usuário já cadastrado (CPF ou e-mail já em uso)!");
+		}
+	}
 
-            if (sistema.atualizarUsuario(id, novoNome, novoEmail, novaSenha)) {
-                lblAtualizarStatus.setText("Usuário atualizado com sucesso!");
-                lblAtualizarStatus.setStyle(STYLE_TEXT_GREEN);
-                carregarTabela();
-            } else {
-                lblAtualizarStatus.setText("Erro ao atualizar usuário.");
-                lblAtualizarStatus.setStyle(STYLE_TEXT_RED);
-            }
-        } catch (NumberFormatException ex) {
-            lblAtualizarStatus.setText("ID inválido.");
-            lblAtualizarStatus.setStyle(STYLE_TEXT_RED);
-        }
-    }
+	private Usuario criarUsuarioPorPerfil(String perfil, String nome, String email, String cpf, String senha) {
+		return switch (perfil) {
+			case PERFIL_FUNCIONARIO -> new Funcionario(nome, email, cpf, senha);
+			case PERFIL_ADMIN -> new Administrador(nome, email, cpf, senha);
+			default -> new Cliente(nome, email, cpf, senha);
+		};
+	}
 
-    @FXML
-    public void aoDesativarUsuario(ActionEvent event) {
-        txtDesativarId.clear();
-        lblDesativarStatus.setText("");
+	private String formatarPerfil(String tipo) {
+		if (tipo == null) return PERFIL_CLIENTE;
+		return switch (tipo.toUpperCase()) {
+			case "FUNCIONARIO" -> PERFIL_FUNCIONARIO;
+			case "ADMINISTRADOR" -> PERFIL_ADMIN;
+			default -> PERFIL_CLIENTE;
+		};
+	}
 
-        Usuario selecionado = (tabelaUsuarios != null) ? tabelaUsuarios.getSelectionModel().getSelectedItem() : null;
+	private void fazPesquisa(String pesquisado) {
+		colocaTabela();
 
-        if (selecionado != null) {
-            txtDesativarId.setText(String.valueOf(selecionado.getId()));
-            lblDesativarStatus.setText("Selecionado: " + selecionado.getNome() + (selecionado.isAtivo() ? " (Ativo)" : " (Inativo)"));
-            lblDesativarStatus.setStyle("-fx-text-fill: #007AFF;");
-        }
+		if (filtro.getValue() == null) {
+			filtro.getSelectionModel().selectFirst();
+		}
 
-        exibirPainel(painelDesativar);
-    }
+		String termo = (pesquisado == null) ? "" : pesquisado.toLowerCase().trim();
+		List<Usuario> todos = sistema.listarUsuarios();
 
-    @FXML
-    public void aoConfirmarDesativar(ActionEvent event) {
-        if (sistema == null) return;
-        
-        try {
-            int id = Integer.parseInt(txtDesativarId.getText().trim());
-            Usuario usuario = sistema.buscarUsuario(id);
+		if (termo.isEmpty()) {
+			tabela.setItems(FXCollections.observableArrayList(todos));
+			return;
+		}
 
-            if (usuario == null) {
-                lblDesativarStatus.setText(MSG_USUARIO_NAO_ENCONTRADO);
-                lblDesativarStatus.setStyle(STYLE_TEXT_RED);
-                return;
-            }
+		String criterio = filtro.getValue();
+		List<Usuario> filtrados = todos.stream()
+				.filter(u -> correspondeFiltro(u, criterio, termo))
+				.toList();
 
-            if (usuario.isAtivo()) {
-                executarDesativacao(id);
-            } else {
-                executarReativacao(id);
-            }
-        } catch (NumberFormatException ex) {
-            lblDesativarStatus.setText("Digite um ID numérico válido.");
-            lblDesativarStatus.setStyle(STYLE_TEXT_RED);
-        }
-    }
+		tabela.setItems(FXCollections.observableArrayList(filtrados));
+	}
 
-    private void executarDesativacao(int id) {
-        if (sistema.desativaUsuario(id)) {
-            lblDesativarStatus.setText("Usuário desativado com sucesso!");
-            lblDesativarStatus.setStyle(STYLE_TEXT_GREEN);
-            txtDesativarId.clear();
-            carregarTabela();
-        } else {
-            lblDesativarStatus.setText("Não foi possível desativar (verifique pendências/multas).");
-            lblDesativarStatus.setStyle(STYLE_TEXT_RED);
-        }
-    }
+	private boolean correspondeFiltro(Usuario u, String criterio, String termo) {
+		String statusTexto = u.isAtivo() ? "ativo" : "inativo";
+		return switch (criterio) {
+			case "ID" -> String.valueOf(u.getId()).startsWith(termo);
+			case "Nome" -> u.getNome() != null && u.getNome().toLowerCase().contains(termo);
+			case "E-mail" -> u.getEmail() != null && u.getEmail().toLowerCase().contains(termo);
+			case "CPF" -> u.getCpf() != null && u.getCpf().toLowerCase().contains(termo);
+			case "Perfil" -> u.getTipo() != null && u.getTipo().toLowerCase().contains(termo);
+			case "Status" -> statusTexto.startsWith(termo);
+			default -> String.valueOf(u.getId()).contains(termo)
+					|| (u.getNome() != null && u.getNome().toLowerCase().contains(termo))
+					|| (u.getEmail() != null && u.getEmail().toLowerCase().contains(termo))
+					|| (u.getCpf() != null && u.getCpf().toLowerCase().contains(termo))
+					|| (u.getTipo() != null && u.getTipo().toLowerCase().contains(termo))
+					|| statusTexto.contains(termo);
+		};
+	}
 
-    private void executarReativacao(int id) {
-        if (tentarReativarUsuario(id)) {
-            lblDesativarStatus.setText("Usuário reativado com sucesso!");
-            lblDesativarStatus.setStyle(STYLE_TEXT_GREEN);
-            txtDesativarId.clear();
-            carregarTabela();
-        } else {
-            lblDesativarStatus.setText("Este usuário já se encontra inativo.");
-            lblDesativarStatus.setStyle("-fx-text-fill: orange;");
-        }
-    }
+	@FXML
+	private void listarUsuarios() {
+		colocaTabela();
+		tabela.setItems(FXCollections.observableArrayList(sistema.listarUsuarios()));
+	}
 
-    private boolean tentarReativarUsuario(int id) {
-        try {
-            Method metodoAtivar = sistema.getClass().getMethod("ativaUsuario", int.class);
-            return (boolean) metodoAtivar.invoke(sistema, id);
-        } catch (Exception e) {
-            return invocarMetodoReativacaoAlternativo(id);
-        }
-    }
+	@FXML
+	private void atualizarUsuario() {
+		Usuario atual = (Usuario) btnAtualizar.getUserData();
+		if (atual == null) return;
 
-    private boolean invocarMetodoReativacaoAlternativo(int id) {
-        try {
-            Method metodoAtivar2 = sistema.getClass().getMethod("ativarUsuario", int.class);
-            return (boolean) metodoAtivar2.invoke(sistema, id);
-        } catch (Exception ex) {
-            return false;
-        }
-    }
+		String nome = txtNome.getText().trim();
+		String email = txtEmail.getText().trim();
+		String senhaDigitada = txtSenha.getText().trim();
+		String senha = senhaDigitada.isEmpty() ? atual.getSenha() : senhaDigitada;
+
+		if (nome.isEmpty() || email.isEmpty()) {
+			notificarPopUpErro("Preencha nome e e-mail!");
+			return;
+		}
+
+		int id = atual.getId();
+
+		if (sistema.atualizarUsuario(id, nome, email, senha)) {
+			notificarPopUp("Usuário atualizado com sucesso.");
+			btnAtualizar.setUserData(null);
+			limparFormulario();
+			mostraUsuario(id);
+		} else {
+			notificarPopUpErro("Erro ao atualizar usuário.");
+		}
+	}
+
+	@FXML
+	private void desativarUsuario() {
+		Usuario usuario = obterUsuarioAlvo();
+		if (usuario == null) return;
+
+		if (!usuario.isAtivo()) {
+			notificarPopUpErro("Este usuário já está desativado.");
+			return;
+		}
+
+		int id = usuario.getId();
+
+		if (!confirmar("Tem certeza que deseja desativar \"" + usuario.getNome() + "\"?")) {
+			return;
+		}
+
+		if (sistema.desativaUsuario(id)) {
+			notificarPopUp("Usuário desativado com sucesso");
+			mostraUsuario(id);
+		} else {
+			notificarPopUpErro("Erro ao desativar usuário (verifique pendências/multas).");
+		}
+	}
+
+	private Usuario obterUsuarioAlvo() {
+		Usuario atual = tabela.getSelectionModel().getSelectedItem();
+		tabela.getSelectionModel().clearSelection();
+
+		if (atual == null) {
+			Optional<Integer> id = pedirInteiro(ID);
+			if (id.isEmpty()) return null;
+			atual = sistema.buscarUsuario(id.get());
+			if (atual == null) {
+				notificarPopUpErro(NAO_ENCONTRADO);
+			}
+		}
+		return atual;
+	}
+
+	private void mostraUsuario(int id) {
+		Usuario usuario = sistema.buscarUsuario(id);
+		if (usuario == null) {
+			info("Usuário não cadastrado.");
+			return;
+		}
+
+		colocaTabela();
+		tabela.getItems().setAll(usuario);
+	}
+
+	@FXML
+	private void aoLimparPesquisa() {
+		colocaTabela();
+		pesquisa.clear();
+		filtro.setValue(FILTRO_TODOS);
+		listarUsuarios();
+	}
 }

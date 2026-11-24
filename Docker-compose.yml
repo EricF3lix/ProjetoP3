@@ -6,5 +6,5 @@ services:
       - ./dados:/app/dados
       - ./relatorios:/app/relatorios
     restart: unless-stopped
-    stdin_open: true   
-    tty: true         
+    stdin_open: true
+    tty: true

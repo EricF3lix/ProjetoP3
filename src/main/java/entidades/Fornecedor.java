@@ -1,22 +1,31 @@
 package entidades;
- 
+
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+
+@Entity
 public class Fornecedor {
- 
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     private String razaoSocial;
-    private final String cnpj;
+    private String cnpj;
     private String email;
     private String telefone;
     private boolean ativo;
- 
-    public Fornecedor(int id, String razaoSocial, String cnpj, String email, String telefone) {
-        this.id = id;
+    
+    public Fornecedor(String razaoSocial, String cnpj, String email, String telefone) {
         this.razaoSocial = razaoSocial;
         this.cnpj = cnpj;
         this.email = email;
         this.telefone = telefone;
         this.ativo = true;
     }
+    
+    protected Fornecedor() {}
 
     public int getId() {
         return id;

@@ -1,71 +1,163 @@
 package repositories;
 
-import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityTransaction;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.CriteriaUpdate;
+import jakarta.persistence.criteria.Path;
+import jakarta.persistence.criteria.Root;
+
 public class ManipulaArquivo {
 
-    private final String caminhoArquivo;
+	private static final String CAMPO_ID = "id";
 
-    public ManipulaArquivo(String caminhoArquivo) {
+	private <T> Path<?> resolverCaminho(Root<T> root, String atributo) {
+		Path<?> caminho = root;
+		for (String parte : atributo.split("\\.")) {
+			caminho = caminho.get(parte);
+		}
+		return caminho;
+	}
 
-        this.caminhoArquivo = caminhoArquivo;
+	private <T> List<T> executarConsulta(EntityManager em, CriteriaQuery<T> criteriaQuery) {
+		return new ArrayList<>(em.createQuery(criteriaQuery).getResultList());
+	}
 
-    }
+	public <T, V> List<T> buscar(Class<T> tipo, String atributo, V valor) {
+		EntityManager em = JPAUtil.getEntityManager();
+		try {
+			CriteriaBuilder cb = em.getCriteriaBuilder();
+			CriteriaQuery<T> cq = cb.createQuery(tipo);
+			Root<T> root = cq.from(tipo);
+			Path<?> caminho = resolverCaminho(root, atributo);
 
-    public void salvar(List<String[]> linhas) {
+			String padrao = (valor + "%").toLowerCase();
 
-        File arquivo = new File(caminhoArquivo);
+			cq.select(root)
+			  .where(cb.like(cb.lower(caminho.as(String.class)), padrao))
+			  .orderBy(cb.asc(root.get(CAMPO_ID)));
 
-        File pasta = arquivo.getParentFile();
+			return executarConsulta(em, cq);
+		} finally {
+			em.close();
+		}
+	}
 
-        if (pasta != null && !pasta.exists()) {
+	public <T, V> List<T> buscaExata(Class<T> tipo, String atributo, V valor) {
+		EntityManager em = JPAUtil.getEntityManager();
+		try {
+			CriteriaBuilder cb = em.getCriteriaBuilder();
+			CriteriaQuery<T> cq = cb.createQuery(tipo);
+			Root<T> root = cq.from(tipo);
+			Path<?> caminho = resolverCaminho(root, atributo);
 
-            pasta.mkdirs();
+			cq.select(root)
+			  .where(cb.equal(caminho, valor))
+			  .orderBy(cb.asc(root.get(CAMPO_ID)));
 
-        }
+			return executarConsulta(em, cq);
+		} finally {
+			em.close();
+		}
+	}
 
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(arquivo))) {
+	public <T> T buscaUnica(Class<T> tipo, int id) {
+		EntityManager em = JPAUtil.getEntityManager();
+		try {
+			return em.find(tipo, id);
+		} finally {
+			em.close();
+		}
+	}
 
-            for (String[] linha : linhas) {
+	public <T, V> boolean atualizar(Class<T> tipo, String atributo, V valor, int id) {
+		EntityManager em = JPAUtil.getEntityManager();
+		EntityTransaction et = em.getTransaction();
 
-                writer.write(String.join(";", linha));
-                writer.newLine();
+		try {
+			et.begin();
+			CriteriaBuilder cb = em.getCriteriaBuilder();
+			CriteriaUpdate<T> cu = cb.createCriteriaUpdate(tipo);
+			Root<T> root = cu.from(tipo);
 
-            }
+			cu.set(atributo, valor)
+			  .where(cb.equal(root.get(CAMPO_ID), id));
 
-        } catch (IOException e) {//ta vazio
-        }
-    }
+			int linhasAfetadas = em.createQuery(cu).executeUpdate();
+			et.commit();
+			return linhasAfetadas > 0;
+		} catch (RuntimeException e) {
+			if (et.isActive()) {
+				et.rollback();
+			}
+			throw e;
+		} finally {
+			em.close();
+		}
+	}
 
-    public List<String[]> carregar() {
+	public <T> boolean desativar(Class<T> tipo, int id) {
+		EntityManager em = JPAUtil.getEntityManager();
+		EntityTransaction et = em.getTransaction();
 
-        List<String[]> linhas = new ArrayList<>();
+		try {
+			et.begin();
+			CriteriaBuilder cb = em.getCriteriaBuilder();
+			CriteriaUpdate<T> cu = cb.createCriteriaUpdate(tipo);
+			Root<T> root = cu.from(tipo);
 
-        File arquivo = new File(caminhoArquivo);
+			cu.set("ativo", false)
+			  .where(cb.equal(root.get(CAMPO_ID), id));
 
-        if (!arquivo.exists()) {
+			int linhasAfetadas = em.createQuery(cu).executeUpdate();
+			et.commit();
+			return linhasAfetadas > 0;
+		} catch (RuntimeException e) {
+			if (et.isActive()) {
+				et.rollback();
+			}
+			throw e;
+		} finally {
+			em.close();
+		}
+	}
 
-            return linhas;
+	public <T> boolean escrever(T tipo) {
+		EntityManager em = JPAUtil.getEntityManager();
+		EntityTransaction et = em.getTransaction();
 
-        }
+		try {
+			et.begin();
+			em.persist(tipo);
+			et.commit();
+			return true;
+		} catch (RuntimeException e) {
+			if (et.isActive()) {
+				et.rollback();
+			}
+			throw e;
+		} finally {
+			em.close();
+		}
+	}
 
-        try (BufferedReader reader = new BufferedReader(new FileReader(arquivo))) {
+	public <T> List<T> carregarTudo(Class<T> tipo) {
+		EntityManager em = JPAUtil.getEntityManager();
+		try {
+			CriteriaBuilder cb = em.getCriteriaBuilder();
+			CriteriaQuery<T> cq = cb.createQuery(tipo);
+			Root<T> root = cq.from(tipo);
 
-            String cabecalho = reader.readLine();
-            if (cabecalho != null) {
-                String linha;
-                while ((linha = reader.readLine()) != null) {
-                    linhas.add(linha.split(";", -1));
-                }
-            }
+			cq.select(root)
+			  .orderBy(cb.asc(root.get(CAMPO_ID)));
 
-        } catch (IOException e) {//ta vazio
-        }
-
-        return linhas;
-
-    }
-
+			return executarConsulta(em, cq);
+		} finally {
+			em.close();
+		}
+	}
 }

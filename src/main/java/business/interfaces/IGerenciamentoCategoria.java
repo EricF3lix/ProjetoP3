@@ -11,12 +11,10 @@ public interface IGerenciamentoCategoria {
     public abstract Categoria buscarCategoria(int id);
  
     public abstract List<Categoria> listarCategorias();
- 
-    public abstract boolean atualizarCategoria(Categoria categoriaNova);
+
+    public boolean atualizarCategoria(String coluna, String valor,int id);
  
     public abstract boolean desativarCategoria(int id);
- 
-    public abstract int gerarProximoId();
     
     public abstract List<Categoria> buscarPorId(String id);
     

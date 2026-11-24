@@ -1,14 +1,16 @@
 package repositories;
 
-import entidades.ContratoAluguel;
-
 import java.util.List;
 
-public interface IContratoRepositorio {
+import entidades.ContratoAluguel;
+
+public interface IContratoRepositorioDAO {
 
     public abstract void adicionar(ContratoAluguel contrato);
 
     public abstract List<ContratoAluguel> listarTodos();
+
+    public abstract List<ContratoAluguel> buscarContratos(String tipofiltro, String filtro);
 
     public abstract ContratoAluguel buscarPorId(int id);
 
@@ -16,10 +18,5 @@ public interface IContratoRepositorio {
 
     public abstract ContratoAluguel buscarContratoAtivoPorItem(int idItem);
 
-    public abstract void remover(ContratoAluguel contrato);
-    
-    public abstract void salvar();
-
-    public abstract int gerarProximoId();
-
+    public abstract void atualizar(String coluna, Object valor, int id);
 }

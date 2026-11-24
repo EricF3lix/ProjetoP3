@@ -80,6 +80,7 @@ public class MenuItensController extends MenuController {
     private final ObservableList<Item> listaItens = FXCollections.observableArrayList();
     private FilteredList<Item> listaFiltrada;
     private Item itemEmEdicao;
+    private Item itemOriginal;
 
     @Override
     public String getTitulo() {
@@ -274,19 +275,19 @@ public class MenuItensController extends MenuController {
 
         double taxa = Double.parseDouble(taxadiaria.replace(',', '.'));
         double valor = Double.parseDouble(valorreposicao.replace(',', '.'));
-        int id = sistema.gerarProximoIdItem();
 
         List<Categoria> categorias = sistema.buscarCategoriaPorNome(categoria);
         Categoria catgoriatxt = categorias.getFirst();
 
-        List<Fornecedor> fornecedores = sistema.buscarPorNome(fornecedortxt);
+        List<Fornecedor> fornecedores = sistema.buscarPesquisa(fornecedortxt, "razaoSocial");
         Fornecedor fornecedor = fornecedores.getFirst();
 
-        Item item = new Item(id, nomeitem, descricaoitem, taxa, estado, valor, catgoriatxt, fornecedor);
+        Item item = new Item(nomeitem, descricaoitem, taxa, estado, valor, catgoriatxt, fornecedor);
 
-        sistema.cadastrarItem(item);
-        notificarPopUp("Item cadastrado com sucesso");
-
+        if (sistema.cadastrarItem(item)) {
+            notificarPopUp("Item cadastrado com sucesso");
+        }
+        else{notificarPopUp("Erro ao cadastrar Item");}
     }
 
     @FXML
@@ -295,6 +296,7 @@ public class MenuItensController extends MenuController {
         if (selecionado == null) return;
 
         itemEmEdicao = selecionado;
+        itemOriginal = new Item(selecionado.getNome(), selecionado.getDescricao(),selecionado.getTaxaDiaria(),selecionado.getEstadoConservacao(),selecionado.getValorReposicao(),selecionado.getCategoria(),selecionado.getFornecedor());
         esconderTabela1();
         preencherCamposAtualizacao(selecionado);
     }
@@ -312,7 +314,7 @@ public class MenuItensController extends MenuController {
     @FXML
     public void salvarAtualizacao(ActionEvent event) {
         if (itemEmEdicao == null) {
-        	notificarPopUpErro("Nenhum item selecionado para atualização.");
+            notificarPopUpErro("Nenhum item selecionado para atualização.");
             return;
         }
 
@@ -322,42 +324,60 @@ public class MenuItensController extends MenuController {
         String valorTxt = valorReposicao1.getText().trim();
         String estado = estadoItem1.getValue();
         String categoriaNome = categoriaItem1.getValue();
-        String fornecedorTxt = fornecedoresItem1.getValue().toString();
+        String fornecedorTxt = fornecedoresItem1.getValue() != null
+                ? fornecedoresItem1.getValue().toString().trim() : "";
 
         if (nome.isEmpty() || descricao.isEmpty() || taxaTxt.isEmpty() || valorTxt.isEmpty()
-                || estado.isEmpty() || categoriaNome == null || fornecedorTxt.isEmpty()) {
-        	notificarPopUpErro("Preencha todos os campos");
-            return;
-        }
-
-        double taxa;
-        double valor;
-
-        try {
-            taxa = Double.parseDouble(taxaTxt.replace(',', '.'));
-            valor = Double.parseDouble(valorTxt.replace(',', '.'));
-        } catch (NumberFormatException e) {
-        	notificarPopUpErro("Informe valores numéricos válidos para taxa, valor de reposição e fornecedor.");
+                || estado == null || categoriaNome == null || fornecedorTxt.isEmpty()) {
+            notificarPopUpErro("Preencha todos os campos");
             return;
         }
 
         List<Categoria> categorias = sistema.buscarCategoriaPorNome(categoriaNome);
         if (categorias.isEmpty()) {
-        	notificarPopUpErro("Categoria não encontrada.");
+            notificarPopUpErro("Categoria não encontrada.");
             return;
         }
+        Categoria categoria = categorias.getFirst();
 
-        Fornecedor fornecedor = sistema.buscarPorNome(fornecedorTxt).getFirst();
-        if (fornecedor == null) {
-        	notificarPopUpErro("Fornecedor não encontrado.");
+        // Buscar Fornecedor
+        List<Fornecedor> fornecedores = sistema.buscarPesquisa(fornecedorTxt, "razaoSocial");
+        if (fornecedores.isEmpty()) {
+            notificarPopUpErro("Fornecedor não encontrado.");
             return;
         }
+        Fornecedor fornecedor = fornecedores.getFirst();
 
-        Item atualizado = new Item(itemEmEdicao.getId(), nome, descricao, taxa, estado, valor, categorias.getFirst(), fornecedor);
+        int id = itemEmEdicao.getId();
+        boolean algumAtualizou = false;
 
-        sistema.atualizarItem(atualizado);
-        notificarPopUp("Item atualizado com sucesso");
+        String taxaNorm  = taxaTxt.replace(',', '.');
+        String valorNorm = valorTxt.replace(',', '.');
+
+        algumAtualizou |= atualizarSeDiferente("nome", nome,itemOriginal.getNome(),id);
+        algumAtualizou |= atualizarSeDiferente("descricao",descricao,itemOriginal.getDescricao(),id);
+        algumAtualizou |= atualizarSeDiferente("taxaDiaria",taxaNorm,String.valueOf(itemOriginal.getTaxaDiaria()),id);
+        algumAtualizou |= atualizarSeDiferente("valorReposicao",valorNorm,String.valueOf(itemOriginal.getValorReposicao()),id);
+        algumAtualizou |= atualizarSeDiferente("estadoConservacao", estado,itemOriginal.getEstadoConservacao(),id);
+        algumAtualizou |= atualizarSeDiferente("categoria",String.valueOf(categoria.getId()),String.valueOf(itemOriginal.getCategoria().getId()), id);
+        algumAtualizou |= atualizarSeDiferente("fornecedor",String.valueOf(fornecedor.getId()),String.valueOf(itemOriginal.getFornecedor().getId()), id);
+
+        if (algumAtualizou) {
+            notificarPopUp("Item atualizado com sucesso");
+        } else {
+            notificarPopUp("Item nao atualizado");
+        }
+
+        itemEmEdicao = null;
+        itemOriginal = null;
         listarItens(event);
+    }
+
+    private boolean atualizarSeDiferente(String coluna, String valorNovo, String valorOriginal, int id) {
+        if (valorNovo.equals(valorOriginal)) {
+            return false;
+        }
+        return sistema.atualizarItem(coluna, valorNovo, id);
     }
 
     private Item obterItemParaAtualizar() {
@@ -390,12 +410,11 @@ public class MenuItensController extends MenuController {
                 try {
                     int id = Integer.parseInt(resultado.get().trim());
 
-                    if (sistema.excluirItem(id)) {
-                        mostrarAlerta(AlertType.INFORMATION, "Sucesso", "Item desativado com sucesso!");
-                        carregarTabela();
-                    } else {
-                        mostrarAlerta(AlertType.ERROR, "Erro", "Não foi possível desativar o item.");
+                    if(sistema.desativarItem(id)){
+                    mostrarAlerta(AlertType.INFORMATION, "Sucesso", "Item desativado com sucesso!");
+                    carregarTabela();
                     }
+                    else{notificarPopUp("Erro ao desativar!");}
 
                 } catch (NumberFormatException e) {
                     mostrarAlerta(AlertType.ERROR, "Erro", "Digite um ID numérico válido.");
@@ -403,15 +422,12 @@ public class MenuItensController extends MenuController {
             }
             else{return;}
         }
-        if (item != null){
-        if (sistema.excluirItem(item.getId())) {
-            mostrarAlerta(AlertType.INFORMATION, "Sucesso", "Item desativado com sucesso!");
+        if (item != null) {
+            if (sistema.desativarItem(item.getId())){
+            mostrarAlerta(AlertType.INFORMATION, "Sucesso", "Item desativado com sucesso!");}
+            else{notificarPopUp("Erro ao desativar item!");}
             carregarTabela();
-        } else {
-            mostrarAlerta(AlertType.ERROR, "Erro", "Não foi possível desativar o item.");
         }
-        }
-
     }
     private void mostrarAlerta(AlertType tipo, String titulo, String mensagem) {
         Alert alert = new Alert(tipo);

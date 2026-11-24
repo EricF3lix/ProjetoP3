@@ -5,3 +5,4 @@ id;tipo;nome;email;cpf;senha;ativo
 4;Administrador;adm;adm;777.777.777-77;123;true
 5;Cliente;teste;test;999.999.999-99;teste;false
 6;Funcionario;test;a;123.456.789-00;test;true
+7;Cliente;teste;teste.com;000;aaa;true

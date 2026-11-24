@@ -1,5 +1,7 @@
 package apresentacao.fx;
 
+import java.util.List;
+
 import entidades.Administrador;
 import entidades.Cliente;
 import entidades.Funcionario;
@@ -15,13 +17,18 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
-import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.Label;
+import javafx.scene.control.PasswordField;
+import javafx.scene.control.TableCell;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
+import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
-
-import java.util.List;
 
 public class MenuUsuariosFuncionarioController extends MenuController {
     private static final String STYLE_TEXT_RED = "-fx-text-fill: red;";
@@ -398,15 +405,14 @@ public class MenuUsuariosFuncionarioController extends MenuController {
             return;
         }
 
-        int id = sistema.gerarProximoIdUsuario();
         Usuario novoUsuario = switch (tipoCadastroAtual) {
-            case "Funcionário" -> new Funcionario(id, nome, email, cpf, senha);
-            case "Administrador" -> new Administrador(id, nome, email, cpf, senha);
-            default -> new Cliente(id, nome, email, cpf, senha);
+            case "Funcionário" -> new Funcionario(nome, email, cpf, senha);
+            case "Administrador" -> new Administrador(nome, email, cpf, senha);
+            default -> new Cliente(nome, email, cpf, senha);
         };
 
         if (sistema.cadastrarUsuario(novoUsuario)) {
-            lblCadMensagem.setText(tipoCadastroAtual + " cadastrado com sucesso! ID: " + id);
+            lblCadMensagem.setText(tipoCadastroAtual + " cadastrado com sucesso! ID: " + novoUsuario.getId());
             lblCadMensagem.setStyle("-fx-text-fill: green;");
             txtCadNome.clear();
             txtCadEmail.clear();

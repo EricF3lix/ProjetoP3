@@ -1,16 +1,14 @@
 package repositories;
 
-import entidades.Usuario;
-
 import java.util.List;
 
-public interface IUsuarioRepositorio {
+import entidades.Usuario;
+
+public interface IUsuarioRepositorioDAO {
 
     public abstract void adicionar(Usuario usuario);
 
     public abstract List<Usuario> listarTodos();
-
-    public abstract void remover(Usuario usuario);
 
     public abstract Usuario buscarPorCpf(String cpf);
 
@@ -18,8 +16,8 @@ public interface IUsuarioRepositorio {
 
     public abstract Usuario buscarPorEmail(String email);
 
-    public abstract void salvar();
+    public abstract boolean atualizar(String coluna, Object valor, int id);
 
-    public abstract int gerarProximoId();
-    
+    public abstract boolean desativarUsuario(int id);
+
 }

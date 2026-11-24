@@ -1,59 +1,85 @@
 package support;
 
 import entidades.Item;
-import repositories.IItemRepositorio;
+import repositories.IItemRepositorioDAO;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
+public class FakeItemRepositorio implements IItemRepositorioDAO {
 
-public class FakeItemRepositorio implements IItemRepositorio {
-
-    private final List<Item> itens = new ArrayList<>();
-    private int chamadasSalvar = 0;
+    private final Map<Integer, Item> itens = new LinkedHashMap<>();
 
     @Override
-    public void adicionar(Item item) {
-        itens.add(item);
+    public boolean adicionar(Item item) {
+        if (item == null || itens.containsKey(item.getId())) {
+            return false;
+        }
+        itens.put(item.getId(), item);
+        return true;
     }
 
     @Override
     public List<Item> listarTodos() {
-        return itens;
+        return new ArrayList<>(itens.values());
     }
 
     @Override
-    public Item buscarPorId(int id) {
-        for (Item item : itens) {
-            if (item.getId() == id) {
-                return item;
+    public List<Item> buscarItens(String tipofiltro, String filtro) {
+        List<Item> resultado = new ArrayList<>();
+        if (tipofiltro == null || filtro == null) {
+            return resultado;
+        }
+        String alvo = filtro.toLowerCase();
+        for (Item item : itens.values()) {
+            boolean combina = switch (tipofiltro) {
+                case "id" -> String.valueOf(item.getId()).equals(filtro);
+                case "nome" -> contem(item.getNome(), alvo);
+                case "descricao" -> contem(item.getDescricao(), alvo);
+                case "status" -> contem(item.getStatus(), alvo);
+                default -> false;
+            };
+            if (combina) {
+                resultado.add(item);
             }
         }
-        return null;
+        return resultado;
     }
 
     @Override
-    public void remover(Item item) {
-        itens.remove(item);
-    }
-
-    @Override
-    public int gerarProximoId() {
-        int maiorId = 0;
-        for (Item item : itens) {
-            if (item.getId() > maiorId) {
-                maiorId = item.getId();
-            }
+    public boolean atualizar(String coluna, String valor, int id) {
+        Item item = itens.get(id);
+        if (item == null || coluna == null) {
+            return false;
         }
-        return maiorId + 1;
+        try {
+            switch (coluna) {
+                case "nome" -> item.setNome(valor);
+                case "descricao" -> item.setDescricao(valor);
+                case "taxaDiaria" -> item.setTaxaDiaria(Double.parseDouble(valor));
+                case "estadoConservacao" -> item.setEstadoConservacao(valor);
+                case "valorReposicao" -> item.setValorReposicao(Double.parseDouble(valor));
+                default -> { return false; }
+            }
+        } catch (NumberFormatException e) {
+            return false;
+        }
+        return true;
     }
 
     @Override
-    public void salvar() {
-        chamadasSalvar++;
+    public boolean desativarItem(int id) {
+        Item item = itens.get(id);
+        if (item == null) {
+            return false;
+        }
+        item.desativar();
+        return true;
     }
 
-    public int getChamadasSalvar() {
-        return chamadasSalvar;
+    private boolean contem(String texto, String alvo) {
+        return texto != null && texto.toLowerCase().contains(alvo);
     }
 }

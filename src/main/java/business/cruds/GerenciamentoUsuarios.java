@@ -1,19 +1,19 @@
 package business.cruds;
 
+import java.util.List;
+
 import business.interfaces.IGerenciamentoContratos;
 import business.interfaces.IGerenciamentoUsuarios;
 import entidades.Usuario;
-import repositories.IUsuarioRepositorio;
-
-import java.util.List;
+import repositories.IUsuarioRepositorioDAO;
 
 @SuppressWarnings("java:S106")
 public class GerenciamentoUsuarios implements IGerenciamentoUsuarios {
 
-    private final IUsuarioRepositorio repositorio;
+    private final IUsuarioRepositorioDAO repositorio;
     private final IGerenciamentoContratos gerenciamentoContratos;
 
-    public GerenciamentoUsuarios(IUsuarioRepositorio repositorio,
+    public GerenciamentoUsuarios(IUsuarioRepositorioDAO repositorio,
                                   IGerenciamentoContratos gerenciamentoContratos) {
         this.repositorio            = repositorio;
         this.gerenciamentoContratos = gerenciamentoContratos;
@@ -21,10 +21,6 @@ public class GerenciamentoUsuarios implements IGerenciamentoUsuarios {
 
     @Override
     public boolean cadastrarUsuario(Usuario usuario) {
-
-        if (repositorio.buscarPorId(usuario.getId()) != null) {
-            return false;
-        }
 
         if (repositorio.buscarPorCpf(usuario.getCpf()) != null) {
             return false;
@@ -51,18 +47,19 @@ public class GerenciamentoUsuarios implements IGerenciamentoUsuarios {
 
     @Override
     public boolean atualizarUsuario(int id, String nome, String email, String senha) {
-        
+
         Usuario usuario = repositorio.buscarPorId(id);
         if (usuario == null) {
             return false;
         }
+
         usuario.setNome(nome);
         usuario.setEmail(email);
         usuario.setSenha(senha);
 
-        repositorio.salvar();
-
-        return true;
+        return repositorio.atualizar("nome", nome, id)
+                && repositorio.atualizar("email", email, id)
+                && repositorio.atualizar("senha", senha, id);
     }
 
     @Override
@@ -81,9 +78,7 @@ public class GerenciamentoUsuarios implements IGerenciamentoUsuarios {
 
         usuario.setAtivo(false);
 
-        repositorio.salvar();
-
-        return true;
+        return repositorio.desativarUsuario(id);
     }
 
     @Override
@@ -102,8 +97,4 @@ public class GerenciamentoUsuarios implements IGerenciamentoUsuarios {
         return usuario;
     }
 
-    @Override
-    public int gerarProximoId() {
-        return repositorio.gerarProximoId();
-    }
 }

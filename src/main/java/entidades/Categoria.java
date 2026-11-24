@@ -1,17 +1,26 @@
 package entidades;
- 
+
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+
+@Entity
 public class Categoria {
- 
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     private String nome;
     private String descricao;
-    private boolean ativa;
- 
-    public Categoria(int id, String nome, String descricao) {
-        this.id = id;
+    private boolean ativo;
+
+    public Categoria(){}
+
+    public Categoria(String nome, String descricao) {
         this.nome = nome;
         this.descricao = descricao;
-        this.ativa = true;
+        this.ativo = true;
     }
 
     public int getId() {
@@ -39,15 +48,15 @@ public class Categoria {
     }
 
     public boolean isAtiva() {
-        return ativa;
+        return ativo;
     }
 
     public void setAtiva(boolean ativa) {
-        this.ativa = ativa;
+        this.ativo = ativa;
     }
 
     public void desativar() {
-        this.ativa = false;
+        this.ativo = false;
     }
     @Override 
     public String toString() {

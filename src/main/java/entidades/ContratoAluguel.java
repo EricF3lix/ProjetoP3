@@ -1,20 +1,41 @@
 package entidades;
+
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+
+@Entity
 public class ContratoAluguel {
 
-    private final int id;
-    private final Cliente cliente;
-    private final Item item;
-    private final String dataRetirada;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int id;
+
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "cliente_id")
+    private Cliente cliente;
+
+    @ManyToOne(optional = false, cascade = CascadeType.MERGE)
+    @JoinColumn(name = "item_id")
+    private Item item;
+
+    private String dataRetirada;
     private String dataDevolucaoPrevista;
     private String dataDevolucaoReal;
-    private final double valorTotal;
+    private double valorTotal;
     private String status;
     private boolean ativo;
     private double valorMulta;
     private boolean multaPaga;
 
-    public ContratoAluguel(int id, Cliente cliente, Item item, String dataRetirada, String dataDevolucaoPrevista, double valorTotal) {
-        this.id = id;
+    protected ContratoAluguel() {
+    }
+
+    public ContratoAluguel(Cliente cliente, Item item, String dataRetirada, String dataDevolucaoPrevista, double valorTotal) {
         this.cliente = cliente;
         this.item = item;
         this.dataRetirada = dataRetirada;
@@ -38,26 +59,28 @@ public class ContratoAluguel {
     public Item getItem() {
         return item;
     }
-    
+
     public String getItemNome() {
         return item.getNome();
     }
 
     public String getDataRetirada() {
-        return dataRetirada;
-    }
-
+        return dataRetirada; 
+    } 
+ 
     public String getDataDevolucaoPrevista() {
         return dataDevolucaoPrevista;
-    }
-
+    } 
+ 
     public void setDataDevolucaoPrevista(String dataDevolucaoPrevista) {
         this.dataDevolucaoPrevista = dataDevolucaoPrevista;
-    }
-    public String getDataDevolucaoReal(){
+    } 
+
+    public String getDataDevolucaoReal() {
         return dataDevolucaoReal;
     }
-    public void setDataDevolucaoReal(String dataDevolucaoReal){
+
+    public void setDataDevolucaoReal(String dataDevolucaoReal) {
         this.dataDevolucaoReal = dataDevolucaoReal;
     }
 
@@ -66,14 +89,14 @@ public class ContratoAluguel {
     }
 
     public String getValorTotalFormatado() {
-    	return ("R$ " + String.format("%.2f", valorTotal).replace('.', ','));
+        return ("R$ " + String.format("%.2f", valorTotal).replace('.', ','));
     }
-    
+
     public String getStatus() {
         return status;
     }
 
-    public void setStatus(String status){
+    public void setStatus(String status) {
         this.status = status;
     }
 
@@ -84,23 +107,24 @@ public class ContratoAluguel {
     public double getValorMulta() {
         return valorMulta;
     }
-    
+
     public String getValorMultaFormatado() {
-    	return ("R$ " + String.format("%.2f", valorMulta).replace('.', ','));
+        return ("R$ " + String.format("%.2f", valorMulta).replace('.', ','));
     }
 
     public void setValorMulta(double valorMulta) {
         this.valorMulta = valorMulta;
     }
+
     public boolean isMultaPaga() {
-    return multaPaga;
+        return multaPaga;
     }
 
     public void setMultaPaga(boolean multaPaga) {
         this.multaPaga = multaPaga;
     }
 
-     public boolean estaAtivo() {
+    public boolean estaAtivo() {
         return status.equals("ATIVO");
     }
 
@@ -113,14 +137,14 @@ public class ContratoAluguel {
     }
 
     public boolean possuiMulta() {
-        return (valorMulta>0);
+        return (valorMulta > 0);
     }
-
 
     public void finalizarContrato() {
         this.status = "FINALIZADO";
         this.ativo = false;
     }
+
     public void cancelarContrato() {
         this.ativo = false;
         this.status = "CANCELADO";

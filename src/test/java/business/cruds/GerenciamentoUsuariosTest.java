@@ -1,267 +1,167 @@
 package business.cruds;
 
-import business.interfaces.IGerenciamentoContratos;
-import entidades.Administrador;
-import entidades.Cliente;
-import entidades.ContratoAluguel;
-import entidades.Usuario;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+
+import entidades.Administrador;
+import entidades.Cliente;
+import entidades.ContratoAluguel;
+import entidades.Funcionario;
+import entidades.Item;
 import support.FakeContratoRepositorio;
 import support.FakeUsuarioRepositorio;
 
-import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.*;
-
-@DisplayName("GerenciamentoUsuarios")
-class GerenciamentoUsuariosTest {
-
+@DisplayName("GerenciamentoUsuarios (operações que gravam no banco)")
+class GerenciamentoUsuariosOperacoesTest {
     private FakeUsuarioRepositorio repositorio;
-    private GerenciamentoContratos gerenciamentoContratos;
-    private GerenciamentoUsuarios gerenciamentoUsuarios;
+    private GerenciamentoContratos contratos;
+    private GerenciamentoUsuarios negocio;
 
     @BeforeEach
     void setUp() {
         repositorio = new FakeUsuarioRepositorio();
-        gerenciamentoContratos = new GerenciamentoContratos(new FakeContratoRepositorio());
-        gerenciamentoUsuarios = new GerenciamentoUsuarios(repositorio, gerenciamentoContratos);
+        contratos = new GerenciamentoContratos(new FakeContratoRepositorio());
+        negocio = new GerenciamentoUsuarios(repositorio, contratos);
     }
 
-    private Cliente novoCliente(int id, String email, String cpf) {
-        return new Cliente(id, "Maria Silva", email, cpf, "senha123");
+    private Cliente novoCliente() {
+        return new Cliente("Ana", "ana@loja.com", "000.000.000-01", "senha1");
     }
 
     @Test
-    @DisplayName("cadastrarUsuario deve cadastrar um usuário novo")
-    void deveCadastrarUsuarioNovo() {
-        boolean resultado = gerenciamentoUsuarios.cadastrarUsuario(novoCliente(1, "maria@email.com", "111.111.111-11"));
+    @DisplayName("cadastrarUsuario deve gravar o usuário e deixar o id gerado pelo banco")
+    void deveCadastrarEGerarId() {
+        Cliente cliente = novoCliente();
+        assertEquals(0, cliente.getId(), "antes de gravar, o usuário ainda não tem id");
+
+        boolean resultado = negocio.cadastrarUsuario(cliente);
 
         assertTrue(resultado);
+        assertTrue(cliente.getId() > 0);
+        assertEquals(1, negocio.listarUsuarios().size());
     }
 
     @Test
-    @DisplayName("cadastrarUsuario deve rejeitar quando já existe usuário com o mesmo id")
-    void deveRejeitarUsuarioComIdDuplicado() {
-        gerenciamentoUsuarios.cadastrarUsuario(novoCliente(1, "maria@email.com", "111.111.111-11"));
+    @DisplayName("cadastrarUsuario deve rejeitar CPF já cadastrado")
+    void deveRejeitarCpfDuplicado() {
+        negocio.cadastrarUsuario(novoCliente());
 
-        boolean resultado = gerenciamentoUsuarios.cadastrarUsuario(novoCliente(1, "outra@email.com", "222.222.222-22"));
+        boolean resultado = negocio.cadastrarUsuario(
+                new Cliente("Outra Ana", "outra@loja.com", "000.000.000-01", "x"));
 
         assertFalse(resultado);
+        assertEquals(1, negocio.listarUsuarios().size());
     }
 
     @Test
-    @DisplayName("cadastrarUsuario deve rejeitar quando já existe usuário com o mesmo CPF")
-    void deveRejeitarUsuarioComCpfDuplicado() {
-        gerenciamentoUsuarios.cadastrarUsuario(novoCliente(1, "maria@email.com", "111.111.111-11"));
+    @DisplayName("cadastrarUsuario deve rejeitar e-mail já cadastrado, sem diferenciar maiúsculas")
+    void deveRejeitarEmailDuplicado() {
+        negocio.cadastrarUsuario(novoCliente());
 
-        boolean resultado = gerenciamentoUsuarios.cadastrarUsuario(novoCliente(2, "outra@email.com", "111.111.111-11"));
+        boolean resultado = negocio.cadastrarUsuario(
+                new Cliente("Outra Ana", "ANA@LOJA.COM", "111.111.111-11", "x"));
 
         assertFalse(resultado);
+        assertEquals(1, negocio.listarUsuarios().size());
     }
 
     @Test
-    @DisplayName("cadastrarUsuario deve rejeitar quando já existe usuário com o mesmo e-mail")
-    void deveRejeitarUsuarioComEmailDuplicado() {
-        gerenciamentoUsuarios.cadastrarUsuario(novoCliente(1, "maria@email.com", "111.111.111-11"));
+    @DisplayName("buscarUsuario deve achar pelo id gerado e devolver null quando não existe")
+    void deveBuscarPorId() {
+        Cliente cliente = novoCliente();
+        negocio.cadastrarUsuario(cliente);
 
-        boolean resultado = gerenciamentoUsuarios.cadastrarUsuario(novoCliente(2, "maria@email.com", "222.222.222-22"));
-
-        assertFalse(resultado);
+        assertSame(cliente, negocio.buscarUsuario(cliente.getId()));
+        assertNull(negocio.buscarUsuario(999));
     }
 
     @Test
-    @DisplayName("atualizarUsuario deve retornar false quando o usuário não existe")
-    void deveRetornarFalseAoAtualizarUsuarioInexistente() {
-        assertFalse(gerenciamentoUsuarios.atualizarUsuario(999, "Novo nome", "novo@email.com", "novaSenha"));
-    }
+    @DisplayName("atualizarUsuario deve trocar nome, e-mail e senha e gravar")
+    void deveAtualizarDados() {
+        Cliente cliente = novoCliente();
+        negocio.cadastrarUsuario(cliente);
 
-    @Test
-    @DisplayName("atualizarUsuario deve atualizar nome, e-mail e senha do usuário existente")
-    void deveAtualizarDadosDoUsuario() {
-        gerenciamentoUsuarios.cadastrarUsuario(novoCliente(1, "maria@email.com", "111.111.111-11"));
-
-        boolean resultado = gerenciamentoUsuarios.atualizarUsuario(1, "Maria Souza", "maria.souza@email.com", "novaSenha");
-        Usuario usuario = gerenciamentoUsuarios.buscarUsuario(1);
+        boolean resultado = negocio.atualizarUsuario(cliente.getId(), "Ana Maria", "ana.maria@loja.com", "nova");
 
         assertTrue(resultado);
-        assertEquals("Maria Souza", usuario.getNome());
-        assertEquals("maria.souza@email.com", usuario.getEmail());
-        assertEquals("novaSenha", usuario.getSenha());
+        assertEquals("Ana Maria", cliente.getNome());
+        assertEquals("ana.maria@loja.com", cliente.getEmail());
+        assertEquals("nova", cliente.getSenha());
+        assertEquals(3, repositorio.getChamadasAtualizar(), "a alteração precisa ser gravada");
     }
 
     @Test
-    @DisplayName("desativaUsuario deve retornar false quando o usuário não existe")
-    void deveRetornarFalseAoDesativarUsuarioInexistente() {
-        assertFalse(gerenciamentoUsuarios.desativaUsuario(999));
+    @DisplayName("atualizarUsuario deve devolver false e não gravar nada para usuário inexistente")
+    void naoDeveAtualizarInexistente() {
+        assertFalse(negocio.atualizarUsuario(999, "x", "x@loja.com", "x"));
+        assertEquals(0, repositorio.getChamadasAtualizar());
     }
 
     @Test
-    @DisplayName("desativaUsuario deve desativar o usuário quando ele não possui multa pendente")
-    void deveDesativarUsuarioSemMultaPendente() {
-        gerenciamentoUsuarios.cadastrarUsuario(novoCliente(1, "maria@email.com", "111.111.111-11"));
+    @DisplayName("desativaUsuario deve desativar e gravar")
+    void deveDesativarUsuario() {
+        Cliente cliente = novoCliente();
+        negocio.cadastrarUsuario(cliente);
 
-        boolean resultado = gerenciamentoUsuarios.desativaUsuario(1);
+        boolean resultado = negocio.desativaUsuario(cliente.getId());
 
         assertTrue(resultado);
-        assertFalse(gerenciamentoUsuarios.buscarUsuario(1).isAtivo());
+        assertFalse(cliente.isAtivo());
+        assertEquals(1, repositorio.getChamadasDesativar());
+        assertFalse(negocio.desativaUsuario(999));
     }
 
     @Test
-    @DisplayName("desativaUsuario não deve desativar o usuário quando ele possui multa pendente")
-    void naoDeveDesativarUsuarioComMultaPendente() {
-        Cliente cliente = novoCliente(1, "maria@email.com", "111.111.111-11");
-        gerenciamentoUsuarios.cadastrarUsuario(cliente);
+    @DisplayName("desativaUsuario deve recusar quando o cliente tem multa pendente")
+    void naoDeveDesativarComMultaPendente() {
+        Cliente cliente = novoCliente();
+        negocio.cadastrarUsuario(cliente);
 
-        IGerenciamentoContratos contratosComMulta = new GerenciamentoContratosComMultaPendenteFalsa();
-        GerenciamentoUsuarios gerenciamentoComMulta =
-                new GerenciamentoUsuarios(repositorio, contratosComMulta);
+        Item item = new Item("Furadeira", "Furadeira de impacto", 20.0, "BOM", 500.0, null, null);
+        item.setId(1);
 
-        boolean resultado = gerenciamentoComMulta.desativaUsuario(1);
+        ContratoAluguel contrato = new ContratoAluguel(cliente, item, "2026-01-05", "2026-01-10", 100.0);
+        contratos.cadastrarContrato(contrato);
+        contratos.finalizarContrato(contrato.getId(), "2026-01-13");
 
-        assertFalse(resultado, "Usuário com multa pendente não deveria poder ser desativado");
-        assertTrue(gerenciamentoUsuarios.buscarUsuario(1).isAtivo());
+        boolean resultado = negocio.desativaUsuario(cliente.getId());
+
+        assertFalse(resultado);
+        assertTrue(cliente.isAtivo());
+        assertEquals(0, repositorio.getChamadasDesativar());
     }
 
     @Test
-    @DisplayName("realizarLogin deve autenticar quando e-mail e senha estão corretos")
-    void deveAutenticarComCredenciaisCorretas() {
-        gerenciamentoUsuarios.cadastrarUsuario(novoCliente(1, "maria@email.com", "111.111.111-11"));
+    @DisplayName("realizarLogin deve devolver o usuário com e-mail e senha corretos (e a classe certa de cada perfil)")
+    void deveFazerLogin() {
+        negocio.cadastrarUsuario(novoCliente());
+        negocio.cadastrarUsuario(new Funcionario("Bia", "bia@loja.com", "222.222.222-22", "f123"));
+        negocio.cadastrarUsuario(new Administrador("Caio", "caio@loja.com", "333.333.333-33", "a123"));
 
-        Usuario usuario = gerenciamentoUsuarios.realizarLogin("maria@email.com", "senha123");
-
-        assertNotNull(usuario);
-        assertEquals("CLIENTE", usuario.getTipo());
+        assertInstanceOf(Cliente.class, negocio.realizarLogin("ana@loja.com", "senha1"));
+        assertInstanceOf(Funcionario.class, negocio.realizarLogin("bia@loja.com", "f123"));
+        assertInstanceOf(Administrador.class, negocio.realizarLogin("CAIO@loja.com", "a123"));
     }
 
     @Test
-    @DisplayName("realizarLogin deve negar acesso quando o e-mail não está cadastrado")
-    void deveNegarAcessoEmailInexistente() {
-        assertNull(gerenciamentoUsuarios.realizarLogin("naoexiste@email.com", "qualquer"));
-    }
+    @DisplayName("realizarLogin deve devolver null com senha errada, e-mail desconhecido ou usuário inativo")
+    void deveRecusarLoginInvalido() {
+        Cliente cliente = novoCliente();
+        negocio.cadastrarUsuario(cliente);
 
-    @Test
-    @DisplayName("realizarLogin deve negar acesso quando a senha está incorreta")
-    void deveNegarAcessoSenhaIncorreta() {
-        gerenciamentoUsuarios.cadastrarUsuario(novoCliente(1, "maria@email.com", "111.111.111-11"));
+        assertNull(negocio.realizarLogin("ana@loja.com", "errada"));
+        assertNull(negocio.realizarLogin("naoexiste@loja.com", "senha1"));
 
-        assertNull(gerenciamentoUsuarios.realizarLogin("maria@email.com", "senhaErrada"));
-    }
-
-    @Test
-    @DisplayName("realizarLogin deve negar acesso quando o usuário está inativo, mesmo com credenciais corretas")
-    void deveNegarAcessoUsuarioInativo() {
-        gerenciamentoUsuarios.cadastrarUsuario(novoCliente(1, "maria@email.com", "111.111.111-11"));
-        gerenciamentoUsuarios.desativaUsuario(1);
-
-        assertNull(gerenciamentoUsuarios.realizarLogin("maria@email.com", "senha123"));
-    }
-
-    @Test
-    @DisplayName("realizarLogin deve reconhecer corretamente o tipo de usuário administrador")
-    void deveAutenticarAdministrador() {
-        Administrador admin = new Administrador(1, "Jackson", "admin@loja.com", "000.000.000-00", "admin123");
-        gerenciamentoUsuarios.cadastrarUsuario(admin);
-
-        Usuario usuario = gerenciamentoUsuarios.realizarLogin("admin@loja.com", "admin123");
-
-        assertNotNull(usuario);
-        assertEquals("ADMINISTRADOR", usuario.getTipo());
-    }
-
-  
-    private static class GerenciamentoContratosComMultaPendenteFalsa implements IGerenciamentoContratos {
-
-        @Override
-        public List<ContratoAluguel> filtrarContratos(String filtro) {
-            return List.of();
-        }
-
-        @Override
-        public boolean cadastrarContrato(ContratoAluguel contrato) {
-            return false;
-        }
-
-        @Override
-        public ContratoAluguel buscarContrato(int id) {
-            return null;
-        }
-
-        @Override
-        public List<ContratoAluguel> listarContratos() {
-            return List.of();
-        }
-
-        @Override
-        public boolean finalizarContrato(int id) {
-            return false;
-        }
-
-        @Override
-        public boolean cancelarContrato(int id) {
-            return false;
-        }
-
-        @Override
-        public boolean quitarMultaContrato(int idContrato) {
-            return false;
-        }
-
-        @Override
-        public int gerarProximoId() {
-            return 1;
-        }
-
-        @Override
-        public boolean clientePossuiMultaPendente(int idCliente) {
-            return true; 
-        }
-
-        @Override
-        public boolean clientePossuiHistorico(int idCliente) {
-            return true;
-        }
-
-        @Override
-        public double calcularMulta(long diasAtraso, double taxaDiaria) {
-            return 0;
-        }
-
-
-        @Override
-        public List<ContratoAluguel> filtrarPorId(String pesquisado) {
-            return List.of();
-        }
-
-        @Override
-        public List<ContratoAluguel> filtrarPorItem(String pesquisado) {
-            return List.of();
-        }
-
-        @Override
-        public List<ContratoAluguel> filtrarPorDataRetirada(String pesquisado) {
-            return List.of();
-        }
-
-        @Override
-        public List<ContratoAluguel> filtrarPorDataDevolucao(String pesquisado) {
-            return List.of();
-        }
-
-        @Override
-        public List<ContratoAluguel> filtrarPorStatus(String pesquisado) {
-            return List.of();
-        }
-
-        @Override
-        public List<ContratoAluguel> filtrarPorValorTotal(String pesquisado) {
-            return List.of();
-        }
-
-        @Override
-        public List<ContratoAluguel> filtrarPorValorMulta(String pesquisado) {
-            return List.of();
-        }
+        negocio.desativaUsuario(cliente.getId());
+        assertNull(negocio.realizarLogin("ana@loja.com", "senha1"));
+        assertNotNull(negocio.buscarUsuario(cliente.getId()), "desativar não apaga o usuário");
     }
 }
