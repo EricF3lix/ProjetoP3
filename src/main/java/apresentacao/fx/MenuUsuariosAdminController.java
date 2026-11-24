@@ -27,6 +27,7 @@ public class MenuUsuariosAdminController extends MenuController {
 	private static final String PERFIL_CLIENTE = "Cliente";
 	private static final String PERFIL_FUNCIONARIO = "Funcionário";
 	private static final String PERFIL_ADMIN = "Administrador";
+	private static final String FILTRO_TODOS = "Todos";
 
 	@FXML private TableView<Usuario> tabela;
 	@FXML private ComboBox<String> filtro;
@@ -67,7 +68,7 @@ public class MenuUsuariosAdminController extends MenuController {
 			pesquisa.textProperty().addListener((obj, antigo, novo) -> fazPesquisa(novo));
 			this.listener = true;
 		}
-		filtro.setValue("Todos");
+		filtro.setValue(FILTRO_TODOS);
 		listarUsuarios();
 	}
 
@@ -99,7 +100,7 @@ public class MenuUsuariosAdminController extends MenuController {
 
 	private void configurarCombos() {
 		filtro.setItems(FXCollections.observableArrayList(
-				"Todos", "ID", "Nome", "E-mail", "CPF", "Perfil", "Status"));
+				FILTRO_TODOS, "ID", "Nome", "E-mail", "CPF", "Perfil", "Status"));
 		cbPerfil.setItems(FXCollections.observableArrayList(
 				PERFIL_CLIENTE, PERFIL_FUNCIONARIO, PERFIL_ADMIN));
 		cbPerfil.setValue(PERFIL_CLIENTE);
@@ -348,7 +349,7 @@ public class MenuUsuariosAdminController extends MenuController {
 	private void aoLimparPesquisa() {
 		colocaTabela();
 		pesquisa.clear();
-		filtro.setValue("Todos");
+		filtro.setValue(FILTRO_TODOS);
 		listarUsuarios();
 	}
 }
