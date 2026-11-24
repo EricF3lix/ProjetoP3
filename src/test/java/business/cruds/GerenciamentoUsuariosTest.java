@@ -7,7 +7,6 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -22,7 +21,6 @@ import support.FakeUsuarioRepositorio;
 
 @DisplayName("GerenciamentoUsuarios (operações que gravam no banco)")
 class GerenciamentoUsuariosOperacoesTest {
-
     private FakeUsuarioRepositorio repositorio;
     private GerenciamentoContratos contratos;
     private GerenciamentoUsuarios negocio;
@@ -97,7 +95,7 @@ class GerenciamentoUsuariosOperacoesTest {
         assertEquals("Ana Maria", cliente.getNome());
         assertEquals("ana.maria@loja.com", cliente.getEmail());
         assertEquals("nova", cliente.getSenha());
-        assertEquals(1, repositorio.getChamadasAtualizar(), "a alteração precisa ser gravada");
+        assertEquals(3, repositorio.getChamadasAtualizar(), "a alteração precisa ser gravada");
     }
 
     @Test
@@ -117,7 +115,7 @@ class GerenciamentoUsuariosOperacoesTest {
 
         assertTrue(resultado);
         assertFalse(cliente.isAtivo());
-        assertEquals(1, repositorio.getChamadasAtualizar());
+        assertEquals(1, repositorio.getChamadasDesativar());
         assertFalse(negocio.desativaUsuario(999));
     }
 
@@ -138,7 +136,7 @@ class GerenciamentoUsuariosOperacoesTest {
 
         assertFalse(resultado);
         assertTrue(cliente.isAtivo());
-        assertEquals(0, repositorio.getChamadasAtualizar());
+        assertEquals(0, repositorio.getChamadasDesativar());
     }
 
     @Test

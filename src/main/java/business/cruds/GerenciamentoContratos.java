@@ -10,6 +10,8 @@ import repositories.IContratoRepositorioDAO;
 
 public class GerenciamentoContratos implements IGerenciamentoContratos {
 
+    private static final String CAMPO_STATUS = "status";
+
     private final IContratoRepositorioDAO repositorio;
 
     public GerenciamentoContratos(IContratoRepositorioDAO repositorio) {
@@ -26,7 +28,7 @@ public class GerenciamentoContratos implements IGerenciamentoContratos {
         repositorio.adicionar(contrato);
 
         contrato.getItem().alugar();
-        repositorio.atualizar("status", "ATIVO", contrato.getId());
+        repositorio.atualizar(CAMPO_STATUS, "ATIVO", contrato.getId());
 
         return true;
     }
@@ -64,7 +66,7 @@ public class GerenciamentoContratos implements IGerenciamentoContratos {
         contrato.getItem().devolver();
         contrato.finalizarContrato();
 
-        repositorio.atualizar("status", "FINALIZADO", contrato.getId());
+        repositorio.atualizar(CAMPO_STATUS, "FINALIZADO", contrato.getId());
 
         return true;
     }
@@ -99,7 +101,7 @@ public class GerenciamentoContratos implements IGerenciamentoContratos {
         contrato.cancelarContrato();
         contrato.getItem().devolver();
 
-        repositorio.atualizar("status", "CANCELADO", contrato.getId());
+        repositorio.atualizar(CAMPO_STATUS, "CANCELADO", contrato.getId());
 
         return true;
     }

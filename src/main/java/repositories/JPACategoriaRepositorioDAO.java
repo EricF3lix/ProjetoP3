@@ -39,7 +39,7 @@ public class JPACategoriaRepositorioDAO implements ICategoriaRepositorioDAO {
             lista.add(manipulaArquivo.buscaUnica(Categoria.class,Integer.parseInt(valor)));
             return lista;
         }
-        return manipulaArquivo.buscar(Categoria.class,tipo,valor);
+        return new ArrayList<>(manipulaArquivo.buscar(Categoria.class,tipo,valor));
     }
 
     @Override

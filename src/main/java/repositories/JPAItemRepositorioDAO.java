@@ -48,5 +48,4 @@ public class JPAItemRepositorioDAO implements IItemRepositorioDAO {
     public boolean desativarItem(int id){
         return manipulaArquivo.desativar(Item.class,id);
     }
-
 }

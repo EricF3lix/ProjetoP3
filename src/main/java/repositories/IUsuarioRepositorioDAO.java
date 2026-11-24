@@ -18,4 +18,6 @@ public interface IUsuarioRepositorioDAO {
 
     public abstract boolean atualizar(String coluna, Object valor, int id);
 
+    public abstract boolean desativarUsuario(int id);
+
 }
