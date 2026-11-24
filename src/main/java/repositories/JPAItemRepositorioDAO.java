@@ -40,7 +40,7 @@ public class JPAItemRepositorioDAO implements IItemRepositorioDAO {
     @Override
     public boolean atualizar(String coluna, String valor, int id) {
 
-        return manipulaArquivo.atualizar(Item.class,coluna,valor,id);
+        return (manipulaArquivo.atualizar(Item.class,coluna,valor,id) && manipulaArquivo.atualizar(Item.class,"ativo",true,id));
 
     }
 

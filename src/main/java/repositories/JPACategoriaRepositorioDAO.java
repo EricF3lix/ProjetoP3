@@ -17,7 +17,7 @@ public class JPACategoriaRepositorioDAO implements ICategoriaRepositorioDAO {
     @Override
     public boolean atualizar(String coluna, String valor, int id) {
 
-        return manipulaArquivo.atualizar(Categoria.class,coluna,valor,id);
+        return manipulaArquivo.atualizar(Categoria.class,coluna,valor,id) && (manipulaArquivo.atualizar(Categoria.class,"ativo",true,id));
     }
 
     @Override

@@ -13,14 +13,14 @@ public class Categoria {
     private int id;
     private String nome;
     private String descricao;
-    private boolean ativa;
+    private boolean ativo;
 
     public Categoria(){}
 
     public Categoria(String nome, String descricao) {
         this.nome = nome;
         this.descricao = descricao;
-        this.ativa = true;
+        this.ativo = true;
     }
 
     public int getId() {
@@ -48,15 +48,15 @@ public class Categoria {
     }
 
     public boolean isAtiva() {
-        return ativa;
+        return ativo;
     }
 
     public void setAtiva(boolean ativa) {
-        this.ativa = ativa;
+        this.ativo = ativa;
     }
 
     public void desativar() {
-        this.ativa = false;
+        this.ativo = false;
     }
     @Override 
     public String toString() {

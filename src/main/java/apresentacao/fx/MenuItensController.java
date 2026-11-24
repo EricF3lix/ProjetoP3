@@ -333,7 +333,6 @@ public class MenuItensController extends MenuController {
             return;
         }
 
-        // Buscar Categoria
         List<Categoria> categorias = sistema.buscarCategoriaPorNome(categoriaNome);
         if (categorias.isEmpty()) {
             notificarPopUpErro("Categoria não encontrada.");
