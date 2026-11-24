@@ -54,7 +54,18 @@ public class FakeUsuarioRepositorio implements IUsuarioRepositorioDAO {
         return true;
     }
 
+    @Override
+    public boolean desativarUsuario(int id) {
+        Usuario usuario = buscarPorId(id);
+        if (usuario == null) {
+            return false;
+        }
+        usuario.setAtivo(false);
+        return true;
+    }
+
     public int getChamadasAtualizar() {
         return chamadasAtualizar;
     }
+
 }
