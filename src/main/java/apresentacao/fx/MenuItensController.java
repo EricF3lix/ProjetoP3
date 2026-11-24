@@ -15,7 +15,6 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.scene.layout.VBox;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 
 public class MenuItensController extends MenuController {
@@ -280,7 +279,7 @@ public class MenuItensController extends MenuController {
         List<Categoria> categorias = sistema.buscarCategoriaPorNome(categoria);
         Categoria catgoriatxt = categorias.getFirst();
 
-        List<Fornecedor> fornecedores = sistema.buscarPesquisa(fornecedortxt, "nome");
+        List<Fornecedor> fornecedores = sistema.buscarPesquisa(fornecedortxt, "razaoSocial");
         Fornecedor fornecedor = fornecedores.getFirst();
 
         Item item = new Item(nomeitem, descricaoitem, taxa, estado, valor, catgoriatxt, fornecedor);
@@ -315,7 +314,7 @@ public class MenuItensController extends MenuController {
     @FXML
     public void salvarAtualizacao(ActionEvent event) {
         if (itemEmEdicao == null) {
-        	notificarPopUpErro("Nenhum item selecionado para atualização.");
+            notificarPopUpErro("Nenhum item selecionado para atualização.");
             return;
         }
 
@@ -325,48 +324,61 @@ public class MenuItensController extends MenuController {
         String valorTxt = valorReposicao1.getText().trim();
         String estado = estadoItem1.getValue();
         String categoriaNome = categoriaItem1.getValue();
-        String fornecedorTxt = fornecedoresItem1.getValue().toString();
+        String fornecedorTxt = fornecedoresItem1.getValue() != null
+                ? fornecedoresItem1.getValue().toString().trim() : "";
 
         if (nome.isEmpty() || descricao.isEmpty() || taxaTxt.isEmpty() || valorTxt.isEmpty()
-                || estado.isEmpty() || categoriaNome == null || fornecedorTxt.isEmpty()) {
-        	notificarPopUpErro("Preencha todos os campos");
+                || estado == null || categoriaNome == null || fornecedorTxt.isEmpty()) {
+            notificarPopUpErro("Preencha todos os campos");
             return;
         }
 
+        // Buscar Categoria
         List<Categoria> categorias = sistema.buscarCategoriaPorNome(categoriaNome);
         if (categorias.isEmpty()) {
-        	notificarPopUpErro("Categoria não encontrada.");
+            notificarPopUpErro("Categoria não encontrada.");
             return;
         }
+        Categoria categoria = categorias.getFirst();
 
-        Fornecedor fornecedor = sistema.buscarPesquisa(fornecedorTxt, "nome").getFirst();
-        if (fornecedor == null) {
-        	notificarPopUpErro("Fornecedor não encontrado.");
+        // Buscar Fornecedor
+        List<Fornecedor> fornecedores = sistema.buscarPesquisa(fornecedorTxt, "razaoSocial");
+        if (fornecedores.isEmpty()) {
+            notificarPopUpErro("Fornecedor não encontrado.");
             return;
         }
+        Fornecedor fornecedor = fornecedores.getFirst();
 
         int id = itemEmEdicao.getId();
         boolean algumAtualizou = false;
 
-        algumAtualizou |= atualizarSeDiferente("Nome", itemEmEdicao.getNome(), itemOriginal.getNome(), id);
-        algumAtualizou |= atualizarSeDiferente("Descricao", itemEmEdicao.getDescricao(), itemOriginal.getDescricao(), id);
-        algumAtualizou |= atualizarSeDiferente("TaxaDiaria", itemEmEdicao.getTaxaDiariaFormatada(), itemOriginal.getTaxaDiariaFormatada(), id);
-        algumAtualizou |= atualizarSeDiferente("ValorReposicao", itemEmEdicao.getValorReposicao(), itemOriginal.getValorReposicao(), id);
-        algumAtualizou |= atualizarSeDiferente("EstadoConservacao", itemEmEdicao.getEstadoConservacao(), itemOriginal.getEstadoConservacao(), id);
-        algumAtualizou |= atualizarSeDiferente("Categoria", itemEmEdicao.getCategoria().getId(), itemOriginal.getCategoria().getId(), id);
-        algumAtualizou |= atualizarSeDiferente("Fornecedor", itemEmEdicao.getFornecedor().getId(), itemOriginal.getFornecedor().getId(), id);
+        String taxaNorm  = taxaTxt.replace(',', '.');
+        String valorNorm = valorTxt.replace(',', '.');
 
-        if (algumAtualizou){
-            notificarPopUp("Item atualizado com sucesso");}
-        else{notificarPopUp("Item nao atualizado");}
+        algumAtualizou |= atualizarSeDiferente("nome", nome,itemOriginal.getNome(),id);
+        algumAtualizou |= atualizarSeDiferente("descricao",descricao,itemOriginal.getDescricao(),id);
+        algumAtualizou |= atualizarSeDiferente("taxaDiaria",taxaNorm,String.valueOf(itemOriginal.getTaxaDiaria()),id);
+        algumAtualizou |= atualizarSeDiferente("valorReposicao",valorNorm,String.valueOf(itemOriginal.getValorReposicao()),id);
+        algumAtualizou |= atualizarSeDiferente("estadoConservacao", estado,itemOriginal.getEstadoConservacao(),id);
+        algumAtualizou |= atualizarSeDiferente("categoria",String.valueOf(categoria.getId()),String.valueOf(itemOriginal.getCategoria().getId()), id);
+        algumAtualizou |= atualizarSeDiferente("fornecedor",String.valueOf(fornecedor.getId()),String.valueOf(itemOriginal.getFornecedor().getId()), id);
+
+        if (algumAtualizou) {
+            notificarPopUp("Item atualizado com sucesso");
+        } else {
+            notificarPopUp("Item nao atualizado");
+        }
+
+        itemEmEdicao = null;
+        itemOriginal = null;
         listarItens(event);
     }
 
-    private boolean atualizarSeDiferente(String coluna, Object valorNovo, Object valorOriginal, int id) {
-        if (Objects.equals(valorNovo, valorOriginal)) {
+    private boolean atualizarSeDiferente(String coluna, String valorNovo, String valorOriginal, int id) {
+        if (valorNovo.equals(valorOriginal)) {
             return false;
         }
-        return sistema.atualizarItem(coluna, String.valueOf(valorNovo), id);
+        return sistema.atualizarItem(coluna, valorNovo, id);
     }
 
     private Item obterItemParaAtualizar() {

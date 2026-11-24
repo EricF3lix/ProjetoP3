@@ -13,14 +13,13 @@ public class Categoria {
     private String nome;
     private String descricao;
     private boolean ativa;
- 
+
+    public Categoria(){}
+
     public Categoria(String nome, String descricao) {
         this.nome = nome;
         this.descricao = descricao;
         this.ativa = true;
-    }
-    
-    protected Categoria() {
     }
 
     public int getId() {
