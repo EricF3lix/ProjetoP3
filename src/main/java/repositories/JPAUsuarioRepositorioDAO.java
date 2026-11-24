@@ -43,8 +43,11 @@ public class JPAUsuarioRepositorioDAO implements IUsuarioRepositorioDAO {
     
     @Override
     public boolean atualizar(String coluna, Object valor, int id) {
-        manipulaArquivo.atualizar(Usuario.class, coluna, valor, id);
-        return true;
+        return manipulaArquivo.atualizar(Usuario.class, coluna, valor, id);
+    }
+    @Override
+    public boolean desativarUsuario(int id){
+        return manipulaArquivo.desativar(Usuario.class,id);
     }
 
 }

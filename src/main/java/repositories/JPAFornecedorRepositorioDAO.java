@@ -1,11 +1,13 @@
 package repositories;
 
-import entidades.Fornecedor;
-
 import java.util.ArrayList;
 import java.util.List;
 
+import entidades.Fornecedor;
+
 public class JPAFornecedorRepositorioDAO implements IFornecedorRepositorioDAO {
+
+    private static final String CAMPO_RAZAO_SOCIAL = "razaoSocial";
 
     private final ManipulaArquivo manipulaArquivo;
 
@@ -31,7 +33,7 @@ public class JPAFornecedorRepositorioDAO implements IFornecedorRepositorioDAO {
     public boolean atualizar(Fornecedor fornecedor) { 
     	ArrayList<Boolean> sucesso = new ArrayList<>();
     	
-    	sucesso.add(manipulaArquivo.atualizar(Fornecedor.class, "razaoSocial", fornecedor.getRazaoSocial(), fornecedor.getId()));
+    	sucesso.add(manipulaArquivo.atualizar(Fornecedor.class, CAMPO_RAZAO_SOCIAL, fornecedor.getRazaoSocial(), fornecedor.getId()));
     	sucesso.add(manipulaArquivo.atualizar(Fornecedor.class, "cnpj", fornecedor.getCnpj(), fornecedor.getId()));
     	sucesso.add(manipulaArquivo.atualizar(Fornecedor.class, "email", fornecedor.getEmail(), fornecedor.getId()));
     	sucesso.add(manipulaArquivo.atualizar(Fornecedor.class, "telefone", fornecedor.getTelefone(), fornecedor.getId()));
@@ -57,23 +59,22 @@ public class JPAFornecedorRepositorioDAO implements IFornecedorRepositorioDAO {
     
     @Override
     public List<Fornecedor> buscarPesquisa(String valor, String campo) {
-    	ArrayList<Fornecedor> fornecedores = new ArrayList<>();
-    	if (campo.equals("todos")) {
-    		fornecedores.addAll(manipulaArquivo.buscar(Fornecedor.class, "id", valor));
-    		fornecedores.addAll(manipulaArquivo.buscar(Fornecedor.class, "razaoSocial", valor));
-    		fornecedores.addAll(manipulaArquivo.buscar(Fornecedor.class, "cnpj", valor));
-    		fornecedores.addAll(manipulaArquivo.buscar(Fornecedor.class, "email", valor));
-    		fornecedores.addAll(manipulaArquivo.buscar(Fornecedor.class, "telefone", valor));
-    		
-    		fornecedores = new ArrayList<>(removeDuplicado(fornecedores));
-    	}
-    	
-    	else {
-    		fornecedores.addAll(manipulaArquivo.buscar(Fornecedor.class, campo, valor));
-    	}
-    	
-    	return fornecedores;
-    	
+        ArrayList<Fornecedor> fornecedores = new ArrayList<>();
+
+        if ("todos".equalsIgnoreCase(campo)) {
+            fornecedores.addAll(manipulaArquivo.buscar(Fornecedor.class, "id", valor));
+            fornecedores.addAll(manipulaArquivo.buscar(Fornecedor.class, CAMPO_RAZAO_SOCIAL, valor));
+            fornecedores.addAll(manipulaArquivo.buscar(Fornecedor.class, "cnpj", valor));
+            fornecedores.addAll(manipulaArquivo.buscar(Fornecedor.class, "email", valor));
+            fornecedores.addAll(manipulaArquivo.buscar(Fornecedor.class, "telefone", valor));
+
+            return new ArrayList<>(removeDuplicado(fornecedores));
+        }
+
+        String campoBusca = "nome".equalsIgnoreCase(campo) ? CAMPO_RAZAO_SOCIAL : campo;
+        fornecedores.addAll(manipulaArquivo.buscar(Fornecedor.class, campoBusca, valor));
+
+        return fornecedores;
     }
 
 

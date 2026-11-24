@@ -1,11 +1,11 @@
 package business.cruds;
 
+import java.util.List;
+
 import business.interfaces.IGerenciamentoContratos;
 import business.interfaces.IGerenciamentoUsuarios;
 import entidades.Usuario;
 import repositories.IUsuarioRepositorioDAO;
-
-import java.util.List;
 
 @SuppressWarnings("java:S106")
 public class GerenciamentoUsuarios implements IGerenciamentoUsuarios {
@@ -52,13 +52,14 @@ public class GerenciamentoUsuarios implements IGerenciamentoUsuarios {
         if (usuario == null) {
             return false;
         }
+
         usuario.setNome(nome);
         usuario.setEmail(email);
         usuario.setSenha(senha);
 
-        repositorio.atualizar(String.valueOf(usuario.isAtivo()), "ativo", id);
-
-        return true;
+        return repositorio.atualizar("nome", nome, id)
+                && repositorio.atualizar("email", email, id)
+                && repositorio.atualizar("senha", senha, id);
     }
 
     @Override
@@ -77,9 +78,7 @@ public class GerenciamentoUsuarios implements IGerenciamentoUsuarios {
 
         usuario.setAtivo(false);
 
-        repositorio.atualizar(String.valueOf(usuario.isAtivo()), "ativo", id);
-
-        return true;
+        return repositorio.desativarUsuario(id);
     }
 
     @Override
