@@ -40,7 +40,6 @@ public class MenuCategoriasController extends MenuController {
     @FXML private VBox tabelaCategoria;
 
     @FXML private Label tituloCategoria;
-    @FXML private Label tituloTabela;
 
     @FXML private TextField txtNome;
     @FXML private TextField txtDescricao;
@@ -177,13 +176,17 @@ public class MenuCategoriasController extends MenuController {
             return;
         }
 
-        sistema.atualizarCategoria("nome",atual.getNome(), atual.getId());
-        sistema.atualizarCategoria("descricao",atual.getDescricao(), atual.getId());
-        	notificarPopUp("Categoria atualizada com sucesso!");
-            btnAtualizar.setUserData(null);
-            txtNome.clear();
-            txtDescricao.clear();
-            listarCategorias();
+        boolean atualizou = false;
+
+        atualizou |= sistema.atualizarCategoria("nome",      nome,      atual.getId());
+        atualizou |= sistema.atualizarCategoria("descricao", descricao, atual.getId());
+
+        if (atualizou){notificarPopUp("Categoria atualizada com sucesso!");}
+        else{notificarPopUp("Categoria não atualizada!");}
+        btnAtualizar.setUserData(null);
+        txtNome.clear();
+        txtDescricao.clear();
+        listarCategorias();
     }
 
     @FXML private void desativarCategoria() {

@@ -31,6 +31,8 @@ public class Item {
     private static final String DISPONIVEL = "DISPONIVEL";
     private static final String INDISPONIVEL = "INDISPONIVEL";
 
+    public Item(){}
+
     public Item(String nome, String descricao, double taxaDiaria,
                 String estadoConservacao, double valorReposicao,
                 Categoria categoria, Fornecedor fornecedor) {
