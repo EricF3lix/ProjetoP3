@@ -6,7 +6,7 @@
 
         <properties>
             <property name="jakarta.persistence.jdbc.driver" value="org.postgresql.Driver"/>
-            <property name="jakarta.persistence.jdbc.url" value="jdbc:postgresql://ep-misty-frog-bes30eq9-pooler.c-9.us-east-2.aws.neon.tech/neondb?sslmode=require&amp;channelBinding=require&amp;prepareThreshold=0"/>
+            <property name="jakarta.persistence.jdbc.url" value="jdbc:postgresql://ep-misty-frog-bes30eq9-pooler.c-9.us-east-2.aws.neon.tech/neondb?sslmode=require&amp;channelBinding=require&amp;prepareThreshold=0&amp;connectTimeout=30&amp;socketTimeout=30"/>
             <property name="jakarta.persistence.jdbc.user" value="neondb_owner"/>
             <property name="jakarta.persistence.jdbc.password" value="npg_YViQbjCR8E1T"/>
 
@@ -17,7 +17,8 @@
             <property name="hibernate.connection.provider_class" value="org.hibernate.hikaricp.internal.HikariCPConnectionProvider"/>
             <property name="hibernate.hikari.minimumIdle" value="0"/>
             <property name="hibernate.hikari.maximumPoolSize" value="5"/>
-            <property name="hibernate.hikari.connectionTimeout" value="15000"/>
+            <property name="hibernate.hikari.connectionTimeout" value="30000"/>
+            <property name="hibernate.hikari.initializationFailTimeout" value="30000"/>
             <property name="hibernate.hikari.idleTimeout" value="60000"/>
             <property name="hibernate.hikari.maxLifetime" value="240000"/>
         </properties>

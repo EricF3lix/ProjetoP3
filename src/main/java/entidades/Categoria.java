@@ -19,6 +19,9 @@ public class Categoria {
         this.descricao = descricao;
         this.ativa = true;
     }
+    
+    protected Categoria() {
+    }
 
     public int getId() {
         return id;

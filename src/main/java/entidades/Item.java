@@ -45,6 +45,9 @@ public class Item {
         this.status = DISPONIVEL;
         this.ativo = true;
     }
+    
+    protected Item() {
+    }
 
     public int getId() {
         return id;

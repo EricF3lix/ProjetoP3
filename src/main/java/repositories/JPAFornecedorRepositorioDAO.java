@@ -1,9 +1,9 @@
 package repositories;
 
-import entidades.Fornecedor;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import entidades.Fornecedor;
 
 public class JPAFornecedorRepositorioDAO implements IFornecedorRepositorioDAO {
 
@@ -57,23 +57,22 @@ public class JPAFornecedorRepositorioDAO implements IFornecedorRepositorioDAO {
     
     @Override
     public List<Fornecedor> buscarPesquisa(String valor, String campo) {
-    	ArrayList<Fornecedor> fornecedores = new ArrayList<>();
-    	if (campo.equals("todos")) {
-    		fornecedores.addAll(manipulaArquivo.buscar(Fornecedor.class, "id", valor));
-    		fornecedores.addAll(manipulaArquivo.buscar(Fornecedor.class, "razaoSocial", valor));
-    		fornecedores.addAll(manipulaArquivo.buscar(Fornecedor.class, "cnpj", valor));
-    		fornecedores.addAll(manipulaArquivo.buscar(Fornecedor.class, "email", valor));
-    		fornecedores.addAll(manipulaArquivo.buscar(Fornecedor.class, "telefone", valor));
-    		
-    		fornecedores = new ArrayList<>(removeDuplicado(fornecedores));
-    	}
-    	
-    	else {
-    		fornecedores.addAll(manipulaArquivo.buscar(Fornecedor.class, campo, valor));
-    	}
-    	
-    	return fornecedores;
-    	
+        ArrayList<Fornecedor> fornecedores = new ArrayList<>();
+
+        if ("todos".equalsIgnoreCase(campo)) {
+            fornecedores.addAll(manipulaArquivo.buscar(Fornecedor.class, "id", valor));
+            fornecedores.addAll(manipulaArquivo.buscar(Fornecedor.class, "razaoSocial", valor));
+            fornecedores.addAll(manipulaArquivo.buscar(Fornecedor.class, "cnpj", valor));
+            fornecedores.addAll(manipulaArquivo.buscar(Fornecedor.class, "email", valor));
+            fornecedores.addAll(manipulaArquivo.buscar(Fornecedor.class, "telefone", valor));
+
+            return new ArrayList<>(removeDuplicado(fornecedores));
+        }
+
+        String campoBusca = "nome".equalsIgnoreCase(campo) ? "razaoSocial" : campo;
+        fornecedores.addAll(manipulaArquivo.buscar(Fornecedor.class, campoBusca, valor));
+
+        return fornecedores;
     }
 
 
